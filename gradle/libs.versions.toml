@@ -1,0 +1,43 @@
+[versions]
+#jetbrains
+geocoderVersion = "3.20"
+kotlin = "2.2.21"
+kotlinxSerializationJson = "1.9.0"
+#Detekt
+detekt = "1.23.8"
+detektCompose = "0.4.28"
+#Eventbus
+eventbus = "3.3.1"
+#Fossify
+commons = "5.11.0"
+#Gradle
+gradlePlugins-agp = "8.11.1"
+#Other
+indicatorFastScroll = "c7873f7168"
+autofitTextView = "0.2.1"
+libphonenumberVersion = "9.0.20"
+#build
+app-build-compileSDKVersion = "36"
+app-build-targetSDK = "36"
+app-build-minimumSDK = "26"
+app-build-javaVersion = "VERSION_17"
+app-build-kotlinJVMTarget = "17"
+[libraries]
+#Compose
+compose-detekt = { module = "io.nlopez.compose.rules:detekt", version.ref = "detektCompose" }
+#Fossify
+fossify-commons = { module = "org.fossify:commons", version.ref = "commons" }
+#EventBus
+eventbus = { module = "org.greenrobot:eventbus", version.ref = "eventbus" }
+#Kotlin
+geocoder = { module = "com.googlecode.libphonenumber:geocoder", version.ref = "geocoderVersion" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+#Other
+indicator-fast-scroll = { module = "org.fossify:IndicatorFastScroll", version.ref = "indicatorFastScroll" }
+autofit-text-view = { module = "me.grantland:autofittextview", version.ref = "autofitTextView" }
+libphonenumber = { module = "com.googlecode.libphonenumber:libphonenumber", version.ref = "libphonenumberVersion" }
+[plugins]
+android = { id = "com.android.application", version.ref = "gradlePlugins-agp" }
+kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }

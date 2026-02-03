@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#00000000"
+        app:elevation="0dp">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="Lwidget"
+            app:titleTextColor="?attr/colorPrimary"
+            app:titleTextAppearance="@style/BoldTitle" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:clipToPadding="false"
+            android:paddingBottom="80dp">
+
+            <!-- Permission Warning (Hidden by default) -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_permission"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:visibility="gone"
+                app:cardBackgroundColor="#330000"
+                app:strokeColor="#FF5555"
+                app:strokeWidth="1dp"
+                app:cardCornerRadius="16dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Missing Permission"
+                        android:textColor="#FF5555"
+                        android:textStyle="bold"
+                        android:textSize="16sp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Calendar access is required to show events."
+                        android:textColor="#FFFFFF"
+                        android:layout_marginTop="4dp"/>
+                    <Button
+                        android:id="@+id/btn_grant_permission"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Grant Access"
+                        android:layout_marginTop="8dp"
+                        android:backgroundTint="#FF5555"
+                        android:textColor="#FFFFFF"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Time Settings -->
+            <include layout="@layout/settings_card_item" android:id="@+id/section_time"/>
+
+            <!-- Date Settings -->
+            <include layout="@layout/settings_card_item" android:id="@+id/section_date"/>
+
+            <!-- Battery Settings -->
+            <include layout="@layout/settings_card_item" android:id="@+id/section_battery"/>
+
+            <!-- Temp Settings -->
+            <include layout="@layout/settings_card_item" android:id="@+id/section_temp"/>
+
+            <!-- Events Settings -->
+            <include layout="@layout/settings_card_item" android:id="@+id/section_events"/>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Save/Apply FAB (Optional, if we want manual save) -->
+    <!-- Ideally we just save on change, but maybe a 'Refresh Widget' button valid -->
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/fab_update"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="24dp"
+        android:text="Update Widget"
+        app:icon="@android:drawable/ic_popup_sync"
+        app:iconTint="?attr/colorOnPrimaryContainer"
+        android:backgroundTint="?attr/colorPrimaryContainer"
+        android:textColor="?attr/colorOnPrimaryContainer"
+        app:strokeColor="@android:color/transparent"
+        app:strokeWidth="3dp"
+        app:rippleColor="?attr/colorControlHighlight"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Built by LeanBitLab"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        android:textSize="12sp"
+        android:textStyle="italic"
+        android:alpha="0.7"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="12dp"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
