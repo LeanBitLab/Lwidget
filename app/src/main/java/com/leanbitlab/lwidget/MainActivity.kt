@@ -96,6 +96,9 @@ class MainActivity : AppCompatActivity() {
 
         // Events: Def True, 14sp, Max 48sp
         bindSection(R.id.section_events, "Events", "show_events", true, "size_events", 14f, 10f, 48f)
+
+        // Outline Glow: Def False
+        bindToggle(R.id.section_outline, "Outline Glow", "show_outline", false)
     }
 
     private fun bindSection(
@@ -141,6 +144,30 @@ class MainActivity : AppCompatActivity() {
                 prefs.edit().putFloat(prefSizeKey, value).apply()
                 updateWidget() // Live update
             }
+        }
+    }
+
+    private fun bindToggle(
+        sectionId: Int,
+        title: String,
+        prefShowKey: String,
+        defShow: Boolean
+    ) {
+        val section = findViewById<View>(sectionId)
+        val tvTitle = section.findViewById<TextView>(R.id.item_title)
+        val switch = section.findViewById<SwitchMaterial>(R.id.item_switch)
+        val sizeContainer = section.findViewById<View>(R.id.size_container)
+
+        tvTitle.text = title
+        sizeContainer.visibility = View.GONE
+
+        // Load Toggle
+        val isShown = prefs.getBoolean(prefShowKey, defShow)
+        switch.isChecked = isShown
+
+        switch.setOnCheckedChangeListener { _, isChecked ->
+            prefs.edit().putBoolean(prefShowKey, isChecked).apply()
+            updateWidget() // Live update
         }
     }
 

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="widget_background">#FF1C1B1F</color> <!-- Dark gray fallback -->
+    <color name="widget_outline">#FFD0BCFF</color>     <!-- Light purple (Material 3 default accent) fallback -->
+</resources>

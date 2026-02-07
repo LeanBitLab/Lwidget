@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simulated Gaussian Blur with Layer List -->
+<!-- Stacking 6 layers with decreasing width and increasing opacity. -->
+<!-- Order: Outer (faint + wide) -> Inner (solid + narrow) -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Layer 1: Very Faint, Wide (5%) -->
+    <item>
+        <shape>
+            <solid android:color="@android:color/transparent"/> 
+            <stroke android:width="12dp" android:color="@color/glow_05"/>
+            <corners android:radius="@dimen/widget_radius_outer"/>
+        </shape>
+    </item>
+
+    <!-- Layer 2: Faint, Wide (15%) -->
+    <item android:top="1dp" android:bottom="1dp" android:left="1dp" android:right="1dp">
+        <shape>
+            <solid android:color="@android:color/transparent"/> 
+            <stroke android:width="10dp" android:color="@color/widget_outline_soft"/>
+            <corners android:radius="@dimen/widget_radius_mid1"/>
+        </shape>
+    </item>
+
+    <!-- Layer 3: Mild, Medium (30%) -->
+    <item android:top="2dp" android:bottom="2dp" android:left="2dp" android:right="2dp"> 
+        <shape>
+            <solid android:color="@android:color/transparent"/> 
+            <stroke android:width="8dp" android:color="@color/glow_30"/>
+            <corners android:radius="@dimen/widget_radius_mid2"/>
+        </shape>
+    </item>
+
+    <!-- Layer 4: Medium (50%) -->
+    <item android:top="3dp" android:bottom="3dp" android:left="3dp" android:right="3dp"> 
+        <shape>
+            <solid android:color="@android:color/transparent"/> 
+            <stroke android:width="6dp" android:color="@color/widget_outline_medium"/>
+            <corners android:radius="@dimen/widget_radius_mid3"/>
+        </shape>
+    </item>
+    
+    <!-- Layer 5: Strong (75%) -->
+    <item android:top="4dp" android:bottom="4dp" android:left="4dp" android:right="4dp"> 
+        <shape>
+            <solid android:color="@android:color/transparent"/> 
+            <stroke android:width="4dp" android:color="@color/glow_75"/>
+            <corners android:radius="@dimen/widget_radius_mid4"/>
+        </shape>
+    </item>
+
+    <!-- Layer 6: Solid Inner Line + Fill (100%) -->
+    <item android:top="5dp" android:bottom="5dp" android:left="5dp" android:right="5dp"> 
+        <shape>
+            <solid android:color="@color/widget_background"/>
+            <stroke android:width="2dp" android:color="@color/widget_outline"/>
+            <corners android:radius="@dimen/widget_radius_inner"/>
+        </shape>
+    </item>
+
+</layer-list>

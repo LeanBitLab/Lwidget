@@ -105,6 +105,11 @@ class AwidgetProvider : AppWidgetProvider() {
             
             val showEvents = prefs.getBoolean("show_events", true)
             val sizeEvents = prefs.getFloat("size_events", 14f)
+            
+            val showOutline = prefs.getBoolean("show_outline", false)
+
+            // --- Apply Outline ---
+            views.setInt(R.id.widget_root, "setBackgroundResource", if (showOutline) R.drawable.background_glow else R.drawable.background_dark)
 
             // --- Apply Time ---
             views.setViewVisibility(R.id.clock_time, if (showTime) android.view.View.VISIBLE else android.view.View.GONE)
@@ -157,7 +162,8 @@ class AwidgetProvider : AppWidgetProvider() {
             // Battery -> Battery Usage
             val batteryIntent = Intent(Intent.ACTION_POWER_USAGE_SUMMARY)
             val batteryPendingIntent = PendingIntent.getActivity(context, 2, batteryIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-            views.setOnClickPendingIntent(R.id.info_panel, batteryPendingIntent)
+            views.setOnClickPendingIntent(R.id.text_battery, batteryPendingIntent)
+            views.setOnClickPendingIntent(R.id.text_temp, batteryPendingIntent)
 
             // --- Calendar Events ---
             views.setViewVisibility(R.id.events_container, if (showEvents) android.view.View.VISIBLE else android.view.View.GONE)

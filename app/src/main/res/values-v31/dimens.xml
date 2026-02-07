@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Use system radius for all to match system curve broadly -->
+    <!-- The faint outer layers will naturally soften the corner visually -->
+    <dimen name="widget_radius">@android:dimen/system_app_widget_background_radius</dimen>
+    <dimen name="widget_radius_inner">@android:dimen/system_app_widget_background_radius</dimen>
+    <dimen name="widget_radius_mid4">@android:dimen/system_app_widget_background_radius</dimen>
+    <dimen name="widget_radius_mid3">@android:dimen/system_app_widget_background_radius</dimen>
+    <dimen name="widget_radius_mid2">@android:dimen/system_app_widget_background_radius</dimen>
+    <dimen name="widget_radius_mid1">@android:dimen/system_app_widget_background_radius</dimen>
+    <dimen name="widget_radius_outer">@android:dimen/system_app_widget_background_radius</dimen>
+</resources>

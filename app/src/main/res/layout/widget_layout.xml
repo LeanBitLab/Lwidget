@@ -17,36 +17,32 @@
         android:textStyle="bold"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
+        android:layout_marginTop="-4dp"
         android:includeFontPadding="false"/>
 
-    <!-- Battery & Temp (Top Right) -->
-    <LinearLayout
-        android:id="@+id/info_panel"
+    <!-- Battery (Top Right) -->
+    <TextView
+        android:id="@+id/text_battery"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="end"
+        android:text="--%"
+        android:textColor="#FFFFFF"
+        android:textSize="48sp"
+        android:textStyle="bold"
+        android:includeFontPadding="false"
         android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true">
+        android:layout_alignParentEnd="true"/>
 
-        <TextView
-            android:id="@+id/text_battery"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="--%"
-            android:textColor="#FFFFFF"
-            android:textSize="48sp"
-            android:textStyle="bold"
-            android:includeFontPadding="false"/>
-
-        <TextView
-            android:id="@+id/text_temp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="--°C"
-            android:textColor="#CCFFFFFF"
-            android:textSize="18sp"/>
-    </LinearLayout>
+    <!-- Temp (Below Battery) -->
+    <TextView
+        android:id="@+id/text_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="--°C"
+        android:textColor="#CCFFFFFF"
+        android:textSize="18sp"
+        android:layout_below="@id/text_battery"
+        android:layout_alignParentEnd="true"/>
 
     <!-- Date (Below Time) -->
     <TextClock

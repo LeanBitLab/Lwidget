@@ -1,31 +1,63 @@
 # Lwidget
 
-**Lwidget** is a modern, open-source Android widget built with Kotlin and Material 3 design principles. It provides essential information at a glance while adhering to your device's dynamic theme.
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/banner_dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="docs/images/banner_light.svg">
+  <img alt="Lwidget Banner" src="docs/images/banner_light.svg">
+</picture>
 
-## ✨ Features
-- **Material You**: Full dynamic color support.
-- **Configurable**: Adjust text sizes and visibility for all elements.
-- **Essential Info**: Time, Date, Battery, Device Temp, and Calendar Events.
-- **Light/Dark Mode**: Fully supported with optimized contrast (Dark text on Light, Light text on Dark).
-- **Privacy Focused**: No internet permission required.
+[![Download](https://img.shields.io/github/v/release/LeanBitLab/Lwidget?label=Download&style=for-the-badge&color=7C4DFF)](https://github.com/LeanBitLab/Lwidget/releases/latest) [![Stars](https://img.shields.io/github/stars/LeanBitLab/Lwidget?style=for-the-badge&color=7C4DFF)](https://github.com/LeanBitLab/Lwidget/stargazers)
 
-## 🛠️ Built With
-- **Language**: Kotlin
-- **UI**: Android standard Views (RemoteViews compatible) & Material Components
-- **License**: GPLv3
+**Lwidget** is a modern, open-source Android widget built with **Kotlin** and **Material 3** design principles. It provides essential information at a glance while adhering to your device's dynamic theme.
 
-## 📦 Installation
-Download the latest APK from the [Releases](../../releases) page or build from source.
+## Screenshots
 
-## 🤝 Contributing
-Contributions are welcome! Please check the issues page.
+<table>
+  <tr>
+    <td><img src="docs/images/1.png" height="500" alt="Screenshot 1"/></td>
+    <td><img src="docs/images/2.png" height="500" alt="Screenshot 2"/></td>
+    <td><img src="docs/images/3.png" height="500" alt="Screenshot 3"/></td>
+  </tr>
+</table>
 
-## 📄 License
-Copyright (C) 2026 LeanBitLab
+## Features
 
-This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+-   **Material You**: Full dynamic color support.
+-   **Configurable**: Adjust text sizes and visibility for all elements.
+-   **Essential Info**: Time, Date, Battery, Device Temp, and Calendar Events.
+-   **Light/Dark Mode**: Optimized contrast for readability.
+-   **Privacy Focused**: No internet permission required.
+-   **Glow Effect**: Multiple layers of transparency for a smooth outline glow.
 
-See [LICENSE](LICENSE) for more details.
+## Download
+
+You can download the latest release from the [GitHub Releases](https://github.com/LeanBitLab/Lwidget/releases) page.
+
+## Setup
+
+-   **Permissions**: The widget requires `Calendar` permission to display upcoming events. It will prompt you when needed.
+-   **Battery Optimization**: For reliable updates, ensure battery optimization is disabled for Lwidget.
+
+## License
+
+Lwidget is licensed under **GNU General Public License v3.0**.
+
+See [LICENSE](LICENSE) file.
+
+## Credits
+
+-   Built with ❤️ by [LeanBitLab](https://github.com/LeanBitLab)
+
+## Support the Development
+
+Building and maintaining open-source apps takes time and resources. If you love Lwidget, please consider supporting the project!
+
+<a href="https://github.com/sponsors/LeanBitLab">
+  <img src="https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86" width="150" alt="Sponsor on GitHub"/>
+</a>
+
+Your support keeps the code **100% Free and Open Source**.
 
 ---
-*Maintained by [LeanBitLab](https://github.com/LeanBitLab)*
+
+*Lwidget • Modern Material You Widget*
