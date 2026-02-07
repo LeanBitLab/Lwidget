@@ -1,72 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="12dp"
-    app:cardBackgroundColor="?attr/colorSurfaceContainer"
-    app:strokeColor="?attr/colorOutline"
-    app:strokeWidth="1dp"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="2dp">
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:paddingTop="12dp"
+    android:paddingBottom="12dp"
+    android:background="?attr/selectableItemBackground">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/item_title"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_weight="1"
+        android:text="Title"
+        android:textColor="?attr/colorOnSurface"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
+    <!-- Container for Size Controls (Slider + Value) -->
+    <LinearLayout
+        android:id="@+id/size_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/size_label"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-            
-            <TextView
-                android:id="@+id/item_title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Component Name"
-                android:textColor="?attr/colorOnSurface"
-                android:textSize="18sp"
-                android:textStyle="bold"/>
+            android:text="14"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            android:textSize="14sp"
+            android:layout_marginEnd="4dp" />
 
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/item_switch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:saveEnabled="false"
-                app:thumbTint="?attr/colorOnPrimaryContainer"
-                app:trackTint="?attr/colorPrimaryContainer"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/size_container"
-            android:layout_width="match_parent"
+        <com.google.android.material.slider.Slider
+            android:id="@+id/item_slider"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="12dp">
-            
-            <TextView
-                android:id="@+id/size_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Size: 14sp"
-                android:textColor="?attr/colorOnSurfaceVariant"
-                android:textSize="12sp"/>
-
-            <com.google.android.material.slider.Slider
-                android:id="@+id/item_slider"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:saveEnabled="false"
-                android:valueFrom="8.0"
-                android:valueTo="72.0"
-                android:stepSize="1.0"
-                app:thumbColor="?attr/colorPrimary"
-                app:trackColorActive="?attr/colorPrimary"/>
-        </LinearLayout>
+            android:saveEnabled="false"
+            android:valueFrom="8.0"
+            android:valueTo="72.0"
+            android:stepSize="1.0"
+            app:thumbColor="?attr/colorPrimary"
+            app:trackColorActive="?attr/colorPrimary"
+            app:trackColorInactive="?attr/colorSurfaceVariant"
+            app:thumbRadius="6dp"
+            app:haloRadius="0dp" /> <!-- Remove halo for compactness -->
     </LinearLayout>
 
-</com.google.android.material.card.MaterialCardView>
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/item_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:saveEnabled="false"
+        app:useMaterialThemeColors="true" />
+
+</LinearLayout>

@@ -102,6 +102,12 @@ class MainActivity : AppCompatActivity() {
 
         // Light Theme: Def False
         bindToggle(R.id.section_theme, "Light Theme", "use_light_theme", false)
+
+        // Transparent Background: Def False
+        bindToggle(R.id.section_transparent, "Transparent Background", "transparent_background", false)
+
+        // Font Style: Def "Default"
+        bindFontSelector()
     }
 
     private fun bindSection(
@@ -117,9 +123,10 @@ class MainActivity : AppCompatActivity() {
         val section = findViewById<View>(sectionId)
         val tvTitle = section.findViewById<TextView>(R.id.item_title)
         val switch = section.findViewById<SwitchMaterial>(R.id.item_switch)
+        // size_container is now inside the same layout
+        val sizeContainer = section.findViewById<View>(R.id.size_container)
         val slider = section.findViewById<Slider>(R.id.item_slider)
         val tvSize = section.findViewById<TextView>(R.id.size_label)
-        val sizeContainer = section.findViewById<View>(R.id.size_container)
 
         tvTitle.text = title
 
@@ -139,13 +146,14 @@ class MainActivity : AppCompatActivity() {
         slider.valueFrom = minSize
         slider.valueTo = maxSize
         slider.value = currentSize.coerceIn(minSize, maxSize)
-        tvSize.text = "Size: ${currentSize.toInt()}sp"
+        tvSize.text = "${currentSize.toInt()}"
 
         slider.addOnChangeListener { _, value, fromUser ->
             if (fromUser) {
-                tvSize.text = "Size: ${value.toInt()}sp"
+                tvSize.text = "${value.toInt()}"
                 prefs.edit().putFloat(prefSizeKey, value).apply()
-                updateWidget() // Live update
+                // Debounce update? For now live is fine
+                updateWidget() 
             }
         }
     }
@@ -171,6 +179,35 @@ class MainActivity : AppCompatActivity() {
         switch.setOnCheckedChangeListener { _, isChecked ->
             prefs.edit().putBoolean(prefShowKey, isChecked).apply()
             updateWidget() // Live update
+        }
+    }
+
+    private fun bindFontSelector() {
+        val section = findViewById<View>(R.id.section_font)
+        // Note: setting_selector_item.xml structure changed
+        // Root is LinearLayout, contains TextInputLayout -> AutoCompleteTextView
+        val tvTitle = section.findViewById<TextView>(R.id.item_title)
+        val autoCompleteTextView = section.findViewById<android.widget.AutoCompleteTextView>(R.id.item_value)
+
+        tvTitle.text = "Font Style"
+
+        val fonts = listOf(
+            "Default", "Serif", "Monospace", "Cursive", 
+            "Condensed", "Condensed Light", "Light", "Medium", 
+            "Black", "Thin", "Small Caps"
+        )
+        
+        val adapter = android.widget.ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, fonts)
+        autoCompleteTextView.setAdapter(adapter)
+
+        // Set current value
+        val currentFontIdx = prefs.getInt("font_style", 0)
+        autoCompleteTextView.setText(fonts.getOrElse(currentFontIdx) { "Default" }, false)
+
+        autoCompleteTextView.setOnItemClickListener { _, _, position, _ ->
+            // position in the adapter corresponds to our index if list is same
+            prefs.edit().putInt("font_style", position).apply()
+            updateWidget()
         }
     }
 

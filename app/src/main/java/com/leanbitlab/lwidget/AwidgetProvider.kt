@@ -87,7 +87,6 @@ class AwidgetProvider : AppWidgetProvider() {
         const val ACTION_BATTERY_UPDATE = "com.leanbitlab.lwidget.ACTION_BATTERY_UPDATE"
 
         fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
-            val views = RemoteViews(context.packageName, R.layout.widget_layout)
             val prefs = context.getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
 
             // --- Load Preferences ---
@@ -95,7 +94,7 @@ class AwidgetProvider : AppWidgetProvider() {
             val sizeTime = prefs.getFloat("size_time", 48f)
             
             val showDate = prefs.getBoolean("show_date", true)
-            val sizeDate = prefs.getFloat("size_date", 14f) // Note: Default in XML was 18sp, user asked for smaller events, standardizing defaults? XML is 18sp. Setting default to 18f to match.
+            val sizeDate = prefs.getFloat("size_date", 14f)
             
             val showBattery = prefs.getBoolean("show_battery", true)
             val sizeBattery = prefs.getFloat("size_battery", 48f)
@@ -105,35 +104,119 @@ class AwidgetProvider : AppWidgetProvider() {
             
             val showEvents = prefs.getBoolean("show_events", true)
             val sizeEvents = prefs.getFloat("size_events", 14f)
-            
+
             val showOutline = prefs.getBoolean("show_outline", false)
             val useLightTheme = prefs.getBoolean("use_light_theme", false)
+            val isTransparent = prefs.getBoolean("transparent_background", false)
+            val fontStyle = prefs.getInt("font_style", 0) 
+            // 0=Def, 1=Serif, 2=Mono, 3=Cursive, 4=Cond, 5=CondLight, 6=Light, 7=Med, 8=Black, 9=Thin, 10=SmallCaps
 
-            // --- Theme Setup ---
-            val bgRes = if (useLightTheme) {
-                if (showOutline) R.drawable.background_glow_light else R.drawable.background_light
-            } else {
-                if (showOutline) R.drawable.background_glow else R.drawable.background_dark
+            // --- Theme & Font Setup ---
+            // Helper to get layout ID
+            fun getLayout(baseLayoutId: Int, fontIdx: Int): Int {
+                // If base is widget_layout
+                if (baseLayoutId == R.layout.widget_layout) {
+                     return when (fontIdx) {
+                         1 -> R.layout.widget_layout_serif
+                         2 -> R.layout.widget_layout_mono
+                         3 -> R.layout.widget_layout_cursive
+                         4 -> R.layout.widget_layout_condensed
+                         5 -> R.layout.widget_layout_condensed_light
+                         6 -> R.layout.widget_layout_light
+                         7 -> R.layout.widget_layout_medium
+                         8 -> R.layout.widget_layout_black
+                         9 -> R.layout.widget_layout_thin
+                         10 -> R.layout.widget_layout_smallcaps
+                         else -> R.layout.widget_layout
+                     }
+                }
+                // If base is transparent dark
+                if (baseLayoutId == R.layout.widget_layout_transparent_dark) {
+                     return when (fontIdx) {
+                         1 -> R.layout.widget_layout_transparent_dark_serif
+                         2 -> R.layout.widget_layout_transparent_dark_mono
+                         3 -> R.layout.widget_layout_transparent_dark_cursive
+                         4 -> R.layout.widget_layout_transparent_dark_condensed
+                         5 -> R.layout.widget_layout_transparent_dark_condensed_light
+                         6 -> R.layout.widget_layout_transparent_dark_light
+                         7 -> R.layout.widget_layout_transparent_dark_medium
+                         8 -> R.layout.widget_layout_transparent_dark_black
+                         9 -> R.layout.widget_layout_transparent_dark_thin
+                         10 -> R.layout.widget_layout_transparent_dark_smallcaps
+                         else -> R.layout.widget_layout_transparent_dark
+                     }
+                }
+                // If base is transparent light
+                if (baseLayoutId == R.layout.widget_layout_transparent_light) {
+                     return when (fontIdx) {
+                         1 -> R.layout.widget_layout_transparent_light_serif
+                         2 -> R.layout.widget_layout_transparent_light_mono
+                         3 -> R.layout.widget_layout_transparent_light_cursive
+                         4 -> R.layout.widget_layout_transparent_light_condensed
+                         5 -> R.layout.widget_layout_transparent_light_condensed_light
+                         6 -> R.layout.widget_layout_transparent_light_light
+                         7 -> R.layout.widget_layout_transparent_light_medium
+                         8 -> R.layout.widget_layout_transparent_light_black
+                         9 -> R.layout.widget_layout_transparent_light_thin
+                         10 -> R.layout.widget_layout_transparent_light_smallcaps
+                         else -> R.layout.widget_layout_transparent_light
+                     }
+                }
+                return baseLayoutId
             }
 
-            val primaryColor = if (useLightTheme) {
-                context.getColor(R.color.widget_text_light)
+            val baseLayoutId = if (isTransparent) {
+                if (useLightTheme) R.layout.widget_layout_transparent_light else R.layout.widget_layout_transparent_dark
             } else {
-                android.graphics.Color.WHITE
+                R.layout.widget_layout
+            }
+            
+            val layoutId = getLayout(baseLayoutId, fontStyle)
+
+            val views = RemoteViews(context.packageName, layoutId)
+
+            // Only set background if NOT transparent
+            if (!isTransparent) {
+                val bgRes = if (useLightTheme) {
+                    if (showOutline) R.drawable.background_glow_light else R.drawable.background_light
+                } else {
+                    if (showOutline) R.drawable.background_glow else R.drawable.background_dark
+                }
+                views.setInt(R.id.widget_root, "setBackgroundResource", bgRes)
             }
 
-            val secondaryColor = if (useLightTheme) {
-                context.getColor(R.color.widget_text_secondary_light)
+            // Colors for manual text setting (though transparent layouts handle most via XML styles)
+            // We still need these for dynamic updates if we were using same layout, but since we swap layouts, 
+            // the XML attributes in transparent layouts (shadows, colors) handle static text.
+            // However, we still programmatically set colors for consistecy in shared logic (like battery/events).
+            
+            // For Transparent:
+            // Dark (White Text, Black Outline) -> Primary: White, Secondary: White
+            // Light (Black Text, White Outline) -> Primary: Black, Secondary: Black
+            
+            // For Standard (Non-Transparent):
+            // Dark -> Primary: White, Secondary: Light Gray
+            // Light -> Primary: Black, Secondary: Dark Gray
+
+            val primaryColor = if (isTransparent) {
+                if (useLightTheme) android.graphics.Color.BLACK else android.graphics.Color.WHITE
             } else {
-                android.graphics.Color.parseColor("#CCFFFFFF")
+                if (useLightTheme) context.getColor(R.color.widget_text_light) else android.graphics.Color.WHITE
             }
 
-            // --- Apply Outline / Background ---
-            views.setInt(R.id.widget_root, "setBackgroundResource", bgRes)
+            val secondaryColor = if (isTransparent) {
+                if (useLightTheme) android.graphics.Color.BLACK else android.graphics.Color.WHITE
+            } else {
+                if (useLightTheme) context.getColor(R.color.widget_text_secondary_light) else android.graphics.Color.parseColor("#CCFFFFFF")
+            }
 
             // --- Apply Time ---
             views.setViewVisibility(R.id.clock_time, if (showTime) android.view.View.VISIBLE else android.view.View.GONE)
             views.setTextViewTextSize(R.id.clock_time, android.util.TypedValue.COMPLEX_UNIT_SP, sizeTime)
+            // In transparent mode, XML handles shadow/color better to ensure outline presence, 
+            // but setting textColor here might override XML if not careful. 
+            // RemoteViews.setTextColor REPLACES the color. It does NOT remove shadow.
+            // So it is safe to set color here.
             views.setTextColor(R.id.clock_time, primaryColor)
 
             // --- Apply Date ---
@@ -145,7 +228,7 @@ class AwidgetProvider : AppWidgetProvider() {
             views.setViewVisibility(R.id.text_battery, if (showBattery) android.view.View.VISIBLE else android.view.View.GONE)
             views.setTextViewTextSize(R.id.text_battery, android.util.TypedValue.COMPLEX_UNIT_SP, sizeBattery)
             views.setTextColor(R.id.text_battery, primaryColor)
-
+            
             views.setViewVisibility(R.id.text_temp, if (showTemp) android.view.View.VISIBLE else android.view.View.GONE)
             views.setTextViewTextSize(R.id.text_temp, android.util.TypedValue.COMPLEX_UNIT_SP, sizeTemp)
             views.setTextColor(R.id.text_temp, secondaryColor)

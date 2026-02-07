@@ -92,6 +92,12 @@
             <!-- Light Theme Settings -->
             <include layout="@layout/settings_card_item" android:id="@+id/section_theme"/>
 
+            <!-- Transparent Settings -->
+            <include layout="@layout/settings_card_item" android:id="@+id/section_transparent"/>
+
+            <!-- Font Settings -->
+            <include layout="@layout/settings_selector_item" android:id="@+id/section_font"/>
+
             <!-- Outline Glow Settings -->
             <include layout="@layout/settings_card_item" android:id="@+id/section_outline"/>
 
