@@ -107,24 +107,48 @@ class AwidgetProvider : AppWidgetProvider() {
             val sizeEvents = prefs.getFloat("size_events", 14f)
             
             val showOutline = prefs.getBoolean("show_outline", false)
+            val useLightTheme = prefs.getBoolean("use_light_theme", false)
 
-            // --- Apply Outline ---
-            views.setInt(R.id.widget_root, "setBackgroundResource", if (showOutline) R.drawable.background_glow else R.drawable.background_dark)
+            // --- Theme Setup ---
+            val bgRes = if (useLightTheme) {
+                if (showOutline) R.drawable.background_glow_light else R.drawable.background_light
+            } else {
+                if (showOutline) R.drawable.background_glow else R.drawable.background_dark
+            }
+
+            val primaryColor = if (useLightTheme) {
+                context.getColor(R.color.widget_text_light)
+            } else {
+                android.graphics.Color.WHITE
+            }
+
+            val secondaryColor = if (useLightTheme) {
+                context.getColor(R.color.widget_text_secondary_light)
+            } else {
+                android.graphics.Color.parseColor("#CCFFFFFF")
+            }
+
+            // --- Apply Outline / Background ---
+            views.setInt(R.id.widget_root, "setBackgroundResource", bgRes)
 
             // --- Apply Time ---
             views.setViewVisibility(R.id.clock_time, if (showTime) android.view.View.VISIBLE else android.view.View.GONE)
             views.setTextViewTextSize(R.id.clock_time, android.util.TypedValue.COMPLEX_UNIT_SP, sizeTime)
+            views.setTextColor(R.id.clock_time, primaryColor)
 
             // --- Apply Date ---
             views.setViewVisibility(R.id.clock_date, if (showDate) android.view.View.VISIBLE else android.view.View.GONE)
-            views.setTextViewTextSize(R.id.clock_date, android.util.TypedValue.COMPLEX_UNIT_SP, sizeDate) // Using prefs default 18f or saved
+            views.setTextViewTextSize(R.id.clock_date, android.util.TypedValue.COMPLEX_UNIT_SP, sizeDate)
+            views.setTextColor(R.id.clock_date, secondaryColor)
 
             // --- Apply Battery & Temp ---
             views.setViewVisibility(R.id.text_battery, if (showBattery) android.view.View.VISIBLE else android.view.View.GONE)
             views.setTextViewTextSize(R.id.text_battery, android.util.TypedValue.COMPLEX_UNIT_SP, sizeBattery)
+            views.setTextColor(R.id.text_battery, primaryColor)
 
             views.setViewVisibility(R.id.text_temp, if (showTemp) android.view.View.VISIBLE else android.view.View.GONE)
             views.setTextViewTextSize(R.id.text_temp, android.util.TypedValue.COMPLEX_UNIT_SP, sizeTemp)
+            views.setTextColor(R.id.text_temp, secondaryColor)
 
             // --- Fetch & Update Data (Battery) ---
             val batteryStatus: Intent? = IntentFilter(Intent.ACTION_BATTERY_CHANGED).let { ifilter ->
@@ -168,7 +192,7 @@ class AwidgetProvider : AppWidgetProvider() {
             // --- Calendar Events ---
             views.setViewVisibility(R.id.events_container, if (showEvents) android.view.View.VISIBLE else android.view.View.GONE)
             if (showEvents) {
-                loadCalendarEvents(context, views, sizeEvents)
+                loadCalendarEvents(context, views, sizeEvents, primaryColor, secondaryColor)
             }
 
             // Click on events container to refresh widget
@@ -187,7 +211,7 @@ class AwidgetProvider : AppWidgetProvider() {
         }
 
 
-        private fun loadCalendarEvents(context: Context, views: RemoteViews, textSizeSp: Float) {
+        private fun loadCalendarEvents(context: Context, views: RemoteViews, textSizeSp: Float, primaryColor: Int, secondaryColor: Int) {
             // Check permission
             if (androidx.core.content.ContextCompat.checkSelfPermission(
                     context, android.Manifest.permission.READ_CALENDAR
@@ -276,10 +300,6 @@ class AwidgetProvider : AppWidgetProvider() {
             val timeFormat = java.text.SimpleDateFormat("h:mm a", java.util.Locale.getDefault())
             val dayFormat = java.text.SimpleDateFormat("EEE", java.util.Locale.getDefault())
 
-            // Colors: Local events brighter, holidays dimmer
-            val localColor = android.graphics.Color.parseColor("#FFFFFF")  // Bright white
-            val holidayColor = android.graphics.Color.parseColor("#99FFFFFF")  // Dimmer
-
             for (i in eventViews.indices) {
                 if (i < events.size) {
                     val event = events[i]
@@ -289,7 +309,7 @@ class AwidgetProvider : AppWidgetProvider() {
                         "${dayFormat.format(java.util.Date(event.begin))} ${timeFormat.format(java.util.Date(event.begin))}"
                     }
                     views.setTextViewText(eventViews[i], "• $timeText  ${event.title}")
-                    views.setTextColor(eventViews[i], if (event.isLocal) localColor else holidayColor)
+                    views.setTextColor(eventViews[i], if (event.isLocal) primaryColor else secondaryColor)
                     views.setTextViewTextSize(eventViews[i], android.util.TypedValue.COMPLEX_UNIT_SP, textSizeSp)
                     views.setViewVisibility(eventViews[i], android.view.View.VISIBLE)
                 } else {

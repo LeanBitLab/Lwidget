@@ -89,6 +89,9 @@
             <!-- Events Settings -->
             <include layout="@layout/settings_card_item" android:id="@+id/section_events"/>
 
+            <!-- Light Theme Settings -->
+            <include layout="@layout/settings_card_item" android:id="@+id/section_theme"/>
+
             <!-- Outline Glow Settings -->
             <include layout="@layout/settings_card_item" android:id="@+id/section_outline"/>
 

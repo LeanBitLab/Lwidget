@@ -2,4 +2,9 @@
 <resources>
     <color name="widget_background">#FF1C1B1F</color> <!-- Dark gray fallback -->
     <color name="widget_outline">#FFD0BCFF</color>     <!-- Light purple (Material 3 default accent) fallback -->
+
+    <!-- Light Theme Colors -->
+    <color name="widget_background_light">#FFFDF8FD</color>
+    <color name="widget_text_light">#FF1C1B1F</color>
+    <color name="widget_text_secondary_light">#FF49454F</color>
 </resources>

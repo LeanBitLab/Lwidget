@@ -99,6 +99,9 @@ class MainActivity : AppCompatActivity() {
 
         // Outline Glow: Def False
         bindToggle(R.id.section_outline, "Outline Glow", "show_outline", false)
+
+        // Light Theme: Def False
+        bindToggle(R.id.section_theme, "Light Theme", "use_light_theme", false)
     }
 
     private fun bindSection(

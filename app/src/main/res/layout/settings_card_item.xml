@@ -36,6 +36,7 @@
                 android:id="@+id/item_switch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:saveEnabled="false"
                 app:thumbTint="?attr/colorOnPrimaryContainer"
                 app:trackTint="?attr/colorPrimaryContainer"/>
         </LinearLayout>
@@ -59,6 +60,7 @@
                 android:id="@+id/item_slider"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:saveEnabled="false"
                 android:valueFrom="8.0"
                 android:valueTo="72.0"
                 android:stepSize="1.0"
