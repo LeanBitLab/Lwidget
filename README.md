@@ -6,7 +6,7 @@
   <img alt="Lwidget Banner" src="docs/images/banner_light.svg">
 </picture>
 
-[![Download](https://img.shields.io/github/v/release/LeanBitLab/Lwidget?label=Download&style=for-the-badge&color=7C4DFF&v=1)](https://github.com/LeanBitLab/Lwidget/releases/latest) [![Stars](https://img.shields.io/github/stars/LeanBitLab/Lwidget?style=for-the-badge&color=7C4DFF)](https://github.com/LeanBitLab/Lwidget/stargazers)
+[![Download](https://img.shields.io/github/v/release/LeanBitLab/Lwidget?label=Download&style=for-the-badge&color=7C4DFF&v=1)](https://github.com/LeanBitLab/Lwidget/releases/latest) [![Downloads](https://img.shields.io/github/downloads/LeanBitLab/Lwidget/total?style=for-the-badge&color=7C4DFF&label=Downloads)](https://github.com/LeanBitLab/Lwidget/releases) [![Stars](https://img.shields.io/github/stars/LeanBitLab/Lwidget?style=for-the-badge&color=7C4DFF)](https://github.com/LeanBitLab/Lwidget/stargazers)
 
 **Lwidget** is a modern, open-source Android widget built with **Kotlin** and **Material 3** design principles. It provides essential information at a glance while adhering to your device's dynamic theme.
 
