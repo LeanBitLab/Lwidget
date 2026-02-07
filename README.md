@@ -17,6 +17,7 @@
     <td><img src="docs/images/1.png" height="500" alt="Screenshot 1"/></td>
     <td><img src="docs/images/2.png" height="500" alt="Screenshot 2"/></td>
     <td><img src="docs/images/3.png" height="500" alt="Screenshot 3"/></td>
+    <td><img src="docs/images/4.png" height="500" alt="Screenshot 4"/></td>
   </tr>
 </table>
 
