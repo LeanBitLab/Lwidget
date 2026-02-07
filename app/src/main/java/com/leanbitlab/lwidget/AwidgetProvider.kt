@@ -311,6 +311,11 @@ class AwidgetProvider : AppWidgetProvider() {
 
             // Get holiday/synced calendar IDs (non-local)
             val syncedCalendarIds = mutableSetOf<Long>()
+            val visibleCalendarIds = mutableSetOf<Long>()
+            
+            // Only query visible calendars
+            val calSelection = "${android.provider.CalendarContract.Calendars.VISIBLE} = 1"
+
             context.contentResolver.query(
                 android.provider.CalendarContract.Calendars.CONTENT_URI,
                 arrayOf(
@@ -319,7 +324,7 @@ class AwidgetProvider : AppWidgetProvider() {
                     android.provider.CalendarContract.Calendars.ACCOUNT_NAME,
                     android.provider.CalendarContract.Calendars.CALENDAR_DISPLAY_NAME
                 ),
-                null, null, null
+                calSelection, null, null
             )?.use { cursor ->
                 val idIdx = cursor.getColumnIndex(android.provider.CalendarContract.Calendars._ID)
                 val typeIdx = cursor.getColumnIndex(android.provider.CalendarContract.Calendars.ACCOUNT_TYPE)
@@ -331,6 +336,8 @@ class AwidgetProvider : AppWidgetProvider() {
                     val accountName = cursor.getString(nameIdx) ?: ""
                     val displayName = cursor.getString(displayIdx) ?: ""
                     
+                    visibleCalendarIds.add(calId)
+
                     // Mark as synced (holiday) if it contains "holiday" in name or display
                     // Everything else is considered "local" (personal)
                     if (displayName.contains("holiday", ignoreCase = true) ||
@@ -339,6 +346,8 @@ class AwidgetProvider : AppWidgetProvider() {
                     }
                 }
             }
+            
+            if (visibleCalendarIds.isEmpty()) return
 
             val projection = arrayOf(
                 android.provider.CalendarContract.Instances.EVENT_ID,
@@ -355,8 +364,10 @@ class AwidgetProvider : AppWidgetProvider() {
                 .appendPath(endQuery.toString())
                 .build()
 
-            // Query without VISIBLE filter to include all calendar providers
-            val selection = "${android.provider.CalendarContract.Instances.END} >= ?"
+            // Filter for VISIBLE calendars
+            // Use IN clause directly in selection
+            val idList = visibleCalendarIds.joinToString(",")
+            val selection = "${android.provider.CalendarContract.Instances.END} >= ? AND ${android.provider.CalendarContract.Instances.CALENDAR_ID} IN ($idList)"
             val selectionArgs = arrayOf(now.toString())
             val sortOrder = "${android.provider.CalendarContract.Instances.BEGIN} ASC"
 
