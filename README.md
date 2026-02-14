@@ -17,8 +17,6 @@
     <td><img src="docs/images/1.png" height="500" alt="Screenshot 1"/></td>
     <td><img src="docs/images/2.png" height="500" alt="Screenshot 2"/></td>
     <td><img src="docs/images/3.png" height="500" alt="Screenshot 3"/></td>
-  </tr>
-  <tr>
     <td><img src="docs/images/4.png" height="500" alt="Screenshot 4"/></td>
     <td><img src="docs/images/5.png" height="500" alt="Screenshot 5"/></td>
   </tr>
@@ -34,7 +32,7 @@
 -   **Custom Formats**: Choose your preferred Time and Date formats.
 -   **Light/Dark Mode**: Optimized contrast for readability.
 -   **Privacy Focused**: No internet permission required.
--   **Glow Effect**: Multiple layers of transparency for a smooth outline glow.
+-   **Accent Outline**: Adds a stylish border to the widget.
 -   **Improved Settings**: Refined settings interface for better usability.
 
 ## Download
