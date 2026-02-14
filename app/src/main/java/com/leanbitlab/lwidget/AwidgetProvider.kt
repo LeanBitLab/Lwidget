@@ -25,14 +25,38 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.app.usage.NetworkStatsManager
 import android.os.BatteryManager
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.widget.RemoteViews
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.time.Instant
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 class AwidgetProvider : AppWidgetProvider() {
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
-        for (appWidgetId in appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId)
+        // Use goAsync to prevent ANR during heavy updates
+        val pendingResult = goAsync()
+        
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                for (appWidgetId in appWidgetIds) {
+                    updateAppWidget(context, appWidgetManager, appWidgetId)
+                }
+            } finally {
+                pendingResult.finish()
+            }
         }
     }
 
@@ -48,10 +72,18 @@ class AwidgetProvider : AppWidgetProvider() {
 
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
-        if (intent.action == ACTION_BATTERY_UPDATE) {
+        if (intent.action == ACTION_BATTERY_UPDATE || intent.action == Intent.ACTION_BOOT_COMPLETED) {
+            
+            // Re-schedule alarm on boot or update request
+            if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
+                scheduleAlarm(context)
+            }
+
             val appWidgetManager = AppWidgetManager.getInstance(context)
             val thisAppWidget = ComponentName(context, AwidgetProvider::class.java)
             val appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidget)
+            
+            // Trigger update via onUpdate (which handles goAsync)
             onUpdate(context, appWidgetManager, appWidgetIds)
         }
     }
@@ -63,8 +95,6 @@ class AwidgetProvider : AppWidgetProvider() {
         }
         val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 
-        // RTC (Type 1) does NOT wake the device.
-        // It fires only if the device is awake (Screen On).
         // Trigger every 60 seconds.
         alarmManager.setRepeating(
             AlarmManager.RTC,
@@ -86,6 +116,7 @@ class AwidgetProvider : AppWidgetProvider() {
     companion object {
         const val ACTION_BATTERY_UPDATE = "com.leanbitlab.lwidget.ACTION_BATTERY_UPDATE"
 
+        // Suspended function called from Coroutine
         fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
             val prefs = context.getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
 
@@ -108,13 +139,20 @@ class AwidgetProvider : AppWidgetProvider() {
             val showOutline = prefs.getBoolean("show_outline", false)
             val useLightTheme = prefs.getBoolean("use_light_theme", false)
             val isTransparent = prefs.getBoolean("transparent_background", false)
+            
+            val timeFormatIdx = prefs.getInt("time_format_idx", 0)
+            val dateFormatIdx = prefs.getInt("date_format_idx", 0)
+            
+            val showData = prefs.getBoolean("show_data_usage", false)
+            val sizeData = prefs.getFloat("size_data", 14f)
+            
+            val showTasks = prefs.getBoolean("show_tasks", false)
+            val sizeTasks = prefs.getFloat("size_tasks", 14f)
+
             val fontStyle = prefs.getInt("font_style", 0) 
-            // 0=Def, 1=Serif, 2=Mono, 3=Cursive, 4=Cond, 5=CondLight, 6=Light, 7=Med, 8=Black, 9=Thin, 10=SmallCaps
 
             // --- Theme & Font Setup ---
-            // Helper to get layout ID
             fun getLayout(baseLayoutId: Int, fontIdx: Int): Int {
-                // If base is widget_layout
                 if (baseLayoutId == R.layout.widget_layout) {
                      return when (fontIdx) {
                          1 -> R.layout.widget_layout_serif
@@ -130,7 +168,6 @@ class AwidgetProvider : AppWidgetProvider() {
                          else -> R.layout.widget_layout
                      }
                 }
-                // If base is transparent dark
                 if (baseLayoutId == R.layout.widget_layout_transparent_dark) {
                      return when (fontIdx) {
                          1 -> R.layout.widget_layout_transparent_dark_serif
@@ -146,7 +183,6 @@ class AwidgetProvider : AppWidgetProvider() {
                          else -> R.layout.widget_layout_transparent_dark
                      }
                 }
-                // If base is transparent light
                 if (baseLayoutId == R.layout.widget_layout_transparent_light) {
                      return when (fontIdx) {
                          1 -> R.layout.widget_layout_transparent_light_serif
@@ -175,7 +211,6 @@ class AwidgetProvider : AppWidgetProvider() {
 
             val views = RemoteViews(context.packageName, layoutId)
 
-            // Only set background if NOT transparent
             if (!isTransparent) {
                 val bgRes = if (useLightTheme) {
                     if (showOutline) R.drawable.background_glow_light else R.drawable.background_light
@@ -184,19 +219,6 @@ class AwidgetProvider : AppWidgetProvider() {
                 }
                 views.setInt(R.id.widget_root, "setBackgroundResource", bgRes)
             }
-
-            // Colors for manual text setting (though transparent layouts handle most via XML styles)
-            // We still need these for dynamic updates if we were using same layout, but since we swap layouts, 
-            // the XML attributes in transparent layouts (shadows, colors) handle static text.
-            // However, we still programmatically set colors for consistecy in shared logic (like battery/events).
-            
-            // For Transparent:
-            // Dark (White Text, Black Outline) -> Primary: White, Secondary: White
-            // Light (Black Text, White Outline) -> Primary: Black, Secondary: Black
-            
-            // For Standard (Non-Transparent):
-            // Dark -> Primary: White, Secondary: Light Gray
-            // Light -> Primary: Black, Secondary: Dark Gray
 
             val primaryColor = if (isTransparent) {
                 if (useLightTheme) android.graphics.Color.BLACK else android.graphics.Color.WHITE
@@ -213,16 +235,29 @@ class AwidgetProvider : AppWidgetProvider() {
             // --- Apply Time ---
             views.setViewVisibility(R.id.clock_time, if (showTime) android.view.View.VISIBLE else android.view.View.GONE)
             views.setTextViewTextSize(R.id.clock_time, android.util.TypedValue.COMPLEX_UNIT_SP, sizeTime)
-            // In transparent mode, XML handles shadow/color better to ensure outline presence, 
-            // but setting textColor here might override XML if not careful. 
-            // RemoteViews.setTextColor REPLACES the color. It does NOT remove shadow.
-            // So it is safe to set color here.
             views.setTextColor(R.id.clock_time, primaryColor)
+            
+            val (timeFormat12, timeFormat24) = when(timeFormatIdx) {
+                0 -> "h:mm" to "H:mm"
+                1 -> "H:mm" to "H:mm"
+                else -> "h:mm" to "H:mm"
+            }
+            views.setCharSequence(R.id.clock_time, "setFormat12Hour", timeFormat12)
+            views.setCharSequence(R.id.clock_time, "setFormat24Hour", timeFormat24)
 
             // --- Apply Date ---
             views.setViewVisibility(R.id.clock_date, if (showDate) android.view.View.VISIBLE else android.view.View.GONE)
             views.setTextViewTextSize(R.id.clock_date, android.util.TypedValue.COMPLEX_UNIT_SP, sizeDate)
             views.setTextColor(R.id.clock_date, secondaryColor)
+            
+            val (dateFormat12, dateFormat24) = when(dateFormatIdx) {
+                0 -> "EEEE, MMMM dd" to "EEEE, MMMM dd"
+                1 -> "EEE, MMM dd" to "EEE, MMM dd"
+                2 -> "dd/MM/yyyy" to "dd/MM/yyyy"
+                else -> "EEEE, MMMM dd" to "EEEE, MMMM dd"
+            }
+            views.setCharSequence(R.id.clock_date, "setFormat12Hour", dateFormat12)
+            views.setCharSequence(R.id.clock_date, "setFormat24Hour", dateFormat24)
 
             // --- Apply Battery & Temp ---
             views.setViewVisibility(R.id.text_battery, if (showBattery) android.view.View.VISIBLE else android.view.View.GONE)
@@ -233,7 +268,6 @@ class AwidgetProvider : AppWidgetProvider() {
             views.setTextViewTextSize(R.id.text_temp, android.util.TypedValue.COMPLEX_UNIT_SP, sizeTemp)
             views.setTextColor(R.id.text_temp, secondaryColor)
 
-            // --- Fetch & Update Data (Battery) ---
             val batteryStatus: Intent? = IntentFilter(Intent.ACTION_BATTERY_CHANGED).let { ifilter ->
                 context.registerReceiver(null, ifilter)
             }
@@ -248,15 +282,20 @@ class AwidgetProvider : AppWidgetProvider() {
             views.setTextViewText(R.id.text_battery, "$batteryPct%")
             views.setTextViewText(R.id.text_temp, "${String.format("%.1f", tempVal)}°C")
             
-            // --- Click Actions ---
+            // --- Data Usage ---
+            views.setViewVisibility(R.id.text_data_usage, if (showData) android.view.View.VISIBLE else android.view.View.GONE)
+            if (showData) {
+                views.setTextViewTextSize(R.id.text_data_usage, android.util.TypedValue.COMPLEX_UNIT_SP, sizeData)
+                views.setTextColor(R.id.text_data_usage, secondaryColor)
+                updateDataUsage(context, views)
+            }
             
-            // Time -> Try specific Clocks
+            // --- Click Actions ---
             val clockPackages = listOf("com.android.deskclock", "com.google.android.deskclock", "com.simplemobiletools.clock", "org.fossify.clock")
             val alarmIntent = getBestIntent(context, clockPackages, Intent(android.provider.AlarmClock.ACTION_SHOW_ALARMS))
             val alarmPendingIntent = PendingIntent.getActivity(context, 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
             views.setOnClickPendingIntent(R.id.clock_time, alarmPendingIntent)
 
-            // Date -> Try specific Calendars
             val calendarPackages = listOf("org.fossify.calendar", "com.simplemobiletools.calendar", "com.google.android.calendar", "com.android.calendar")
             val baseCalIntent = Intent(Intent.ACTION_VIEW).apply { 
                 data = android.net.Uri.parse("content://com.android.calendar/time") 
@@ -266,26 +305,26 @@ class AwidgetProvider : AppWidgetProvider() {
             val calendarPendingIntent = PendingIntent.getActivity(context, 1, calendarIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
             views.setOnClickPendingIntent(R.id.clock_date, calendarPendingIntent)
 
-            // Battery -> Battery Usage
             val batteryIntent = Intent(Intent.ACTION_POWER_USAGE_SUMMARY)
             val batteryPendingIntent = PendingIntent.getActivity(context, 2, batteryIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
             views.setOnClickPendingIntent(R.id.text_battery, batteryPendingIntent)
             views.setOnClickPendingIntent(R.id.text_temp, batteryPendingIntent)
 
-            // --- Calendar Events ---
-            views.setViewVisibility(R.id.events_container, if (showEvents) android.view.View.VISIBLE else android.view.View.GONE)
+            // --- Calendar Events OR Tasks ---
+            views.setViewVisibility(R.id.events_container, if (showEvents || showTasks) android.view.View.VISIBLE else android.view.View.GONE)
+            
             if (showEvents) {
                 loadCalendarEvents(context, views, sizeEvents, primaryColor, secondaryColor)
+            } else if (showTasks) {
+                loadTasks(context, views, sizeTasks, primaryColor, secondaryColor)
             }
 
-            // Click on events container to refresh widget
             val refreshIntent = Intent(context, AwidgetProvider::class.java).apply {
                 action = ACTION_BATTERY_UPDATE
             }
             val refreshPendingIntent = PendingIntent.getBroadcast(context, 10, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
             views.setOnClickPendingIntent(R.id.events_container, refreshPendingIntent)
 
-            // Click on Root (Background) to open Widget Settings (MainActivity)
             val settingsIntent = Intent(context, MainActivity::class.java)
             val settingsPendingIntent = PendingIntent.getActivity(context, 0, settingsIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
             views.setOnClickPendingIntent(R.id.widget_root, settingsPendingIntent)
@@ -295,7 +334,6 @@ class AwidgetProvider : AppWidgetProvider() {
 
 
         private fun loadCalendarEvents(context: Context, views: RemoteViews, textSizeSp: Float, primaryColor: Int, secondaryColor: Int) {
-            // Check permission
             if (androidx.core.content.ContextCompat.checkSelfPermission(
                     context, android.Manifest.permission.READ_CALENDAR
                 ) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
@@ -309,11 +347,9 @@ class AwidgetProvider : AppWidgetProvider() {
                 R.id.text_event_10
             )
 
-            // Get holiday/synced calendar IDs (non-local)
             val syncedCalendarIds = mutableSetOf<Long>()
             val visibleCalendarIds = mutableSetOf<Long>()
             
-            // Only query visible calendars
             val calSelection = "${android.provider.CalendarContract.Calendars.VISIBLE} = 1"
 
             context.contentResolver.query(
@@ -338,8 +374,6 @@ class AwidgetProvider : AppWidgetProvider() {
                     
                     visibleCalendarIds.add(calId)
 
-                    // Mark as synced (holiday) if it contains "holiday" in name or display
-                    // Everything else is considered "local" (personal)
                     if (displayName.contains("holiday", ignoreCase = true) ||
                         accountName.contains("holiday", ignoreCase = true)) {
                         syncedCalendarIds.add(calId)
@@ -357,21 +391,18 @@ class AwidgetProvider : AppWidgetProvider() {
             )
 
             val now = System.currentTimeMillis()
-            val endQuery = now + android.text.format.DateUtils.DAY_IN_MILLIS * 30 // 30 days ahead
+            val endQuery = now + android.text.format.DateUtils.DAY_IN_MILLIS * 30 
 
             val uri = android.provider.CalendarContract.Instances.CONTENT_URI.buildUpon()
                 .appendPath(now.toString())
                 .appendPath(endQuery.toString())
                 .build()
 
-            // Filter for VISIBLE calendars
-            // Use IN clause directly in selection
             val idList = visibleCalendarIds.joinToString(",")
             val selection = "${android.provider.CalendarContract.Instances.END} >= ? AND ${android.provider.CalendarContract.Instances.CALENDAR_ID} IN ($idList)"
             val selectionArgs = arrayOf(now.toString())
             val sortOrder = "${android.provider.CalendarContract.Instances.BEGIN} ASC"
 
-            // Event data: title, begin, isLocal
             data class EventInfo(val title: String, val begin: Long, val isLocal: Boolean)
             val events = mutableListOf<EventInfo>()
 
@@ -384,31 +415,120 @@ class AwidgetProvider : AppWidgetProvider() {
                     val title = cursor.getString(titleIdx) ?: "No Title"
                     val begin = cursor.getLong(beginIdx)
                     val calId = cursor.getLong(calIdIdx)
-                    // isLocal = NOT in synced calendars
                     val isLocal = !syncedCalendarIds.contains(calId)
                     events.add(EventInfo(title, begin, isLocal))
                 }
             }
 
-            // Populate event TextViews
-            val timeFormat = java.text.SimpleDateFormat("h:mm a", java.util.Locale.getDefault())
-            val dayFormat = java.text.SimpleDateFormat("EEE", java.util.Locale.getDefault())
+            // java.time formatter
+            val timeFormatter = DateTimeFormatter.ofPattern("h:mm a", Locale.getDefault())
+            val dayFormatter = DateTimeFormatter.ofPattern("EEE", Locale.getDefault())
 
             for (i in eventViews.indices) {
                 if (i < events.size) {
                     val event = events[i]
-                    val timeText = if (android.text.format.DateUtils.isToday(event.begin)) {
-                        timeFormat.format(java.util.Date(event.begin))
+                    val eventTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(event.begin), ZoneId.systemDefault())
+                    val today = LocalDate.now()
+                    
+                    val timeText = if (eventTime.toLocalDate().isEqual(today)) {
+                        eventTime.format(timeFormatter)
                     } else {
-                        "${dayFormat.format(java.util.Date(event.begin))} ${timeFormat.format(java.util.Date(event.begin))}"
+                        "${eventTime.format(dayFormatter)} ${eventTime.format(timeFormatter)}"
                     }
-                    views.setTextViewText(eventViews[i], "• $timeText  ${event.title}")
+                    
+                    val fullText = "• $timeText  ${event.title}"
+                    val spannable = SpannableString(fullText)
+                    val accentColor = context.getColor(R.color.widget_outline) 
+                    spannable.setSpan(ForegroundColorSpan(accentColor), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    
+                    views.setTextViewText(eventViews[i], spannable)
                     views.setTextColor(eventViews[i], if (event.isLocal) primaryColor else secondaryColor)
                     views.setTextViewTextSize(eventViews[i], android.util.TypedValue.COMPLEX_UNIT_SP, textSizeSp)
                     views.setViewVisibility(eventViews[i], android.view.View.VISIBLE)
                 } else {
                     views.setViewVisibility(eventViews[i], android.view.View.GONE)
                 }
+            }
+        }
+
+        private fun updateDataUsage(context: Context, views: RemoteViews) {
+            val networkStatsManager = context.getSystemService(Context.NETWORK_STATS_SERVICE) as NetworkStatsManager
+            // Use java.time
+            val startOfDay = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+            val endTime = System.currentTimeMillis()
+
+            try {
+                val bucket = networkStatsManager.querySummaryForDevice(
+                    NetworkCapabilities.TRANSPORT_CELLULAR,
+                    null,
+                    startOfDay,
+                    endTime
+                )
+                
+                val bytes = bucket.rxBytes + bucket.txBytes
+                val mb = bytes / (1024f * 1024f)
+                
+                val text = if (mb >= 1000) {
+                     String.format("%.2f GB", mb / 1024f)
+                } else {
+                     String.format("%.1f MB", mb)
+                }
+                
+                views.setTextViewText(R.id.text_data_usage, text)
+                
+            } catch (e: SecurityException) {
+                val res = context.resources
+                // Assuming R.string.no_perm exists (we created strings.xml)
+                views.setTextViewText(R.id.text_data_usage, res.getString(R.string.no_perm))
+            } catch (e: Exception) {
+                val res = context.resources
+                views.setTextViewText(R.id.text_data_usage, res.getString(R.string.error))
+            }
+        }
+
+        private fun loadTasks(context: Context, views: RemoteViews, textSizeSp: Float, primaryColor: Int, secondaryColor: Int) {
+            val eventViews = listOf(
+                R.id.text_event_1, R.id.text_event_2, R.id.text_event_3,
+                R.id.text_event_4, R.id.text_event_5, R.id.text_event_6,
+                R.id.text_event_7, R.id.text_event_8, R.id.text_event_9,
+                R.id.text_event_10
+            )
+            
+            val taskUri = android.net.Uri.parse("content://org.tasks/tasks")
+            val selection = "completed = 0" 
+            
+            try {
+                context.contentResolver.query(taskUri, null, selection, null, "due ASC")?.use { cursor ->
+                     val titleIdx = cursor.getColumnIndex("title")
+                     
+                     var i = 0
+                     while (cursor.moveToNext() && i < eventViews.size) {
+                         if (titleIdx != -1) {
+                             val title = cursor.getString(titleIdx) ?: "No Title"
+                             
+                             val fullText = "• $title"
+                             val spannable = SpannableString(fullText)
+                             val accentColor = context.getColor(R.color.widget_outline) 
+                             spannable.setSpan(ForegroundColorSpan(accentColor), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                             
+                             views.setTextViewText(eventViews[i], spannable)
+                             views.setTextColor(eventViews[i], primaryColor)
+                             views.setTextViewTextSize(eventViews[i], android.util.TypedValue.COMPLEX_UNIT_SP, textSizeSp)
+                             views.setViewVisibility(eventViews[i], android.view.View.VISIBLE)
+                             i++
+                         }
+                     }
+                     
+                     for (j in i until eventViews.size) {
+                         views.setViewVisibility(eventViews[j], android.view.View.GONE)
+                     }
+                     return
+                }
+            } catch (e: Exception) {
+            }
+            
+            for (viewId in eventViews) {
+                 views.setViewVisibility(viewId, android.view.View.GONE)
             }
         }
 
@@ -421,7 +541,6 @@ class AwidgetProvider : AppWidgetProvider() {
                         return intent
                     }
                 } catch (e: Exception) {
-                    // Ignore and try next
                 }
             }
             return fallback

@@ -17,7 +17,17 @@
             android:layout_height="?attr/actionBarSize"
             app:title="Lwidget"
             app:titleTextColor="?attr/colorPrimary"
-            app:titleTextAppearance="@style/BoldTitle" />
+            app:titleTextAppearance="@style/BoldTitle">
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="LeanBitLab"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:textSize="12sp"
+                android:layout_gravity="end"
+                android:layout_marginEnd="16dp"/>
+        </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -74,45 +84,132 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Time Settings -->
-            <include layout="@layout/settings_card_item" android:id="@+id/section_time"/>
+            <!-- GROUP: CONTENT -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Content"
+                android:textColor="?attr/colorPrimary"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"/>
 
-            <!-- Date Settings -->
-            <include layout="@layout/settings_card_item" android:id="@+id/section_date"/>
+            <!-- Clock Group -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.Material3.CardView.Outlined"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
+                
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    
+                    <!-- Time Settings -->
+                    <include layout="@layout/settings_card_item" android:id="@+id/section_time"/>
+                    <include layout="@layout/settings_selector_item" android:id="@+id/section_time_format"/>
 
-            <!-- Battery Settings -->
-            <include layout="@layout/settings_card_item" android:id="@+id/section_battery"/>
+                    <!-- Date Settings -->
+                    <include layout="@layout/settings_card_item" android:id="@+id/section_date"/>
+                    <include layout="@layout/settings_selector_item" android:id="@+id/section_date_format"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-            <!-- Temp Settings -->
-            <include layout="@layout/settings_card_item" android:id="@+id/section_temp"/>
+            <!-- Stats Group -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.Material3.CardView.Outlined"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
+                
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-            <!-- Events Settings -->
-            <include layout="@layout/settings_card_item" android:id="@+id/section_events"/>
+                    <!-- Battery Settings -->
+                    <include layout="@layout/settings_card_item" android:id="@+id/section_battery"/>
 
-            <!-- Light Theme Settings -->
-            <include layout="@layout/settings_card_item" android:id="@+id/section_theme"/>
+                    <!-- Temp Settings -->
+                    <include layout="@layout/settings_card_item" android:id="@+id/section_temp"/>
 
-            <!-- Transparent Settings -->
-            <include layout="@layout/settings_card_item" android:id="@+id/section_transparent"/>
+                    <!-- Data Usage Settings -->
+                    <include layout="@layout/settings_card_item" android:id="@+id/section_data"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-            <!-- Font Settings -->
-            <include layout="@layout/settings_selector_item" android:id="@+id/section_font"/>
+            <!-- Agenda Group -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.Material3.CardView.Outlined"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
+                
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-            <!-- Outline Glow Settings -->
-            <include layout="@layout/settings_card_item" android:id="@+id/section_outline"/>
+                    <!-- Events Settings -->
+                    <include layout="@layout/settings_card_item" android:id="@+id/section_events"/>
+
+                    <!-- Tasks Settings -->
+                    <include layout="@layout/settings_card_item" android:id="@+id/section_tasks"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- GROUP: APPEARANCE -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Appearance"
+                android:textColor="?attr/colorPrimary"
+                android:textStyle="bold"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="8dp"/>
+
+            <!-- Appearance Group -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.Material3.CardView.Outlined"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
+                
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- Outline Settings -->
+                    <include layout="@layout/settings_card_item" android:id="@+id/section_outline"/>
+
+                    <!-- Light Theme Settings -->
+                    <include layout="@layout/settings_card_item" android:id="@+id/section_theme"/>
+
+                    <!-- Transparent Settings -->
+                    <include layout="@layout/settings_card_item" android:id="@+id/section_transparent"/>
+
+                    <!-- Font Settings -->
+                    <include layout="@layout/settings_selector_item" android:id="@+id/section_font"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <!-- Save/Apply FAB (Optional, if we want manual save) -->
-    <!-- Ideally we just save on change, but maybe a 'Refresh Widget' button valid -->
+    <!-- Save/Apply FAB -->
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/fab_update"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="24dp"
-        android:text="Update Widget"
+        android:text="Update"
         app:icon="@android:drawable/ic_popup_sync"
         app:iconTint="?attr/colorOnPrimaryContainer"
         android:backgroundTint="?attr/colorPrimaryContainer"
@@ -120,17 +217,5 @@
         app:strokeColor="@android:color/transparent"
         app:strokeWidth="3dp"
         app:rippleColor="?attr/colorControlHighlight"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="LeanBitLab"
-        android:textColor="?attr/colorOnSurfaceVariant"
-        android:textSize="12sp"
-        android:textStyle="italic"
-        android:alpha="0.7"
-        android:layout_gravity="bottom|start"
-        android:layout_marginStart="24dp"
-        android:layout_marginBottom="24dp"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

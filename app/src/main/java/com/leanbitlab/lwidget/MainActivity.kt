@@ -38,6 +38,7 @@ import com.google.android.material.switchmaterial.SwitchMaterial
 class MainActivity : AppCompatActivity() {
 
     private lateinit var prefs: SharedPreferences
+    private val contentSwitches = mutableListOf<SwitchMaterial>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,33 +82,127 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupSections() {
+        contentSwitches.clear()
+
         // Time: Def True, 48sp
-        // Time: Def True, 48sp, Max 120sp
-        bindSection(R.id.section_time, "Time", "show_time", true, "size_time", 48f, 12f, 120f)
+        bindSection(R.id.section_time, getString(R.string.section_time), "show_time", true, "size_time", 48f, 12f, 120f, isContent = true)
+        bindSelector(R.id.section_time_format, getString(R.string.section_time_format), "time_format_idx", listOf(getString(R.string.format_12h), getString(R.string.format_24h)), 0)
         
-        // Date: Def True, 14sp, Max 64sp
-        bindSection(R.id.section_date, "Date", "show_date", true, "size_date", 14f, 10f, 64f)
+        // Date: Def True, 14sp
+        bindSection(R.id.section_date, getString(R.string.section_date), "show_date", true, "size_date", 14f, 10f, 64f, isContent = true)
+        bindSelector(R.id.section_date_format, getString(R.string.section_date_format), "date_format_idx", listOf(getString(R.string.date_format_full), getString(R.string.date_format_short), getString(R.string.date_format_numeric)), 0)
         
-        // Battery: Def True, 48sp, Max 120sp
-        bindSection(R.id.section_battery, "Battery", "show_battery", true, "size_battery", 48f, 12f, 120f)
+        // Battery: Def True, 48sp
+        bindSection(R.id.section_battery, getString(R.string.section_battery), "show_battery", true, "size_battery", 48f, 12f, 120f, isContent = true).tag = "battery"
         
-        // Temp: Def True, 18sp, Max 64sp
-        bindSection(R.id.section_temp, "Temperature", "show_temp", true, "size_temp", 18f, 10f, 64f)
+        // Temp: Def True, 18sp
+        bindSection(R.id.section_temp, getString(R.string.section_temp), "show_temp", true, "size_temp", 18f, 10f, 64f, isContent = true).tag = "temp"
 
-        // Events: Def True, 14sp, Max 48sp
-        bindSection(R.id.section_events, "Events", "show_events", true, "size_events", 14f, 10f, 48f)
+        // Data Usage: Def False, 14sp (New)
+        val dataSwitch = bindSection(R.id.section_data, getString(R.string.section_data_usage), "show_data_usage", false, "size_data", 14f, 10f, 48f, isContent = true)
+        dataSwitch.tag = "data"
+        
+        // Intercept Data Usage toggle for permission check
+        dataSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                if (!hasUsageStatsPermission()) {
+                    dataSwitch.isChecked = false
+                    // Redirect to settings
+                    try {
+                        startActivity(Intent(android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS))
+                        com.google.android.material.snackbar.Snackbar.make(
+                            findViewById(R.id.fab_update), 
+                            getString(R.string.perm_usage_access_title), 
+                            com.google.android.material.snackbar.Snackbar.LENGTH_LONG
+                        ).show()
+                    } catch (e: Exception) {
+                        // Fallback
+                    }
+                    return@setOnCheckedChangeListener
+                }
+                
+                if (!checkLimit()) {
+                    dataSwitch.isChecked = false
+                    return@setOnCheckedChangeListener
+                }
+            }
+            
+            prefs.edit().putBoolean("show_data_usage", isChecked).apply()
+            findViewById<View>(R.id.section_data).findViewById<View>(R.id.size_container).visibility = if (isChecked) View.VISIBLE else View.GONE
+            updateWidget()
+            updateToggleAvailability()
+        }
 
-        // Outline Glow: Def False
-        bindToggle(R.id.section_outline, "Outline Glow", "show_outline", false)
+        // Events: Def True, 14sp
+        val eventsSwitch = bindSection(R.id.section_events, getString(R.string.section_events), "show_events", true, "size_events", 14f, 10f, 48f, isContent = true)
+
+        // Tasks: Def False, 14sp (New)
+        val tasksSwitch = bindSection(R.id.section_tasks, getString(R.string.section_tasks), "show_tasks", false, "size_tasks", 14f, 10f, 48f, isContent = true)
+
+        // Mutual Exclusion: Events vs Tasks
+        eventsSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                if (checkLimit()) {
+                    tasksSwitch.isChecked = false
+                    prefs.edit().putBoolean("show_events", true).putBoolean("show_tasks", false).apply()
+                    updateWidget()
+                    updateToggleAvailability()
+                    findViewById<View>(R.id.section_events).findViewById<View>(R.id.size_container).visibility = View.VISIBLE
+                    findViewById<View>(R.id.section_tasks).findViewById<View>(R.id.size_container).visibility = View.GONE
+                } else {
+                    eventsSwitch.isChecked = false // Revert
+                }
+            } else {
+                 prefs.edit().putBoolean("show_events", false).apply()
+                 updateWidget()
+                 updateToggleAvailability()
+                 findViewById<View>(R.id.section_events).findViewById<View>(R.id.size_container).visibility = View.GONE
+            }
+        }
+
+        tasksSwitch.setOnCheckedChangeListener { _, isChecked ->
+             if (isChecked) {
+                if (checkLimit()) {
+                    eventsSwitch.isChecked = false
+                    prefs.edit().putBoolean("show_tasks", true).putBoolean("show_events", false).apply()
+                    updateWidget()
+                    updateToggleAvailability()
+                     findViewById<View>(R.id.section_tasks).findViewById<View>(R.id.size_container).visibility = View.VISIBLE
+                     findViewById<View>(R.id.section_events).findViewById<View>(R.id.size_container).visibility = View.GONE
+                } else {
+                    tasksSwitch.isChecked = false // Revert
+                }
+            } else {
+                 prefs.edit().putBoolean("show_tasks", false).apply()
+                 updateWidget()
+                 updateToggleAvailability()
+                 findViewById<View>(R.id.section_tasks).findViewById<View>(R.id.size_container).visibility = View.GONE
+            }
+        }
+        
+        // Initial visibility fix for mutually exclusive items (since generic bindSection logic is overridden above)
+        findViewById<View>(R.id.section_events).findViewById<View>(R.id.size_container).visibility = if (eventsSwitch.isChecked) View.VISIBLE else View.GONE
+        findViewById<View>(R.id.section_tasks).findViewById<View>(R.id.size_container).visibility = if (tasksSwitch.isChecked) View.VISIBLE else View.GONE
+
+
+        // Outline: Def False (Renamed from Glow)
+        bindToggle(R.id.section_outline, getString(R.string.section_outline), "show_outline", false)
 
         // Light Theme: Def False
-        bindToggle(R.id.section_theme, "Light Theme", "use_light_theme", false)
+        bindToggle(R.id.section_theme, getString(R.string.section_theme), "use_light_theme", false)
 
         // Transparent Background: Def False
-        bindToggle(R.id.section_transparent, "Transparent Background", "transparent_background", false)
+        bindToggle(R.id.section_transparent, getString(R.string.section_transparent), "transparent_background", false)
 
-        // Font Style: Def "Default"
-        bindFontSelector()
+        // Font Style: Def "Default" (0)
+        bindSelector(R.id.section_font, getString(R.string.section_font), "font_style", listOf(
+            getString(R.string.font_default), getString(R.string.font_serif), getString(R.string.font_monospace), getString(R.string.font_cursive), 
+            getString(R.string.font_condensed), getString(R.string.font_condensed_light), getString(R.string.font_light), getString(R.string.font_medium), 
+            getString(R.string.font_black), getString(R.string.font_thin), getString(R.string.font_smallcaps)
+        ), 0)
+        
+        // Enforce limit initially
+        updateToggleAvailability()
     }
 
     private fun bindSection(
@@ -118,27 +213,37 @@ class MainActivity : AppCompatActivity() {
         prefSizeKey: String, 
         defSize: Float,
         minSize: Float,
-        maxSize: Float
-    ) {
+        maxSize: Float,
+        isContent: Boolean = false
+    ): SwitchMaterial {
         val section = findViewById<View>(sectionId)
         val tvTitle = section.findViewById<TextView>(R.id.item_title)
         val switch = section.findViewById<SwitchMaterial>(R.id.item_switch)
-        // size_container is now inside the same layout
         val sizeContainer = section.findViewById<View>(R.id.size_container)
         val slider = section.findViewById<Slider>(R.id.item_slider)
         val tvSize = section.findViewById<TextView>(R.id.size_label)
 
         tvTitle.text = title
 
+        if (isContent) {
+            contentSwitches.add(switch)
+        }
+
         // Load Toggle
         val isShown = prefs.getBoolean(prefShowKey, defShow)
         switch.isChecked = isShown
         sizeContainer.visibility = if (isShown) View.VISIBLE else View.GONE
 
+        // Common Listener (can be overridden returned switch)
         switch.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked && !checkLimit()) {
+                switch.isChecked = false
+                return@setOnCheckedChangeListener
+            }
             prefs.edit().putBoolean(prefShowKey, isChecked).apply()
             sizeContainer.visibility = if (isChecked) View.VISIBLE else View.GONE
-            updateWidget() // Live update
+            updateWidget()
+            if (isContent) updateToggleAvailability()
         }
 
         // Load Slider
@@ -156,13 +261,16 @@ class MainActivity : AppCompatActivity() {
                 updateWidget() 
             }
         }
+        
+        return switch
     }
 
     private fun bindToggle(
         sectionId: Int,
         title: String,
         prefShowKey: String,
-        defShow: Boolean
+        defShow: Boolean,
+        isContent: Boolean = false
     ) {
         val section = findViewById<View>(sectionId)
         val tvTitle = section.findViewById<TextView>(R.id.item_title)
@@ -172,42 +280,101 @@ class MainActivity : AppCompatActivity() {
         tvTitle.text = title
         sizeContainer.visibility = View.GONE
 
+        if (isContent) {
+            contentSwitches.add(switch)
+        }
+
         // Load Toggle
         val isShown = prefs.getBoolean(prefShowKey, defShow)
         switch.isChecked = isShown
 
         switch.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked && !checkLimit()) {
+                switch.isChecked = false
+                return@setOnCheckedChangeListener
+            }
             prefs.edit().putBoolean(prefShowKey, isChecked).apply()
-            updateWidget() // Live update
+            updateWidget()
+            if (isContent) updateToggleAvailability()
         }
     }
 
-    private fun bindFontSelector() {
-        val section = findViewById<View>(R.id.section_font)
-        // Note: setting_selector_item.xml structure changed
-        // Root is LinearLayout, contains TextInputLayout -> AutoCompleteTextView
+    private fun bindSelector(
+        sectionId: Int,
+        title: String,
+        prefKey: String,
+        options: List<String>,
+        defaultIdx: Int
+    ) {
+        val section = findViewById<View>(sectionId)
         val tvTitle = section.findViewById<TextView>(R.id.item_title)
         val autoCompleteTextView = section.findViewById<android.widget.AutoCompleteTextView>(R.id.item_value)
 
-        tvTitle.text = "Font Style"
-
-        val fonts = listOf(
-            "Default", "Serif", "Monospace", "Cursive", 
-            "Condensed", "Condensed Light", "Light", "Medium", 
-            "Black", "Thin", "Small Caps"
-        )
+        tvTitle.text = title
         
-        val adapter = android.widget.ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, fonts)
+        val adapter = android.widget.ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, options)
         autoCompleteTextView.setAdapter(adapter)
 
-        // Set current value
-        val currentFontIdx = prefs.getInt("font_style", 0)
-        autoCompleteTextView.setText(fonts.getOrElse(currentFontIdx) { "Default" }, false)
+        val currentIdx = prefs.getInt(prefKey, defaultIdx)
+        autoCompleteTextView.setText(options.getOrElse(currentIdx) { options[defaultIdx] }, false)
 
         autoCompleteTextView.setOnItemClickListener { _, _, position, _ ->
-            // position in the adapter corresponds to our index if list is same
-            prefs.edit().putInt("font_style", position).apply()
+            prefs.edit().putInt(prefKey, position).apply()
             updateWidget()
+        }
+    }
+
+    private fun checkLimit(): Boolean {
+        val activeCount = contentSwitches.count { it.isChecked }
+        
+        if (activeCount > 5) {
+            com.google.android.material.snackbar.Snackbar.make(
+                findViewById(R.id.fab_update), 
+                getString(R.string.error_max_items), 
+                com.google.android.material.snackbar.Snackbar.LENGTH_SHORT
+            ).show()
+            return false
+        }
+
+        // Subset Limit: Battery, Temp, Data (Max 2)
+        val subsetCount = contentSwitches.count { 
+            it.isChecked && (it.tag == "battery" || it.tag == "temp" || it.tag == "data") 
+        }
+        
+        if (subsetCount > 2) {
+             com.google.android.material.snackbar.Snackbar.make(
+                findViewById(R.id.fab_update), 
+                getString(R.string.error_max_subset_items), 
+                com.google.android.material.snackbar.Snackbar.LENGTH_SHORT
+            ).show()
+            return false
+        }
+
+        return true
+    }
+    
+    // Check usage stats permission
+    private fun hasUsageStatsPermission(): Boolean {
+        val appOps = getSystemService(Context.APP_OPS_SERVICE) as android.app.AppOpsManager
+        val mode = appOps.unsafeCheckOpNoThrow(android.app.AppOpsManager.OPSTR_GET_USAGE_STATS, 
+            android.os.Process.myUid(), packageName)
+        return mode == android.app.AppOpsManager.MODE_ALLOWED
+    }
+
+    private fun updateToggleAvailability() {
+        val activeCount = contentSwitches.count { it.isChecked }
+        // Block others only if we reached 5
+        val isLimitReached = activeCount >= 5
+        
+        for (switch in contentSwitches) {
+            if (!switch.isChecked) {
+                // If limit maxed out, disable remaining
+                switch.isEnabled = !isLimitReached
+                switch.alpha = if (isLimitReached) 0.5f else 1.0f
+            } else {
+                switch.isEnabled = true
+                switch.alpha = 1.0f
+            }
         }
     }
 
@@ -216,7 +383,7 @@ class MainActivity : AppCompatActivity() {
         val fab = findViewById<ExtendedFloatingActionButton>(R.id.fab_update)
         
         // Get dynamic colors
-        val colorSurface = com.google.android.material.color.MaterialColors.getColor(fab, com.google.android.material.R.attr.colorSurface)
+        // val colorSurface = com.google.android.material.color.MaterialColors.getColor(fab, com.google.android.material.R.attr.colorSurface)
         val colorPrimary = com.google.android.material.color.MaterialColors.getColor(fab, com.google.android.material.R.attr.colorPrimary)
         val colorTransparent = android.graphics.Color.TRANSPARENT
 

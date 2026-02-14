@@ -4,6 +4,7 @@
     <uses-permission android:name="android.permission.ALARM_LISTENER" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" tools:ignore="ProtectedPermissions" />
 
     <!-- Required for Android 11+ (API 30) to see these packages -->
     <queries>
@@ -50,6 +51,7 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="com.leanbitlab.lwidget.ACTION_BATTERY_UPDATE" /> 
             </intent-filter>
             <meta-data

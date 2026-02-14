@@ -1,4 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Lwidget</string>
+    
+    <!-- Widget Sections -->
+    <string name="section_time">Time</string>
+    <string name="section_time_format">Time Format</string>
+    <string name="section_date">Date</string>
+    <string name="section_date_format">Date Format</string>
+    <string name="section_battery">Battery</string>
+    <string name="section_temp">Temperature</string>
+    <string name="section_data_usage">Data Usage</string>
+    <string name="section_events">Events</string>
+    <string name="section_tasks">Tasks</string>
+    <string name="section_outline">Outline</string>
+    <string name="section_theme">Light Theme</string>
+    <string name="section_transparent">Transparent Background</string>
+    <string name="section_font">Font Style</string>
+
+    <!-- Permissions & Errors -->
+    <string name="perm_usage_access_title">Please grant Usage Access for Lwidget</string>
+    <string name="perm_calendar_title">Calendar Permission Needed</string>
+    <string name="btn_grant">Grant</string>
+    <string name="error_max_items">Maximum 5 items allowed. Please disable one first.</string>
+    <string name="error_max_subset_items">Max 2 of Battery, Temp, Data allowed.</string>
+    <string name="no_perm">No Perm</string>
+    <string name="error">Err</string>
+    
+    <!-- Formats/Options -->
+    <string name="format_12h">12 Hour</string>
+    <string name="format_24h">24 Hour</string>
+    
+    <string name="date_format_full">Full</string>
+    <string name="date_format_short">Short</string>
+    <string name="date_format_numeric">Numeric</string>
+    
+    <!-- Fonts -->
+    <string name="font_default">Default</string>
+    <string name="font_serif">Serif</string>
+    <string name="font_monospace">Monospace</string>
+    <string name="font_cursive">Cursive</string>
+    <string name="font_condensed">Condensed</string>
+    <string name="font_condensed_light">Condensed Light</string>
+    <string name="font_light">Light</string>
+    <string name="font_medium">Medium</string>
+    <string name="font_black">Black</string>
+    <string name="font_thin">Thin</string>
+    <string name="font_smallcaps">Small Caps</string>
+
 </resources>

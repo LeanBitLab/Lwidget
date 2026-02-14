@@ -42,7 +42,24 @@
         android:textColor="#CCFFFFFF"
         android:textSize="18sp"
         android:layout_below="@id/text_battery"
+
+    
         android:layout_alignParentEnd="true"/>
+
+    <!-- Data Usage (Below Temp) -->
+    <TextView
+        android:id="@+id/text_data_usage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="-- MB"
+        android:textColor="#CCFFFFFF"
+        android:textSize="14sp"
+        android:visibility="gone"
+        android:layout_below="@id/text_temp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="2dp"/>
+
+    
 
     <!-- Date (Below Time) -->
     <TextClock
