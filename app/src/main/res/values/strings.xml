@@ -11,6 +11,9 @@
     <string name="section_temp">Temperature</string>
     <string name="section_data_usage">Data Usage</string>
     <string name="section_events">Events</string>
+    <string name="section_next_alarm">Next Alarm</string>
+    <string name="section_world_clock">World Clock</string>
+    <string name="section_storage">Storage</string>
     <string name="section_tasks">Tasks</string>
     <string name="section_outline">Outline</string>
     <string name="section_theme">Light Theme</string>
@@ -22,7 +25,7 @@
     <string name="perm_calendar_title">Calendar Permission Needed</string>
     <string name="btn_grant">Grant</string>
     <string name="error_max_items">Maximum 5 items allowed. Please disable one first.</string>
-    <string name="error_max_subset_items">Max 2 of Battery, Temp, Data allowed.</string>
+    <string name="error_max_subset_items">Max 3 of Battery, Temp, Data, Storage allowed.</string>
     <string name="no_perm">No Perm</string>
     <string name="error">Err</string>
     
@@ -34,6 +37,11 @@
     <string name="date_format_short">Short</string>
     <string name="date_format_numeric">Numeric</string>
     
+
+    
+    <!-- Timezones -->
+
+
     <!-- Fonts -->
     <string name="font_default">Default</string>
     <string name="font_serif">Serif</string>

@@ -79,6 +79,12 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == 100) {
             setupPermissions() // Re-check visibility
         }
+        if (requestCode == 101) {
+             // Task permission result - trigger update
+             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                 updateWidget()
+             }
+        }
     }
 
     private fun setupSections() {
@@ -88,6 +94,16 @@ class MainActivity : AppCompatActivity() {
         bindSection(R.id.section_time, getString(R.string.section_time), "show_time", true, "size_time", 48f, 12f, 120f, isContent = true)
         bindSelector(R.id.section_time_format, getString(R.string.section_time_format), "time_format_idx", listOf(getString(R.string.format_12h), getString(R.string.format_24h)), 0)
         
+        // World Clock: Def False, 18sp (New)
+        bindSection(R.id.section_world_clock, getString(R.string.section_world_clock), "show_world_clock", false, "size_world_clock", 18f, 10f, 64f, isContent = true)
+
+        
+        val zoneIds = java.time.ZoneId.getAvailableZoneIds().sorted()
+        bindSelector(R.id.section_world_clock_zone, "Timezone", "world_clock_zone_str", zoneIds, zoneIds.indexOf("UTC").takeIf { it >= 0 } ?: 0)
+        
+        // Next Alarm: Def True, 14sp (New) - Moved up
+        val alarmSwitch = bindSection(R.id.section_next_alarm, getString(R.string.section_next_alarm), "show_next_alarm", true, "size_next_alarm", 14f, 10f, 48f, isContent = true)
+
         // Date: Def True, 14sp
         bindSection(R.id.section_date, getString(R.string.section_date), "show_date", true, "size_date", 14f, 10f, 64f, isContent = true)
         bindSelector(R.id.section_date_format, getString(R.string.section_date_format), "date_format_idx", listOf(getString(R.string.date_format_full), getString(R.string.date_format_short), getString(R.string.date_format_numeric)), 0)
@@ -101,6 +117,10 @@ class MainActivity : AppCompatActivity() {
         // Data Usage: Def False, 14sp (New)
         val dataSwitch = bindSection(R.id.section_data, getString(R.string.section_data_usage), "show_data_usage", false, "size_data", 14f, 10f, 48f, isContent = true)
         dataSwitch.tag = "data"
+
+        // Storage: Def False, 14sp (New)
+        val storageSwitch = bindSection(R.id.section_storage, getString(R.string.section_storage), "show_storage", false, "size_storage", 14f, 10f, 48f, isContent = true)
+        storageSwitch.tag = "storage"
         
         // Intercept Data Usage toggle for permission check
         dataSwitch.setOnCheckedChangeListener { _, isChecked ->
@@ -139,6 +159,8 @@ class MainActivity : AppCompatActivity() {
         // Tasks: Def False, 14sp (New)
         val tasksSwitch = bindSection(R.id.section_tasks, getString(R.string.section_tasks), "show_tasks", false, "size_tasks", 14f, 10f, 48f, isContent = true)
 
+
+
         // Mutual Exclusion: Events vs Tasks
         eventsSwitch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
@@ -162,6 +184,29 @@ class MainActivity : AppCompatActivity() {
 
         tasksSwitch.setOnCheckedChangeListener { _, isChecked ->
              if (isChecked) {
+                // Check if Tasks.org is installed
+                if (!isAppInstalled("org.tasks")) {
+                    tasksSwitch.isChecked = false
+                    com.google.android.material.snackbar.Snackbar.make(
+                        findViewById(R.id.fab_update), 
+                        "Tasks.org app is required for this feature.", 
+                        com.google.android.material.snackbar.Snackbar.LENGTH_LONG
+                    ).setAction("Install") {
+                         try {
+                            startActivity(Intent(Intent.ACTION_VIEW, android.net.Uri.parse("market://details?id=org.tasks")))
+                         } catch (e: Exception) {
+                            startActivity(Intent(Intent.ACTION_VIEW, android.net.Uri.parse("https://play.google.com/store/apps/details?id=org.tasks")))
+                         }
+                    }.show()
+                    return@setOnCheckedChangeListener
+                }
+
+                // Check Runtime Permission
+                if (ContextCompat.checkSelfPermission(this, "org.tasks.permission.READ_TASKS") != PackageManager.PERMISSION_GRANTED) {
+                     ActivityCompat.requestPermissions(this, arrayOf("org.tasks.permission.READ_TASKS"), 101)
+                     // Don't uncheck immediately, let them grant it
+                }
+
                 if (checkLimit()) {
                     eventsSwitch.isChecked = false
                     prefs.edit().putBoolean("show_tasks", true).putBoolean("show_events", false).apply()
@@ -299,6 +344,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
     private fun bindSelector(
         sectionId: Int,
         title: String,
@@ -315,16 +361,31 @@ class MainActivity : AppCompatActivity() {
         val adapter = android.widget.ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, options)
         autoCompleteTextView.setAdapter(adapter)
 
-        val currentIdx = prefs.getInt(prefKey, defaultIdx)
-        autoCompleteTextView.setText(options.getOrElse(currentIdx) { options[defaultIdx] }, false)
+        // For string preference
+        if (prefKey == "world_clock_zone_str") {
+            val currentVal = prefs.getString(prefKey, "UTC") ?: "UTC"
+            autoCompleteTextView.setText(currentVal, false)
+            
+            autoCompleteTextView.setOnItemClickListener { _, _, position, _ ->
+                val selected = options.getOrElse(position) { "UTC" }
+                prefs.edit().putString(prefKey, selected).apply()
+                updateWidget()
+            }
+        } else {
+            // Index based (legacy/others)
+            val currentIdx = prefs.getInt(prefKey, defaultIdx)
+            autoCompleteTextView.setText(options.getOrElse(currentIdx) { options[defaultIdx] }, false)
 
-        autoCompleteTextView.setOnItemClickListener { _, _, position, _ ->
-            prefs.edit().putInt(prefKey, position).apply()
-            updateWidget()
+            autoCompleteTextView.setOnItemClickListener { _, _, position, _ ->
+                prefs.edit().putInt(prefKey, position).apply()
+                updateWidget()
+            }
         }
     }
 
     private fun checkLimit(): Boolean {
+        // Global limit removed per user request
+        /*
         val activeCount = contentSwitches.count { it.isChecked }
         
         if (activeCount > 5) {
@@ -335,13 +396,14 @@ class MainActivity : AppCompatActivity() {
             ).show()
             return false
         }
+        */
 
-        // Subset Limit: Battery, Temp, Data (Max 2)
+        // Subset Limit: Battery, Temp, Data, Storage (Max 3 allowed now to fit stack)
         val subsetCount = contentSwitches.count { 
-            it.isChecked && (it.tag == "battery" || it.tag == "temp" || it.tag == "data") 
+            it.isChecked && (it.tag == "battery" || it.tag == "temp" || it.tag == "data" || it.tag == "storage") 
         }
         
-        if (subsetCount > 2) {
+        if (subsetCount > 3) {
              com.google.android.material.snackbar.Snackbar.make(
                 findViewById(R.id.fab_update), 
                 getString(R.string.error_max_subset_items), 
@@ -362,6 +424,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateToggleAvailability() {
+        // Limit removed
+        /*
         val activeCount = contentSwitches.count { it.isChecked }
         // Block others only if we reached 5
         val isLimitReached = activeCount >= 5
@@ -375,6 +439,21 @@ class MainActivity : AppCompatActivity() {
                 switch.isEnabled = true
                 switch.alpha = 1.0f
             }
+        }
+        */
+        // Ensure all are enabled
+        for (switch in contentSwitches) {
+            switch.isEnabled = true
+            switch.alpha = 1.0f
+        }
+    }
+
+    private fun isAppInstalled(packageName: String): Boolean {
+        return try {
+            packageManager.getPackageInfo(packageName, 0)
+            true
+        } catch (e: PackageManager.NameNotFoundException) {
+            false
         }
     }
 

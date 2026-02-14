@@ -9,24 +9,45 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#00000000"
+        android:fitsSystemWindows="true"
         app:elevation="0dp">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:title="Lwidget"
-            app:titleTextColor="?attr/colorPrimary"
-            app:titleTextAppearance="@style/BoldTitle">
-            
-            <TextView
-                android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:contentInsetStart="0dp"
+            app:contentInsetStartWithNavigation="0dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="LeanBitLab"
-                android:textColor="?attr/colorOnSurfaceVariant"
-                android:textSize="12sp"
-                android:layout_gravity="end"
-                android:layout_marginEnd="16dp"/>
+                android:paddingStart="24dp"
+                android:paddingTop="24dp"
+                android:paddingEnd="24dp"
+                android:paddingBottom="16dp">
+
+                <TextView
+                    android:id="@+id/title_app"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Lwidget"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:fontFamily="monospace"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="LeanBitLab"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:textSize="14sp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignBaseline="@id/title_app"/>
+            </RelativeLayout>
         </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -109,7 +130,15 @@
                     
                     <!-- Time Settings -->
                     <include layout="@layout/settings_card_item" android:id="@+id/section_time"/>
+                    
+                    <!-- Next Alarm Settings (Moved) -->
+                    <include layout="@layout/settings_card_item" android:id="@+id/section_next_alarm"/>
+                    
                     <include layout="@layout/settings_selector_item" android:id="@+id/section_time_format"/>
+
+                    <!-- World Clock Settings -->
+                    <include layout="@layout/settings_card_item" android:id="@+id/section_world_clock"/>
+                    <include layout="@layout/settings_selector_item" android:id="@+id/section_world_clock_zone"/>
 
                     <!-- Date Settings -->
                     <include layout="@layout/settings_card_item" android:id="@+id/section_date"/>
@@ -138,6 +167,9 @@
 
                     <!-- Data Usage Settings -->
                     <include layout="@layout/settings_card_item" android:id="@+id/section_data"/>
+
+                    <!-- Storage Settings -->
+                    <include layout="@layout/settings_card_item" android:id="@+id/section_storage"/>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -159,6 +191,8 @@
 
                     <!-- Tasks Settings -->
                     <include layout="@layout/settings_card_item" android:id="@+id/section_tasks"/>
+                    
+
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 

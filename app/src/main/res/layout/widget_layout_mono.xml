@@ -6,7 +6,16 @@
     android:padding="16dp">
 
     <!-- Time (Top Left) -->
-    <TextClock
+    
+    <LinearLayout
+        android:id="@+id/time_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:gravity="center_vertical">
+        <TextClock
         android:id="@+id/clock_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -16,10 +25,19 @@
         android:textSize="48sp"
         android:textColor="#FFFFFF"
         android:textStyle="bold"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="-4dp"
         android:includeFontPadding="false"/>
+        
+        <TextView
+            android:id="@+id/text_world_clock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="#CCFFFFFF"
+            android:textSize="18sp"
+            android:layout_marginStart="16dp"
+            android:includeFontPadding="false"
+            android:visibility="gone"/>
+    </LinearLayout>
 
     <!-- Battery (Top Right) -->
     <TextView
@@ -61,9 +79,29 @@
         android:layout_below="@id/text_temp"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="2dp"/>
+    <TextView
+        android:id="@+id/text_storage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textColor="#CCFFFFFF"
+        android:textSize="14sp"
+        android:visibility="gone"
+        android:layout_below="@id/text_data_usage"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="2dp"/>
 
     <!-- Date (Below Time) -->
-    <TextClock
+    
+    <LinearLayout
+        android:id="@+id/date_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/time_container"
+        android:layout_alignParentStart="true"
+        android:gravity="center_vertical">
+        <TextClock
         android:id="@+id/clock_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -72,8 +110,19 @@
         android:format24Hour="EEEE, MMMM dd"
         android:textSize="18sp"
         android:textColor="#CCFFFFFF"
-        android:layout_below="@id/clock_time"
-        android:layout_alignParentStart="true"/>
+        />
+        
+        <TextView
+            android:id="@+id/text_next_alarm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="#CCFFFFFF"
+            android:textSize="14sp"
+            android:layout_marginStart="8dp"
+            android:includeFontPadding="false"
+            android:visibility="gone"/>
+    </LinearLayout>
 
     <!-- Calendar Events (for expanded sizes - dynamically filled) -->
     <LinearLayout
@@ -82,7 +131,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="monospace"
         android:orientation="vertical"
-        android:layout_below="@id/clock_date"
+        android:layout_below="@id/date_container"
         android:layout_marginTop="8dp"
         android:clipChildren="true"
         android:clipToPadding="true">

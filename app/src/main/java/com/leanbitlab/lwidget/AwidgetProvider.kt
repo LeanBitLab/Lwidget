@@ -146,8 +146,18 @@ class AwidgetProvider : AppWidgetProvider() {
             val showData = prefs.getBoolean("show_data_usage", false)
             val sizeData = prefs.getFloat("size_data", 14f)
             
+            val showWorldClock = prefs.getBoolean("show_world_clock", false)
+            val sizeWorldClock = prefs.getFloat("size_world_clock", 18f)
+            val worldClockZoneStr = prefs.getString("world_clock_zone_str", "UTC") ?: "UTC"
+
+            val showStorage = prefs.getBoolean("show_storage", false)
+            val sizeStorage = prefs.getFloat("size_storage", 14f)
+
             val showTasks = prefs.getBoolean("show_tasks", false)
             val sizeTasks = prefs.getFloat("size_tasks", 14f)
+
+            val showNextAlarm = prefs.getBoolean("show_next_alarm", true)
+            val sizeNextAlarm = prefs.getFloat("size_next_alarm", 14f)
 
             val fontStyle = prefs.getInt("font_style", 0) 
 
@@ -243,7 +253,14 @@ class AwidgetProvider : AppWidgetProvider() {
                 else -> "h:mm" to "H:mm"
             }
             views.setCharSequence(R.id.clock_time, "setFormat12Hour", timeFormat12)
+            views.setCharSequence(R.id.clock_time, "setFormat12Hour", timeFormat12)
             views.setCharSequence(R.id.clock_time, "setFormat24Hour", timeFormat24)
+
+            // --- World Clock ---
+            views.setViewVisibility(R.id.text_world_clock, if (showWorldClock) android.view.View.VISIBLE else android.view.View.GONE)
+            if (showWorldClock) {
+                loadWorldClock(context, views, sizeWorldClock, secondaryColor, worldClockZoneStr, timeFormat12.contains("a"))
+            }
 
             // --- Apply Date ---
             views.setViewVisibility(R.id.clock_date, if (showDate) android.view.View.VISIBLE else android.view.View.GONE)
@@ -289,6 +306,14 @@ class AwidgetProvider : AppWidgetProvider() {
                 views.setTextColor(R.id.text_data_usage, secondaryColor)
                 updateDataUsage(context, views)
             }
+
+            // --- Storage ---
+            views.setViewVisibility(R.id.text_storage, if (showStorage) android.view.View.VISIBLE else android.view.View.GONE)
+            if (showStorage) {
+                views.setTextViewTextSize(R.id.text_storage, android.util.TypedValue.COMPLEX_UNIT_SP, sizeStorage)
+                views.setTextColor(R.id.text_storage, secondaryColor)
+                updateStorageStats(context, views)
+            }
             
             // --- Click Actions ---
             val clockPackages = listOf("com.android.deskclock", "com.google.android.deskclock", "com.simplemobiletools.clock", "org.fossify.clock")
@@ -309,6 +334,10 @@ class AwidgetProvider : AppWidgetProvider() {
             val batteryPendingIntent = PendingIntent.getActivity(context, 2, batteryIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
             views.setOnClickPendingIntent(R.id.text_battery, batteryPendingIntent)
             views.setOnClickPendingIntent(R.id.text_temp, batteryPendingIntent)
+            
+            val storageIntent = Intent(android.provider.Settings.ACTION_INTERNAL_STORAGE_SETTINGS)
+            val storagePendingIntent = PendingIntent.getActivity(context, 3, storageIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+            views.setOnClickPendingIntent(R.id.text_storage, storagePendingIntent)
 
             // --- Calendar Events OR Tasks ---
             views.setViewVisibility(R.id.events_container, if (showEvents || showTasks) android.view.View.VISIBLE else android.view.View.GONE)
@@ -319,11 +348,30 @@ class AwidgetProvider : AppWidgetProvider() {
                 loadTasks(context, views, sizeTasks, primaryColor, secondaryColor)
             }
 
+            // --- Next Alarm ---
+            views.setViewVisibility(R.id.text_next_alarm, if (showNextAlarm) android.view.View.VISIBLE else android.view.View.GONE)
+            if (showNextAlarm) {
+                loadNextAlarm(context, views, sizeNextAlarm, secondaryColor)
+            }
+            // Click action for Next Alarm (same as Clock)
+            views.setOnClickPendingIntent(R.id.text_next_alarm, alarmPendingIntent)
+
             val refreshIntent = Intent(context, AwidgetProvider::class.java).apply {
                 action = ACTION_BATTERY_UPDATE
             }
             val refreshPendingIntent = PendingIntent.getBroadcast(context, 10, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-            views.setOnClickPendingIntent(R.id.events_container, refreshPendingIntent)
+
+            if (showTasks) {
+                 val tasksIntent = context.packageManager.getLaunchIntentForPackage("org.tasks")
+                 if (tasksIntent != null) {
+                     val tasksPendingIntent = PendingIntent.getActivity(context, 11, tasksIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+                     views.setOnClickPendingIntent(R.id.events_container, tasksPendingIntent)
+                 } else {
+                     views.setOnClickPendingIntent(R.id.events_container, refreshPendingIntent)
+                 }
+            } else {
+                 views.setOnClickPendingIntent(R.id.events_container, refreshPendingIntent)
+            }
 
             val settingsIntent = Intent(context, MainActivity::class.java)
             val settingsPendingIntent = PendingIntent.getActivity(context, 0, settingsIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
@@ -494,13 +542,35 @@ class AwidgetProvider : AppWidgetProvider() {
                 R.id.text_event_10
             )
             
+            // Debugging: Check permission again contextually
+            val hasPerm = context.checkSelfPermission("org.tasks.permission.READ_TASKS") == android.content.pm.PackageManager.PERMISSION_GRANTED ||
+                          context.checkSelfPermission("com.todoroo.astrid.READ") == android.content.pm.PackageManager.PERMISSION_GRANTED
+            
+            if (!hasPerm) {
+                 views.setTextViewText(eventViews[0], "Missing Permission")
+                 views.setViewVisibility(eventViews[0], android.view.View.VISIBLE)
+                 return
+            }
+
             val taskUri = android.net.Uri.parse("content://org.tasks/tasks")
+            // Try simpler selection or none to test
             val selection = "completed = 0" 
             
             try {
                 context.contentResolver.query(taskUri, null, selection, null, "due ASC")?.use { cursor ->
                      val titleIdx = cursor.getColumnIndex("title")
                      
+                     if (cursor.count == 0) {
+                         // views.setTextViewText(eventViews[0], "No active tasks found")
+                         // views.setViewVisibility(eventViews[0], android.view.View.VISIBLE)
+                         // views.setTextColor(eventViews[0], secondaryColor)
+                         // Just hide all
+                         for (viewId in eventViews) {
+                             views.setViewVisibility(viewId, android.view.View.GONE)
+                         }
+                         return
+                     }
+
                      var i = 0
                      while (cursor.moveToNext() && i < eventViews.size) {
                          if (titleIdx != -1) {
@@ -525,11 +595,74 @@ class AwidgetProvider : AppWidgetProvider() {
                      return
                 }
             } catch (e: Exception) {
+                // Fail silently or log
+                for (viewId in eventViews) {
+                     views.setViewVisibility(viewId, android.view.View.GONE)
+                }
             }
             
-            for (viewId in eventViews) {
-                 views.setViewVisibility(viewId, android.view.View.GONE)
+            // If we reached here (query null?), show generic message
+            // views.setTextViewText(eventViews[0], "Query Failed")
+            // views.setViewVisibility(eventViews[0], android.view.View.VISIBLE)
+        }
+
+        private fun loadWorldClock(context: Context, views: RemoteViews, textSizeSp: Float, textColor: Int, zoneIdStr: String, is12Hour: Boolean) {
+             try {
+                 val zoneId = ZoneId.of(zoneIdStr)
+                 val zdt = java.time.ZonedDateTime.now(zoneId)
+                 val pattern = if (is12Hour) "h:mm a" else "H:mm"
+                 val formatter = DateTimeFormatter.ofPattern(pattern, Locale.getDefault())
+                 val timeStr = zdt.format(formatter)
+                 
+
+                 
+                 // If label is too long, maybe truncate? For now, let it be.
+                 // Format: "10:30 AM" (Time only, subtle)
+                 views.setTextViewText(R.id.text_world_clock, timeStr)
+                 views.setTextViewTextSize(R.id.text_world_clock, android.util.TypedValue.COMPLEX_UNIT_SP, textSizeSp)
+                 views.setTextColor(R.id.text_world_clock, textColor)
+                 views.setViewVisibility(R.id.text_world_clock, android.view.View.VISIBLE)
+
+             } catch (e: Exception) {
+                 views.setViewVisibility(R.id.text_world_clock, android.view.View.GONE)
+             }
+        }
+
+        private fun loadNextAlarm(context: Context, views: RemoteViews, textSizeSp: Float, textColor: Int) {
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            val nextAlarm = alarmManager.nextAlarmClock
+            
+            if (nextAlarm != null) {
+                val nextAlarmTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(nextAlarm.triggerTime), ZoneId.systemDefault())
+                val timeFormatter = DateTimeFormatter.ofPattern("h:mm a", Locale.getDefault())
+                val timeText = nextAlarmTime.format(timeFormatter)
+                
+                // Format: "| ⏰ 7:00 AM"
+                val fullText = "| ⏰ $timeText"
+                views.setTextViewText(R.id.text_next_alarm, fullText)
+                views.setTextViewTextSize(R.id.text_next_alarm, android.util.TypedValue.COMPLEX_UNIT_SP, textSizeSp)
+                views.setTextColor(R.id.text_next_alarm, textColor)
+                views.setViewVisibility(R.id.text_next_alarm, android.view.View.VISIBLE)
+            } else {
+                 views.setViewVisibility(R.id.text_next_alarm, android.view.View.GONE)
             }
+        }
+
+        private fun updateStorageStats(context: Context, views: RemoteViews) {
+             try {
+                 val path = android.os.Environment.getDataDirectory()
+                 val stat = android.os.StatFs(path.path)
+                 val freeBytes = stat.availableBlocksLong * stat.blockSizeLong
+                 
+                 val gb = freeBytes / (1024f * 1024f * 1024f)
+                 
+                 // Concisely: "12GB"
+                 val text = String.format("%.0fGB", gb)
+                 
+                 views.setTextViewText(R.id.text_storage, text)
+             } catch (e: Exception) {
+                 views.setTextViewText(R.id.text_storage, "Err")
+             }
         }
 
         private fun getBestIntent(context: Context, packages: List<String>, fallback: Intent): Intent {

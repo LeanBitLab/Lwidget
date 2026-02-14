@@ -5,6 +5,8 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.READ_CALENDAR" />
     <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="org.tasks.permission.READ_TASKS" />
+    <uses-permission android:name="com.todoroo.astrid.READ" />
 
     <!-- Required for Android 11+ (API 30) to see these packages -->
     <queries>
@@ -19,6 +21,9 @@
         <package android:name="com.google.android.calendar" />
         <package android:name="com.simplemobiletools.calendar" />
         <package android:name="org.fossify.calendar" />
+        
+        <!-- Task Apps -->
+        <package android:name="org.tasks" />
         <intent>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.APP_CALENDAR" />

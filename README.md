@@ -26,9 +26,14 @@
 
 -   **Material You**: Full dynamic color support.
 -   **Configurable**: Adjust text sizes and visibility for all elements.
--   **Essential Info**: Time, Date, Battery, Device Temp, and Calendar Events.
--   **Task Integration**: Manage your tasks directly from the widget.
+-   **Time & Date**: Clear, customizable display.
+-   **Battery & Temperature**: Real-time device status.
+-   **Calendar Events**: Upcoming agenda at a glance.
+-   **Task Integration**: Seamless integration with [Tasks.org](https://tasks.org/).
+-   **World Clock**: Track time in another zone.
+-   **Next Alarm**: Display your next scheduled alarm.
 -   **Daily Data Usage**: Monitor your daily data consumption.
+-   **Internal Storage**: Monitor available device storage.
 -   **Custom Formats**: Choose your preferred Time and Date formats.
 -   **Light/Dark Mode**: Optimized contrast for readability.
 -   **Privacy Focused**: No internet permission required.
