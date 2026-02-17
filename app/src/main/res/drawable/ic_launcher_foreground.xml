@@ -4,13 +4,13 @@
     android:viewportWidth="108"
     android:viewportHeight="108">
     
-    <!-- L Shape -->
+    <!-- L Shape (Rounded) -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M38,34 V74 H70 V62 H50 V34 H38 Z" />
+        android:pathData="M38,38 Q38,34 42,34 H46 Q50,34 50,38 V62 H66 Q70,62 70,66 V70 Q70,74 66,74 H42 Q38,74 38,70 Z" />
         
-    <!-- Bit Accent (Square) -->
+    <!-- Bit Accent (Rounded Square) -->
     <path
         android:fillColor="#D0BCFF"
-        android:pathData="M60,34 H70 V44 H60 V34 Z" />
+        android:pathData="M60,36 Q60,34 62,34 H68 Q70,34 70,36 V42 Q70,44 68,44 H62 Q60,44 60,42 Z" />
 </vector>

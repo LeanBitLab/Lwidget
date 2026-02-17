@@ -2,8 +2,26 @@
     android:id="@+id/widget_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_dark"
-    android:padding="16dp">
+    
+    >
+    <ImageView
+        android:id="@+id/widget_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/widget_bg_fill"
+        android:importantForAccessibility="no" />
+        
+    <ImageView
+        android:id="@+id/widget_outline"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/widget_bg_outline"
+        android:visibility="visible"
+        android:importantForAccessibility="no" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
 
     <!-- Time (Top Left) -->
     
@@ -146,4 +164,5 @@
 
     </LinearLayout>
 
+    </RelativeLayout>
 </RelativeLayout>

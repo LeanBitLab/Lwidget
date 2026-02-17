@@ -53,6 +53,29 @@ class MainActivity : AppCompatActivity() {
         findViewById<ExtendedFloatingActionButton>(R.id.fab_update).setOnClickListener {
             updateWidget()
         }
+
+        // Handle Collapsing Toolbar Title Fade and Header Fade
+        val appBar = findViewById<com.google.android.material.appbar.AppBarLayout>(R.id.app_bar)
+        val titleApp = findViewById<TextView>(R.id.title_app)
+        val expandedHeader = findViewById<View>(R.id.header_expanded)
+        
+        appBar.addOnOffsetChangedListener(com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+            val totalScrollRange = appBar.totalScrollRange
+            val percentage = kotlin.math.abs(verticalOffset).toFloat() / totalScrollRange.toFloat()
+            
+            // Fade in toolbar title when nearing collapse (e.g. last 20% of scroll)
+            val alphaTitle = ((percentage - 0.8f) / 0.2f).coerceIn(0f, 1f)
+            titleApp.alpha = alphaTitle
+
+            // Fade out expanded header as we scroll up (first 50% of scroll)
+            // Starts dense (1f) and fades to 0f by the time we are halfway collapsed
+            val alphaHeader = (1f - (percentage / 0.5f)).coerceIn(0f, 1f)
+            expandedHeader.alpha = alphaHeader
+            // Optional: Scale down slightly for a nicer effect
+            val scale = (1f - (percentage * 0.1f)).coerceIn(0.9f, 1f)
+            expandedHeader.scaleX = scale
+            expandedHeader.scaleY = scale
+        })
     }
 
     private fun setupPermissions() {
@@ -91,35 +114,35 @@ class MainActivity : AppCompatActivity() {
         contentSwitches.clear()
 
         // Time: Def True, 48sp
-        bindSection(R.id.section_time, getString(R.string.section_time), "show_time", true, "size_time", 48f, 12f, 120f, isContent = true)
-        bindSelector(R.id.section_time_format, getString(R.string.section_time_format), "time_format_idx", listOf(getString(R.string.format_12h), getString(R.string.format_24h)), 0)
+        bindSection(R.id.section_time, getString(R.string.section_time), "show_time", true, "size_time", 48f, 12f, 120f, isContent = true, iconResId = R.drawable.ic_time)
+        bindSelector(R.id.section_time_format, getString(R.string.section_time_format), "time_format_idx", listOf(getString(R.string.format_12h), getString(R.string.format_24h)), 0, iconResId = R.drawable.ic_time) 
         
         // World Clock: Def False, 18sp (New)
-        bindSection(R.id.section_world_clock, getString(R.string.section_world_clock), "show_world_clock", false, "size_world_clock", 18f, 10f, 64f, isContent = true)
+        bindSection(R.id.section_world_clock, getString(R.string.section_world_clock), "show_world_clock", false, "size_world_clock", 18f, 10f, 64f, isContent = true, iconResId = R.drawable.ic_world)
 
         
         val zoneIds = java.time.ZoneId.getAvailableZoneIds().sorted()
-        bindSelector(R.id.section_world_clock_zone, "Timezone", "world_clock_zone_str", zoneIds, zoneIds.indexOf("UTC").takeIf { it >= 0 } ?: 0)
+        bindSelector(R.id.section_world_clock_zone, "Timezone", "world_clock_zone_str", zoneIds, zoneIds.indexOf("UTC").takeIf { it >= 0 } ?: 0, iconResId = R.drawable.ic_world)
         
         // Next Alarm: Def True, 14sp (New) - Moved up
-        val alarmSwitch = bindSection(R.id.section_next_alarm, getString(R.string.section_next_alarm), "show_next_alarm", true, "size_next_alarm", 14f, 10f, 48f, isContent = true)
+        bindSection(R.id.section_next_alarm, getString(R.string.section_next_alarm), "show_next_alarm", true, "size_next_alarm", 14f, 10f, 48f, isContent = true, iconResId = R.drawable.ic_alarm)
 
         // Date: Def True, 14sp
-        bindSection(R.id.section_date, getString(R.string.section_date), "show_date", true, "size_date", 14f, 10f, 64f, isContent = true)
-        bindSelector(R.id.section_date_format, getString(R.string.section_date_format), "date_format_idx", listOf(getString(R.string.date_format_full), getString(R.string.date_format_short), getString(R.string.date_format_numeric)), 0)
+        bindSection(R.id.section_date, getString(R.string.section_date), "show_date", true, "size_date", 14f, 10f, 64f, isContent = true, iconResId = R.drawable.ic_date)
+        bindSelector(R.id.section_date_format, getString(R.string.section_date_format), "date_format_idx", listOf(getString(R.string.date_format_full), getString(R.string.date_format_short), getString(R.string.date_format_numeric)), 0, iconResId = R.drawable.ic_date)
         
         // Battery: Def True, 48sp
-        bindSection(R.id.section_battery, getString(R.string.section_battery), "show_battery", true, "size_battery", 48f, 12f, 120f, isContent = true).tag = "battery"
+        bindSection(R.id.section_battery, getString(R.string.section_battery), "show_battery", true, "size_battery", 48f, 12f, 120f, isContent = true, iconResId = R.drawable.ic_battery).tag = "battery"
         
         // Temp: Def True, 18sp
-        bindSection(R.id.section_temp, getString(R.string.section_temp), "show_temp", true, "size_temp", 18f, 10f, 64f, isContent = true).tag = "temp"
+        bindSection(R.id.section_temp, getString(R.string.section_temp), "show_temp", true, "size_temp", 18f, 10f, 64f, isContent = true, iconResId = R.drawable.ic_temp).tag = "temp"
 
         // Data Usage: Def False, 14sp (New)
-        val dataSwitch = bindSection(R.id.section_data, getString(R.string.section_data_usage), "show_data_usage", false, "size_data", 14f, 10f, 48f, isContent = true)
+        val dataSwitch = bindSection(R.id.section_data, getString(R.string.section_data_usage), "show_data_usage", false, "size_data", 14f, 10f, 48f, isContent = true, iconResId = R.drawable.ic_data)
         dataSwitch.tag = "data"
 
         // Storage: Def False, 14sp (New)
-        val storageSwitch = bindSection(R.id.section_storage, getString(R.string.section_storage), "show_storage", false, "size_storage", 14f, 10f, 48f, isContent = true)
+        val storageSwitch = bindSection(R.id.section_storage, getString(R.string.section_storage), "show_storage", false, "size_storage", 14f, 10f, 48f, isContent = true, iconResId = R.drawable.ic_storage)
         storageSwitch.tag = "storage"
         
         // Intercept Data Usage toggle for permission check
@@ -154,10 +177,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Events: Def True, 14sp
-        val eventsSwitch = bindSection(R.id.section_events, getString(R.string.section_events), "show_events", true, "size_events", 14f, 10f, 48f, isContent = true)
+        val eventsSwitch = bindSection(R.id.section_events, getString(R.string.section_events), "show_events", true, "size_events", 14f, 10f, 48f, isContent = true, iconResId = R.drawable.ic_events)
 
         // Tasks: Def False, 14sp (New)
-        val tasksSwitch = bindSection(R.id.section_tasks, getString(R.string.section_tasks), "show_tasks", false, "size_tasks", 14f, 10f, 48f, isContent = true)
+        val tasksSwitch = bindSection(R.id.section_tasks, getString(R.string.section_tasks), "show_tasks", false, "size_tasks", 14f, 10f, 48f, isContent = true, iconResId = R.drawable.ic_tasks)
 
 
 
@@ -231,20 +254,51 @@ class MainActivity : AppCompatActivity() {
 
 
         // Outline: Def False (Renamed from Glow)
-        bindToggle(R.id.section_outline, getString(R.string.section_outline), "show_outline", false)
+        bindToggle(R.id.section_outline, getString(R.string.section_outline), "show_outline", false, iconResId = R.drawable.ic_outline)
 
         // Light Theme: Def False
-        bindToggle(R.id.section_theme, getString(R.string.section_theme), "use_light_theme", false)
+        bindToggle(R.id.section_theme, getString(R.string.section_theme), "use_light_theme", false, iconResId = R.drawable.ic_sun)
 
-        // Transparent Background: Def False
-        bindToggle(R.id.section_transparent, getString(R.string.section_transparent), "transparent_background", false)
+
+
+        // Background Opacity: Def 100 (Opaque)
+        bindSlider(R.id.section_bg_transparency, getString(R.string.section_bg_transparency), "bg_opacity", 100f, 0f, 100f, iconResId = R.drawable.ic_transparency)
+
+        // Text Colors
+        // Text Colors
+        val colorOptions = listOf(
+            getString(R.string.color_default),
+            getString(R.string.color_system_accent),
+            getString(R.string.color_custom)
+        )
+        
+        val slidersPrimary = bindColorSliders(R.id.sliders_primary, "text_color_primary")
+        bindSelector(R.id.section_text_color_primary, getString(R.string.section_text_color_primary), "text_color_primary_idx", colorOptions, 0, iconResId = R.drawable.ic_palette) { idx ->
+             slidersPrimary.visibility = if (idx == 2) View.VISIBLE else View.GONE
+        }
+        
+        val slidersSecondary = bindColorSliders(R.id.sliders_secondary, "text_color_secondary")
+        bindSelector(R.id.section_text_color_secondary, getString(R.string.section_text_color_secondary), "text_color_secondary_idx", colorOptions, 0, iconResId = R.drawable.ic_palette) { idx ->
+             slidersSecondary.visibility = if (idx == 2) View.VISIBLE else View.GONE
+        }
+
+        // Initial Visibility State
+        slidersPrimary.visibility = if (prefs.getInt("text_color_primary_idx", 0) == 2) View.VISIBLE else View.GONE
+        slidersSecondary.visibility = if (prefs.getInt("text_color_secondary_idx", 0) == 2) View.VISIBLE else View.GONE
+        
+        // Outline Color
+        val slidersOutline = bindColorSliders(R.id.sliders_outline, "outline_color")
+        bindSelector(R.id.section_outline_color, getString(R.string.section_outline_color), "outline_color_idx", colorOptions, 0, iconResId = R.drawable.ic_palette) { idx ->
+             slidersOutline.visibility = if (idx == 2) View.VISIBLE else View.GONE
+        }
+        slidersOutline.visibility = if (prefs.getInt("outline_color_idx", 0) == 2) View.VISIBLE else View.GONE
 
         // Font Style: Def "Default" (0)
         bindSelector(R.id.section_font, getString(R.string.section_font), "font_style", listOf(
             getString(R.string.font_default), getString(R.string.font_serif), getString(R.string.font_monospace), getString(R.string.font_cursive), 
             getString(R.string.font_condensed), getString(R.string.font_condensed_light), getString(R.string.font_light), getString(R.string.font_medium), 
             getString(R.string.font_black), getString(R.string.font_thin), getString(R.string.font_smallcaps)
-        ), 0)
+        ), 0, iconResId = R.drawable.ic_text_format)
         
         // Enforce limit initially
         updateToggleAvailability()
@@ -259,14 +313,23 @@ class MainActivity : AppCompatActivity() {
         defSize: Float,
         minSize: Float,
         maxSize: Float,
-        isContent: Boolean = false
+        isContent: Boolean = false,
+        iconResId: Int? = null
     ): SwitchMaterial {
         val section = findViewById<View>(sectionId)
         val tvTitle = section.findViewById<TextView>(R.id.item_title)
+        val ivIcon = section.findViewById<android.widget.ImageView>(R.id.item_icon)
         val switch = section.findViewById<SwitchMaterial>(R.id.item_switch)
         val sizeContainer = section.findViewById<View>(R.id.size_container)
         val slider = section.findViewById<Slider>(R.id.item_slider)
         val tvSize = section.findViewById<TextView>(R.id.size_label)
+
+        if (iconResId != null) {
+            ivIcon.setImageResource(iconResId)
+            ivIcon.visibility = View.VISIBLE
+        } else {
+             ivIcon.visibility = View.GONE
+        }
 
         tvTitle.text = title
 
@@ -315,14 +378,23 @@ class MainActivity : AppCompatActivity() {
         title: String,
         prefShowKey: String,
         defShow: Boolean,
-        isContent: Boolean = false
+        isContent: Boolean = false,
+        iconResId: Int? = null
     ) {
         val section = findViewById<View>(sectionId)
         val tvTitle = section.findViewById<TextView>(R.id.item_title)
+        val ivIcon = section.findViewById<android.widget.ImageView>(R.id.item_icon)
         val switch = section.findViewById<SwitchMaterial>(R.id.item_switch)
         val sizeContainer = section.findViewById<View>(R.id.size_container)
 
         tvTitle.text = title
+        
+        if (iconResId != null) {
+            ivIcon.setImageResource(iconResId)
+            ivIcon.visibility = View.VISIBLE
+        } else {
+             ivIcon.visibility = View.GONE
+        }
         sizeContainer.visibility = View.GONE
 
         if (isContent) {
@@ -345,18 +417,75 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun bindSelector(
+    private fun bindSlider(
         sectionId: Int,
         title: String,
         prefKey: String,
-        options: List<String>,
-        defaultIdx: Int
+        defValue: Float,
+        minValue: Float,
+        maxValue: Float,
+        iconResId: Int? = null
     ) {
         val section = findViewById<View>(sectionId)
         val tvTitle = section.findViewById<TextView>(R.id.item_title)
+        val ivIcon = section.findViewById<android.widget.ImageView>(R.id.item_icon)
+        val switch = section.findViewById<SwitchMaterial>(R.id.item_switch)
+        val sizeContainer = section.findViewById<View>(R.id.size_container)
+        val slider = section.findViewById<Slider>(R.id.item_slider)
+        val tvSize = section.findViewById<TextView>(R.id.size_label)
+
+        tvTitle.text = title
+        
+        if (iconResId != null) {
+            ivIcon.setImageResource(iconResId)
+            ivIcon.visibility = View.VISIBLE
+        } else {
+             ivIcon.visibility = View.GONE
+        }
+        
+        // Hide switch, show slider container explicitly
+        switch.visibility = View.GONE
+        sizeContainer.visibility = View.VISIBLE
+
+        // Load Slider
+        val currentValue = prefs.getFloat(prefKey, defValue)
+        slider.valueFrom = minValue
+        slider.valueTo = maxValue
+        slider.value = currentValue.coerceIn(minValue, maxValue)
+        tvSize.text = "${currentValue.toInt()}%"
+
+        slider.addOnChangeListener { _, value, fromUser ->
+            if (fromUser) {
+                tvSize.text = "${value.toInt()}%"
+                prefs.edit().putFloat(prefKey, value).apply()
+                // Debounce?
+                updateWidget()
+            }
+        }
+    }
+
+    private fun bindSelector(
+        sectionId: Int, 
+        title: String, 
+        prefKey: String, 
+        options: List<String>, 
+        defaultIdx: Int,
+        iconResId: Int? = null,
+        onSelectionChanged: ((Int) -> Unit)? = null
+    ) {
+        val section = findViewById<View>(sectionId)
+        val tvTitle = section.findViewById<TextView>(R.id.item_title)
+        val ivIcon = section.findViewById<android.widget.ImageView>(R.id.item_icon)
         val autoCompleteTextView = section.findViewById<android.widget.AutoCompleteTextView>(R.id.item_value)
 
         tvTitle.text = title
+        
+        if (iconResId != null) {
+             ivIcon.setImageResource(iconResId)
+             ivIcon.visibility = View.VISIBLE
+        } else {
+             ivIcon.visibility = View.GONE
+        }
         
         val adapter = android.widget.ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, options)
         autoCompleteTextView.setAdapter(adapter)
@@ -379,24 +508,66 @@ class MainActivity : AppCompatActivity() {
             autoCompleteTextView.setOnItemClickListener { _, _, position, _ ->
                 prefs.edit().putInt(prefKey, position).apply()
                 updateWidget()
+                onSelectionChanged?.invoke(position)
+                section.requestFocus()
+                autoCompleteTextView.clearFocus()
             }
         }
+        android.util.Log.d("LWidget_Debug", "bindSelector: Title='$title', Key='$prefKey', Options=${options.take(3)}..., ViewID=$sectionId")
+    }
+
+    private fun bindColorSliders(sectionId: Int, prefPrefix: String): View {
+        val section = findViewById<View>(sectionId)
+        val sliderRed = section.findViewById<Slider>(R.id.slider_red)
+        val sliderGreen = section.findViewById<Slider>(R.id.slider_green)
+        val sliderBlue = section.findViewById<Slider>(R.id.slider_blue)
+        val valRed = section.findViewById<TextView>(R.id.val_red)
+        val valGreen = section.findViewById<TextView>(R.id.val_green)
+        val valBlue = section.findViewById<TextView>(R.id.val_blue)
+        val preview = section.findViewById<View>(R.id.color_preview)
+
+        val r = prefs.getInt("${prefPrefix}_r", 255)
+        val g = prefs.getInt("${prefPrefix}_g", 255)
+        val b = prefs.getInt("${prefPrefix}_b", 255)
+
+        fun updatePreview() {
+            val color = android.graphics.Color.rgb(sliderRed.value.toInt(), sliderGreen.value.toInt(), sliderBlue.value.toInt())
+            preview.backgroundTintList = android.content.res.ColorStateList.valueOf(color)
+            
+            valRed.text = sliderRed.value.toInt().toString()
+            valGreen.text = sliderGreen.value.toInt().toString()
+            valBlue.text = sliderBlue.value.toInt().toString()
+        }
+
+        sliderRed.value = r.toFloat()
+        sliderGreen.value = g.toFloat()
+        sliderBlue.value = b.toFloat()
+        updatePreview()
+
+        val listener = com.google.android.material.slider.Slider.OnChangeListener { _, _, fromUser ->
+            if (fromUser) {
+                updatePreview()
+                prefs.edit()
+                    .putInt("${prefPrefix}_r", sliderRed.value.toInt())
+                    .putInt("${prefPrefix}_g", sliderGreen.value.toInt())
+                    .putInt("${prefPrefix}_b", sliderBlue.value.toInt())
+                    .apply()
+                // Debounce widget update to avoid too many broadcasts? 
+                // For now, let's update on drag end if possible, or live. Live might be heavy.
+                // But user expects feedback.
+                updateWidget()
+            }
+        }
+
+        sliderRed.addOnChangeListener(listener)
+        sliderGreen.addOnChangeListener(listener)
+        sliderBlue.addOnChangeListener(listener)
+
+        return section
     }
 
     private fun checkLimit(): Boolean {
         // Global limit removed per user request
-        /*
-        val activeCount = contentSwitches.count { it.isChecked }
-        
-        if (activeCount > 5) {
-            com.google.android.material.snackbar.Snackbar.make(
-                findViewById(R.id.fab_update), 
-                getString(R.string.error_max_items), 
-                com.google.android.material.snackbar.Snackbar.LENGTH_SHORT
-            ).show()
-            return false
-        }
-        */
 
         // Subset Limit: Battery, Temp, Data, Storage (Max 3 allowed now to fit stack)
         val subsetCount = contentSwitches.count { 
@@ -425,22 +596,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateToggleAvailability() {
         // Limit removed
-        /*
-        val activeCount = contentSwitches.count { it.isChecked }
-        // Block others only if we reached 5
-        val isLimitReached = activeCount >= 5
-        
-        for (switch in contentSwitches) {
-            if (!switch.isChecked) {
-                // If limit maxed out, disable remaining
-                switch.isEnabled = !isLimitReached
-                switch.alpha = if (isLimitReached) 0.5f else 1.0f
-            } else {
-                switch.isEnabled = true
-                switch.alpha = 1.0f
-            }
-        }
-        */
         // Ensure all are enabled
         for (switch in contentSwitches) {
             switch.isEnabled = true

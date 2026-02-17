@@ -136,9 +136,7 @@ class AwidgetProvider : AppWidgetProvider() {
             val showEvents = prefs.getBoolean("show_events", true)
             val sizeEvents = prefs.getFloat("size_events", 14f)
 
-            val showOutline = prefs.getBoolean("show_outline", false)
             val useLightTheme = prefs.getBoolean("use_light_theme", false)
-            val isTransparent = prefs.getBoolean("transparent_background", false)
             
             val timeFormatIdx = prefs.getInt("time_format_idx", 0)
             val dateFormatIdx = prefs.getInt("date_format_idx", 0)
@@ -159,88 +157,106 @@ class AwidgetProvider : AppWidgetProvider() {
             val showNextAlarm = prefs.getBoolean("show_next_alarm", true)
             val sizeNextAlarm = prefs.getFloat("size_next_alarm", 14f)
 
-            val fontStyle = prefs.getInt("font_style", 0) 
+
+
+            val fontStyle = prefs.getInt("font_style", 0)
+            
+            val bgOpacity = prefs.getFloat("bg_opacity", 100f)
+            val textColorPrimaryIdx = prefs.getInt("text_color_primary_idx", 0)
+            val textColorSecondaryIdx = prefs.getInt("text_color_secondary_idx", 0)
 
             // --- Theme & Font Setup ---
-            fun getLayout(baseLayoutId: Int, fontIdx: Int): Int {
-                if (baseLayoutId == R.layout.widget_layout) {
-                     return when (fontIdx) {
-                         1 -> R.layout.widget_layout_serif
-                         2 -> R.layout.widget_layout_mono
-                         3 -> R.layout.widget_layout_cursive
-                         4 -> R.layout.widget_layout_condensed
-                         5 -> R.layout.widget_layout_condensed_light
-                         6 -> R.layout.widget_layout_light
-                         7 -> R.layout.widget_layout_medium
-                         8 -> R.layout.widget_layout_black
-                         9 -> R.layout.widget_layout_thin
-                         10 -> R.layout.widget_layout_smallcaps
-                         else -> R.layout.widget_layout
-                     }
-                }
-                if (baseLayoutId == R.layout.widget_layout_transparent_dark) {
-                     return when (fontIdx) {
-                         1 -> R.layout.widget_layout_transparent_dark_serif
-                         2 -> R.layout.widget_layout_transparent_dark_mono
-                         3 -> R.layout.widget_layout_transparent_dark_cursive
-                         4 -> R.layout.widget_layout_transparent_dark_condensed
-                         5 -> R.layout.widget_layout_transparent_dark_condensed_light
-                         6 -> R.layout.widget_layout_transparent_dark_light
-                         7 -> R.layout.widget_layout_transparent_dark_medium
-                         8 -> R.layout.widget_layout_transparent_dark_black
-                         9 -> R.layout.widget_layout_transparent_dark_thin
-                         10 -> R.layout.widget_layout_transparent_dark_smallcaps
-                         else -> R.layout.widget_layout_transparent_dark
-                     }
-                }
-                if (baseLayoutId == R.layout.widget_layout_transparent_light) {
-                     return when (fontIdx) {
-                         1 -> R.layout.widget_layout_transparent_light_serif
-                         2 -> R.layout.widget_layout_transparent_light_mono
-                         3 -> R.layout.widget_layout_transparent_light_cursive
-                         4 -> R.layout.widget_layout_transparent_light_condensed
-                         5 -> R.layout.widget_layout_transparent_light_condensed_light
-                         6 -> R.layout.widget_layout_transparent_light_light
-                         7 -> R.layout.widget_layout_transparent_light_medium
-                         8 -> R.layout.widget_layout_transparent_light_black
-                         9 -> R.layout.widget_layout_transparent_light_thin
-                         10 -> R.layout.widget_layout_transparent_light_smallcaps
-                         else -> R.layout.widget_layout_transparent_light
-                     }
-                }
-                return baseLayoutId
+            fun getLayout(fontIdx: Int): Int {
+                 return when (fontIdx) {
+                     1 -> R.layout.widget_layout_serif
+                     2 -> R.layout.widget_layout_mono
+                     3 -> R.layout.widget_layout_cursive
+                     4 -> R.layout.widget_layout_condensed
+                     5 -> R.layout.widget_layout_condensed_light
+                     6 -> R.layout.widget_layout_light
+                     7 -> R.layout.widget_layout_medium
+                     8 -> R.layout.widget_layout_black
+                     9 -> R.layout.widget_layout_thin
+                     10 -> R.layout.widget_layout_smallcaps
+                     else -> R.layout.widget_layout
+                 }
             }
 
-            val baseLayoutId = if (isTransparent) {
-                if (useLightTheme) R.layout.widget_layout_transparent_light else R.layout.widget_layout_transparent_dark
-            } else {
-                R.layout.widget_layout
-            }
-            
-            val layoutId = getLayout(baseLayoutId, fontStyle)
+            val layoutId = getLayout(fontStyle)
 
             val views = RemoteViews(context.packageName, layoutId)
 
-            if (!isTransparent) {
-                val bgRes = if (useLightTheme) {
-                    if (showOutline) R.drawable.background_glow_light else R.drawable.background_light
-                } else {
-                    if (showOutline) R.drawable.background_glow else R.drawable.background_dark
-                }
-                views.setInt(R.id.widget_root, "setBackgroundResource", bgRes)
-            }
+            // --- Background & Outline Application ---
+            val outlineColorIdx = prefs.getInt("outline_color_idx", 0)
+             
+            // Background
+            views.setImageViewResource(R.id.widget_background, R.drawable.widget_bg_fill)
+            // Using ColorFilter to tint the white shape
+            views.setInt(R.id.widget_background, "setColorFilter", if (useLightTheme) android.graphics.Color.WHITE else android.graphics.Color.parseColor("#212121")) 
+            
+            val alpha255 = (bgOpacity * 255 / 100).toInt().coerceIn(0, 255)
+            views.setInt(R.id.widget_background, "setImageAlpha", alpha255)
 
-            val primaryColor = if (isTransparent) {
-                if (useLightTheme) android.graphics.Color.BLACK else android.graphics.Color.WHITE
-            } else {
-                if (useLightTheme) context.getColor(R.color.widget_text_light) else android.graphics.Color.WHITE
+            // Outline
+            // Resolve outline using same logic (0=Default, 1=System, 2=Custom)
+            fun resolveOutlineColor(idx: Int): Int {
+                 return when (idx) {
+                     0 -> context.getColor(R.color.widget_outline) // Default
+                     1 -> if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                              context.getColor(android.R.color.system_accent1_500)
+                          } else {
+                              android.graphics.Color.CYAN
+                          }
+                     2 -> {
+                          val r = prefs.getInt("outline_color_r", 255)
+                          val g = prefs.getInt("outline_color_g", 255)
+                          val b = prefs.getInt("outline_color_b", 255)
+                          android.graphics.Color.rgb(r, g, b)
+                     }
+                     else -> context.getColor(R.color.widget_outline)
+                 }
             }
+            
+            val outlineColor = resolveOutlineColor(outlineColorIdx)
+            views.setImageViewResource(R.id.widget_outline, R.drawable.widget_bg_outline)
+            views.setViewVisibility(R.id.widget_outline, android.view.View.VISIBLE)
+            views.setInt(R.id.widget_outline, "setColorFilter", outlineColor)
+            // Use same alpha as background? Or opaque? Usually outline is opaque or matches? 
+            // "Background Transparency" usually refers to the panel fill. Let's keep outline opaque for now or maybe full opacity.
+            views.setInt(R.id.widget_outline, "setImageAlpha", 255) // Ensure opaque stroke
 
-            val secondaryColor = if (isTransparent) {
-                if (useLightTheme) android.graphics.Color.BLACK else android.graphics.Color.WHITE
-            } else {
-                if (useLightTheme) context.getColor(R.color.widget_text_secondary_light) else android.graphics.Color.parseColor("#CCFFFFFF")
+            // Resolve Colors
+            fun resolveColor(idx: Int, isPrimary: Boolean, isLight: Boolean): Int {
+                 return when (idx) {
+                     0 -> { // Default
+                         if (isPrimary) {
+                             if (isLight) context.getColor(R.color.widget_text_light) else android.graphics.Color.WHITE
+                         } else {
+                             if (isLight) context.getColor(R.color.widget_text_secondary_light) else android.graphics.Color.parseColor("#CCFFFFFF")
+                         }
+                     }
+                     1 -> if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                              context.getColor(android.R.color.system_accent1_500)
+                          } else {
+                              android.graphics.Color.CYAN
+                          }
+                     2 -> {
+                         val prefix = if (isPrimary) "text_color_primary" else "text_color_secondary"
+                         val r = prefs.getInt("${prefix}_r", 255)
+                         val g = prefs.getInt("${prefix}_g", 255)
+                         val b = prefs.getInt("${prefix}_b", 255)
+                         android.graphics.Color.rgb(r, g, b)
+                     }
+                     else -> if (isPrimary) android.graphics.Color.WHITE else android.graphics.Color.parseColor("#CCFFFFFF")
+                 }
             }
+            
+            // Fix Material You colors better later if needed. For now use hardcoded fallbacks or basic system colors if S+
+            // Actually, let's stick to safe defaults for now to avoid crashes on old android if any (minSdk?)
+            // Assuming minSdk is recent enough or we check SDK_INT.
+            
+            val primaryColor = resolveColor(textColorPrimaryIdx, true, useLightTheme)
+            val secondaryColor = resolveColor(textColorSecondaryIdx, false, useLightTheme)
 
             // --- Apply Time ---
             views.setViewVisibility(R.id.clock_time, if (showTime) android.view.View.VISIBLE else android.view.View.GONE)
@@ -259,7 +275,7 @@ class AwidgetProvider : AppWidgetProvider() {
             // --- World Clock ---
             views.setViewVisibility(R.id.text_world_clock, if (showWorldClock) android.view.View.VISIBLE else android.view.View.GONE)
             if (showWorldClock) {
-                loadWorldClock(context, views, sizeWorldClock, secondaryColor, worldClockZoneStr, timeFormat12.contains("a"))
+                loadWorldClock(views, sizeWorldClock, secondaryColor, worldClockZoneStr, timeFormat12.contains("a"))
             }
 
             // --- Apply Date ---
@@ -274,6 +290,10 @@ class AwidgetProvider : AppWidgetProvider() {
                 else -> "EEEE, MMMM dd" to "EEEE, MMMM dd"
             }
             views.setCharSequence(R.id.clock_date, "setFormat12Hour", dateFormat12)
+            views.setCharSequence(R.id.clock_date, "setFormat24Hour", dateFormat24)
+            
+            // Tighten spacing slightly
+             views.setFloat(R.id.clock_date, "setLetterSpacing", -0.05f)
             views.setCharSequence(R.id.clock_date, "setFormat24Hour", dateFormat24)
 
             // --- Apply Battery & Temp ---
@@ -312,7 +332,7 @@ class AwidgetProvider : AppWidgetProvider() {
             if (showStorage) {
                 views.setTextViewTextSize(R.id.text_storage, android.util.TypedValue.COMPLEX_UNIT_SP, sizeStorage)
                 views.setTextColor(R.id.text_storage, secondaryColor)
-                updateStorageStats(context, views)
+                updateStorageStats(views)
             }
             
             // --- Click Actions ---
@@ -345,7 +365,7 @@ class AwidgetProvider : AppWidgetProvider() {
             if (showEvents) {
                 loadCalendarEvents(context, views, sizeEvents, primaryColor, secondaryColor)
             } else if (showTasks) {
-                loadTasks(context, views, sizeTasks, primaryColor, secondaryColor)
+                loadTasks(context, views, sizeTasks, primaryColor)
             }
 
             // --- Next Alarm ---
@@ -411,12 +431,12 @@ class AwidgetProvider : AppWidgetProvider() {
                 calSelection, null, null
             )?.use { cursor ->
                 val idIdx = cursor.getColumnIndex(android.provider.CalendarContract.Calendars._ID)
-                val typeIdx = cursor.getColumnIndex(android.provider.CalendarContract.Calendars.ACCOUNT_TYPE)
+                // val typeIdx = cursor.getColumnIndex(android.provider.CalendarContract.Calendars.ACCOUNT_TYPE)
                 val nameIdx = cursor.getColumnIndex(android.provider.CalendarContract.Calendars.ACCOUNT_NAME)
                 val displayIdx = cursor.getColumnIndex(android.provider.CalendarContract.Calendars.CALENDAR_DISPLAY_NAME)
                 while (cursor.moveToNext()) {
                     val calId = cursor.getLong(idIdx)
-                    val accountType = cursor.getString(typeIdx) ?: ""
+                    // val accountType = cursor.getString(typeIdx) ?: ""
                     val accountName = cursor.getString(nameIdx) ?: ""
                     val displayName = cursor.getString(displayIdx) ?: ""
                     
@@ -534,7 +554,7 @@ class AwidgetProvider : AppWidgetProvider() {
             }
         }
 
-        private fun loadTasks(context: Context, views: RemoteViews, textSizeSp: Float, primaryColor: Int, secondaryColor: Int) {
+        private fun loadTasks(context: Context, views: RemoteViews, textSizeSp: Float, primaryColor: Int) {
             val eventViews = listOf(
                 R.id.text_event_1, R.id.text_event_2, R.id.text_event_3,
                 R.id.text_event_4, R.id.text_event_5, R.id.text_event_6,
@@ -552,9 +572,10 @@ class AwidgetProvider : AppWidgetProvider() {
                  return
             }
 
+
             val taskUri = android.net.Uri.parse("content://org.tasks/tasks")
-            // Try simpler selection or none to test
-            val selection = "completed = 0" 
+            // Selection appears to be ignored by provider, so we select all and filter manually
+            val selection = null
             
             try {
                 context.contentResolver.query(taskUri, null, selection, null, "due ASC")?.use { cursor ->
@@ -573,6 +594,17 @@ class AwidgetProvider : AppWidgetProvider() {
 
                      var i = 0
                      while (cursor.moveToNext() && i < eventViews.size) {
+                         // Manual Filtering: Provider might ignore selection
+                         val completed = cursor.getString(cursor.getColumnIndex("completed"))
+                         val deleted = cursor.getString(cursor.getColumnIndex("deleted"))
+                         
+                         val isCompleted = completed != null && completed != "0"
+                         val isDeleted = deleted != null && deleted != "0"
+                         
+                         if (isCompleted || isDeleted) {
+                             continue
+                         }
+
                          if (titleIdx != -1) {
                              val title = cursor.getString(titleIdx) ?: "No Title"
                              
@@ -606,15 +638,13 @@ class AwidgetProvider : AppWidgetProvider() {
             // views.setViewVisibility(eventViews[0], android.view.View.VISIBLE)
         }
 
-        private fun loadWorldClock(context: Context, views: RemoteViews, textSizeSp: Float, textColor: Int, zoneIdStr: String, is12Hour: Boolean) {
+        private fun loadWorldClock(views: RemoteViews, textSizeSp: Float, textColor: Int, zoneIdStr: String, is12Hour: Boolean) {
              try {
                  val zoneId = ZoneId.of(zoneIdStr)
                  val zdt = java.time.ZonedDateTime.now(zoneId)
                  val pattern = if (is12Hour) "h:mm a" else "H:mm"
                  val formatter = DateTimeFormatter.ofPattern(pattern, Locale.getDefault())
                  val timeStr = zdt.format(formatter)
-                 
-
                  
                  // If label is too long, maybe truncate? For now, let it be.
                  // Format: "10:30 AM" (Time only, subtle)
@@ -648,7 +678,7 @@ class AwidgetProvider : AppWidgetProvider() {
             }
         }
 
-        private fun updateStorageStats(context: Context, views: RemoteViews) {
+        private fun updateStorageStats(views: RemoteViews) {
              try {
                  val path = android.os.Environment.getDataDirectory()
                  val stat = android.os.StatFs(path.path)

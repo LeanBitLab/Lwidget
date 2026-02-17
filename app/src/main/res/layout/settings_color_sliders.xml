@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="8dp"
+    android:clipToPadding="false"
+    android:visibility="gone">
+
+    <!-- Preview Card (Left) -->
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginEnd="16dp"
+        android:layout_gravity="center_vertical"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="2dp"
+        app:strokeWidth="1dp"
+        app:strokeColor="?attr/colorOutlineVariant">
+        
+        <View
+            android:id="@+id/color_preview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#FFFFFF"
+            android:backgroundTint="#FFFFFF"/>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Sliders Container (Right) -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center_vertical">
+
+        <!-- Red Slider -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            <TextView
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:text="R"
+                android:textStyle="bold"
+                android:textSize="12sp"
+                android:gravity="center"/>
+            <com.google.android.material.slider.Slider
+                android:id="@+id/slider_red"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:valueFrom="0"
+                android:valueTo="255"
+                android:stepSize="1"
+                app:labelBehavior="gone"/>
+        </LinearLayout>
+
+        <!-- Green Slider -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="-8dp">
+            <TextView
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:text="G"
+                android:textStyle="bold"
+                android:textSize="12sp"
+                android:gravity="center"/>
+            <com.google.android.material.slider.Slider
+                android:id="@+id/slider_green"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:valueFrom="0"
+                android:valueTo="255"
+                android:stepSize="1"
+                app:labelBehavior="gone"/>
+        </LinearLayout>
+
+        <!-- Blue Slider -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="-8dp">
+            <TextView
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:text="B"
+                android:textStyle="bold"
+                android:textSize="12sp"
+                android:gravity="center"/>
+            <com.google.android.material.slider.Slider
+                android:id="@+id/slider_blue"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:valueFrom="0"
+                android:valueTo="255"
+                android:stepSize="1"
+                app:labelBehavior="gone"/>
+        </LinearLayout>
+
+    </LinearLayout>
+    
+    <!-- Values Column (Far Right) -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_vertical"
+        android:layout_marginStart="4dp">
+         <TextView
+            android:id="@+id/val_red"
+            android:layout_width="24dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="255"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="10sp"
+            android:gravity="center"
+            android:fontFamily="monospace"/>
+         <TextView
+            android:id="@+id/val_green"
+            android:layout_width="24dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="255"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="10sp"
+            android:gravity="center"
+            android:fontFamily="monospace"/>
+         <TextView
+            android:id="@+id/val_blue"
+            android:layout_width="24dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="255"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="10sp"
+            android:gravity="center"
+            android:fontFamily="monospace"/>
+    </LinearLayout>
+
+</LinearLayout>

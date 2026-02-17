@@ -11,6 +11,14 @@
     android:paddingBottom="12dp"
     android:background="?attr/selectableItemBackground">
 
+    <ImageView
+        android:id="@+id/item_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="16dp"
+        android:contentDescription="Icon"
+        app:tint="?attr/colorPrimary"/>
+
     <TextView
         android:id="@+id/item_title"
         android:layout_width="0dp"
