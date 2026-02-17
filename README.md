@@ -39,6 +39,9 @@
 -   **Privacy Focused**: No internet permission required.
 -   **Accent Outline**: Adds a stylish border to the widget.
 -   **Improved Settings**: Refined settings interface for better usability.
+-   **Manual Transparency**: Fine-tune the widget's background transparency.
+-   **Custom Colors**: Choose between Default, System Accent, or Custom colors for text.
+-   **Outline Color**: Customize the widget outline color.
 
 ## Download
 
