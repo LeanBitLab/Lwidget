@@ -114,11 +114,15 @@ class MainActivity : AppCompatActivity() {
         contentSwitches.clear()
 
         // Time: Def True, 48sp
-        bindSection(R.id.section_time, getString(R.string.section_time), "show_time", true, "size_time", 48f, 12f, 120f, isContent = true, iconResId = R.drawable.ic_time)
+        bindSection(R.id.section_time, getString(R.string.section_time), "show_time", true, "size_time", 48f, 12f, 120f, isContent = true, iconResId = R.drawable.ic_time) { isChecked ->
+             findViewById<View>(R.id.section_time_format).visibility = if (isChecked) View.VISIBLE else View.GONE
+        }
         bindSelector(R.id.section_time_format, getString(R.string.section_time_format), "time_format_idx", listOf(getString(R.string.format_12h), getString(R.string.format_24h)), 0, iconResId = R.drawable.ic_time) 
         
         // World Clock: Def False, 18sp (New)
-        bindSection(R.id.section_world_clock, getString(R.string.section_world_clock), "show_world_clock", false, "size_world_clock", 18f, 10f, 64f, isContent = true, iconResId = R.drawable.ic_world)
+        bindSection(R.id.section_world_clock, getString(R.string.section_world_clock), "show_world_clock", false, "size_world_clock", 18f, 10f, 64f, isContent = true, iconResId = R.drawable.ic_world) { isChecked ->
+             findViewById<View>(R.id.section_world_clock_zone).visibility = if (isChecked) View.VISIBLE else View.GONE
+        }
 
         
         val zoneIds = java.time.ZoneId.getAvailableZoneIds().sorted()
@@ -128,7 +132,9 @@ class MainActivity : AppCompatActivity() {
         bindSection(R.id.section_next_alarm, getString(R.string.section_next_alarm), "show_next_alarm", true, "size_next_alarm", 14f, 10f, 48f, isContent = true, iconResId = R.drawable.ic_alarm)
 
         // Date: Def True, 14sp
-        bindSection(R.id.section_date, getString(R.string.section_date), "show_date", true, "size_date", 14f, 10f, 64f, isContent = true, iconResId = R.drawable.ic_date)
+        bindSection(R.id.section_date, getString(R.string.section_date), "show_date", true, "size_date", 14f, 10f, 64f, isContent = true, iconResId = R.drawable.ic_date) { isChecked ->
+             findViewById<View>(R.id.section_date_format).visibility = if (isChecked) View.VISIBLE else View.GONE
+        }
         bindSelector(R.id.section_date_format, getString(R.string.section_date_format), "date_format_idx", listOf(getString(R.string.date_format_full), getString(R.string.date_format_short), getString(R.string.date_format_numeric)), 0, iconResId = R.drawable.ic_date)
         
         // Battery: Def True, 48sp
@@ -254,7 +260,19 @@ class MainActivity : AppCompatActivity() {
 
 
         // Outline: Def False (Renamed from Glow)
-        bindToggle(R.id.section_outline, getString(R.string.section_outline), "show_outline", false, iconResId = R.drawable.ic_outline)
+        bindToggle(R.id.section_outline, getString(R.string.section_outline), "show_outline", false, iconResId = R.drawable.ic_outline) { isChecked ->
+             val outlineColorSection = findViewById<View>(R.id.section_outline_color)
+             val sliders = findViewById<View>(R.id.sliders_outline)
+             val idx = prefs.getInt("outline_color_idx", 0)
+             
+             if (isChecked) {
+                 outlineColorSection.visibility = View.VISIBLE
+                 sliders.visibility = if (idx == 2) View.VISIBLE else View.GONE
+             } else {
+                 outlineColorSection.visibility = View.GONE
+                 sliders.visibility = View.GONE
+             }
+        }
 
         // Light Theme: Def False
         bindToggle(R.id.section_theme, getString(R.string.section_theme), "use_light_theme", false, iconResId = R.drawable.ic_sun)
@@ -314,7 +332,8 @@ class MainActivity : AppCompatActivity() {
         minSize: Float,
         maxSize: Float,
         isContent: Boolean = false,
-        iconResId: Int? = null
+        iconResId: Int? = null,
+        onChanged: ((Boolean) -> Unit)? = null
     ): SwitchMaterial {
         val section = findViewById<View>(sectionId)
         val tvTitle = section.findViewById<TextView>(R.id.item_title)
@@ -341,6 +360,7 @@ class MainActivity : AppCompatActivity() {
         val isShown = prefs.getBoolean(prefShowKey, defShow)
         switch.isChecked = isShown
         sizeContainer.visibility = if (isShown) View.VISIBLE else View.GONE
+        onChanged?.invoke(isShown)
 
         // Common Listener (can be overridden returned switch)
         switch.setOnCheckedChangeListener { _, isChecked ->
@@ -350,6 +370,7 @@ class MainActivity : AppCompatActivity() {
             }
             prefs.edit().putBoolean(prefShowKey, isChecked).apply()
             sizeContainer.visibility = if (isChecked) View.VISIBLE else View.GONE
+            onChanged?.invoke(isChecked)
             updateWidget()
             if (isContent) updateToggleAvailability()
         }
@@ -379,7 +400,8 @@ class MainActivity : AppCompatActivity() {
         prefShowKey: String,
         defShow: Boolean,
         isContent: Boolean = false,
-        iconResId: Int? = null
+        iconResId: Int? = null,
+        onChanged: ((Boolean) -> Unit)? = null
     ) {
         val section = findViewById<View>(sectionId)
         val tvTitle = section.findViewById<TextView>(R.id.item_title)
@@ -404,6 +426,7 @@ class MainActivity : AppCompatActivity() {
         // Load Toggle
         val isShown = prefs.getBoolean(prefShowKey, defShow)
         switch.isChecked = isShown
+        onChanged?.invoke(isShown)
 
         switch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked && !checkLimit()) {
@@ -411,6 +434,7 @@ class MainActivity : AppCompatActivity() {
                 return@setOnCheckedChangeListener
             }
             prefs.edit().putBoolean(prefShowKey, isChecked).apply()
+            onChanged?.invoke(isChecked)
             updateWidget()
             if (isContent) updateToggleAvailability()
         }

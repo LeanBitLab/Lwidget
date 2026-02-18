@@ -217,9 +217,10 @@ class AwidgetProvider : AppWidgetProvider() {
                  }
             }
             
+            val showOutline = prefs.getBoolean("show_outline", false)
             val outlineColor = resolveOutlineColor(outlineColorIdx)
             views.setImageViewResource(R.id.widget_outline, R.drawable.widget_bg_outline)
-            views.setViewVisibility(R.id.widget_outline, android.view.View.VISIBLE)
+            views.setViewVisibility(R.id.widget_outline, if (showOutline) android.view.View.VISIBLE else android.view.View.GONE)
             views.setInt(R.id.widget_outline, "setColorFilter", outlineColor)
             // Use same alpha as background? Or opaque? Usually outline is opaque or matches? 
             // "Background Transparency" usually refers to the panel fill. Let's keep outline opaque for now or maybe full opacity.
