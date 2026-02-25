@@ -7,6 +7,10 @@
     <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="org.tasks.permission.READ_TASKS" />
     <uses-permission android:name="com.todoroo.astrid.READ" />
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_HEALTH" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <!-- Required for Android 11+ (API 30) to see these packages -->
     <queries>
@@ -58,11 +62,24 @@
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="com.leanbitlab.lwidget.ACTION_BATTERY_UPDATE" /> 
+                <action android:name="com.leanbitlab.lwidget.ACTION_STEP_UPDATE" /> 
+                <action android:name="android.app.action.NEXT_ALARM_CLOCK_CHANGED" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.PROVIDER_CHANGED" />
+                <data android:scheme="content" android:host="com.android.calendar" />
+                <data android:scheme="content" android:host="org.tasks" />
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/awidget_info" />
         </receiver>
+
+        <service
+            android:name=".StepCounterService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="health" />
 
     </application>
 

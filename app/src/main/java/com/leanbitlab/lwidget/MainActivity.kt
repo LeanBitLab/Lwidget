@@ -34,7 +34,6 @@ import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.slider.Slider
 import com.google.android.material.switchmaterial.SwitchMaterial
-
 class MainActivity : AppCompatActivity() {
 
     private lateinit var prefs: SharedPreferences
@@ -47,8 +46,37 @@ class MainActivity : AppCompatActivity() {
 
         prefs = getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
 
-        setupPermissions()
+        checkAllPermissions()
         setupSections()
+        
+        // Setup Changelog
+        val versionName = try {
+            packageManager.getPackageInfo(packageName, 0).versionName
+        } catch (e: Exception) {
+            "Unknown"
+        }
+        val tvVersion = findViewById<TextView>(R.id.tv_changelog_version)
+        tvVersion.text = getString(R.string.changelog_version, versionName)
+
+        val cardChangelog = findViewById<MaterialCardView>(R.id.card_changelog)
+        val changelogContent = findViewById<View>(R.id.changelog_expandable_content)
+        val ivChangelogExpand = findViewById<android.widget.ImageView>(R.id.iv_changelog_expand)
+        cardChangelog.setOnClickListener {
+            val isCurrentlyVisible = changelogContent.visibility == View.VISIBLE
+            changelogContent.visibility = if (isCurrentlyVisible) View.GONE else View.VISIBLE
+            ivChangelogExpand.animate().rotation(if (isCurrentlyVisible) 0f else 180f).setDuration(200).start()
+        }
+
+        findViewById<View>(R.id.tv_github_link).setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW, android.net.Uri.parse("https://github.com/LeanBitLab/Lwidget"))
+            startActivity(intent)
+        }
+
+        findViewById<View>(R.id.tv_privacy_policy).setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW, android.net.Uri.parse("https://github.com/LeanBitLab/Lwidget/wiki/Privacy-Policy"))
+            startActivity(intent)
+        }
+
         
         findViewById<ExtendedFloatingActionButton>(R.id.fab_update).setOnClickListener {
             updateWidget()
@@ -78,30 +106,68 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    private fun setupPermissions() {
-        val cardPermission = findViewById<MaterialCardView>(R.id.card_permission)
-        val btnGrant = findViewById<View>(R.id.btn_grant_permission)
+    private fun checkAllPermissions() {
+        val cardPermissionList = findViewById<View>(R.id.card_permission_list)
+        var widgetNeedsUpdate = false
 
-        fun checkPerm() {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
-                cardPermission.visibility = View.VISIBLE
-            } else {
-                cardPermission.visibility = View.GONE
+        // Check Calendar
+        if (prefs.getBoolean("show_events", false) && ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+            prefs.edit().putBoolean("show_events", false).apply()
+            findViewById<View>(R.id.section_events).findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.item_switch).isChecked = false
+            findViewById<View>(R.id.section_events).findViewById<View>(R.id.size_container).visibility = View.GONE
+            widgetNeedsUpdate = true
+        }
+
+        // Check Tasks
+        if (prefs.getBoolean("show_tasks", false) && ContextCompat.checkSelfPermission(this, "org.tasks.permission.READ_TASKS") != PackageManager.PERMISSION_GRANTED) {
+             prefs.edit().putBoolean("show_tasks", false).apply()
+             findViewById<View>(R.id.section_tasks).findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.item_switch).isChecked = false
+             findViewById<View>(R.id.section_tasks).findViewById<View>(R.id.size_container).visibility = View.GONE
+             widgetNeedsUpdate = true
+        }
+
+        // Check Steps
+        var stepMissing = false
+        if (prefs.getBoolean("show_steps", false)) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q && ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED) {
+                stepMissing = true
+            }
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU && ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                stepMissing = true
             }
         }
-
-        btnGrant.setOnClickListener {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_CALENDAR), 100)
+        if (stepMissing) {
+             prefs.edit().putBoolean("show_steps", false).apply()
+             findViewById<View>(R.id.section_steps).findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.item_switch).isChecked = false
+             findViewById<View>(R.id.section_steps).findViewById<View>(R.id.size_container).visibility = View.GONE
+             widgetNeedsUpdate = true
         }
 
-        checkPerm()
+        // Check Data Usage
+        if (prefs.getBoolean("show_data_usage", false) && !hasUsageStatsPermission()) {
+            prefs.edit().putBoolean("show_data_usage", false).apply()
+            findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.section_data).isChecked = false
+            findViewById<View>(R.id.section_data).findViewById<View>(R.id.size_container).visibility = View.GONE
+            widgetNeedsUpdate = true
+        }
+
+        cardPermissionList.visibility = View.GONE
+
+        if (widgetNeedsUpdate) {
+            updateWidget()
+            updateToggleAvailability()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Re-check permissions when returning (especially for Data Usage settings)
+        checkAllPermissions()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == 100) {
-            setupPermissions() // Re-check visibility
-        }
+        checkAllPermissions()
         if (requestCode == 101) {
              // Task permission result - trigger update
              if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -113,14 +179,14 @@ class MainActivity : AppCompatActivity() {
     private fun setupSections() {
         contentSwitches.clear()
 
-        // Time: Def True, 48sp
-        bindSection(R.id.section_time, getString(R.string.section_time), "show_time", true, "size_time", 48f, 12f, 120f, isContent = true, iconResId = R.drawable.ic_time) { isChecked ->
+        // Time: Def True, 64sp
+        bindSection(R.id.section_time, getString(R.string.section_time), "show_time", true, "size_time", 64f, 12f, 120f, isContent = true, iconResId = R.drawable.ic_time) { isChecked ->
              findViewById<View>(R.id.section_time_format).visibility = if (isChecked) View.VISIBLE else View.GONE
         }
         bindSelector(R.id.section_time_format, getString(R.string.section_time_format), "time_format_idx", listOf(getString(R.string.format_12h), getString(R.string.format_24h)), 0, iconResId = R.drawable.ic_time) 
         
         // World Clock: Def False, 18sp (New)
-        bindSection(R.id.section_world_clock, getString(R.string.section_world_clock), "show_world_clock", false, "size_world_clock", 18f, 10f, 64f, isContent = true, iconResId = R.drawable.ic_world) { isChecked ->
+        bindSection(R.id.section_world_clock, getString(R.string.section_world_clock), "show_world_clock", false, "size_world_clock", 18f, 10f, 32f, isContent = true, iconResId = R.drawable.ic_world) { isChecked ->
              findViewById<View>(R.id.section_world_clock_zone).visibility = if (isChecked) View.VISIBLE else View.GONE
         }
 
@@ -129,28 +195,101 @@ class MainActivity : AppCompatActivity() {
         bindSelector(R.id.section_world_clock_zone, "Timezone", "world_clock_zone_str", zoneIds, zoneIds.indexOf("UTC").takeIf { it >= 0 } ?: 0, iconResId = R.drawable.ic_world)
         
         // Next Alarm: Def True, 14sp (New) - Moved up
-        bindSection(R.id.section_next_alarm, getString(R.string.section_next_alarm), "show_next_alarm", true, "size_next_alarm", 14f, 10f, 48f, isContent = true, iconResId = R.drawable.ic_alarm)
+        bindSection(R.id.section_next_alarm, getString(R.string.section_next_alarm), "show_next_alarm", true, "size_next_alarm", 14f, 10f, 24f, isContent = true, iconResId = R.drawable.ic_alarm)
 
         // Date: Def True, 14sp
-        bindSection(R.id.section_date, getString(R.string.section_date), "show_date", true, "size_date", 14f, 10f, 64f, isContent = true, iconResId = R.drawable.ic_date) { isChecked ->
+        bindSection(R.id.section_date, getString(R.string.section_date), "show_date", true, "size_date", 14f, 10f, 24f, isContent = true, iconResId = R.drawable.ic_date) { isChecked ->
              findViewById<View>(R.id.section_date_format).visibility = if (isChecked) View.VISIBLE else View.GONE
         }
         bindSelector(R.id.section_date_format, getString(R.string.section_date_format), "date_format_idx", listOf(getString(R.string.date_format_full), getString(R.string.date_format_short), getString(R.string.date_format_numeric)), 0, iconResId = R.drawable.ic_date)
         
-        // Battery: Def True, 48sp
-        bindSection(R.id.section_battery, getString(R.string.section_battery), "show_battery", true, "size_battery", 48f, 12f, 120f, isContent = true, iconResId = R.drawable.ic_battery).tag = "battery"
+        // Battery: Def True, 24sp
+        bindSection(R.id.section_battery, getString(R.string.section_battery), "show_battery", true, "size_battery", 24f, 12f, 74f, isContent = true, iconResId = R.drawable.ic_battery).tag = "battery"
         
         // Temp: Def True, 18sp
-        bindSection(R.id.section_temp, getString(R.string.section_temp), "show_temp", true, "size_temp", 18f, 10f, 64f, isContent = true, iconResId = R.drawable.ic_temp).tag = "temp"
+        bindSection(R.id.section_temp, getString(R.string.section_temp), "show_temp", true, "size_temp", 18f, 10f, 32f, isContent = true, iconResId = R.drawable.ic_temp).tag = "temp"
 
         // Data Usage: Def False, 14sp (New)
-        val dataSwitch = bindSection(R.id.section_data, getString(R.string.section_data_usage), "show_data_usage", false, "size_data", 14f, 10f, 48f, isContent = true, iconResId = R.drawable.ic_data)
+        val dataSwitch = bindSection(R.id.section_data, getString(R.string.section_data_usage), "show_data_usage", false, "size_data", 14f, 10f, 24f, isContent = true, iconResId = R.drawable.ic_data)
         dataSwitch.tag = "data"
+        dataSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                if (!hasUsageStatsPermission()) {
+                    try {
+                        startActivity(Intent(android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS))
+                    } catch (e: Exception) { }
+                    dataSwitch.isChecked = false
+                    return@setOnCheckedChangeListener
+                }
+                if (!checkLimit()) {
+                    dataSwitch.isChecked = false
+                    return@setOnCheckedChangeListener
+                }
+            }
+            prefs.edit().putBoolean("show_data_usage", isChecked).apply()
+            findViewById<View>(R.id.section_data).findViewById<View>(R.id.size_container).visibility = if (isChecked) View.VISIBLE else View.GONE
+            updateWidget()
+            updateToggleAvailability()
+        }
 
         // Storage: Def False, 14sp (New)
-        val storageSwitch = bindSection(R.id.section_storage, getString(R.string.section_storage), "show_storage", false, "size_storage", 14f, 10f, 48f, isContent = true, iconResId = R.drawable.ic_storage)
+        val storageSwitch = bindSection(R.id.section_storage, getString(R.string.section_storage), "show_storage", true, "size_storage", 14f, 10f, 24f, isContent = true, iconResId = R.drawable.ic_storage)
         storageSwitch.tag = "storage"
-        
+
+        val stepsSwitch = bindSection(R.id.section_steps, getString(R.string.section_steps), "show_steps", false, "size_steps", 14f, 10f, 24f, isContent = true, iconResId = R.drawable.ic_steps)
+        stepsSwitch.tag = "steps"
+        stepsSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                // Check permissions (ACTIVITY_RECOGNITION on API 29+, POST_NOTIFICATIONS on API 33+)
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                    val neededPermissions = mutableListOf<String>()
+                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED) {
+                        neededPermissions.add(Manifest.permission.ACTIVITY_RECOGNITION)
+                    }
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU &&
+                        ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                        neededPermissions.add(Manifest.permission.POST_NOTIFICATIONS)
+                    }
+                    if (neededPermissions.isNotEmpty()) {
+                        ActivityCompat.requestPermissions(this, neededPermissions.toTypedArray(), 102)
+                        stepsSwitch.isChecked = false // Revert until granted
+                        return@setOnCheckedChangeListener
+                    }
+                }
+                if (!checkLimit()) {
+                    stepsSwitch.isChecked = false
+                    return@setOnCheckedChangeListener
+                }
+            }
+            prefs.edit().putBoolean("show_steps", isChecked).apply()
+            
+            // Start or stop the Step Counter Service
+            val serviceIntent = Intent(this, StepCounterService::class.java)
+            if (isChecked) {
+                val hasPermission = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                    ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED
+                } else {
+                    true
+                }
+                if (hasPermission) {
+                    startForegroundService(serviceIntent)
+                } else {
+                    prefs.edit().putBoolean("show_steps", false).apply()
+                    findViewById<View>(R.id.section_steps).findViewById<View>(R.id.size_container).visibility = View.GONE
+                    updateWidget()
+                    updateToggleAvailability()
+                    checkAllPermissions()
+                    return@setOnCheckedChangeListener
+                }
+            } else {
+                stopService(serviceIntent)
+            }
+            
+            findViewById<View>(R.id.section_steps).findViewById<View>(R.id.size_container).visibility = if (isChecked) View.VISIBLE else View.GONE
+            updateWidget()
+            updateToggleAvailability()
+            checkAllPermissions()
+        }
         // Intercept Data Usage toggle for permission check
         dataSwitch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
@@ -180,19 +319,27 @@ class MainActivity : AppCompatActivity() {
             findViewById<View>(R.id.section_data).findViewById<View>(R.id.size_container).visibility = if (isChecked) View.VISIBLE else View.GONE
             updateWidget()
             updateToggleAvailability()
+            checkAllPermissions()
         }
 
-        // Events: Def True, 14sp
-        val eventsSwitch = bindSection(R.id.section_events, getString(R.string.section_events), "show_events", true, "size_events", 14f, 10f, 48f, isContent = true, iconResId = R.drawable.ic_events)
+        // Events: Def False, 14sp
+        val eventsSwitch = bindSection(R.id.section_events, getString(R.string.section_events), "show_events", false, "size_events", 14f, 10f, 18f, isContent = true, iconResId = R.drawable.ic_events)
 
         // Tasks: Def False, 14sp (New)
-        val tasksSwitch = bindSection(R.id.section_tasks, getString(R.string.section_tasks), "show_tasks", false, "size_tasks", 14f, 10f, 48f, isContent = true, iconResId = R.drawable.ic_tasks)
+        val tasksSwitch = bindSection(R.id.section_tasks, getString(R.string.section_tasks), "show_tasks", false, "size_tasks", 14f, 10f, 18f, isContent = true, iconResId = R.drawable.ic_tasks)
 
 
 
         // Mutual Exclusion: Events vs Tasks
         eventsSwitch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
+                // Check if Calendar permission is granted
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+                     ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_CALENDAR), 100)
+                     eventsSwitch.isChecked = false // Revert until granted
+                     return@setOnCheckedChangeListener
+                }
+
                 if (checkLimit()) {
                     tasksSwitch.isChecked = false
                     prefs.edit().putBoolean("show_events", true).putBoolean("show_tasks", false).apply()
@@ -200,6 +347,7 @@ class MainActivity : AppCompatActivity() {
                     updateToggleAvailability()
                     findViewById<View>(R.id.section_events).findViewById<View>(R.id.size_container).visibility = View.VISIBLE
                     findViewById<View>(R.id.section_tasks).findViewById<View>(R.id.size_container).visibility = View.GONE
+                    checkAllPermissions()
                 } else {
                     eventsSwitch.isChecked = false // Revert
                 }
@@ -208,6 +356,7 @@ class MainActivity : AppCompatActivity() {
                  updateWidget()
                  updateToggleAvailability()
                  findViewById<View>(R.id.section_events).findViewById<View>(R.id.size_container).visibility = View.GONE
+                 checkAllPermissions()
             }
         }
 
@@ -243,6 +392,7 @@ class MainActivity : AppCompatActivity() {
                     updateToggleAvailability()
                      findViewById<View>(R.id.section_tasks).findViewById<View>(R.id.size_container).visibility = View.VISIBLE
                      findViewById<View>(R.id.section_events).findViewById<View>(R.id.size_container).visibility = View.GONE
+                     checkAllPermissions()
                 } else {
                     tasksSwitch.isChecked = false // Revert
                 }
@@ -251,6 +401,7 @@ class MainActivity : AppCompatActivity() {
                  updateWidget()
                  updateToggleAvailability()
                  findViewById<View>(R.id.section_tasks).findViewById<View>(R.id.size_container).visibility = View.GONE
+                 checkAllPermissions()
             }
         }
         
@@ -259,8 +410,8 @@ class MainActivity : AppCompatActivity() {
         findViewById<View>(R.id.section_tasks).findViewById<View>(R.id.size_container).visibility = if (tasksSwitch.isChecked) View.VISIBLE else View.GONE
 
 
-        // Outline: Def False (Renamed from Glow)
-        bindToggle(R.id.section_outline, getString(R.string.section_outline), "show_outline", false, iconResId = R.drawable.ic_outline) { isChecked ->
+        // Outline: Def True (Renamed from Glow)
+        bindToggle(R.id.section_outline, getString(R.string.section_outline), "show_outline", true, iconResId = R.drawable.ic_outline) { isChecked ->
              val outlineColorSection = findViewById<View>(R.id.section_outline_color)
              val sliders = findViewById<View>(R.id.sliders_outline)
              val idx = prefs.getInt("outline_color_idx", 0)
@@ -274,15 +425,47 @@ class MainActivity : AppCompatActivity() {
              }
         }
 
-        // Light Theme: Def False
-        bindToggle(R.id.section_theme, getString(R.string.section_theme), "use_light_theme", false, iconResId = R.drawable.ic_sun)
+        // Dynamic Colors (Android 12+)
+        val sectionDynamicColor = findViewById<View>(R.id.section_dynamic_colors)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            sectionDynamicColor.visibility = View.VISIBLE
+            bindToggle(R.id.section_dynamic_colors, "Dynamic Colors", "use_dynamic_colors", true, iconResId = R.drawable.ic_palette) { isChecked ->
+
+                 // Hide manual color pickers if dynamic is enabled
+                 val sectionPrimary = findViewById<View>(R.id.section_text_color_primary)
+                 val sectionSecondary = findViewById<View>(R.id.section_text_color_secondary)
+                 val sectionOutlineColor = findViewById<View>(R.id.section_outline_color)
+                 val slidersPrimary = findViewById<View>(R.id.sliders_primary)
+                 val slidersSecondary = findViewById<View>(R.id.sliders_secondary)
+                 val slidersOutline = findViewById<View>(R.id.sliders_outline)
+                 val vis = if (isChecked) View.GONE else View.VISIBLE
+                 sectionPrimary.visibility = vis
+                 sectionSecondary.visibility = vis
+                 sectionOutlineColor.visibility = vis
+                 slidersPrimary.visibility = View.GONE
+                 slidersSecondary.visibility = View.GONE
+                 slidersOutline.visibility = View.GONE
+                 // Auto-select Default color when dynamic colors is turned on
+                 if (isChecked) {
+                     prefs.edit()
+                         .putInt("text_color_primary_idx", 0)
+                         .putInt("text_color_secondary_idx", 0)
+                         .putInt("outline_color_idx", 0)
+                         .apply()
+                 }
+            }
+        } else {
+            sectionDynamicColor.visibility = View.GONE
+        }
+
+        // System Theme: Def False (follows system dark/light mode)
+        bindToggle(R.id.section_theme, getString(R.string.section_theme), "use_system_theme", false, iconResId = R.drawable.ic_sun)
 
 
 
         // Background Opacity: Def 100 (Opaque)
         bindSlider(R.id.section_bg_transparency, getString(R.string.section_bg_transparency), "bg_opacity", 100f, 0f, 100f, iconResId = R.drawable.ic_transparency)
 
-        // Text Colors
         // Text Colors
         val colorOptions = listOf(
             getString(R.string.color_default),
@@ -310,6 +493,17 @@ class MainActivity : AppCompatActivity() {
              slidersOutline.visibility = if (idx == 2) View.VISIBLE else View.GONE
         }
         slidersOutline.visibility = if (prefs.getInt("outline_color_idx", 0) == 2) View.VISIBLE else View.GONE
+
+        // Re-apply dynamic colors hiding after all color sections are initialized
+        // (the bindToggle callback fires before these sections exist, so we need this final pass)
+        if (prefs.getBoolean("use_dynamic_colors", true) && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            findViewById<View>(R.id.section_text_color_primary).visibility = View.GONE
+            findViewById<View>(R.id.section_text_color_secondary).visibility = View.GONE
+            findViewById<View>(R.id.section_outline_color).visibility = View.GONE
+            slidersPrimary.visibility = View.GONE
+            slidersSecondary.visibility = View.GONE
+            slidersOutline.visibility = View.GONE
+        }
 
         // Font Style: Def "Default" (0)
         bindSelector(R.id.section_font, getString(R.string.section_font), "font_style", listOf(
@@ -537,7 +731,6 @@ class MainActivity : AppCompatActivity() {
                 autoCompleteTextView.clearFocus()
             }
         }
-        android.util.Log.d("LWidget_Debug", "bindSelector: Title='$title', Key='$prefKey', Options=${options.take(3)}..., ViewID=$sectionId")
     }
 
     private fun bindColorSliders(sectionId: Int, prefPrefix: String): View {
@@ -593,12 +786,12 @@ class MainActivity : AppCompatActivity() {
     private fun checkLimit(): Boolean {
         // Global limit removed per user request
 
-        // Subset Limit: Battery, Temp, Data, Storage (Max 3 allowed now to fit stack)
+        // Subset Limit: Battery, Temp, Data, Storage (Max 4 allowed now to fit stack)
         val subsetCount = contentSwitches.count { 
             it.isChecked && (it.tag == "battery" || it.tag == "temp" || it.tag == "data" || it.tag == "storage") 
         }
         
-        if (subsetCount > 3) {
+        if (subsetCount > 4) {
              com.google.android.material.snackbar.Snackbar.make(
                 findViewById(R.id.fab_update), 
                 getString(R.string.error_max_subset_items), 
@@ -613,9 +806,15 @@ class MainActivity : AppCompatActivity() {
     // Check usage stats permission
     private fun hasUsageStatsPermission(): Boolean {
         val appOps = getSystemService(Context.APP_OPS_SERVICE) as android.app.AppOpsManager
-        val mode = appOps.unsafeCheckOpNoThrow(android.app.AppOpsManager.OPSTR_GET_USAGE_STATS, 
-            android.os.Process.myUid(), packageName)
-        return mode == android.app.AppOpsManager.MODE_ALLOWED
+        val opMode = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            appOps.unsafeCheckOpNoThrow(android.app.AppOpsManager.OPSTR_GET_USAGE_STATS, 
+                android.os.Process.myUid(), packageName)
+        } else {
+            @Suppress("DEPRECATION")
+            appOps.checkOpNoThrow(android.app.AppOpsManager.OPSTR_GET_USAGE_STATS, 
+                android.os.Process.myUid(), packageName)
+        }
+        return opMode == android.app.AppOpsManager.MODE_ALLOWED
     }
 
     private fun updateToggleAvailability() {

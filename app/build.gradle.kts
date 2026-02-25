@@ -13,9 +13,9 @@ android {
     defaultConfig {
         applicationId = "com.leanbitlab.lwidget"
         minSdk = 26
-        targetSdk = 34
-        versionCode = 8
-        versionName = "1.7"
+        targetSdk = 35
+        versionCode = 10
+        versionName = "1.8"
     }
 
     signingConfigs {
@@ -57,4 +57,5 @@ dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
 }

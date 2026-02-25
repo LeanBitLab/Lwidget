@@ -19,9 +19,10 @@
         android:visibility="visible"
         android:importantForAccessibility="no" />
     <RelativeLayout
+        android:id="@+id/inner_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp">
+        android:padding="0dp">
 
     <!-- Time (Top Left) -->
     
@@ -103,6 +104,19 @@
         android:textSize="14sp"
         android:visibility="gone"
         android:layout_below="@id/text_data_usage"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="2dp"/>
+
+    <!-- Steps (Below Storage) -->
+    <TextView
+        android:id="@+id/text_steps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:textColor="#CCFFFFFF"
+        android:textSize="14sp"
+        android:visibility="gone"
+        android:layout_below="@id/text_storage"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="2dp"/>
 

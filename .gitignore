@@ -32,3 +32,6 @@ Thumbs.db
 
 # Private Docs
 pdocs/
+
+# CLI Context
+GEMINI.md

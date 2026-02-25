@@ -28,6 +28,7 @@
 -   **Configurable**: Adjust text sizes and visibility for all elements.
 -   **Time & Date**: Clear, customizable display.
 -   **Battery & Temperature**: Real-time device status.
+-   **Step Counter**: Track your daily steps directly from the widget.
 -   **Calendar Events**: Upcoming agenda at a glance.
 -   **Task Integration**: Seamless integration with [Tasks.org](https://tasks.org/).
 -   **World Clock**: Track time in another zone.
@@ -57,6 +58,7 @@ You can download the latest release from the [GitHub Releases](https://github.co
 Lwidget is licensed under **GNU General Public License v3.0**.
 
 See [LICENSE](LICENSE) file.
+
 
 ## Credits
 

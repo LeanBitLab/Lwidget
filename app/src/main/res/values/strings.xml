@@ -15,8 +15,9 @@
     <string name="section_world_clock">World Clock</string>
     <string name="section_storage">Storage</string>
     <string name="section_tasks">Tasks</string>
+    <string name="section_steps">Step Counter</string>
     <string name="section_outline">Outline</string>
-    <string name="section_theme">Light Theme</string>
+    <string name="section_theme">Follow System Theme</string>
     <!-- <string name="section_transparent">Transparent Background</string> REMOVED -->
     <string name="section_bg_transparency">Transparency</string>
     <string name="section_text_color_primary">Text Color</string>
@@ -24,12 +25,20 @@
     <string name="section_outline_color">Outline Color</string>
     <string name="section_font">Font Style</string>
 
+    <!-- Changelog / About -->
+    <string name="section_changelog">Changelog</string>
+    <string name="changelog_version">Version %s</string>
+    <string name="changelog_content">Recent Updates:\n• Added stepcounter\n• Added dynamic theme\n• Events are now clickable\n• Fixing alignments\n• Fixing permissions\n• Fixing size limit</string>
+    <string name="changelog_testing_notice">Thank you for testing Lwidget! Please open this app occasionally to see new changes.</string>
+    <string name="github_source_code">Source Code (GitHub)</string>
+    <string name="privacy_policy">Privacy Policy</string>
+
     <!-- Permissions & Errors -->
     <string name="perm_usage_access_title">Please grant Usage Access for Lwidget</string>
     <string name="perm_calendar_title">Calendar Permission Needed</string>
     <string name="btn_grant">Grant</string>
     <string name="error_max_items">Maximum 5 items allowed. Please disable one first.</string>
-    <string name="error_max_subset_items">Max 3 of Battery, Temp, Data, Storage allowed.</string>
+    <string name="error_max_subset_items">Max 4 of Battery, Temp, Data, Storage allowed.</string>
     <string name="no_perm">No Perm</string>
     <string name="error">Err</string>
     
