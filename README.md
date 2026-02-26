@@ -10,6 +10,19 @@
 
 **Lwidget** is a modern, open-source Android widget built with **Kotlin** and **Material 3** design principles. It provides essential information at a glance while adhering to your device's dynamic theme.
 
+## 🚀 Closed Testing (Play Store Beta)
+
+We are currently running a 14-day closed beta test for the upcoming v1.8 release! **Lwidget is coming to the Google Play Store!** 
+
+During this testing phase, v1.8 is available exclusively on the Play Store. Once the testing is complete, v1.8 and all future updates will be available on **both GitHub and the Play Store**.
+
+To help us test the app and get early access to v1.8, please follow these steps:
+1. **Join our Google Group:** [lwidget-beta-testers](https://groups.google.com/g/lwidget-beta-testers) *(Else the download link won't work. Your email is hidden by default).*
+2. **Become a Tester & Install:** Opt-in via the [Web](https://play.google.com/apps/testing/com.leanbitlab.lwidget) or [Android](https://play.google.com/store/apps/details?id=com.leanbitlab.lwidget) link, then install Lwidget directly from the Play Store!
+
+**Feedback & Bug Reports:**
+Found a bug or have a suggestion? Let us know in our [Telegram Group](https://t.me/leanbitlabchat) or open a topic in [GitHub Discussions](https://github.com/LeanBitLab/Lwidget/discussions)!
+
 ## Screenshots
 
 <table>
@@ -19,6 +32,9 @@
     <td><img src="docs/images/3.png" height="500" alt="Screenshot 3"/></td>
     <td><img src="docs/images/4.png" height="500" alt="Screenshot 4"/></td>
     <td><img src="docs/images/5.png" height="500" alt="Screenshot 5"/></td>
+    <td><img src="docs/images/6.png" height="500" alt="Screenshot 6"/></td>
+    <td><img src="docs/images/7.png" height="500" alt="Screenshot 7"/></td>
+    <td><img src="docs/images/8.png" height="500" alt="Screenshot 8"/></td>
   </tr>
 </table>
 
