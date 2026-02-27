@@ -34,14 +34,16 @@
 
 <table>
   <tr>
-    <td><img src="docs/images/1.png" width="270" alt="Screenshot 1"/></td>
-    <td><img src="docs/images/2.png" width="270" alt="Screenshot 2"/></td>
-    <td><img src="docs/images/3.png" width="270" alt="Screenshot 3"/></td>
-    <td><img src="docs/images/4.png" width="270" alt="Screenshot 4"/></td>
-    <td><img src="docs/images/5.png" width="270" alt="Screenshot 5"/></td>
-    <td><img src="docs/images/6.png" width="270" alt="Screenshot 6"/></td>
-    <td><img src="docs/images/7.png" width="270" alt="Screenshot 7"/></td>
-    <td><img src="docs/images/8.png" width="270" alt="Screenshot 8"/></td>
+    <td><img src="docs/images/1.png" height="400" alt="Screenshot 1"/></td>
+    <td><img src="docs/images/2.png" height="400" alt="Screenshot 2"/></td>
+    <td><img src="docs/images/3.png" height="400" alt="Screenshot 3"/></td>
+    <td><img src="docs/images/4.png" height="400" alt="Screenshot 4"/></td>
+  </tr>
+  <tr>
+    <td><img src="docs/images/5.png" height="400" alt="Screenshot 5"/></td>
+    <td><img src="docs/images/6.png" height="400" alt="Screenshot 6"/></td>
+    <td><img src="docs/images/7.png" height="400" alt="Screenshot 7"/></td>
+    <td><img src="docs/images/8.png" height="400" alt="Screenshot 8"/></td>
   </tr>
 </table>
 
