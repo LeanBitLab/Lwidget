@@ -6,7 +6,7 @@
   <img alt="Lwidget Banner" src="docs/images/banner_light.svg">
 </picture>
 
-[![Download](https://img.shields.io/github/v/release/LeanBitLab/Lwidget?label=Download&style=for-the-badge&color=7C4DFF&v=1)](https://github.com/LeanBitLab/Lwidget/releases/latest) [![Downloads](https://img.shields.io/github/downloads/LeanBitLab/Lwidget/total?style=for-the-badge&color=7C4DFF&label=Downloads)](https://github.com/LeanBitLab/Lwidget/releases) [![Stars](https://img.shields.io/github/stars/LeanBitLab/Lwidget?style=for-the-badge&color=7C4DFF)](https://github.com/LeanBitLab/Lwidget/stargazers) [![License](https://img.shields.io/github/license/LeanBitLab/Lwidget?style=for-the-badge&color=7C4DFF)](LICENSE)
+[![Download](https://img.shields.io/github/v/release/LeanBitLab/Lwidget?label=Download&style=for-the-badge&color=7C4DFF&v=1)](https://github.com/LeanBitLab/Lwidget/releases/latest) [![Downloads](https://img.shields.io/github/downloads/LeanBitLab/Lwidget/total?style=for-the-badge&color=7C4DFF&label=Downloads)](https://github.com/LeanBitLab/Lwidget/releases) [![Stars](https://img.shields.io/github/stars/LeanBitLab/Lwidget?style=for-the-badge&color=7C4DFF)](https://github.com/LeanBitLab/Lwidget/stargazers)
 
 **Lwidget** is a modern, open-source Android widget built with **Kotlin** and **Material 3** design principles. It provides essential information at a glance while adhering to your device's dynamic theme.
 
@@ -75,8 +75,14 @@ You can download the latest release from the [GitHub Releases](https://github.co
 
 ## Setup
 
--   **Permissions**: The widget requires `Calendar` permission to display upcoming events. It will prompt you when needed.
+-   **Calendar**: Required to display upcoming events on the widget.
+-   **Activity Recognition**: Required for the Step Counter feature.
+-   **Data Usage Access**: Required to display daily data consumption.
+-   **Tasks.org Integration**: Requires Tasks.org to be installed for task integration.
+-   **Notifications**: Required for the Step Counter foreground service.
 -   **Battery Optimization**: For reliable updates, ensure battery optimization is disabled for Lwidget.
+
+All permissions are requested only when you enable the corresponding feature.
 
 ## License
 
