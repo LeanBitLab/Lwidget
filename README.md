@@ -20,9 +20,9 @@
 >
 > [![Join Google Group](https://img.shields.io/badge/Step_1-Join_Google_Group-4285F4?style=for-the-badge&logo=google-groups&logoColor=white)](https://groups.google.com/g/lwidget-beta-testers)
 >
-> **Step 2:** Become a tester & install from Play Store:
+> **Step 2:** Click below to become a tester, then install from Play Store:
 >
-> [![Get it on Google Play](https://img.shields.io/badge/Step_2-Get_it_on_Google_Play-34A853?style=for-the-badge&logo=google-play&logoColor=white)](https://play.google.com/apps/testing/com.leanbitlab.lwidget)
+> [![Become a Tester](https://img.shields.io/badge/Step_2-Become_a_Tester-34A853?style=for-the-badge&logo=google-play&logoColor=white)](https://play.google.com/apps/testing/com.leanbitlab.lwidget)
 >
 > **🙏 Important:** Since Lwidget is a widget, Google can't tell you're testing unless you **open the main app every few days**. Just open it, tweak a setting, and close it — that's all it takes!
 >
