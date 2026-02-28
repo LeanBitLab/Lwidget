@@ -24,6 +24,8 @@
 >
 > [![Become a Tester](https://img.shields.io/badge/Step_2-Become_a_Tester-34A853?style=for-the-badge&logo=google-play&logoColor=white)](https://play.google.com/apps/testing/com.leanbitlab.lwidget)
 >
+> *(Note: Testers will receive all updates automatically via the Play Store, and the v1.8 release notes here will be updated with future closed testing releases!)*
+>
 > **🙏 Important:** Since Lwidget is a widget, Google can't tell you're testing unless you **open the main app every few days**. Just open it, tweak a setting, and close it — that's all it takes!
 >
 > ---
@@ -59,6 +61,7 @@
 -   **World Clock**: Track time in another zone.
 -   **Next Alarm**: Display your next scheduled alarm.
 -   **Daily Data Usage**: Monitor your daily data consumption.
+-   **Screen Time**: Track your daily device usage directly from the widget.
 -   **Internal Storage**: Monitor available device storage.
 -   **Custom Formats**: Choose your preferred Time and Date formats.
 -   **Light/Dark Mode**: Optimized contrast for readability.
@@ -77,7 +80,7 @@ You can download the latest release from the [GitHub Releases](https://github.co
 
 -   **Calendar**: Required to display upcoming events on the widget.
 -   **Activity Recognition**: Required for the Step Counter feature.
--   **Data Usage Access**: Required to display daily data consumption.
+-   **Usage Access**: Required to display daily data consumption and screen time.
 -   **Tasks.org Integration**: Requires Tasks.org to be installed for task integration.
 -   **Notifications**: Required for the Step Counter foreground service.
 -   **Battery Optimization**: For reliable updates, ensure battery optimization is disabled for Lwidget.
