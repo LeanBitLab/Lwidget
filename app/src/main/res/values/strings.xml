@@ -16,6 +16,7 @@
     <string name="section_storage">Storage</string>
     <string name="section_tasks">Tasks</string>
     <string name="section_steps">Step Counter</string>
+    <string name="section_screen_time">Screen Time</string>
     <string name="section_outline">Outline</string>
     <string name="section_theme">Follow System Theme</string>
     <!-- <string name="section_transparent">Transparent Background</string> REMOVED -->

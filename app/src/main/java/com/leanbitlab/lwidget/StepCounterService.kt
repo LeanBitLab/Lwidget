@@ -21,6 +21,18 @@ class StepCounterService : Service(), SensorEventListener {
     private lateinit var sensorManager: SensorManager
     private var stepSensor: Sensor? = null
     
+    private val updateReceiver = object : android.content.BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val action = intent.action
+            if (action == Intent.ACTION_BATTERY_CHANGED || action == Intent.ACTION_TIME_TICK) {
+                val updateIntent = Intent(context, AwidgetProvider::class.java).apply {
+                    this.action = AwidgetProvider.ACTION_BATTERY_UPDATE
+                }
+                context.sendBroadcast(updateIntent)
+            }
+        }
+    }
+    
     companion object {
         const val CHANNEL_ID = "StepCounterChannel"
         const val NOTIFICATION_ID = 42100
@@ -47,6 +59,16 @@ class StepCounterService : Service(), SensorEventListener {
         stepSensor?.let {
             sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL)
         }
+        
+        val filter = android.content.IntentFilter().apply {
+            addAction(Intent.ACTION_BATTERY_CHANGED)
+            addAction(Intent.ACTION_TIME_TICK)
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(updateReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
+        } else {
+            registerReceiver(updateReceiver, filter)
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -59,6 +81,7 @@ class StepCounterService : Service(), SensorEventListener {
     }
 
     override fun onDestroy() {
+        unregisterReceiver(updateReceiver)
         sensorManager.unregisterListener(this)
         super.onDestroy()
     }

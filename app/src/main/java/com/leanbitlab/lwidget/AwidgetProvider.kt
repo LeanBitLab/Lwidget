@@ -34,10 +34,6 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.widget.RemoteViews
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
-import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -123,21 +119,40 @@ class AwidgetProvider : AppWidgetProvider() {
     }
 
     private fun scheduleWork(context: Context) {
-        val workRequest = androidx.work.PeriodicWorkRequestBuilder<WidgetUpdateWorker>(
-            15, java.util.concurrent.TimeUnit.MINUTES,
-            5, java.util.concurrent.TimeUnit.MINUTES
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as android.app.AlarmManager
+        val intent = Intent(context, AwidgetProvider::class.java).apply {
+            action = ACTION_BATTERY_UPDATE
+        }
+        val pendingIntent = android.app.PendingIntent.getBroadcast(
+            context,
+            500,
+            intent,
+            android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE
         )
-            .addTag("widget_update_work")
-            .build()
-        androidx.work.WorkManager.getInstance(context).enqueueUniquePeriodicWork(
-            "WidgetUpdateTicker",
-            androidx.work.ExistingPeriodicWorkPolicy.UPDATE,
-            workRequest
+        
+        // 5 minutes
+        val intervalMillis = 5L * 60L * 1000L
+        
+        alarmManager.setInexactRepeating(
+            android.app.AlarmManager.RTC,
+            System.currentTimeMillis() + intervalMillis,
+            intervalMillis,
+            pendingIntent
         )
     }
 
     private fun cancelWork(context: Context) {
-        androidx.work.WorkManager.getInstance(context).cancelUniqueWork("WidgetUpdateTicker")
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as android.app.AlarmManager
+        val intent = Intent(context, AwidgetProvider::class.java).apply {
+            action = ACTION_BATTERY_UPDATE
+        }
+        val pendingIntent = android.app.PendingIntent.getBroadcast(
+            context,
+            500,
+            intent,
+            android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE
+        )
+        alarmManager.cancel(pendingIntent)
     }
 
     companion object {
@@ -364,11 +379,18 @@ class AwidgetProvider : AppWidgetProvider() {
                 val level = batteryStatus?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) ?: 0
                 val scale = batteryStatus?.getIntExtra(BatteryManager.EXTRA_SCALE, -1) ?: 100
                 val batteryPct = (level * 100 / scale.toFloat()).toInt()
+                val batterySpannable = android.text.SpannableString("${batteryPct}%")
+                batterySpannable.setSpan(android.text.style.RelativeSizeSpan(0.5f), batterySpannable.length - 1, batterySpannable.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 val tempInt = batteryStatus?.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0) ?: 0
                 val tempVal = tempInt / 10f
                 if (showSteps) loadStepCount(context, tickViews)
-                if (showBattery) tickViews.setTextViewText(R.id.text_battery, "$batteryPct%")
-                if (showTemp) tickViews.setTextViewText(R.id.text_temp, "${String.format("%.1f", tempVal)}°C")
+                if (showBattery) tickViews.setTextViewText(R.id.text_battery, batterySpannable)
+                if (showTemp) {
+                    val tempStr = String.format("%.1f", tempVal)
+                    val tempSpan = android.text.SpannableString("$tempStr°C")
+                    tempSpan.setSpan(android.text.style.RelativeSizeSpan(0.5f), tempStr.length, tempSpan.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    tickViews.setTextViewText(R.id.text_temp, tempSpan)
+                }
                 if (showData) updateDataUsage(context, tickViews)
                 if (showStorage) updateStorageStats(tickViews)
                 appWidgetManager.partiallyUpdateAppWidget(appWidgetId, tickViews)
@@ -450,10 +472,15 @@ class AwidgetProvider : AppWidgetProvider() {
             val tempVal = tempInt / 10f
 
             if (showBattery) {
-                views.setTextViewText(R.id.text_battery, "$batteryPct%")
+                val batterySpannable = android.text.SpannableString("${batteryPct}%")
+                batterySpannable.setSpan(android.text.style.RelativeSizeSpan(0.5f), batterySpannable.length - 1, batterySpannable.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                views.setTextViewText(R.id.text_battery, batterySpannable)
             }
             if (showTemp) {
-                views.setTextViewText(R.id.text_temp, "${String.format("%.1f", tempVal)}°C")
+                val tempStr = String.format("%.1f", tempVal)
+                val tempSpan = android.text.SpannableString("$tempStr°C")
+                tempSpan.setSpan(android.text.style.RelativeSizeSpan(0.5f), tempStr.length, tempSpan.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                views.setTextViewText(R.id.text_temp, tempSpan)
             }
             
             // --- Data Usage ---
@@ -478,6 +505,16 @@ class AwidgetProvider : AppWidgetProvider() {
                 views.setTextViewTextSize(R.id.text_steps, android.util.TypedValue.COMPLEX_UNIT_SP, sizeSteps)
                 views.setTextColor(R.id.text_steps, secondaryColor)
                 loadStepCount(context, views)
+            }
+            
+            // --- Screen Time ---
+            val showScreenTime = prefs.getBoolean("show_screen_time", false)
+            val sizeScreenTime = prefs.getFloat("size_screen_time", 14f)
+            views.setViewVisibility(R.id.text_screen_time, if (showScreenTime) android.view.View.VISIBLE else android.view.View.GONE)
+            if (showScreenTime) {
+                views.setTextViewTextSize(R.id.text_screen_time, android.util.TypedValue.COMPLEX_UNIT_SP, sizeScreenTime)
+                views.setTextColor(R.id.text_screen_time, secondaryColor)
+                updateScreenTime(context, views)
             }
             
             // --- Dynamic Spacing Logic for Both Sides ---
@@ -526,7 +563,8 @@ class AwidgetProvider : AppWidgetProvider() {
                 StackEntry(R.id.text_temp, showTemp, sizeTemp),
                 StackEntry(R.id.text_data_usage, showData, sizeData),
                 StackEntry(R.id.text_storage, showStorage, sizeStorage),
-                StackEntry(R.id.text_steps, showSteps, sizeSteps)
+                StackEntry(R.id.text_steps, showSteps, sizeSteps),
+                StackEntry(R.id.text_screen_time, showScreenTime, sizeScreenTime)
             )
 
             var rightFirstVisible = true
@@ -712,6 +750,21 @@ class AwidgetProvider : AppWidgetProvider() {
             val dayFormatter = DateTimeFormatter.ofPattern("EEE", Locale.getDefault())
             val dateFormatter = DateTimeFormatter.ofPattern("d MMM h:mma", Locale.getDefault())
 
+            if (events.isEmpty()) {
+                views.setTextViewText(eventViews[0], "No events today")
+                views.setTextColor(eventViews[0], secondaryColor)
+                views.setTextViewTextSize(eventViews[0], android.util.TypedValue.COMPLEX_UNIT_SP, textSizeSp)
+                views.setViewVisibility(eventViews[0], android.view.View.VISIBLE)
+                
+                val emptyIntent = PendingIntent.getActivity(context, 0, Intent(), PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+                views.setOnClickPendingIntent(eventViews[0], emptyIntent)
+
+                for (i in 1 until eventViews.size) {
+                    views.setViewVisibility(eventViews[i], android.view.View.GONE)
+                }
+                return
+            }
+
             for (i in eventViews.indices) {
                 if (i < events.size) {
                     val event = events[i]
@@ -756,6 +809,56 @@ class AwidgetProvider : AppWidgetProvider() {
             }
         }
 
+        private fun updateScreenTime(context: Context, views: RemoteViews) {
+            val appOps = context.getSystemService(Context.APP_OPS_SERVICE) as android.app.AppOpsManager
+            val mode = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                 appOps.unsafeCheckOpNoThrow(android.app.AppOpsManager.OPSTR_GET_USAGE_STATS, android.os.Process.myUid(), context.packageName)
+            } else {
+                 appOps.checkOpNoThrow(android.app.AppOpsManager.OPSTR_GET_USAGE_STATS, android.os.Process.myUid(), context.packageName)
+            }
+            if (mode != android.app.AppOpsManager.MODE_ALLOWED) {
+                 views.setViewVisibility(R.id.text_screen_time, android.view.View.GONE)
+                 return
+            }
+
+            val usageStatsManager = context.getSystemService(Context.USAGE_STATS_SERVICE) as android.app.usage.UsageStatsManager
+            
+            val calendar = java.util.Calendar.getInstance()
+            calendar.set(java.util.Calendar.HOUR_OF_DAY, 0)
+            calendar.set(java.util.Calendar.MINUTE, 0)
+            calendar.set(java.util.Calendar.SECOND, 0)
+            calendar.set(java.util.Calendar.MILLISECOND, 0)
+            
+            val startTime = calendar.timeInMillis
+            val endTime = System.currentTimeMillis()
+            
+            val stats = usageStatsManager.queryUsageStats(android.app.usage.UsageStatsManager.INTERVAL_DAILY, startTime, endTime)
+            
+            var totalForegroundTime = 0L
+            if (stats != null) {
+                for (usage in stats) {
+                    // Only count significant foreground usage correctly reported
+                    if (usage.totalTimeInForeground > 0) {
+                         totalForegroundTime += usage.totalTimeInForeground
+                    }
+                }
+            }
+            
+            if (totalForegroundTime > 0) {
+                val totalMinutes = totalForegroundTime / (1000 * 60)
+                val hours = totalMinutes / 60
+                val mins = totalMinutes % 60
+                val timeString = if (hours > 0) "${hours}h ${mins}m \u23F3" else "${mins}m \u23F3" // ⏳
+                val span = android.text.SpannableString(timeString)
+                span.setSpan(android.text.style.RelativeSizeSpan(0.75f), span.length - 2, span.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                views.setTextViewText(R.id.text_screen_time, span)
+            } else {
+                val span = android.text.SpannableString("0m \u23F3")
+                span.setSpan(android.text.style.RelativeSizeSpan(0.75f), span.length - 2, span.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                views.setTextViewText(R.id.text_screen_time, span)
+            }
+        }
+
         private fun updateDataUsage(context: Context, views: RemoteViews) {
             val networkStatsManager = context.getSystemService(Context.NETWORK_STATS_SERVICE) as NetworkStatsManager
             // Use java.time
@@ -772,11 +875,20 @@ class AwidgetProvider : AppWidgetProvider() {
                 
                 val bytes = bucket.rxBytes + bucket.txBytes
                 val mb = bytes / (1024f * 1024f)
+                val gb = mb / 1024f
                 
-                val text = if (mb >= 1000) {
-                     String.format("%.2f GB 📶", mb / 1024f)
+                val text: CharSequence = if (gb >= 1.0f) {
+                     val gbStr = String.format("%.2f", gb)
+                     val span = android.text.SpannableString("$gbStr GB \uD83D\uDCE1") // 📡 outline-style antenna
+                     span.setSpan(android.text.style.RelativeSizeSpan(0.5f), gbStr.length, gbStr.length + 3, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE) // GB
+                     span.setSpan(android.text.style.RelativeSizeSpan(0.75f), span.length - 2, span.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE) // Emoji
+                     span
                 } else {
-                     String.format("%.1f MB 📶", mb)
+                     val mbStr = String.format("%.1f", mb)
+                     val span = android.text.SpannableString("$mbStr MB \uD83D\uDCE1") // 📡
+                     span.setSpan(android.text.style.RelativeSizeSpan(0.5f), mbStr.length, mbStr.length + 3, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE) // MB
+                     span.setSpan(android.text.style.RelativeSizeSpan(0.75f), span.length - 2, span.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE) // Emoji
+                     span
                 }
                 
                 views.setTextViewText(R.id.text_data_usage, text)
@@ -812,10 +924,10 @@ class AwidgetProvider : AppWidgetProvider() {
 
             val taskUri = android.net.Uri.parse("content://org.tasks/tasks")
             // Selection appears to be ignored by provider, so we select all and filter manually
-            val selection = null
+            val selection = "completed=0 AND deleted=0"
             
             try {
-                context.contentResolver.query(taskUri, null, selection, null, "due ASC")?.use { cursor ->
+                context.contentResolver.query(taskUri, null, selection, null, "dueDate ASC")?.use { cursor ->
                      val titleIdx = cursor.getColumnIndex("title")
                      
                      if (cursor.count == 0) {
@@ -834,8 +946,10 @@ class AwidgetProvider : AppWidgetProvider() {
                          // Manual Filtering: Provider might ignore selection
                          val compIdx = cursor.getColumnIndex("completed")
                          val delIdx = cursor.getColumnIndex("deleted")
+                         val dueIdx = cursor.getColumnIndex("dueDate")
                          val completed = if (compIdx >= 0) cursor.getString(compIdx) else null
                          val deleted = if (delIdx >= 0) cursor.getString(delIdx) else null
+                         val dueMillis = if (dueIdx >= 0) cursor.getLong(dueIdx) else 0L
                          
                          val isCompleted = completed != null && completed != "0"
                          val isDeleted = deleted != null && deleted != "0"
@@ -847,7 +961,25 @@ class AwidgetProvider : AppWidgetProvider() {
                          if (titleIdx != -1) {
                              val title = cursor.getString(titleIdx) ?: "No Title"
                              
-                             val fullText = "• $title"
+                             var dueSuffix = ""
+                             if (dueMillis > 0) {
+                                  val dueDate = LocalDate.ofInstant(Instant.ofEpochMilli(dueMillis), ZoneId.systemDefault())
+                                  val today = LocalDate.now()
+                                  val tomorrow = today.plusDays(1)
+                                  
+                                  if (dueDate.isBefore(today)) {
+                                      dueSuffix = " (Overdue)"
+                                  } else if (dueDate.isEqual(today)) {
+                                      dueSuffix = " (Today)"
+                                  } else if (dueDate.isEqual(tomorrow)) {
+                                      dueSuffix = " (Tomorrow)"
+                                  } else {
+                                      val df = DateTimeFormatter.ofPattern("MMM d", Locale.getDefault())
+                                      dueSuffix = " (${dueDate.format(df)})"
+                                  }
+                             }
+                             
+                             val fullText = "• $title$dueSuffix"
                              val spannable = SpannableString(fullText)
                              val accentColor = context.getColor(R.color.widget_outline) 
                              spannable.setSpan(ForegroundColorSpan(accentColor), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -856,6 +988,12 @@ class AwidgetProvider : AppWidgetProvider() {
                              views.setTextColor(eventViews[i], primaryColor)
                              views.setTextViewTextSize(eventViews[i], android.util.TypedValue.COMPLEX_UNIT_SP, textSizeSp)
                              views.setViewVisibility(eventViews[i], android.view.View.VISIBLE)
+                             
+                             val taskIntent = context.packageManager.getLaunchIntentForPackage("org.tasks")
+                             if (taskIntent != null) {
+                                 val taskPendingIntent = PendingIntent.getActivity(context, 1000 + i, taskIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+                                 views.setOnClickPendingIntent(eventViews[i], taskPendingIntent)
+                             }
                              i++
                          }
                      }
@@ -925,10 +1063,12 @@ class AwidgetProvider : AppWidgetProvider() {
                  
                  val gb = freeBytes / (1024f * 1024f * 1024f)
                  
-                 // Concisely: "12 GB"
-                 val text = String.format("%.0f GB 💾", gb)
+                 val gbStr = String.format("%.0f", gb)
+                 val span = android.text.SpannableString("$gbStr GB \uD83D\uDDC4\uFE0F") // 🗄️ file cabinet outline
+                 span.setSpan(android.text.style.RelativeSizeSpan(0.5f), gbStr.length, gbStr.length + 3, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE) // GB
+                 span.setSpan(android.text.style.RelativeSizeSpan(0.75f), span.length - 3, span.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE) // Emoji
                  
-                 views.setTextViewText(R.id.text_storage, text)
+                 views.setTextViewText(R.id.text_storage, span)
              } catch (e: Exception) {
                  views.setTextViewText(R.id.text_storage, "Err")
              }
@@ -941,7 +1081,9 @@ class AwidgetProvider : AppWidgetProvider() {
                 val baselineSteps = prefs.getFloat("step_baseline", 0f)
 
                 val dailySteps = (totalSteps - baselineSteps).toInt().coerceAtLeast(0)
-                views.setTextViewText(R.id.text_steps, "$dailySteps \uD83D\uDEB6") // 🚶
+                val span = android.text.SpannableString("$dailySteps \uD83D\uDC5F") // 👟 outline sneaker
+                span.setSpan(android.text.style.RelativeSizeSpan(0.75f), span.length - 2, span.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                views.setTextViewText(R.id.text_steps, span)
             } catch (e: Exception) {
                 // Fallback display if an exception occurs
                 views.setTextViewText(R.id.text_steps, "Err")

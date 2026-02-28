@@ -396,6 +396,9 @@
 
                     <!-- Step Counter Settings -->
                     <include layout="@layout/settings_card_item" android:id="@+id/section_steps"/>
+
+                    <!-- Screen Time Settings -->
+                    <include layout="@layout/settings_card_item" android:id="@+id/section_screen_time"/>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 

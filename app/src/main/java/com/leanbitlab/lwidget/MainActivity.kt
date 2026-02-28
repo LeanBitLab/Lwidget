@@ -143,6 +143,14 @@ class MainActivity : AppCompatActivity() {
              widgetNeedsUpdate = true
         }
 
+        // Check Screen Time
+        if (prefs.getBoolean("show_screen_time", false) && !hasUsageStatsPermission()) {
+            prefs.edit().putBoolean("show_screen_time", false).apply()
+            findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.section_screen_time).isChecked = false
+            findViewById<View>(R.id.section_screen_time).findViewById<View>(R.id.size_container).visibility = View.GONE
+            widgetNeedsUpdate = true
+        }
+
         // Check Data Usage
         if (prefs.getBoolean("show_data_usage", false) && !hasUsageStatsPermission()) {
             prefs.edit().putBoolean("show_data_usage", false).apply()
@@ -317,6 +325,35 @@ class MainActivity : AppCompatActivity() {
             
             prefs.edit().putBoolean("show_data_usage", isChecked).apply()
             findViewById<View>(R.id.section_data).findViewById<View>(R.id.size_container).visibility = if (isChecked) View.VISIBLE else View.GONE
+            updateWidget()
+            updateToggleAvailability()
+            checkAllPermissions()
+        }
+
+        // Screen Time: Def False, 14sp (New)
+        val screenTimeSwitch = bindSection(R.id.section_screen_time, getString(R.string.section_screen_time), "show_screen_time", false, "size_screen_time", 14f, 10f, 24f, isContent = true, iconResId = R.drawable.ic_time)
+        screenTimeSwitch.tag = "screen_time"
+        screenTimeSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                if (!hasUsageStatsPermission()) {
+                    screenTimeSwitch.isChecked = false
+                    try {
+                        startActivity(Intent(android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS))
+                        com.google.android.material.snackbar.Snackbar.make(
+                            findViewById(R.id.fab_update), 
+                            getString(R.string.perm_usage_access_title), 
+                            com.google.android.material.snackbar.Snackbar.LENGTH_LONG
+                        ).show()
+                    } catch (e: Exception) { }
+                    return@setOnCheckedChangeListener
+                }
+                if (!checkLimit()) {
+                    screenTimeSwitch.isChecked = false
+                    return@setOnCheckedChangeListener
+                }
+            }
+            prefs.edit().putBoolean("show_screen_time", isChecked).apply()
+            findViewById<View>(R.id.section_screen_time).findViewById<View>(R.id.size_container).visibility = if (isChecked) View.VISIBLE else View.GONE
             updateWidget()
             updateToggleAvailability()
             checkAllPermissions()
