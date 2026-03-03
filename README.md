@@ -12,7 +12,7 @@
 
 > ### 🚀 Help Us Get Lwidget on the Play Store!
 >
-> We're running a **closed beta test** for **v1.8** — and we need **your help** to bring Lwidget to the Google Play Store!
+> We're running a **closed beta test** — and we need **your help** to bring Lwidget to the Google Play Store! We are currently on **v1.8.2**.
 >
 > Getting early access takes just **2 simple steps:**
 >
@@ -69,7 +69,7 @@
 -   **Accent Outline**: Adds a stylish border to the widget.
 -   **Improved Settings**: Refined settings interface for better usability.
 -   **Manual Transparency**: Fine-tune the widget's background transparency.
--   **Custom Colors**: Choose between Default, System Accent, or Custom colors for text.
+-   **Custom Colors:** Choose between Default, System Accent, or Custom colors for text and background.
 -   **Outline Color**: Customize the widget outline color.
 
 ## Download
