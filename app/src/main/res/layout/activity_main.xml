@@ -2,8 +2,7 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?attr/colorSurface">
+    android:layout_height="match_parent">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
@@ -277,16 +276,64 @@
                         android:orientation="vertical"
                         android:visibility="gone">
 
-                        <TextView
-                            android:id="@+id/tv_changelog_content"
+                        <ScrollView
+                            android:id="@+id/changelog_scroll"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="240dp"
                             android:layout_marginTop="8dp"
-                            android:text="@string/changelog_content"
-                            android:textAppearance="?attr/textAppearanceBodyMedium"
-                            android:textColor="?attr/colorOnSurface"
-                            android:lineSpacingExtra="4dp"/>
-                            
+                            android:fadingEdge="vertical"
+                            android:fadingEdgeLength="16dp"
+                            android:requiresFadingEdge="vertical">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="📌 Note"
+                                    android:textAppearance="?attr/textAppearanceTitleSmall"
+                                    android:textColor="?attr/colorPrimary"
+                                    android:textStyle="bold"
+                                    android:layout_marginBottom="4dp"/>
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/changelog_note"
+                                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                                    android:textColor="?attr/colorOnSurface"
+                                    android:lineSpacingExtra="3dp"/>
+
+                                <com.google.android.material.divider.MaterialDivider
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="12dp"
+                                    android:layout_marginBottom="12dp"/>
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="📋 Changelog"
+                                    android:textAppearance="?attr/textAppearanceTitleSmall"
+                                    android:textColor="?attr/colorPrimary"
+                                    android:textStyle="bold"
+                                    android:layout_marginBottom="4dp"/>
+
+                                <TextView
+                                    android:id="@+id/tv_changelog_content"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/changelog_content"
+                                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                                    android:textColor="?attr/colorOnSurface"
+                                    android:lineSpacingExtra="3dp"/>
+
+                            </LinearLayout>
+                        </ScrollView>
+
                         <com.google.android.material.divider.MaterialDivider
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -459,6 +506,10 @@
 
                     <!-- Transparent Settings -->
                     <include layout="@layout/settings_card_item" android:id="@+id/section_bg_transparency"/>
+
+                    <!-- Background Color Settings -->
+                    <include layout="@layout/settings_selector_item" android:id="@+id/section_bg_color"/>
+                    <include layout="@layout/settings_color_sliders" android:id="@+id/sliders_bg_color"/>
 
                     <!-- Text Color Settings -->
                     <include layout="@layout/settings_selector_item" android:id="@+id/section_text_color_primary"/>

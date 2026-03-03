@@ -27,9 +27,14 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
+import android.view.ViewGroup
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.slider.Slider
@@ -41,6 +46,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         com.google.android.material.color.DynamicColors.applyToActivityIfAvailable(this)
         setContentView(R.layout.activity_main)
 
@@ -67,6 +73,17 @@ class MainActivity : AppCompatActivity() {
             ivChangelogExpand.animate().rotation(if (isCurrentlyVisible) 0f else 180f).setDuration(200).start()
         }
 
+        // Prevent parent scroll when touching the inner changelog scroll area
+        findViewById<View>(R.id.changelog_scroll).setOnTouchListener { v, event ->
+            when (event.action) {
+                android.view.MotionEvent.ACTION_DOWN, android.view.MotionEvent.ACTION_MOVE ->
+                    v.parent.requestDisallowInterceptTouchEvent(true)
+                android.view.MotionEvent.ACTION_UP, android.view.MotionEvent.ACTION_CANCEL ->
+                    v.parent.requestDisallowInterceptTouchEvent(false)
+            }
+            false
+        }
+
         findViewById<View>(R.id.tv_github_link).setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW, android.net.Uri.parse("https://github.com/LeanBitLab/Lwidget"))
             startActivity(intent)
@@ -78,8 +95,19 @@ class MainActivity : AppCompatActivity() {
         }
 
         
-        findViewById<ExtendedFloatingActionButton>(R.id.fab_update).setOnClickListener {
+        val fab = findViewById<ExtendedFloatingActionButton>(R.id.fab_update)
+        fab.setOnClickListener {
             updateWidget()
+        }
+
+        // Apply navigation bar insets to FAB so it doesn't overlap gesture nav
+        ViewCompat.setOnApplyWindowInsetsListener(fab) { view, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                bottomMargin = insets.bottom + (24 * resources.displayMetrics.density).toInt()
+                rightMargin = insets.right + (24 * resources.displayMetrics.density).toInt()
+            }
+            windowInsets
         }
 
         // Handle Collapsing Toolbar Title Fade and Header Fade
@@ -472,6 +500,7 @@ class MainActivity : AppCompatActivity() {
                  val sectionPrimary = findViewById<View>(R.id.section_text_color_primary)
                  val sectionSecondary = findViewById<View>(R.id.section_text_color_secondary)
                  val sectionOutlineColor = findViewById<View>(R.id.section_outline_color)
+                 val sectionBgColor = findViewById<View>(R.id.section_bg_color)
                  val slidersPrimary = findViewById<View>(R.id.sliders_primary)
                  val slidersSecondary = findViewById<View>(R.id.sliders_secondary)
                  val slidersOutline = findViewById<View>(R.id.sliders_outline)
@@ -479,15 +508,18 @@ class MainActivity : AppCompatActivity() {
                  sectionPrimary.visibility = vis
                  sectionSecondary.visibility = vis
                  sectionOutlineColor.visibility = vis
+                 sectionBgColor.visibility = vis
                  slidersPrimary.visibility = View.GONE
                  slidersSecondary.visibility = View.GONE
                  slidersOutline.visibility = View.GONE
+                 findViewById<View>(R.id.sliders_bg_color).visibility = View.GONE
                  // Auto-select Default color when dynamic colors is turned on
                  if (isChecked) {
                      prefs.edit()
                          .putInt("text_color_primary_idx", 0)
                          .putInt("text_color_secondary_idx", 0)
                          .putInt("outline_color_idx", 0)
+                         .putInt("bg_color_idx", 0)
                          .apply()
                  }
             }
@@ -503,13 +535,20 @@ class MainActivity : AppCompatActivity() {
         // Background Opacity: Def 100 (Opaque)
         bindSlider(R.id.section_bg_transparency, getString(R.string.section_bg_transparency), "bg_opacity", 100f, 0f, 100f, iconResId = R.drawable.ic_transparency)
 
-        // Text Colors
+        // Background Color
         val colorOptions = listOf(
             getString(R.string.color_default),
             getString(R.string.color_system_accent),
             getString(R.string.color_custom)
         )
-        
+
+        val slidersBgColor = bindColorSliders(R.id.sliders_bg_color, "bg_color")
+        bindSelector(R.id.section_bg_color, getString(R.string.section_bg_color), "bg_color_idx", colorOptions, 0, iconResId = R.drawable.ic_palette) { idx ->
+             slidersBgColor.visibility = if (idx == 2) View.VISIBLE else View.GONE
+        }
+        slidersBgColor.visibility = if (prefs.getInt("bg_color_idx", 0) == 2) View.VISIBLE else View.GONE
+
+        // Text Colors
         val slidersPrimary = bindColorSliders(R.id.sliders_primary, "text_color_primary")
         bindSelector(R.id.section_text_color_primary, getString(R.string.section_text_color_primary), "text_color_primary_idx", colorOptions, 0, iconResId = R.drawable.ic_palette) { idx ->
              slidersPrimary.visibility = if (idx == 2) View.VISIBLE else View.GONE
@@ -537,9 +576,11 @@ class MainActivity : AppCompatActivity() {
             findViewById<View>(R.id.section_text_color_primary).visibility = View.GONE
             findViewById<View>(R.id.section_text_color_secondary).visibility = View.GONE
             findViewById<View>(R.id.section_outline_color).visibility = View.GONE
+            findViewById<View>(R.id.section_bg_color).visibility = View.GONE
             slidersPrimary.visibility = View.GONE
             slidersSecondary.visibility = View.GONE
             slidersOutline.visibility = View.GONE
+            slidersBgColor.visibility = View.GONE
         }
 
         // Font Style: Def "Default" (0)

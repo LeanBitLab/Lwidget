@@ -67,8 +67,9 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.PROVIDER_CHANGED" />
-                <data android:scheme="content" android:host="com.android.calendar" />
-                <data android:scheme="content" android:host="org.tasks" />
+                <data android:scheme="content" />
+                <data android:host="com.android.calendar" />
+                <data android:host="org.tasks" />
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"

@@ -8,14 +8,14 @@ plugins {
 
 android {
     namespace = "com.leanbitlab.lwidget"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.leanbitlab.lwidget"
         minSdk = 26
         targetSdk = 35
-        versionCode = 11
-        versionName = "1.8.1"
+        versionCode = 12
+        versionName = "1.8.2"
     }
 
     signingConfigs {
@@ -54,8 +54,9 @@ android {
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.11.0")
-    implementation("androidx.work:work-runtime-ktx:2.9.0")
+    implementation("androidx.activity:activity-ktx:1.10.1")
+    implementation("androidx.core:core-ktx:1.15.0")
+    implementation("androidx.appcompat:appcompat:1.7.0")
+    implementation("com.google.android.material:material:1.12.0")
+    implementation("androidx.work:work-runtime-ktx:2.10.0")
 }

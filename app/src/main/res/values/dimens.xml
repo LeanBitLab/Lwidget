@@ -2,15 +2,4 @@
 <resources>
     <!-- Base inner radius -->
     <dimen name="widget_radius_inner">16dp</dimen>
-
-    <!-- Mid layers - usually increasing slightly towards outer edge? Or same? -->
-    <!-- Let's keep them same for consistent rounding base. -->
-    <dimen name="widget_radius_mid4">16dp</dimen>
-    <dimen name="widget_radius_mid3">16dp</dimen>
-    <dimen name="widget_radius_mid2">16dp</dimen>
-    <dimen name="widget_radius_mid1">16dp</dimen>
-    <dimen name="widget_radius_outer">16dp</dimen>
-    
-    <!-- Fallback for older -->
-    <dimen name="widget_radius">16dp</dimen>
 </resources>

@@ -5,8 +5,6 @@
         <!-- Customize your light theme here. -->
         <!-- Dynamic Colors are applied in Code, but we set defaults here -->
          <item name="colorPrimary">@color/my_primary</item>
-         <item name="android:statusBarColor">@android:color/transparent</item>
-         <item name="android:windowLightStatusBar">true</item>
     </style>
     <color name="my_primary">#2D0040</color>
 
@@ -20,31 +18,4 @@
         <item name="android:includeFontPadding">false</item>
     </style>
 
-    <style name="EventText.TransparentDark" parent="EventText">
-        <item name="android:textColor">#FFFFFF</item>
-        <item name="android:shadowColor">#000000</item>
-        <item name="android:shadowRadius">3</item>
-        <item name="android:shadowDx">0</item>
-        <item name="android:shadowDy">0</item>
-    </style>
-
-    <style name="EventText.TransparentLight" parent="EventText">
-        <item name="android:textColor">#000000</item>
-        <item name="android:shadowColor">#FFFFFF</item>
-        <item name="android:shadowRadius">3</item>
-        <item name="android:shadowDx">0</item>
-        <item name="android:shadowDy">0</item>
-    </style>
-
-    <style name="BoldTitle" parent="TextAppearance.AppCompat.Title">
-        <item name="android:textStyle">bold</item>
-        <item name="android:textSize">22sp</item>
-    </style>
-
-    <style name="Divider">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">1dp</item>
-        <item name="android:background">?attr/colorOutlineVariant</item>
-        <item name="android:layout_marginVertical">8dp</item>
-    </style>
 </resources>

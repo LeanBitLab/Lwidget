@@ -246,6 +246,7 @@ class AwidgetProvider : AppWidgetProvider() {
             val bgOpacity = prefs.getFloat("bg_opacity", 100f)
             val textColorPrimaryIdx = prefs.getInt("text_color_primary_idx", 0)
             val textColorSecondaryIdx = prefs.getInt("text_color_secondary_idx", 0)
+            val bgColorIdx = prefs.getInt("bg_color_idx", 0)
 
             // --- Theme & Font Setup ---
             fun getLayout(fontIdx: Int): Int {
@@ -273,8 +274,27 @@ class AwidgetProvider : AppWidgetProvider() {
              
             // Background
             views.setImageViewResource(R.id.widget_background, R.drawable.widget_bg_fill)
-            // Using ColorFilter to tint the white shape
-            views.setInt(R.id.widget_background, "setColorFilter", if (useLightTheme) android.graphics.Color.WHITE else android.graphics.Color.parseColor("#212121")) 
+
+            // Resolve background color (0=Default, 1=System Accent, 2=Custom)
+            fun resolveBgColor(idx: Int, isLight: Boolean): Int {
+                 return when (idx) {
+                     0 -> if (isLight) android.graphics.Color.WHITE else android.graphics.Color.parseColor("#212121")
+                     1 -> if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                              context.getColor(android.R.color.system_accent1_500)
+                          } else {
+                              android.graphics.Color.CYAN
+                          }
+                     2 -> {
+                          val r = prefs.getInt("bg_color_r", 255)
+                          val g = prefs.getInt("bg_color_g", 255)
+                          val b = prefs.getInt("bg_color_b", 255)
+                          android.graphics.Color.rgb(r, g, b)
+                     }
+                     else -> if (isLight) android.graphics.Color.WHITE else android.graphics.Color.parseColor("#212121")
+                 }
+            }
+
+            views.setInt(R.id.widget_background, "setColorFilter", resolveBgColor(bgColorIdx, useLightTheme))
             
             val alpha255 = (bgOpacity * 255 / 100).toInt().coerceIn(0, 255)
             views.setInt(R.id.widget_background, "setImageAlpha", alpha255)
@@ -361,14 +381,12 @@ class AwidgetProvider : AppWidgetProvider() {
 
             // Background & outline dynamic color
             if (useDynamicColors && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-                // Warm neutral surface for background
+                // Warm neutral surface for background (overrides custom bg color when dynamic is on)
                 views.setInt(R.id.widget_background, "setColorFilter", context.getColor(if (useLightTheme) android.R.color.system_neutral2_50 else android.R.color.system_neutral1_800))
                 // Accent-tinted outline
                 if (showOutline) {
                     views.setInt(R.id.widget_outline, "setColorFilter", context.getColor(if (useLightTheme) android.R.color.system_accent1_300 else android.R.color.system_accent1_400))
                 }
-            } else {
-                views.setInt(R.id.widget_background, "setColorFilter", if (useLightTheme) android.graphics.Color.WHITE else android.graphics.Color.parseColor("#212121")) 
             }
 
             if (mode == UpdateMode.TICK) {
@@ -963,7 +981,7 @@ class AwidgetProvider : AppWidgetProvider() {
                              
                              var dueSuffix = ""
                              if (dueMillis > 0) {
-                                  val dueDate = LocalDate.ofInstant(Instant.ofEpochMilli(dueMillis), ZoneId.systemDefault())
+                                  val dueDate = LocalDateTime.ofInstant(Instant.ofEpochMilli(dueMillis), ZoneId.systemDefault()).toLocalDate()
                                   val today = LocalDate.now()
                                   val tomorrow = today.plusDays(1)
                                   
