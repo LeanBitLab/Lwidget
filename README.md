@@ -83,7 +83,9 @@ You can download the latest release from the [GitHub Releases](https://github.co
 -   **Usage Access**: Required to display daily data consumption and screen time.
 -   **Tasks.org Integration**: Requires Tasks.org to be installed for task integration.
 -   **Notifications**: Required for the Step Counter foreground service.
--   **Battery Optimization**: For reliable updates, ensure battery optimization is disabled for Lwidget.
+-   **Battery Optimization**: Lwidget works without any background service. However, some devices may kill the app to save battery, which can stop widget updates. To fix this:
+    - Mark Lwidget as non-battery-optimized in your device settings.
+    - Or, enable the Step Counter — it uses a lightweight foreground service that also keeps all other widget features updating live.
 
 All permissions are requested only when you enable the corresponding feature.
 
