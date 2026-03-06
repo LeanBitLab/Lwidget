@@ -85,7 +85,8 @@ class AwidgetProvider : AppWidgetProvider() {
             ACTION_BATTERY_UPDATE,
             StepCounterService.ACTION_STEP_UPDATE,
             Intent.ACTION_PROVIDER_CHANGED,
-            android.app.AlarmManager.ACTION_NEXT_ALARM_CLOCK_CHANGED
+            android.app.AlarmManager.ACTION_NEXT_ALARM_CLOCK_CHANGED,
+            "nodomain.freeyourgadget.gadgetbridge.ACTION_GENERIC_WEATHER"
         )) {
             val pendingResult = goAsync()
             CoroutineScope(Dispatchers.IO).launch {
@@ -109,6 +110,13 @@ class AwidgetProvider : AppWidgetProvider() {
                             val host = intent.data?.host
                             val mode = if (host == "com.android.calendar") UpdateMode.CALENDAR_ONLY else UpdateMode.TASKS_ONLY
                             appWidgetIds.forEach { updateAppWidget(context, appWidgetManager, it, mode) }
+                        }
+                        "nodomain.freeyourgadget.gadgetbridge.ACTION_GENERIC_WEATHER" -> {
+                            val weatherJson = intent.getStringExtra("WeatherJson")
+                            if (!weatherJson.isNullOrEmpty()) {
+                                com.leanbitlab.lwidget.weather.BreezyWeatherFetcher.saveLatestWeatherData(context, weatherJson)
+                                appWidgetIds.forEach { updateAppWidget(context, appWidgetManager, it, UpdateMode.FULL) }
+                            }
                         }
                     }
                 } finally {
@@ -180,6 +188,13 @@ class AwidgetProvider : AppWidgetProvider() {
                 showEvents = false
             }
             val sizeEvents = prefs.getFloat("size_events", 14f)
+
+            // Fetch Breezy Weather Data
+            val bweather = com.leanbitlab.lwidget.weather.BreezyWeatherFetcher.fetchLocalWeather(context)
+            val showWeatherCondition = prefs.getBoolean("show_weather_condition", false)
+            val showWeatherIconOnly = prefs.getBoolean("show_weather_icon_only", false) 
+            
+            android.util.Log.d("WidgetLife", "UpdateMode FULL | Condition: $showWeatherCondition | IconOnly: $showWeatherIconOnly | WeatherData: ${bweather?.currentCondition}")
 
             val useSystemTheme = prefs.getBoolean("use_system_theme", false)
             val useDynamicColors = prefs.getBoolean("use_dynamic_colors", true)
@@ -294,7 +309,11 @@ class AwidgetProvider : AppWidgetProvider() {
                  }
             }
 
-            views.setInt(R.id.widget_background, "setColorFilter", resolveBgColor(bgColorIdx, useLightTheme))
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                views.setColorStateList(R.id.widget_background, "setImageTintList", android.content.res.ColorStateList.valueOf(resolveBgColor(bgColorIdx, useLightTheme)))
+            } else {
+                views.setInt(R.id.widget_background, "setColorFilter", resolveBgColor(bgColorIdx, useLightTheme))
+            }
             
             val alpha255 = (bgOpacity * 255 / 100).toInt().coerceIn(0, 255)
             views.setInt(R.id.widget_background, "setImageAlpha", alpha255)
@@ -323,7 +342,11 @@ class AwidgetProvider : AppWidgetProvider() {
             val outlineColor = resolveOutlineColor(outlineColorIdx)
             views.setImageViewResource(R.id.widget_outline, R.drawable.widget_bg_outline)
             views.setViewVisibility(R.id.widget_outline, if (showOutline) android.view.View.VISIBLE else android.view.View.GONE)
-            views.setInt(R.id.widget_outline, "setColorFilter", outlineColor)
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                views.setColorStateList(R.id.widget_outline, "setImageTintList", android.content.res.ColorStateList.valueOf(outlineColor))
+            } else {
+                views.setInt(R.id.widget_outline, "setColorFilter", outlineColor)
+            }
             views.setInt(R.id.widget_outline, "setImageAlpha", 255)
 
             // Resolve Colors
@@ -382,10 +405,10 @@ class AwidgetProvider : AppWidgetProvider() {
             // Background & outline dynamic color
             if (useDynamicColors && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
                 // Warm neutral surface for background (overrides custom bg color when dynamic is on)
-                views.setInt(R.id.widget_background, "setColorFilter", context.getColor(if (useLightTheme) android.R.color.system_neutral2_50 else android.R.color.system_neutral1_800))
+                views.setColorStateList(R.id.widget_background, "setImageTintList", android.content.res.ColorStateList.valueOf(context.getColor(if (useLightTheme) android.R.color.system_neutral2_50 else android.R.color.system_neutral1_800)))
                 // Accent-tinted outline
                 if (showOutline) {
-                    views.setInt(R.id.widget_outline, "setColorFilter", context.getColor(if (useLightTheme) android.R.color.system_accent1_300 else android.R.color.system_accent1_400))
+                    views.setColorStateList(R.id.widget_outline, "setImageTintList", android.content.res.ColorStateList.valueOf(context.getColor(if (useLightTheme) android.R.color.system_accent1_300 else android.R.color.system_accent1_400)))
                 }
             }
 
@@ -501,6 +524,85 @@ class AwidgetProvider : AppWidgetProvider() {
                 views.setTextViewText(R.id.text_temp, tempSpan)
             }
             
+            // --- Weather Condition ---
+            val showWeather = showWeatherCondition && bweather != null
+            views.setViewVisibility(R.id.text_weather_condition, if (showWeather) android.view.View.VISIBLE else android.view.View.GONE)
+            if (showWeather && bweather != null) {
+                var weatherCode = bweather.currentConditionCode
+                var weatherText = bweather.currentCondition
+                var hasWarning = false
+                
+                // Check week forecasts for warnings
+                val forecasts = bweather.forecasts
+                if (forecasts != null && forecasts.isNotEmpty()) {
+                    for ((index, forecast) in forecasts.take(7).withIndex()) {
+                        val fCode = forecast.conditionCode
+                        if (fCode != null && (
+                            fCode in listOf(500, 501, 502, 503, 504, 511, 520, 521, 522, 531) || // Rain
+                            fCode in listOf(600, 601, 602, 611, 612, 615, 616, 620, 621, 622) || // Snow
+                            fCode in listOf(210, 211, 212, 221, 230, 231, 232) // Storm
+                        )) {
+                            hasWarning = true
+                            weatherCode = fCode
+                            
+                            // Determine string representation of the day
+                            val dayText = when (index) {
+                                0 -> "today"
+                                1 -> "tomorrow"
+                                else -> {
+                                    val localDate = java.time.LocalDate.now().plusDays(index.toLong())
+                                    localDate.dayOfWeek.getDisplayName(java.time.format.TextStyle.SHORT, java.util.Locale.getDefault())
+                                }
+                            }
+                            
+                            // Extract probability and create warning string
+                            val precipString = if (forecast.precipProbability != null && forecast.precipProbability > 0) "${forecast.precipProbability}% " else ""
+                            val conditionWarning = when (fCode) {
+                                in listOf(500, 501, 502, 503, 504, 511, 520, 521, 522, 531) -> "Rain $dayText"
+                                in listOf(600, 601, 602, 611, 612, 615, 616, 620, 621, 622) -> "Snow $dayText"
+                                in listOf(210, 211, 212, 221, 230, 231, 232) -> "Storm $dayText"
+                                else -> "Warning"
+                            }
+                            weatherText = "$precipString$conditionWarning"
+                            break 
+                        }
+                    }
+                }
+                
+                var conditionText = weatherText
+                if (conditionText.isNullOrEmpty()) {
+                    conditionText = "Unknown"
+                }
+
+                // Get weather icon string representation
+                val weatherIcon = when (weatherCode) {
+                    800 -> "☀️" // Clear
+                    801, 802 -> "⛅" // Partly Cloudy
+                    803, 804 -> "☁️" // Cloudy
+                    500, 501, 502, 503, 504, 511, 520, 521, 522, 531 -> "🌧️" // Rain
+                    600, 601, 602, 611, 612, 615, 616, 620, 621, 622 -> "❄️" // Snow
+                    771 -> "🌬️" // Wind
+                    741 -> "🌫️" // Fog
+                    751 -> "🌁" // Haze
+                    210, 211, 212, 221, 230, 231, 232 -> "⛈️" // Thunderstorm
+                    else -> "" 
+                }
+                
+                val displayString = if (showWeatherIconOnly && !hasWarning) weatherIcon else "$weatherIcon $conditionText"
+                views.setTextViewText(R.id.text_weather_condition, displayString.trim())
+                views.setTextViewTextSize(R.id.text_weather_condition, android.util.TypedValue.COMPLEX_UNIT_SP, sizeTemp)
+                views.setTextColor(R.id.text_weather_condition, secondaryColor)
+                
+                val launchIntent = context.packageManager.getLaunchIntentForPackage("org.breezyweather")
+                if (launchIntent != null) {
+                    val pendingIntent = android.app.PendingIntent.getActivity(
+                        context, 0, launchIntent, 
+                        android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE
+                    )
+                    views.setOnClickPendingIntent(R.id.text_weather_condition, pendingIntent)
+                }
+            }
+
             // --- Data Usage ---
             views.setViewVisibility(R.id.text_data_usage, if (showData) android.view.View.VISIBLE else android.view.View.GONE)
             if (showData) {
@@ -573,12 +675,13 @@ class AwidgetProvider : AppWidgetProvider() {
                 views.setViewPadding(R.id.events_container, 0, topMargin, 0, 0)
             }
 
-            // Right Side Stack: Battery -> Temp -> Data -> Storage
+            // Right Side Stack: Battery -> Temp -> Weather -> Data -> Storage
             data class StackEntry(val viewId: Int, val isVisible: Boolean, val size: Float)
 
             val rightStack = listOf(
                 StackEntry(R.id.text_battery, showBattery, sizeBattery),
                 StackEntry(R.id.text_temp, showTemp, sizeTemp),
+                StackEntry(R.id.text_weather_condition, showWeather, sizeTemp), // Using sizeTemp for weather
                 StackEntry(R.id.text_data_usage, showData, sizeData),
                 StackEntry(R.id.text_storage, showStorage, sizeStorage),
                 StackEntry(R.id.text_steps, showSteps, sizeSteps),
