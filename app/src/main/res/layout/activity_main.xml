@@ -434,6 +434,9 @@
 
                     <!-- Temp Settings -->
                     <include layout="@layout/settings_card_item" android:id="@+id/section_temp"/>
+                    
+                    <!-- Weather Condition Settings -->
+                    <include layout="@layout/settings_card_item" android:id="@+id/section_weather_condition"/>
 
                     <!-- Data Usage Settings -->
                     <include layout="@layout/settings_card_item" android:id="@+id/section_data"/>

@@ -11,9 +11,15 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_HEALTH" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    
+    <!-- Breezy Weather Local Data Sharing Permission -->
+    <uses-permission android:name="org.breezyweather.READ_PROVIDER" />
 
     <!-- Required for Android 11+ (API 30) to see these packages -->
     <queries>
+        <!-- Weather Apps -->
+        <package android:name="org.breezyweather" />
+        
         <!-- Clock Apps -->
         <package android:name="com.android.deskclock" />
         <package android:name="com.google.android.deskclock" />
@@ -64,6 +70,7 @@
                 <action android:name="com.leanbitlab.lwidget.ACTION_BATTERY_UPDATE" /> 
                 <action android:name="com.leanbitlab.lwidget.ACTION_STEP_UPDATE" /> 
                 <action android:name="android.app.action.NEXT_ALARM_CLOCK_CHANGED" />
+                <action android:name="nodomain.freeyourgadget.gadgetbridge.ACTION_GENERIC_WEATHER" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.PROVIDER_CHANGED" />

@@ -12,7 +12,7 @@
 
 > ### 🚀 Help Us Get Lwidget on the Play Store!
 >
-> We're running a **closed beta test** — and we need **your help** to bring Lwidget to the Google Play Store! We are currently on **v1.8.2**.
+> We're running a **closed beta test** — and we need **your help** to bring Lwidget to the Google Play Store! We are currently on **v1.8.3**.
 >
 > Getting early access takes just **2 simple steps:**
 >

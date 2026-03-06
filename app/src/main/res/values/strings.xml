@@ -8,6 +8,7 @@
     <string name="section_date">Date</string>
     <string name="section_date_format">Date Format</string>
     <string name="section_battery">Battery</string>
+    <string name="section_weather_condition">Weather Conditions</string>
     <string name="section_temp">Temperature</string>
     <string name="section_data_usage">Data Usage</string>
     <string name="section_events">Events</string>
@@ -39,7 +40,7 @@
     <!-- Permissions & Errors -->
     <string name="perm_usage_access_title">Please grant Usage Access for Lwidget</string>
 
-    <string name="error_max_subset_items">Max 4 of Battery, Temp, Data, Storage allowed.</string>
+    <string name="error_max_subset_items">Max 5 of Battery, Weather, Temp, Data, Storage allowed.</string>
     <string name="no_perm">No Perm</string>
     <string name="error">Err</string>
     

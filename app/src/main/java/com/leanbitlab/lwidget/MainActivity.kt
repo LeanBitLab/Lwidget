@@ -242,6 +242,9 @@ class MainActivity : AppCompatActivity() {
         // Battery: Def True, 24sp
         bindSection(R.id.section_battery, getString(R.string.section_battery), "show_battery", true, "size_battery", 24f, 12f, 74f, isContent = true, iconResId = R.drawable.ic_battery).tag = "battery"
         
+        // Weather Conditions: Def True
+        bindSection(R.id.section_weather_condition, getString(R.string.section_weather_condition), "show_weather_condition", true, "size_temp", 18f, 10f, 32f, isContent = true, iconResId = R.drawable.ic_temp).tag = "weather_condition"
+
         // Temp: Def True, 18sp
         bindSection(R.id.section_temp, getString(R.string.section_temp), "show_temp", true, "size_temp", 18f, 10f, 32f, isContent = true, iconResId = R.drawable.ic_temp).tag = "temp"
 
@@ -864,12 +867,12 @@ class MainActivity : AppCompatActivity() {
     private fun checkLimit(): Boolean {
         // Global limit removed per user request
 
-        // Subset Limit: Battery, Temp, Data, Storage (Max 4 allowed now to fit stack)
+        // Subset Limit: Battery, Weather, Temp, Data, Storage (Max 5 allowed now to fit stack)
         val subsetCount = contentSwitches.count { 
-            it.isChecked && (it.tag == "battery" || it.tag == "temp" || it.tag == "data" || it.tag == "storage") 
+            it.isChecked && (it.tag == "battery" || it.tag == "weather_condition" || it.tag == "temp" || it.tag == "data" || it.tag == "storage") 
         }
         
-        if (subsetCount > 4) {
+        if (subsetCount > 5) {
              com.google.android.material.snackbar.Snackbar.make(
                 findViewById(R.id.fab_update), 
                 getString(R.string.error_max_subset_items), 

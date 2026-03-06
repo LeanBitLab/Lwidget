@@ -4,6 +4,7 @@ import java.util.Properties
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    kotlin("plugin.serialization") version "1.9.22"
 }
 
 android {
@@ -14,8 +15,8 @@ android {
         applicationId = "com.leanbitlab.lwidget"
         minSdk = 26
         targetSdk = 35
-        versionCode = 12
-        versionName = "1.8.2"
+        versionCode = 13
+        versionName = "1.8.3"
     }
 
     signingConfigs {
@@ -59,4 +60,5 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.work:work-runtime-ktx:2.10.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 }
