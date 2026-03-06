@@ -187,6 +187,16 @@ class MainActivity : AppCompatActivity() {
             widgetNeedsUpdate = true
         }
 
+        // Check Breezy Weather
+        if (prefs.getBoolean("show_weather_condition", false)) {
+            if (!isAppInstalled("org.breezyweather") || ContextCompat.checkSelfPermission(this, "org.breezyweather.READ_PROVIDER") != PackageManager.PERMISSION_GRANTED) {
+                prefs.edit().putBoolean("show_weather_condition", false).apply()
+                findViewById<View>(R.id.section_weather_condition).findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.item_switch).isChecked = false
+                findViewById<View>(R.id.section_weather_condition).findViewById<View>(R.id.size_container).visibility = View.GONE
+                widgetNeedsUpdate = true
+            }
+        }
+
         cardPermissionList.visibility = View.GONE
 
         if (widgetNeedsUpdate) {
@@ -199,6 +209,8 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         // Re-check permissions when returning (especially for Data Usage settings)
         checkAllPermissions()
+        // Force a full widget update every time the app is opened
+        updateWidget()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -208,6 +220,22 @@ class MainActivity : AppCompatActivity() {
              // Task permission result - trigger update
              if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                  updateWidget()
+             }
+        } else if (requestCode == 103) {
+             // Breezy Weather permission result
+             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                 prefs.edit().putBoolean("show_weather_condition", true).apply()
+                 findViewById<View>(R.id.section_weather_condition).findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.item_switch).isChecked = true
+                 findViewById<View>(R.id.section_weather_condition).findViewById<View>(R.id.size_container).visibility = View.VISIBLE
+                 updateWidget()
+                 updateToggleAvailability()
+
+                 // Show Gadgetbridge module prompt
+                 android.app.AlertDialog.Builder(this)
+                     .setTitle("Important Step")
+                     .setMessage("If the weather doesn't show up on your widget soon:\n\nOpen Breezy Weather → Settings → External Modules → Enable 'Send Gadgetbridge Data' & toggle on 'Lwidget'.")
+                     .setPositiveButton("Got it", null)
+                     .show()
              }
         }
     }
@@ -242,8 +270,70 @@ class MainActivity : AppCompatActivity() {
         // Battery: Def True, 24sp
         bindSection(R.id.section_battery, getString(R.string.section_battery), "show_battery", true, "size_battery", 24f, 12f, 74f, isContent = true, iconResId = R.drawable.ic_battery).tag = "battery"
         
-        // Weather Conditions: Def True
-        bindSection(R.id.section_weather_condition, getString(R.string.section_weather_condition), "show_weather_condition", true, "size_temp", 18f, 10f, 32f, isContent = true, iconResId = R.drawable.ic_temp).tag = "weather_condition"
+        // Weather Conditions: Def False (Default changed, Title changed via XML, Icon changed)
+        val weatherSwitch = bindSection(R.id.section_weather_condition, getString(R.string.section_weather_condition), "show_weather_condition", false, "size_weather", 18f, 10f, 32f, isContent = true, iconResId = R.drawable.ic_weather)
+        weatherSwitch.tag = "weather_condition"
+        
+        // Override the default listener to add Breezy Weather install check
+        weatherSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                // Check if Breezy Weather is installed
+                if (!isAppInstalled("org.breezyweather")) {
+                    weatherSwitch.isChecked = false
+                    com.google.android.material.snackbar.Snackbar.make(
+                        findViewById(R.id.fab_update), 
+                        "Breezy Weather app (with DataBridge enabled) is required.", 
+                        com.google.android.material.snackbar.Snackbar.LENGTH_LONG
+                    ).setAction("Install") {
+                         try {
+                            startActivity(Intent(Intent.ACTION_VIEW, android.net.Uri.parse("https://github.com/breezy-weather/breezy-weather/releases")))
+                         } catch (e: Exception) {
+                            // fallback
+                         }
+                    }.show()
+                    return@setOnCheckedChangeListener
+                }
+
+                if (ContextCompat.checkSelfPermission(this, "org.breezyweather.READ_PROVIDER") != PackageManager.PERMISSION_GRANTED) {
+                    weatherSwitch.isChecked = false
+                    android.app.AlertDialog.Builder(this)
+                        .setTitle("Permission Clarification")
+                        .setMessage("To display the weather, Lwidget needs to read data from Breezy Weather.\n\nAndroid will now ask for 'Location' access. Please note: Lwidget DOES NOT access your location, nor does it have permission to access the internet. This is simply how Android categorizes Breezy Weather's data sharing permission.")
+                        .setPositiveButton("Continue") { _, _ ->
+                            ActivityCompat.requestPermissions(this, arrayOf("org.breezyweather.READ_PROVIDER"), 103)
+                        }
+                        .setNegativeButton("Cancel", null)
+                        .show()
+                    return@setOnCheckedChangeListener
+                }
+
+                if (!checkLimit()) {
+                    weatherSwitch.isChecked = false
+                    return@setOnCheckedChangeListener
+                }
+            }
+            // Replicate bindSection's default listener logic
+            val wasAlreadyOn = prefs.getBoolean("show_weather_condition", false)
+            prefs.edit().putBoolean("show_weather_condition", isChecked).apply()
+            findViewById<View>(R.id.section_weather_condition).findViewById<View>(R.id.size_container).visibility = if (isChecked) View.VISIBLE else View.GONE
+            updateWidget()
+            updateToggleAvailability()
+
+            // If toggling on and we already had permission, still show the Gadgetbridge reminder
+            if (isChecked && !wasAlreadyOn) {
+                 android.app.AlertDialog.Builder(this)
+                     .setTitle("Important Step")
+                     .setMessage("If the weather doesn't show up on your widget soon:\n\nOpen Breezy Weather → Settings → External Modules → Enable 'Send Gadgetbridge Data' & toggle on 'Lwidget'.")
+                     .setPositiveButton("Got it", null)
+                     .show()
+            }
+        }
+        
+        // If the weather toggle was already on from a previous version, validate it now
+        if (weatherSwitch.isChecked && (!isAppInstalled("org.breezyweather") || ContextCompat.checkSelfPermission(this, "org.breezyweather.READ_PROVIDER") != PackageManager.PERMISSION_GRANTED)) {
+            weatherSwitch.isChecked = false
+            prefs.edit().putBoolean("show_weather_condition", false).apply()
+        }
 
         // Temp: Def True, 18sp
         bindSection(R.id.section_temp, getString(R.string.section_temp), "show_temp", true, "size_temp", 18f, 10f, 32f, isContent = true, iconResId = R.drawable.ic_temp).tag = "temp"

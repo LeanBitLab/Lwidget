@@ -8,7 +8,7 @@
     <string name="section_date">Date</string>
     <string name="section_date_format">Date Format</string>
     <string name="section_battery">Battery</string>
-    <string name="section_weather_condition">Weather Conditions</string>
+    <string name="section_weather_condition">Weather</string>
     <string name="section_temp">Temperature</string>
     <string name="section_data_usage">Data Usage</string>
     <string name="section_events">Events</string>
@@ -32,7 +32,7 @@
     <string name="section_changelog">Note \u0026 Changelog</string>
     <string name="changelog_version">Version %s</string>
     <string name="changelog_note">Lwidget works without any background service. However, some devices may kill the app to save battery, which can stop widget updates. To fix this:\n\n• Mark Lwidget as non-battery-optimized in your device settings.\n• Or, enable the Step Counter — it uses a lightweight foreground service that also keeps all other widget features updating live.</string>
-    <string name="changelog_content">What\'s New:\n• Added background color customization\n• Improved themed icon\n• Code cleanup and optimization\n• Fixed widget settings dropdown menus occasionally getting stuck</string>
+    <string name="changelog_content">What\'s New:\n• Added Breezy Weather integration\n• Added intents to some more elements\n• Fixed a widget rendering bug on some devices\n• Some minor visual improvements</string>
     <string name="changelog_testing_notice">Thank you for testing Lwidget! Please open this app occasionally so Google counts you as an active tester.</string>
     <string name="github_source_code">Source Code (GitHub)</string>
     <string name="privacy_policy">Privacy Policy</string>

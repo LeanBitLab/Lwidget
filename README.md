@@ -58,6 +58,7 @@
 -   **Step Counter**: Track your daily steps directly from the widget.
 -   **Calendar Events**: Upcoming agenda at a glance.
 -   **Task Integration**: Seamless integration with [Tasks.org](https://tasks.org/).
+-   **Weather**: Current conditions and weekly forecast warnings via [Breezy Weather](https://github.com/breezy-weather/breezy-weather) integration.
 -   **World Clock**: Track time in another zone.
 -   **Next Alarm**: Display your next scheduled alarm.
 -   **Daily Data Usage**: Monitor your daily data consumption.
@@ -83,6 +84,7 @@ You can download the latest release from the [GitHub Releases](https://github.co
 -   **Usage Access**: Required to display daily data consumption and screen time.
 -   **Tasks.org Integration**: Requires Tasks.org to be installed for task integration.
 -   **Notifications**: Required for the Step Counter foreground service.
+-   **Breezy Weather Integration**: Requires [Breezy Weather](https://github.com/breezy-weather/breezy-weather) to be installed with DataBridge enabled. In Breezy Weather: Settings → External Modules → Send Gadgetbridge Data → toggle on Lwidget. Lwidget does not access location or the internet — it only reads weather data stored locally by Breezy Weather.
 -   **Battery Optimization**: Lwidget works without any background service. However, some devices may kill the app to save battery, which can stop widget updates. To fix this:
     - Mark Lwidget as non-battery-optimized in your device settings.
     - Or, enable the Step Counter — it uses a lightweight foreground service that also keeps all other widget features updating live.
@@ -99,6 +101,7 @@ See [LICENSE](LICENSE) file.
 ## Credits
 
 -   Built with ❤️ by [LeanBitLab](https://github.com/LeanBitLab)
+-   🛡️ LeanBitLab Ecosystem: 👉 [Check out our other projects!](https://github.com/LeanBitLab#-current-projects)
 
 ## Support the Development
 

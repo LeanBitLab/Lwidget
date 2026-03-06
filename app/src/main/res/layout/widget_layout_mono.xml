@@ -83,7 +83,7 @@
         android:includeFontPadding="false"
         android:layout_marginBottom="0dp"
         android:visibility="gone"
-        android:layout_below="@id/text_battery"
+        android:layout_below="@id/text_temp"
         android:layout_alignParentEnd="true" />
 
     <!-- Temp (Below Battery) -->
@@ -95,7 +95,7 @@
         android:text="--°C"
         android:textColor="#CCFFFFFF"
         android:textSize="18sp"
-        android:layout_below="@id/text_weather_condition"
+        android:layout_below="@id/text_battery"
 
     
         android:layout_alignParentEnd="true"/>
@@ -109,7 +109,7 @@
         android:textColor="#CCFFFFFF"
         android:textSize="14sp"
         android:visibility="gone"
-        android:layout_below="@id/text_temp"
+        android:layout_below="@id/text_weather_condition"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="2dp"/>
     <TextView
@@ -185,8 +185,10 @@
     <!-- Calendar Events (for expanded sizes - dynamically filled) -->
     <LinearLayout
         android:id="@+id/events_container"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@id/text_battery"
         android:fontFamily="monospace"
         android:orientation="vertical"
         android:layout_below="@id/date_container"

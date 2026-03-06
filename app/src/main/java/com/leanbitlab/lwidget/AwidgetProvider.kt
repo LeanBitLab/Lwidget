@@ -183,6 +183,9 @@ class AwidgetProvider : AppWidgetProvider() {
             val showTemp = prefs.getBoolean("show_temp", true)
             val sizeTemp = prefs.getFloat("size_temp", 18f)
             
+            val showWeatherCondition = prefs.getBoolean("show_weather_condition", false)
+            val sizeWeather = prefs.getFloat("size_weather", 18f)
+            
             var showEvents = prefs.getBoolean("show_events", true)
             if (showEvents && androidx.core.content.ContextCompat.checkSelfPermission(context, android.Manifest.permission.READ_CALENDAR) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
                 showEvents = false
@@ -191,7 +194,6 @@ class AwidgetProvider : AppWidgetProvider() {
 
             // Fetch Breezy Weather Data
             val bweather = com.leanbitlab.lwidget.weather.BreezyWeatherFetcher.fetchLocalWeather(context)
-            val showWeatherCondition = prefs.getBoolean("show_weather_condition", false)
             val showWeatherIconOnly = prefs.getBoolean("show_weather_icon_only", false) 
             
             android.util.Log.d("WidgetLife", "UpdateMode FULL | Condition: $showWeatherCondition | IconOnly: $showWeatherIconOnly | WeatherData: ${bweather?.currentCondition}")
@@ -428,8 +430,13 @@ class AwidgetProvider : AppWidgetProvider() {
                 if (showBattery) tickViews.setTextViewText(R.id.text_battery, batterySpannable)
                 if (showTemp) {
                     val tempStr = String.format("%.1f", tempVal)
-                    val tempSpan = android.text.SpannableString("$tempStr°C")
-                    tempSpan.setSpan(android.text.style.RelativeSizeSpan(0.5f), tempStr.length, tempSpan.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    val tempText = "$tempStr°C 🔋"
+                    val tempSpan = android.text.SpannableString(tempText)
+                    val cIdx = tempText.indexOf("°C")
+                    if (cIdx != -1) {
+                        tempSpan.setSpan(android.text.style.RelativeSizeSpan(0.5f), cIdx, cIdx + 2, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        tempSpan.setSpan(android.text.style.RelativeSizeSpan(0.75f), cIdx + 2, tempText.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    }
                     tickViews.setTextViewText(R.id.text_temp, tempSpan)
                 }
                 if (showData) updateDataUsage(context, tickViews)
@@ -495,10 +502,10 @@ class AwidgetProvider : AppWidgetProvider() {
             // --- Apply Battery & Temp ---
             views.setViewVisibility(R.id.text_battery, if (showBattery) android.view.View.VISIBLE else android.view.View.GONE)
             views.setTextViewTextSize(R.id.text_battery, android.util.TypedValue.COMPLEX_UNIT_SP, sizeBattery)
-            views.setTextColor(R.id.text_battery, primaryColor)
             
             views.setViewVisibility(R.id.text_temp, if (showTemp) android.view.View.VISIBLE else android.view.View.GONE)
             views.setTextViewTextSize(R.id.text_temp, android.util.TypedValue.COMPLEX_UNIT_SP, sizeTemp)
+            views.setTextColor(R.id.text_battery, primaryColor)
             views.setTextColor(R.id.text_temp, secondaryColor)
 
             val batteryStatus: Intent? = IntentFilter(Intent.ACTION_BATTERY_CHANGED).let { ifilter ->
@@ -519,8 +526,13 @@ class AwidgetProvider : AppWidgetProvider() {
             }
             if (showTemp) {
                 val tempStr = String.format("%.1f", tempVal)
-                val tempSpan = android.text.SpannableString("$tempStr°C")
-                tempSpan.setSpan(android.text.style.RelativeSizeSpan(0.5f), tempStr.length, tempSpan.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                val tempText = "$tempStr°C 🔋"
+                val tempSpan = android.text.SpannableString(tempText)
+                val cIdx = tempText.indexOf("°C")
+                if (cIdx != -1) {
+                    tempSpan.setSpan(android.text.style.RelativeSizeSpan(0.5f), cIdx, cIdx + 2, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    tempSpan.setSpan(android.text.style.RelativeSizeSpan(0.75f), cIdx + 2, tempText.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                }
                 views.setTextViewText(R.id.text_temp, tempSpan)
             }
             
@@ -558,9 +570,9 @@ class AwidgetProvider : AppWidgetProvider() {
                             // Extract probability and create warning string
                             val precipString = if (forecast.precipProbability != null && forecast.precipProbability > 0) "${forecast.precipProbability}% " else ""
                             val conditionWarning = when (fCode) {
-                                in listOf(500, 501, 502, 503, 504, 511, 520, 521, 522, 531) -> "Rain $dayText"
-                                in listOf(600, 601, 602, 611, 612, 615, 616, 620, 621, 622) -> "Snow $dayText"
-                                in listOf(210, 211, 212, 221, 230, 231, 232) -> "Storm $dayText"
+                                in listOf(500, 501, 502, 503, 504, 511, 520, 521, 522, 531) -> if (index <= 1) "Rain $dayText" else "Rain on $dayText"
+                                in listOf(600, 601, 602, 611, 612, 615, 616, 620, 621, 622) -> if (index <= 1) "Snow $dayText" else "Snow on $dayText"
+                                in listOf(210, 211, 212, 221, 230, 231, 232) -> if (index <= 1) "Storm $dayText" else "Storm on $dayText"
                                 else -> "Warning"
                             }
                             weatherText = "$precipString$conditionWarning"
@@ -588,9 +600,28 @@ class AwidgetProvider : AppWidgetProvider() {
                     else -> "" 
                 }
                 
-                val displayString = if (showWeatherIconOnly && !hasWarning) weatherIcon else "$weatherIcon $conditionText"
-                views.setTextViewText(R.id.text_weather_condition, displayString.trim())
-                views.setTextViewTextSize(R.id.text_weather_condition, android.util.TypedValue.COMPLEX_UNIT_SP, sizeTemp)
+                val displayString = if (showWeatherIconOnly && !hasWarning) weatherIcon else "$conditionText $weatherIcon"
+                
+                // If it has warning format like "Rain on Sun 🌧️", make " on Sun 🌧️" smaller
+                if (hasWarning) {
+                    val fullMatch = weatherText ?: "Unknown"
+                    val span = android.text.SpannableString(displayString.trim())
+                    
+                    // The day portion is the last word for today/tomorrow, or the last two words for "on Sun"
+                    val lastSpaceIdx = fullMatch.lastIndexOf(' ')
+                    val onSpaceIdx = fullMatch.lastIndexOf(" on ")
+                    
+                    val shrinkStartIndex = if (onSpaceIdx != -1) onSpaceIdx else lastSpaceIdx
+                    if (shrinkStartIndex != -1 && shrinkStartIndex < span.length) {
+                        span.setSpan(android.text.style.RelativeSizeSpan(0.75f), shrinkStartIndex, span.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    } else if (weatherIcon.isNotEmpty()) {
+                        span.setSpan(android.text.style.RelativeSizeSpan(0.75f), span.length - weatherIcon.length, span.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    }
+                    views.setTextViewText(R.id.text_weather_condition, span)
+                } else {
+                    views.setTextViewText(R.id.text_weather_condition, displayString.trim())
+                }
+                views.setTextViewTextSize(R.id.text_weather_condition, android.util.TypedValue.COMPLEX_UNIT_SP, sizeWeather)
                 views.setTextColor(R.id.text_weather_condition, secondaryColor)
                 
                 val launchIntent = context.packageManager.getLaunchIntentForPackage("org.breezyweather")
@@ -681,7 +712,7 @@ class AwidgetProvider : AppWidgetProvider() {
             val rightStack = listOf(
                 StackEntry(R.id.text_battery, showBattery, sizeBattery),
                 StackEntry(R.id.text_temp, showTemp, sizeTemp),
-                StackEntry(R.id.text_weather_condition, showWeather, sizeTemp), // Using sizeTemp for weather
+                StackEntry(R.id.text_weather_condition, showWeather, sizeWeather),
                 StackEntry(R.id.text_data_usage, showData, sizeData),
                 StackEntry(R.id.text_storage, showStorage, sizeStorage),
                 StackEntry(R.id.text_steps, showSteps, sizeSteps),
@@ -731,6 +762,10 @@ class AwidgetProvider : AppWidgetProvider() {
             val storageIntent = Intent(android.provider.Settings.ACTION_INTERNAL_STORAGE_SETTINGS)
             val storagePendingIntent = PendingIntent.getActivity(context, 3, storageIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
             views.setOnClickPendingIntent(R.id.text_storage, storagePendingIntent)
+
+            val dataIntent = Intent(android.provider.Settings.ACTION_DATA_USAGE_SETTINGS)
+            val dataPendingIntent = PendingIntent.getActivity(context, 4, dataIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+            views.setOnClickPendingIntent(R.id.text_data_usage, dataPendingIntent)
 
             // --- Calendar Events OR Tasks ---
             views.setViewVisibility(R.id.events_container, if (showEvents || showTasks) android.view.View.VISIBLE else android.view.View.GONE)
