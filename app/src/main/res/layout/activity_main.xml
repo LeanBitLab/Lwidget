@@ -449,6 +449,9 @@
 
                     <!-- Screen Time Settings -->
                     <include layout="@layout/settings_card_item" android:id="@+id/section_screen_time"/>
+
+                    <!-- Keep Alive Settings -->
+                    <include layout="@layout/settings_card_item" android:id="@+id/section_keep_alive"/>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 

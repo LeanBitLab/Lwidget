@@ -10,23 +10,14 @@
 
 **Lwidget** is a modern, open-source Android widget built with **Kotlin** and **Material 3** design principles. It provides essential information at a glance while adhering to your device's dynamic theme.
 
-> ### 🚀 Help Us Get Lwidget on the Play Store!
+> ### 🎉 Lwidget is now live on the Play Store!
 >
-> We're running a **closed beta test** — and we need **your help** to bring Lwidget to the Google Play Store! We are currently on **v1.8.3**.
+> A massive **THANK YOU** to all our beta testers! Your testing, feedback, and support were instrumental in getting Lwidget approved for production.
 >
-> Getting early access takes just **2 simple steps:**
+> [![Get it on Google Play](https://img.shields.io/badge/Google_Play-414141?style=for-the-badge&logo=google-play&logoColor=white)](https://play.google.com/store/apps/details?id=com.leanbitlab.lwidget)
 >
-> **Step 1:** Join our testers group (your email stays hidden):
->
-> [![Join Google Group](https://img.shields.io/badge/Step_1-Join_Google_Group-4285F4?style=for-the-badge&logo=google-groups&logoColor=white)](https://groups.google.com/g/lwidget-beta-testers)
->
-> **Step 2:** Click below to become a tester, then install from Play Store:
->
-> [![Become a Tester](https://img.shields.io/badge/Step_2-Become_a_Tester-34A853?style=for-the-badge&logo=google-play&logoColor=white)](https://play.google.com/apps/testing/com.leanbitlab.lwidget)
->
-> *(Note: Testers will receive all updates automatically via the Play Store, and the v1.8 release notes here will be updated with future closed testing releases!)*
->
-> **🙏 Important:** Since Lwidget is a widget, Google can't tell you're testing unless you **open the main app every few days**. Just open it, tweak a setting, and close it — that's all it takes!
+> **⚠️ Important Notice for Beta Testers:**
+> Please **uninstall the closed beta version** and install the live app from the Play Store. This is necessary to transition to the stable production track and ensure you continue to receive future updates smoothly without any conflicts from the testing track.
 >
 > ---
 >
@@ -75,7 +66,7 @@
 
 ## Download
 
-You can download the latest release from the [GitHub Releases](https://github.com/LeanBitLab/Lwidget/releases) page.
+You can download the latest release from the [Play Store](https://play.google.com/store/apps/details?id=com.leanbitlab.lwidget) or the [GitHub Releases](https://github.com/LeanBitLab/Lwidget/releases) page. *(Note: GitHub releases will resume starting from v1.9.1).*
 
 ## Setup
 

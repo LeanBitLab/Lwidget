@@ -35,3 +35,6 @@ pdocs/
 
 # CLI Context
 GEMINI.md
+
+.antigravityignore
+.gemini/

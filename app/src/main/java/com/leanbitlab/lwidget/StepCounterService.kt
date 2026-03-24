@@ -42,22 +42,42 @@ class StepCounterService : Service(), SensorEventListener {
     override fun onCreate() {
         super.onCreate()
         createNotificationChannel()
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACTIVITY_RECOGNITION) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
-            stopSelf()
-            return
+        
+        val prefs = getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
+        val showSteps = prefs.getBoolean("show_steps", false)
+        val keepAlive = prefs.getBoolean("keep_alive", false)
+        
+        // If steps is explicitly enabled, require ACTIVITY_RECOGNITION
+        if (showSteps && ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACTIVITY_RECOGNITION) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            // If keep_alive is also on, continue without steps; otherwise stop
+            if (!keepAlive) {
+                stopSelf()
+                return
+            }
         }
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            startForeground(NOTIFICATION_ID, createNotification(), android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_HEALTH)
-        } else {
-            startForeground(NOTIFICATION_ID, createNotification())
+        try {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                startForeground(NOTIFICATION_ID, createNotification(), android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_HEALTH)
+            } else {
+                startForeground(NOTIFICATION_ID, createNotification())
+            }
+        } catch (e: SecurityException) {
+            android.util.Log.e("LWidget", "Cannot start foreground service: missing permission", e)
+            stopSelf()
+            return
         }
 
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
         
-        stepSensor?.let {
-            sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL)
+        // Always register the step sensor if available and permission is granted
+        // (even in keep-alive-only mode, counting in background doesn't hurt)
+        val hasActivityPerm = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACTIVITY_RECOGNITION) == android.content.pm.PackageManager.PERMISSION_GRANTED
+        if (hasActivityPerm) {
+            stepSensor?.let {
+                sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL)
+            }
         }
         
         val filter = android.content.IntentFilter().apply {
@@ -128,9 +148,15 @@ class StepCounterService : Service(), SensorEventListener {
         val settingsIntent = Intent(this, MainActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(this, 0, settingsIntent, PendingIntent.FLAG_IMMUTABLE)
 
+        val prefs = getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
+        val showSteps = prefs.getBoolean("show_steps", false)
+        
+        val title = if (showSteps) "Lwidget Step Counter" else "Lwidget Keep Alive"
+        val text = if (showSteps) "Counting steps in the background" else "Keeping widget updated"
+
         val builder = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("Lwidget Step Counter")
-            .setContentText("Listening for steps in the background")
+            .setContentTitle(title)
+            .setContentText(text)
             .setSmallIcon(R.drawable.ic_steps) 
             .setContentIntent(pendingIntent)
             .setOngoing(true)

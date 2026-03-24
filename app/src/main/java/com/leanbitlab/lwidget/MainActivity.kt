@@ -393,6 +393,7 @@ class MainActivity : AppCompatActivity() {
             prefs.edit().putBoolean("show_steps", isChecked).apply()
             
             // Start or stop the Step Counter Service
+            val keepAlive = prefs.getBoolean("keep_alive", false)
             val serviceIntent = Intent(this, StepCounterService::class.java)
             if (isChecked) {
                 val hasPermission = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
@@ -410,7 +411,8 @@ class MainActivity : AppCompatActivity() {
                     checkAllPermissions()
                     return@setOnCheckedChangeListener
                 }
-            } else {
+            } else if (!keepAlive) {
+                // Only stop service if keep_alive is also off
                 stopService(serviceIntent)
             }
             
@@ -478,6 +480,41 @@ class MainActivity : AppCompatActivity() {
             updateWidget()
             updateToggleAvailability()
             checkAllPermissions()
+        }
+
+        // Keep Alive: Def False (persistent notification to keep widget updating)
+        bindToggle(R.id.section_keep_alive, getString(R.string.section_keep_alive), "keep_alive", false, iconResId = R.drawable.ic_alarm)
+        // Override the default listener for permission handling
+        val keepAliveActualSwitch = findViewById<View>(R.id.section_keep_alive).findViewById<SwitchMaterial>(R.id.item_switch)
+        keepAliveActualSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                // FOREGROUND_SERVICE_TYPE_HEALTH requires ACTIVITY_RECOGNITION permission
+                val neededPermissions = mutableListOf<String>()
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q &&
+                    ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED) {
+                    neededPermissions.add(Manifest.permission.ACTIVITY_RECOGNITION)
+                }
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU &&
+                    ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                    neededPermissions.add(Manifest.permission.POST_NOTIFICATIONS)
+                }
+                if (neededPermissions.isNotEmpty()) {
+                    ActivityCompat.requestPermissions(this, neededPermissions.toTypedArray(), 104)
+                    keepAliveActualSwitch.isChecked = false
+                    return@setOnCheckedChangeListener
+                }
+            }
+            prefs.edit().putBoolean("keep_alive", isChecked).apply()
+            
+            // Start or stop the service based on keep_alive OR show_steps
+            val showSteps = prefs.getBoolean("show_steps", false)
+            val serviceIntent = Intent(this, StepCounterService::class.java)
+            if (isChecked || showSteps) {
+                startForegroundService(serviceIntent)
+            } else {
+                stopService(serviceIntent)
+            }
+            updateWidget()
         }
 
         // Events: Def False, 14sp

@@ -17,6 +17,7 @@
     <string name="section_storage">Storage</string>
     <string name="section_tasks">Tasks</string>
     <string name="section_steps">Step Counter</string>
+    <string name="section_keep_alive">Keep Alive</string>
     <string name="section_screen_time">Screen Time</string>
     <string name="section_outline">Outline</string>
     <string name="section_theme">Follow System Theme</string>
@@ -31,9 +32,9 @@
     <!-- Changelog / About -->
     <string name="section_changelog">Note \u0026 Changelog</string>
     <string name="changelog_version">Version %s</string>
-    <string name="changelog_note">Lwidget works without any background service. However, some devices may kill the app to save battery, which can stop widget updates. To fix this:\n\n• Mark Lwidget as non-battery-optimized in your device settings.\n• Or, enable the Step Counter — it uses a lightweight foreground service that also keeps all other widget features updating live.</string>
-    <string name="changelog_content">What\'s New:\n• Added Breezy Weather integration\n• Added intents to some more elements\n• Fixed a widget rendering bug on some devices\n• Some minor visual improvements</string>
-    <string name="changelog_testing_notice">Thank you for testing Lwidget! Please open this app occasionally so Google counts you as an active tester.</string>
+    <string name="changelog_note">Lwidget works without any background service. However, some devices may kill the app to save battery, which can stop widget updates. To fix this:\n\n• Mark Lwidget as non-battery-optimized in your device settings.\n• Or, enable Keep Alive — a lightweight background service that keeps the widget updating reliably.\n• Or, enable the Step Counter — it uses the same service and also counts your daily steps.</string>
+    <string name="changelog_content">What\'s New in v1.9:\n• Calendar events now show \"Today\" and \"Tomorrow\" instead of weekday names\n• New \"Keep Alive\" toggle — keeps widget updating reliably without needing Step Counter\n• Improved notification text based on active mode\n• Code cleanup and optimizations</string>
+    <string name="changelog_testing_notice">Lwidget is now available on Google Play! If you enjoy it, please leave a rating — it helps others discover the app.</string>
     <string name="github_source_code">Source Code (GitHub)</string>
     <string name="privacy_policy">Privacy Policy</string>
 

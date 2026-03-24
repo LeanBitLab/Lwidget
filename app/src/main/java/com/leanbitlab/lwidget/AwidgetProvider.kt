@@ -249,9 +249,14 @@ class AwidgetProvider : AppWidgetProvider() {
             }
             val sizeSteps = prefs.getFloat("size_steps", 14f)
 
-            // Make sure the background Step Service is running if steps are enabled
+            // Make sure the background Step Service is running if steps or keep-alive is enabled
+            val keepAlive = prefs.getBoolean("keep_alive", false)
             val serviceIntent = Intent(context, StepCounterService::class.java)
-            if (showSteps) {
+            // FOREGROUND_SERVICE_TYPE_HEALTH requires ACTIVITY_RECOGNITION at runtime
+            val hasActivityPerm = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                androidx.core.content.ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACTIVITY_RECOGNITION) == android.content.pm.PackageManager.PERMISSION_GRANTED
+            } else true
+            if ((showSteps || keepAlive) && hasActivityPerm) {
                 context.startForegroundService(serviceIntent)
             } else {
                 context.stopService(serviceIntent)
@@ -926,10 +931,13 @@ class AwidgetProvider : AppWidgetProvider() {
                     val event = events[i]
                     val eventTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(event.begin), ZoneId.systemDefault())
                     val today = LocalDate.now()
+                    val tomorrow = today.plusDays(1)
                     val oneWeekLater = today.plusWeeks(1)
                     
                     val timeText = if (eventTime.toLocalDate().isEqual(today)) {
-                        eventTime.format(timeFormatter)
+                        "Today ${eventTime.format(timeFormatter)}"
+                    } else if (eventTime.toLocalDate().isEqual(tomorrow)) {
+                        "Tomorrow ${eventTime.format(timeFormatter)}"
                     } else if (eventTime.toLocalDate().isBefore(oneWeekLater)) {
                         "${eventTime.format(dayFormatter)} ${eventTime.format(timeFormatter)}"
                     } else {
