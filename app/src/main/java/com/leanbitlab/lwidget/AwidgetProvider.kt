@@ -435,12 +435,11 @@ class AwidgetProvider : AppWidgetProvider() {
                 if (showBattery) tickViews.setTextViewText(R.id.text_battery, batterySpannable)
                 if (showTemp) {
                     val tempStr = String.format("%.1f", tempVal)
-                    val tempText = "$tempStr°C 🔋"
+                    val tempText = "$tempStr°C"
                     val tempSpan = android.text.SpannableString(tempText)
                     val cIdx = tempText.indexOf("°C")
                     if (cIdx != -1) {
                         tempSpan.setSpan(android.text.style.RelativeSizeSpan(0.5f), cIdx, cIdx + 2, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                        tempSpan.setSpan(android.text.style.RelativeSizeSpan(0.75f), cIdx + 2, tempText.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     }
                     tickViews.setTextViewText(R.id.text_temp, tempSpan)
                 }
@@ -531,12 +530,11 @@ class AwidgetProvider : AppWidgetProvider() {
             }
             if (showTemp) {
                 val tempStr = String.format("%.1f", tempVal)
-                val tempText = "$tempStr°C 🔋"
+                val tempText = "$tempStr°C"
                 val tempSpan = android.text.SpannableString(tempText)
                 val cIdx = tempText.indexOf("°C")
                 if (cIdx != -1) {
                     tempSpan.setSpan(android.text.style.RelativeSizeSpan(0.5f), cIdx, cIdx + 2, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    tempSpan.setSpan(android.text.style.RelativeSizeSpan(0.75f), cIdx + 2, tempText.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
                 views.setTextViewText(R.id.text_temp, tempSpan)
             }
@@ -1043,15 +1041,13 @@ class AwidgetProvider : AppWidgetProvider() {
                 
                 val text: CharSequence = if (gb >= 1.0f) {
                      val gbStr = String.format("%.2f", gb)
-                     val span = android.text.SpannableString("$gbStr GB \uD83D\uDCE1") // 📡 outline-style antenna
+                     val span = android.text.SpannableString("$gbStr GB")
                      span.setSpan(android.text.style.RelativeSizeSpan(0.5f), gbStr.length, gbStr.length + 3, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE) // GB
-                     span.setSpan(android.text.style.RelativeSizeSpan(0.75f), span.length - 2, span.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE) // Emoji
                      span
                 } else {
                      val mbStr = String.format("%.1f", mb)
-                     val span = android.text.SpannableString("$mbStr MB \uD83D\uDCE1") // 📡
+                     val span = android.text.SpannableString("$mbStr MB")
                      span.setSpan(android.text.style.RelativeSizeSpan(0.5f), mbStr.length, mbStr.length + 3, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE) // MB
-                     span.setSpan(android.text.style.RelativeSizeSpan(0.75f), span.length - 2, span.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE) // Emoji
                      span
                 }
                 
@@ -1186,10 +1182,10 @@ class AwidgetProvider : AppWidgetProvider() {
                  val pattern = if (is12Hour) "h:mm a" else "H:mm"
                  val formatter = DateTimeFormatter.ofPattern(pattern, Locale.getDefault())
                  val timeStr = zdt.format(formatter)
-                 
-                 // If label is too long, maybe truncate? For now, let it be.
-                 // Format: "10:30 AM" (Time only, subtle)
-                 views.setTextViewText(R.id.text_world_clock, timeStr)
+
+                 // Format: "🌍 10:30 AM"
+                 val text = "\uD83C\uDF0D $timeStr"
+                 views.setTextViewText(R.id.text_world_clock, text)
                  views.setTextViewTextSize(R.id.text_world_clock, android.util.TypedValue.COMPLEX_UNIT_SP, textSizeSp)
                  views.setTextColor(R.id.text_world_clock, textColor)
                  views.setViewVisibility(R.id.text_world_clock, android.view.View.VISIBLE)
@@ -1228,10 +1224,9 @@ class AwidgetProvider : AppWidgetProvider() {
                  val gb = freeBytes / (1024f * 1024f * 1024f)
                  
                  val gbStr = String.format("%.0f", gb)
-                 val span = android.text.SpannableString("$gbStr GB \uD83D\uDDC4\uFE0F") // 🗄️ file cabinet outline
+                 val span = android.text.SpannableString("$gbStr GB")
                  span.setSpan(android.text.style.RelativeSizeSpan(0.5f), gbStr.length, gbStr.length + 3, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE) // GB
-                 span.setSpan(android.text.style.RelativeSizeSpan(0.75f), span.length - 3, span.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE) // Emoji
-                 
+
                  views.setTextViewText(R.id.text_storage, span)
              } catch (e: Exception) {
                  views.setTextViewText(R.id.text_storage, "Err")

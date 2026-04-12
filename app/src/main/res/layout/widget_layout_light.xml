@@ -45,17 +45,6 @@
         android:textColor="#FFFFFF"
         android:textStyle="bold"
         android:includeFontPadding="false"/>
-        
-        <TextView
-            android:id="@+id/text_world_clock"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:textColor="#CCFFFFFF"
-            android:textSize="18sp"
-            android:layout_marginStart="16dp"
-            android:includeFontPadding="false"
-            android:visibility="gone"/>
     </LinearLayout>
 
     <!-- Battery (Top Right) -->
@@ -169,7 +158,18 @@
         android:textSize="18sp"
         android:textColor="#CCFFFFFF"
         />
-        
+
+        <TextView
+            android:id="@+id/text_world_clock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="#CCFFFFFF"
+            android:textSize="18sp"
+            android:layout_marginStart="8dp"
+            android:includeFontPadding="false"
+            android:visibility="gone"/>
+
         <TextView
             android:id="@+id/text_next_alarm"
             android:layout_width="wrap_content"

@@ -36,7 +36,7 @@
         android:id="@+id/header_chevron"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:src="@android:drawable/arrow_down_float"
+        android:src="@drawable/ic_chevron_down"
         android:rotation="0"
         app:tint="?attr/colorOnSurfaceVariant"
         android:contentDescription="Expand/collapse"/>

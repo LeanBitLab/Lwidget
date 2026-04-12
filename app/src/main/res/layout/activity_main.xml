@@ -263,7 +263,7 @@
                             android:id="@+id/iv_changelog_expand"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@android:drawable/arrow_down_float"
+                            android:src="@drawable/ic_chevron_down"
                             android:rotation="0"
                             app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Expand changelog"/>
@@ -373,6 +373,18 @@
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
+
+            <!-- CATEGORY: CONTENT -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Content"
+                android:textColor="?attr/colorPrimary"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:letterSpacing="0.05"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="4dp"/>
 
             <!-- FEATURE: Time -->
             <com.google.android.material.card.MaterialCardView
@@ -502,7 +514,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"/>
 
-                        <include layout="@layout/settings_selector_row"
+                        <include layout="@layout/settings_timezone_search"
                             android:id="@+id/row_world_clock_zone"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"/>
@@ -556,6 +568,18 @@
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
+
+            <!-- CATEGORY: STATS -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Stats"
+                android:textColor="?attr/colorPrimary"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:letterSpacing="0.05"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="4dp"/>
 
             <!-- FEATURE: Battery -->
             <com.google.android.material.card.MaterialCardView
@@ -888,6 +912,18 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- CATEGORY: AGENDA -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Agenda"
+                android:textColor="?attr/colorPrimary"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:letterSpacing="0.05"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="4dp"/>
+
             <!-- FEATURE: Events -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_events"
@@ -972,7 +1008,19 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- FEATURE: Appearance (with nested subsections) -->
+            <!-- CATEGORY: APPEARANCE -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Appearance"
+                android:textColor="?attr/colorPrimary"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:letterSpacing="0.05"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="4dp"/>
+
+            <!-- FEATURE: Theme (with nested subsections) -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_appearance"
                 style="@style/Widget.Material3.CardView.Outlined"
@@ -1044,7 +1092,7 @@
                                         android:id="@+id/header_chevron_appearance_outline"
                                         android:layout_width="20dp"
                                         android:layout_height="20dp"
-                                        android:src="@android:drawable/arrow_down_float"
+                                        android:src="@drawable/ic_chevron_down"
                                         android:rotation="0"
                                         app:tint="?attr/colorOnSurfaceVariant"
                                         android:contentDescription="Expand/collapse"/>
@@ -1111,7 +1159,7 @@
                                         android:id="@+id/header_chevron_appearance_colors"
                                         android:layout_width="20dp"
                                         android:layout_height="20dp"
-                                        android:src="@android:drawable/arrow_down_float"
+                                        android:src="@drawable/ic_chevron_down"
                                         android:rotation="0"
                                         app:tint="?attr/colorOnSurfaceVariant"
                                         android:contentDescription="Expand/collapse"/>
@@ -1218,7 +1266,7 @@
                                         android:id="@+id/header_chevron_appearance_theme"
                                         android:layout_width="20dp"
                                         android:layout_height="20dp"
-                                        android:src="@android:drawable/arrow_down_float"
+                                        android:src="@drawable/ic_chevron_down"
                                         android:rotation="0"
                                         app:tint="?attr/colorOnSurfaceVariant"
                                         android:contentDescription="Expand/collapse"/>
@@ -1285,7 +1333,7 @@
                                         android:id="@+id/header_chevron_appearance_font"
                                         android:layout_width="20dp"
                                         android:layout_height="20dp"
-                                        android:src="@android:drawable/arrow_down_float"
+                                        android:src="@drawable/ic_chevron_down"
                                         android:rotation="0"
                                         app:tint="?attr/colorOnSurfaceVariant"
                                         android:contentDescription="Expand/collapse"/>
@@ -1352,7 +1400,7 @@
                                         android:id="@+id/header_chevron_appearance_transparency"
                                         android:layout_width="20dp"
                                         android:layout_height="20dp"
-                                        android:src="@android:drawable/arrow_down_float"
+                                        android:src="@drawable/ic_chevron_down"
                                         android:rotation="0"
                                         app:tint="?attr/colorOnSurfaceVariant"
                                         android:contentDescription="Expand/collapse"/>

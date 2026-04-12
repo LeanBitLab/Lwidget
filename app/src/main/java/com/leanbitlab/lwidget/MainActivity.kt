@@ -27,6 +27,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import android.widget.AutoCompleteTextView
+import android.widget.ListView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -243,6 +244,47 @@ class MainActivity : AppCompatActivity() {
 
     // ===== FOLDED SECTION HELPERS =====
 
+    // Top-level accordion: feature cards (Time, Battery, Appearance, etc.)
+    private val accordionViews = mutableMapOf<String, View>()
+    private val accordionHeaders = mutableMapOf<String, View>()
+    // Nested sections: own accordion among themselves
+    private val nestedViews = mutableMapOf<String, View>()
+    private val nestedHeaders = mutableMapOf<String, View>()
+
+    private fun collapseAllExcept(exceptKey: String) {
+        accordionViews.forEach { (key, view) ->
+            if (key != exceptKey && view.visibility == View.VISIBLE) {
+                // Extract section name from key like "section_world_clock_expanded"
+                val sectionName = key.replace("section_", "").replace("_expanded", "")
+                collapseSectionNestedContent(sectionName)
+                view.visibility = View.GONE
+                prefs.edit().putBoolean(key, false).apply()
+                accordionHeaders[key]?.let { resetChevron(it) }
+            }
+        }
+        dismissKeyboard()
+    }
+
+    private fun collapseNestedExcept(exceptKey: String) {
+        nestedViews.forEach { (key, view) ->
+            if (key != exceptKey && view.visibility == View.VISIBLE) {
+                view.visibility = View.GONE
+                prefs.edit().putBoolean(key, false).apply()
+                nestedHeaders[key]?.let { resetChevron(it) }
+            }
+        }
+    }
+
+    private fun resetChevron(header: View) {
+        val chevron = header.findViewById<android.widget.ImageView>(R.id.header_chevron)
+            ?: header.findViewById<android.widget.ImageView>(R.id.header_chevron_appearance_outline)
+            ?: header.findViewById<android.widget.ImageView>(R.id.header_chevron_appearance_colors)
+            ?: header.findViewById<android.widget.ImageView>(R.id.header_chevron_appearance_theme)
+            ?: header.findViewById<android.widget.ImageView>(R.id.header_chevron_appearance_font)
+            ?: header.findViewById<android.widget.ImageView>(R.id.header_chevron_appearance_transparency)
+        chevron?.rotation = 0f
+    }
+
     private fun bindFoldedSection(
         headerId: Int, iconResId: Int?, title: String,
         contentId: Int,
@@ -254,6 +296,7 @@ class MainActivity : AppCompatActivity() {
         prefSelectorKey: String? = null, defSelectorIdx: Int = 0,
         isContent: Boolean = false,
         subSettingsContainerId: Int? = null,
+        validateToggle: ((Boolean) -> Boolean)? = null,
         onChanged: ((Boolean) -> Unit)? = null
     ): SwitchMaterial {
         val header = findViewById<View>(headerId)
@@ -261,6 +304,11 @@ class MainActivity : AppCompatActivity() {
         val headerIcon = header.findViewById<android.widget.ImageView>(R.id.header_icon)
         val headerTitle = header.findViewById<TextView>(R.id.header_title)
         val content = findViewById<View>(contentId)
+
+        val sectionKey = prefShowKey.replace("show_", "")
+        val expandedPrefKey = "section_${sectionKey}_expanded"
+        accordionViews[expandedPrefKey] = content
+        accordionHeaders[expandedPrefKey] = header
 
         headerTitle.text = title
         if (iconResId != null) {
@@ -270,58 +318,84 @@ class MainActivity : AppCompatActivity() {
             headerIcon.visibility = View.GONE
         }
 
-        // Expand/collapse
-        val sectionKey = "section_${prefShowKey.replace("show_", "")}_expanded"
-        var isExpanded = prefs.getBoolean(sectionKey, false)
-        content.visibility = if (isExpanded) View.VISIBLE else View.GONE
-        chevron.rotation = if (isExpanded) 180f else 0f
+        // Expand/collapse - read from prefs, apply visibility
+        val isExpandedFromPrefs = prefs.getBoolean(expandedPrefKey, false)
+        content.visibility = if (isExpandedFromPrefs) View.VISIBLE else View.GONE
+        chevron.rotation = if (isExpandedFromPrefs) 180f else 0f
 
+        // Header click: expand this one and collapse all others
         header.setOnClickListener {
-            isExpanded = !isExpanded
-            content.visibility = if (isExpanded) View.VISIBLE else View.GONE
-            android.animation.ObjectAnimator.ofFloat(chevron, "rotation", if (isExpanded) 180f else 0f).apply {
+            val nowExpanded = content.visibility != View.VISIBLE
+            if (nowExpanded) {
+                collapseAllExcept(expandedPrefKey)
+                content.visibility = View.VISIBLE
+                prefs.edit().putBoolean(expandedPrefKey, true).apply()
+            } else {
+                // Collapsing - dismiss keyboard and close nested subsections
+                collapseSectionNestedContent(sectionKey)
+                content.visibility = View.GONE
+                prefs.edit().putBoolean(expandedPrefKey, false).apply()
+            }
+            android.animation.ObjectAnimator.ofFloat(chevron, "rotation", if (nowExpanded) 180f else 0f).apply {
                 duration = 300
                 start()
             }
-            prefs.edit().putBoolean(sectionKey, isExpanded).apply()
         }
 
         // Toggle row
         val toggleRow = findViewById<View>(toggleRowId)
         val toggleSwitch = toggleRow.findViewById<SwitchMaterial>(R.id.row_switch)
         val toggleLabel = toggleRow.findViewById<TextView>(R.id.row_label)
+        val toggleCard = toggleRow.findViewById<com.google.android.material.card.MaterialCardView>(R.id.toggle_row_card)
         toggleLabel.text = "Enable"
 
         if (isContent) contentSwitches.add(toggleSwitch)
 
         val isShown = prefs.getBoolean(prefShowKey, defShow)
         toggleSwitch.isChecked = isShown
-        onChanged?.invoke(isShown)
 
         // Sub-settings alpha
         val subSettings = subSettingsContainerId?.let { findViewById<View>(it) }
         subSettings?.alpha = if (isShown) 1.0f else 0.4f
+        updateToggleCardStyle(toggleCard, isShown)
 
+        // Size row visibility
+        val sizeRow = sizeRowId?.let { findViewById<View>(it) }
+        sizeRow?.visibility = if (isShown) View.VISIBLE else View.GONE
+
+        // Selector row visibility
+        val selectorRow = selectorRowId?.let { findViewById<View>(it) }
+        selectorRow?.visibility = if (isShown) View.VISIBLE else View.GONE
+
+        onChanged?.invoke(isShown)
+
+        // Internal listener - ALWAYS handles visibility
         toggleSwitch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked && !checkLimit()) {
                 toggleSwitch.isChecked = false
                 return@setOnCheckedChangeListener
             }
+            if (validateToggle?.invoke(isChecked) == false) {
+                toggleSwitch.isChecked = !isChecked
+                return@setOnCheckedChangeListener
+            }
             prefs.edit().putBoolean(prefShowKey, isChecked).apply()
             subSettings?.alpha = if (isChecked) 1.0f else 0.4f
+            updateToggleCardStyle(toggleCard, isChecked)
+            sizeRow?.visibility = if (isChecked) View.VISIBLE else View.GONE
+            selectorRow?.visibility = if (isChecked) View.VISIBLE else View.GONE
             onChanged?.invoke(isChecked)
             updateWidget()
             if (isContent) updateToggleAvailability()
         }
 
-        // Size row
+        // Size row setup
         if (sizeRowId != null && prefSizeKey != null) {
-            val sizeRow = findViewById<View>(sizeRowId)
-            val slider = sizeRow.findViewById<Slider>(R.id.row_slider)
-            val valueLabel = sizeRow.findViewById<TextView>(R.id.row_value)
-            val sizeLabel = sizeRow.findViewById<TextView>(R.id.row_label)
+            val sizeRowInner = findViewById<View>(sizeRowId)
+            val slider = sizeRowInner.findViewById<Slider>(R.id.row_slider)
+            val valueLabel = sizeRowInner.findViewById<TextView>(R.id.row_value)
+            val sizeLabel = sizeRowInner.findViewById<TextView>(R.id.row_label)
             sizeLabel.text = "Size"
-            sizeRow.visibility = if (isShown) View.VISIBLE else View.GONE
 
             val currentSize = prefs.getFloat(prefSizeKey, defSize)
             slider.valueFrom = minSize
@@ -338,11 +412,12 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // Selector row
-        if (selectorRowId != null && selectorOptions != null && prefSelectorKey != null) {
-            val selectorRow = findViewById<View>(selectorRowId)
-            val autoCompleteTextView = selectorRow.findViewById<AutoCompleteTextView>(R.id.row_value)
-            selectorRow.visibility = if (isShown) View.VISIBLE else View.GONE
+        // Selector row setup (skip world clock timezone - uses custom search layout)
+        if (selectorRowId != null && selectorOptions != null && prefSelectorKey != null && prefSelectorKey != "world_clock_zone_str") {
+            val selectorRowInner = findViewById<View>(selectorRowId)
+            val autoCompleteTextView = selectorRowInner.findViewById<AutoCompleteTextView>(R.id.row_value)
+            val selectorLabel = selectorRowInner.findViewById<TextView>(R.id.row_label)
+            selectorLabel.text = title
 
             val adapter = android.widget.ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, selectorOptions)
             autoCompleteTextView.setAdapter(adapter)
@@ -354,6 +429,8 @@ class MainActivity : AppCompatActivity() {
                     val selected = selectorOptions.getOrElse(position) { "UTC" }
                     prefs.edit().putString(prefSelectorKey, selected).apply()
                     updateWidget()
+                    selectorRowInner.clearFocus()
+                    autoCompleteTextView.clearFocus()
                 }
             } else {
                 val currentIdx = prefs.getInt(prefSelectorKey, defSelectorIdx)
@@ -361,7 +438,14 @@ class MainActivity : AppCompatActivity() {
                 autoCompleteTextView.setOnItemClickListener { _, _, position, _ ->
                     prefs.edit().putInt(prefSelectorKey, position).apply()
                     updateWidget()
-                    selectorRow.requestFocus()
+                    selectorRowInner.clearFocus()
+                    autoCompleteTextView.clearFocus()
+                }
+            }
+
+            // Clear focus/dropdown shade when dismissed
+            autoCompleteTextView.setOnFocusChangeListener { _, hasFocus ->
+                if (!hasFocus) {
                     autoCompleteTextView.clearFocus()
                 }
             }
@@ -370,26 +454,175 @@ class MainActivity : AppCompatActivity() {
         return toggleSwitch
     }
 
+    private fun updateToggleCardStyle(card: com.google.android.material.card.MaterialCardView?, enabled: Boolean) {
+        if (card == null) return
+        if (enabled) {
+            card.setCardBackgroundColor(android.graphics.Color.TRANSPARENT)
+            card.strokeWidth = (1f * resources.displayMetrics.density).toInt()
+            card.setStrokeColor(android.content.res.ColorStateList.valueOf(
+                com.google.android.material.color.MaterialColors.getColor(card, com.google.android.material.R.attr.colorPrimary)
+            ))
+        } else {
+            card.setCardBackgroundColor(
+                com.google.android.material.color.MaterialColors.getColor(card, com.google.android.material.R.attr.colorSurfaceContainerLow)
+            )
+            card.setStrokeColor(android.content.res.ColorStateList.valueOf(
+                com.google.android.material.color.MaterialColors.getColor(card, com.google.android.material.R.attr.colorOutlineVariant)
+            ))
+        }
+    }
+
+    // Helper for callers who override the toggle listener to update row visibility
+    private fun updateFeatureRowVisibility(switch: SwitchMaterial, isChecked: Boolean, sizeRowId: Int? = null) {
+        val toggleRow = switch.parent as? View
+        val toggleCard = toggleRow?.findViewById<com.google.android.material.card.MaterialCardView>(R.id.toggle_row_card)
+        updateToggleCardStyle(toggleCard, isChecked)
+        sizeRowId?.let { findViewById<View>(it)?.visibility = if (isChecked) View.VISIBLE else View.GONE }
+    }
+
+    private fun bindTimezoneSearch(
+        rowId: Int, zoneIds: List<String>, prefKey: String, defaultVal: String
+    ) {
+        val row = findViewById<View>(rowId)
+        val searchEdit = row.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.zone_search_edit)
+        val listView = row.findViewById<ListView>(R.id.zone_search_list)
+
+        val currentVal = prefs.getString(prefKey, defaultVal) ?: defaultVal
+        searchEdit.setText(currentVal)
+
+        var filteredList: MutableList<String> = mutableListOf()
+        val filteredAdapter = android.widget.ArrayAdapter(this, android.R.layout.simple_list_item_1, filteredList)
+
+        // Text watcher for filtering
+        searchEdit.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: android.text.Editable?) {
+                val query = s?.toString()?.lowercase() ?: ""
+                if (query.isEmpty()) {
+                    filteredList.clear()
+                    listView.visibility = View.GONE
+                    return
+                }
+                filteredList.clear()
+                filteredList.addAll(zoneIds.filter { it.lowercase().contains(query) })
+                filteredAdapter.notifyDataSetChanged()
+                listView.visibility = if (filteredList.isEmpty()) View.GONE else View.VISIBLE
+            }
+        })
+
+        listView.adapter = filteredAdapter
+        listView.setOnItemClickListener { _, _, position, _ ->
+            val selected = filteredList[position]
+            searchEdit.setText(selected)
+            listView.visibility = View.GONE
+            searchEdit.clearFocus()
+            prefs.edit().putString(prefKey, selected).apply()
+            updateWidget()
+        }
+
+        // Intercept touch events so parent NestedScrollView doesn't steal them
+        listView.setOnTouchListener { v, event ->
+            v.parent.requestDisallowInterceptTouchEvent(true)
+            false
+        }
+
+        // Show list on focus
+        searchEdit.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                val query = searchEdit.text?.toString()?.lowercase() ?: ""
+                if (query.isEmpty()) {
+                    filteredList.clear()
+                    filteredList.addAll(zoneIds)
+                    filteredAdapter.notifyDataSetChanged()
+                    listView.visibility = View.VISIBLE
+                }
+            }
+        }
+    }
+
+    // Dismiss keyboard and collapse nested subsections when a parent section collapses
+    private fun collapseSectionNestedContent(sectionKey: String) {
+        // World clock timezone search
+        if (sectionKey == "world_clock") {
+            val worldClockZoneRow = findViewById<View>(R.id.row_world_clock_zone)
+            val searchEdit = worldClockZoneRow?.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.zone_search_edit)
+            val listView = worldClockZoneRow?.findViewById<ListView>(R.id.zone_search_list)
+            searchEdit?.clearFocus()
+            listView?.visibility = View.GONE
+        }
+        // Appearance subsections
+        if (sectionKey == "appearance") {
+            val outlineContent = findViewById<View>(R.id.content_appearance_outline)
+            val colorsContent = findViewById<View>(R.id.content_appearance_colors)
+            val themeContent = findViewById<View>(R.id.content_appearance_theme)
+            val fontContent = findViewById<View>(R.id.content_appearance_font)
+            val transparencyContent = findViewById<View>(R.id.content_appearance_transparency)
+            outlineContent?.visibility = View.GONE
+            colorsContent?.visibility = View.GONE
+            themeContent?.visibility = View.GONE
+            fontContent?.visibility = View.GONE
+            transparencyContent?.visibility = View.GONE
+            prefs.edit()
+                .putBoolean("section_appearance_outline_expanded", false)
+                .putBoolean("section_appearance_colors_expanded", false)
+                .putBoolean("section_appearance_theme_expanded", false)
+                .putBoolean("section_appearance_font_expanded", false)
+                .putBoolean("section_appearance_transparency_expanded", false)
+                .apply()
+            // Reset nested chevrons
+            listOf(
+                R.id.header_chevron_appearance_outline,
+                R.id.header_chevron_appearance_colors,
+                R.id.header_chevron_appearance_theme,
+                R.id.header_chevron_appearance_font,
+                R.id.header_chevron_appearance_transparency
+            ).forEach { id ->
+                findViewById<android.widget.ImageView>(id)?.rotation = 0f
+            }
+        }
+        dismissKeyboard()
+    }
+
+    private fun dismissKeyboard() {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? android.view.inputmethod.InputMethodManager
+        currentFocus?.let { imm?.hideSoftInputFromWindow(it.windowToken, 0) }
+    }
+
     private fun bindNestedCard(
-        headerId: Int, title: String, contentId: Int, sectionKey: String
+        headerId: Int, title: String, contentId: Int, sectionKey: String,
+        chevronViewId: Int? = null
     ) {
         val header = findViewById<View>(headerId)
         val content = findViewById<View>(contentId)
-        val chevronView = header.findViewById<android.widget.ImageView>(R.id.header_chevron)
+        val chevronView = header.findViewById<android.widget.ImageView>(
+            chevronViewId ?: R.id.header_chevron
+        )
 
-        var isExpanded = prefs.getBoolean(sectionKey, false)
+        // Standalone toggle - no accordion, each section independent
+        nestedViews[sectionKey] = content
+        nestedHeaders[sectionKey] = header
+
+        val isExpanded = prefs.getBoolean(sectionKey, false)
         content.visibility = if (isExpanded) View.VISIBLE else View.GONE
         chevronView.rotation = if (isExpanded) 180f else 0f
 
         header.setOnClickListener {
-            isExpanded = !isExpanded
-            content.visibility = if (isExpanded) View.VISIBLE else View.GONE
-            android.animation.ObjectAnimator.ofFloat(chevronView, "rotation", if (isExpanded) 180f else 0f).apply {
+            val nowExpanded = content.visibility != View.VISIBLE
+            if (nowExpanded) {
+                collapseNestedExcept(sectionKey)
+                content.visibility = View.VISIBLE
+                prefs.edit().putBoolean(sectionKey, true).apply()
+            } else {
+                content.visibility = View.GONE
+                prefs.edit().putBoolean(sectionKey, false).apply()
+            }
+            android.animation.ObjectAnimator.ofFloat(chevronView, "rotation", if (nowExpanded) 180f else 0f).apply {
                 duration = 300
                 start()
             }
-            prefs.edit().putBoolean(sectionKey, isExpanded).apply()
         }
+
     }
 
     private fun setupSections() {
@@ -425,9 +658,9 @@ class MainActivity : AppCompatActivity() {
             R.id.content_world_clock, R.id.row_world_clock_toggle,
             "show_world_clock", false,
             sizeRowId = R.id.row_world_clock_size, prefSizeKey = "size_world_clock", defSize = 18f, minSize = 10f, maxSize = 32f,
-            selectorRowId = R.id.row_world_clock_zone, selectorOptions = zoneIds, prefSelectorKey = "world_clock_zone_str", defSelectorIdx = zoneIds.indexOf("UTC").takeIf { it >= 0 } ?: 0,
             isContent = true
         )
+        bindTimezoneSearch(R.id.row_world_clock_zone, zoneIds, "world_clock_zone_str", "UTC")
 
         // Date
         bindFoldedSection(
@@ -500,6 +733,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             prefs.edit().putBoolean("show_weather_condition", isChecked).apply()
+            updateFeatureRowVisibility(weatherSwitch, isChecked, R.id.row_weather_size)
             updateWidget()
             updateToggleAvailability()
             if (isChecked) {
@@ -540,6 +774,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             prefs.edit().putBoolean("show_data_usage", isChecked).apply()
+            updateFeatureRowVisibility(dataSwitch, isChecked, R.id.row_data_size)
             updateWidget()
             updateToggleAvailability()
             checkAllPermissions()
@@ -601,6 +836,7 @@ class MainActivity : AppCompatActivity() {
                     return@setOnCheckedChangeListener
                 }
             } else if (!keepAlive) { stopService(serviceIntent) }
+            updateFeatureRowVisibility(stepsSwitch, isChecked, R.id.row_steps_size)
             updateWidget()
             updateToggleAvailability()
             checkAllPermissions()
@@ -635,6 +871,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             prefs.edit().putBoolean("show_screen_time", isChecked).apply()
+            updateFeatureRowVisibility(screenTimeSwitch, isChecked, R.id.row_screen_time_size)
             updateWidget()
             updateToggleAvailability()
             checkAllPermissions()
@@ -665,6 +902,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             prefs.edit().putBoolean("keep_alive", isChecked).apply()
+            updateFeatureRowVisibility(keepAliveSwitch, isChecked)
             val showSteps = prefs.getBoolean("show_steps", false)
             val serviceIntent = Intent(this, StepCounterService::class.java)
             if (isChecked || showSteps) { startForegroundService(serviceIntent) }
@@ -701,12 +939,14 @@ class MainActivity : AppCompatActivity() {
                 if (checkLimit()) {
                     tasksSwitch.isChecked = false
                     prefs.edit().putBoolean("show_events", true).putBoolean("show_tasks", false).apply()
+                    updateFeatureRowVisibility(eventsSwitch, true, R.id.row_events_size)
                     updateWidget()
                     updateToggleAvailability()
                     checkAllPermissions()
                 } else { eventsSwitch.isChecked = false }
             } else {
                 prefs.edit().putBoolean("show_events", false).apply()
+                updateFeatureRowVisibility(eventsSwitch, false, R.id.row_events_size)
                 updateWidget()
                 updateToggleAvailability()
                 checkAllPermissions()
@@ -736,27 +976,59 @@ class MainActivity : AppCompatActivity() {
                 if (checkLimit()) {
                     eventsSwitch.isChecked = false
                     prefs.edit().putBoolean("show_tasks", true).putBoolean("show_events", false).apply()
+                    updateFeatureRowVisibility(tasksSwitch, true, R.id.row_tasks_size)
                     updateWidget()
                     updateToggleAvailability()
                     checkAllPermissions()
                 } else { tasksSwitch.isChecked = false }
             } else {
                 prefs.edit().putBoolean("show_tasks", false).apply()
+                updateFeatureRowVisibility(tasksSwitch, false, R.id.row_tasks_size)
                 updateWidget()
                 updateToggleAvailability()
                 checkAllPermissions()
             }
         }
 
-        // ===== APPEARANCE =====
-        bindNestedCard(R.id.header_appearance, "Appearance", R.id.content_appearance, "section_appearance_expanded")
+        // ===== THEME =====
+        // Use bindFoldedSection for the main card (top-level accordion), not bindNestedCard
+        accordionViews["section_appearance_expanded"] = findViewById(R.id.content_appearance)
+        accordionHeaders["section_appearance_expanded"] = findViewById(R.id.header_appearance)
+        // Set title and icon
+        val appearanceHeader = findViewById<View>(R.id.header_appearance)
+        appearanceHeader.findViewById<TextView>(R.id.header_title).text = "Theme"
+        val appearanceHeaderIcon = appearanceHeader.findViewById<android.widget.ImageView>(R.id.header_icon)
+        appearanceHeaderIcon.setImageResource(R.drawable.ic_palette)
+        appearanceHeaderIcon.visibility = View.VISIBLE
+
+        val appearanceContent = findViewById<View>(R.id.content_appearance)
+        val appearanceChevron = findViewById<View>(R.id.header_appearance).findViewById<android.widget.ImageView>(R.id.header_chevron)
+        val appearanceIsExpanded = prefs.getBoolean("section_appearance_expanded", false)
+        appearanceContent.visibility = if (appearanceIsExpanded) View.VISIBLE else View.GONE
+        appearanceChevron.rotation = if (appearanceIsExpanded) 180f else 0f
+
+        findViewById<View>(R.id.header_appearance).setOnClickListener {
+            val nowExpanded = appearanceContent.visibility != View.VISIBLE
+            if (nowExpanded) {
+                collapseAllExcept("section_appearance_expanded")
+                appearanceContent.visibility = View.VISIBLE
+                prefs.edit().putBoolean("section_appearance_expanded", true).apply()
+            } else {
+                appearanceContent.visibility = View.GONE
+                prefs.edit().putBoolean("section_appearance_expanded", false).apply()
+            }
+            android.animation.ObjectAnimator.ofFloat(appearanceChevron, "rotation", if (nowExpanded) 180f else 0f).apply {
+                duration = 300
+                start()
+            }
+        }
 
         // Appearance Subsections (nested cards)
-        bindNestedCard(R.id.header_appearance_outline, "OUTLINE", R.id.content_appearance_outline, "section_appearance_outline_expanded")
-        bindNestedCard(R.id.header_appearance_colors, "COLORS", R.id.content_appearance_colors, "section_appearance_colors_expanded")
-        bindNestedCard(R.id.header_appearance_theme, "THEME", R.id.content_appearance_theme, "section_appearance_theme_expanded")
-        bindNestedCard(R.id.header_appearance_font, "FONT", R.id.content_appearance_font, "section_appearance_font_expanded")
-        bindNestedCard(R.id.header_appearance_transparency, "TRANSPARENCY", R.id.content_appearance_transparency, "section_appearance_transparency_expanded")
+        bindNestedCard(R.id.header_appearance_outline, "OUTLINE", R.id.content_appearance_outline, "section_appearance_outline_expanded", R.id.header_chevron_appearance_outline)
+        bindNestedCard(R.id.header_appearance_colors, "COLORS", R.id.content_appearance_colors, "section_appearance_colors_expanded", R.id.header_chevron_appearance_colors)
+        bindNestedCard(R.id.header_appearance_theme, "THEME", R.id.content_appearance_theme, "section_appearance_theme_expanded", R.id.header_chevron_appearance_theme)
+        bindNestedCard(R.id.header_appearance_font, "FONT", R.id.content_appearance_font, "section_appearance_font_expanded", R.id.header_chevron_appearance_font)
+        bindNestedCard(R.id.header_appearance_transparency, "TRANSPARENCY", R.id.content_appearance_transparency, "section_appearance_transparency_expanded", R.id.header_chevron_appearance_transparency)
 
         // Outline toggle
         bindToggle(R.id.row_outline_toggle, "Show Outline", "show_outline", true) { isChecked ->
