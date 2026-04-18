@@ -179,12 +179,15 @@ class AwidgetProvider : AppWidgetProvider() {
             
             val showBattery = prefs.getBoolean("show_battery", true)
             val sizeBattery = prefs.getFloat("size_battery", 24f)
+            val boldBattery = prefs.getBoolean("bold_battery", false)
             
             val showTemp = prefs.getBoolean("show_temp", true)
             val sizeTemp = prefs.getFloat("size_temp", 18f)
+            val boldTemp = prefs.getBoolean("bold_temp", false)
             
             val showWeatherCondition = prefs.getBoolean("show_weather_condition", false)
             val sizeWeather = prefs.getFloat("size_weather", 18f)
+            val boldWeather = prefs.getBoolean("bold_weather", false)
             
             var showEvents = prefs.getBoolean("show_events", true)
             if (showEvents && androidx.core.content.ContextCompat.checkSelfPermission(context, android.Manifest.permission.READ_CALENDAR) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
@@ -441,10 +444,11 @@ class AwidgetProvider : AppWidgetProvider() {
                     if (cIdx != -1) {
                         tempSpan.setSpan(android.text.style.RelativeSizeSpan(0.5f), cIdx, cIdx + 2, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     }
+                    if (boldTemp) tempSpan.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, tempSpan.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     tickViews.setTextViewText(R.id.text_temp, tempSpan)
                 }
                 if (showData) updateDataUsage(context, tickViews)
-                if (showStorage) updateStorageStats(tickViews)
+                if (showStorage) updateStorageStats(context, tickViews)
                 appWidgetManager.partiallyUpdateAppWidget(appWidgetId, tickViews)
                 return
             } else if (mode == UpdateMode.CALENDAR_ONLY) {
@@ -509,7 +513,7 @@ class AwidgetProvider : AppWidgetProvider() {
             
             views.setViewVisibility(R.id.text_temp, if (showTemp) android.view.View.VISIBLE else android.view.View.GONE)
             views.setTextViewTextSize(R.id.text_temp, android.util.TypedValue.COMPLEX_UNIT_SP, sizeTemp)
-            views.setTextColor(R.id.text_battery, primaryColor)
+            views.setTextColor(R.id.text_battery, secondaryColor)
             views.setTextColor(R.id.text_temp, secondaryColor)
 
             val batteryStatus: Intent? = IntentFilter(Intent.ACTION_BATTERY_CHANGED).let { ifilter ->
@@ -526,6 +530,7 @@ class AwidgetProvider : AppWidgetProvider() {
             if (showBattery) {
                 val batterySpannable = android.text.SpannableString("${batteryPct}%")
                 batterySpannable.setSpan(android.text.style.RelativeSizeSpan(0.5f), batterySpannable.length - 1, batterySpannable.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                if (boldBattery) batterySpannable.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, batterySpannable.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 views.setTextViewText(R.id.text_battery, batterySpannable)
             }
             if (showTemp) {
@@ -536,6 +541,7 @@ class AwidgetProvider : AppWidgetProvider() {
                 if (cIdx != -1) {
                     tempSpan.setSpan(android.text.style.RelativeSizeSpan(0.5f), cIdx, cIdx + 2, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
+                if (boldTemp) tempSpan.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, tempSpan.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 views.setTextViewText(R.id.text_temp, tempSpan)
             }
             
@@ -620,9 +626,12 @@ class AwidgetProvider : AppWidgetProvider() {
                     } else if (weatherIcon.isNotEmpty()) {
                         span.setSpan(android.text.style.RelativeSizeSpan(0.75f), span.length - weatherIcon.length, span.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     }
+                    if (boldWeather) span.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, span.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     views.setTextViewText(R.id.text_weather_condition, span)
                 } else {
-                    views.setTextViewText(R.id.text_weather_condition, displayString.trim())
+                    val weatherSpan = android.text.SpannableString(displayString.trim())
+                    if (boldWeather) weatherSpan.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, weatherSpan.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    views.setTextViewText(R.id.text_weather_condition, weatherSpan)
                 }
                 views.setTextViewTextSize(R.id.text_weather_condition, android.util.TypedValue.COMPLEX_UNIT_SP, sizeWeather)
                 views.setTextColor(R.id.text_weather_condition, secondaryColor)
@@ -650,7 +659,7 @@ class AwidgetProvider : AppWidgetProvider() {
             if (showStorage) {
                 views.setTextViewTextSize(R.id.text_storage, android.util.TypedValue.COMPLEX_UNIT_SP, sizeStorage)
                 views.setTextColor(R.id.text_storage, secondaryColor)
-                updateStorageStats(views)
+                updateStorageStats(context, views)
             }
 
             // --- Step Counter ---
@@ -709,36 +718,40 @@ class AwidgetProvider : AppWidgetProvider() {
                 views.setViewPadding(R.id.events_container, 0, topMargin, 0, 0)
             }
 
-            // Right Side Stack: Battery -> Temp -> Weather -> Data -> Storage
-            data class StackEntry(val viewId: Int, val isVisible: Boolean, val size: Float)
+            // Right Side Stack: ordered by user preference
+            data class StackEntry(val viewId: Int, val isVisible: Boolean, val size: Float, val key: String)
 
-            val rightStack = listOf(
-                StackEntry(R.id.text_battery, showBattery, sizeBattery),
-                StackEntry(R.id.text_temp, showTemp, sizeTemp),
-                StackEntry(R.id.text_weather_condition, showWeather, sizeWeather),
-                StackEntry(R.id.text_data_usage, showData, sizeData),
-                StackEntry(R.id.text_storage, showStorage, sizeStorage),
-                StackEntry(R.id.text_steps, showSteps, sizeSteps),
-                StackEntry(R.id.text_screen_time, showScreenTime, sizeScreenTime)
+            val allRightItems = listOf(
+                StackEntry(R.id.text_battery, showBattery, sizeBattery, "show_battery"),
+                StackEntry(R.id.text_temp, showTemp, sizeTemp, "show_temp"),
+                StackEntry(R.id.text_weather_condition, showWeather, sizeWeather, "show_weather_condition"),
+                StackEntry(R.id.text_data_usage, showData, sizeData, "show_data_usage"),
+                StackEntry(R.id.text_storage, showStorage, sizeStorage, "show_storage"),
+                StackEntry(R.id.text_steps, showSteps, sizeSteps, "show_steps"),
+                StackEntry(R.id.text_screen_time, showScreenTime, sizeScreenTime, "show_screen_time")
             )
 
-            var rightFirstVisible = true
+            val savedOrder = prefs.getString("widget_right_column_order", "")
+            val rightStack = if (savedOrder.isNullOrEmpty()) {
+                allRightItems
+            } else {
+                val orderKeys = savedOrder.split(",")
+                val ordered = orderKeys.mapNotNull { k -> allRightItems.find { it.key == k } }
+                val remaining = allRightItems.filter { item -> item.key !in orderKeys }
+                ordered + remaining
+            }
+
+            // Position items using explicit padding instead of layout_below
+            // Calculate cumulative Y positions for each visible item
+            val rightDp = context.resources.displayMetrics.density
+            var cumulativeTopDp = 16f  // Starting top margin from top of widget
             for (entry in rightStack) {
                 if (entry.isVisible) {
-                    val topPaddingPx = if (rightFirstVisible) {
-                        val intrinsicGap = entry.size * 0.18f
-                        maxOf(0, dpToPx(16f - intrinsicGap))
-                    } else {
-                        val stackMargin = when(entry.viewId) {
-                            R.id.text_data_usage, R.id.text_storage -> 2f
-                            else -> 0f
-                        }
-                        dpToPx(stackMargin)
-                    }
+                    val topPaddingPx = (cumulativeTopDp * rightDp).toInt()
                     views.setViewPadding(entry.viewId, 0, topPaddingPx, 0, 0)
-                    rightFirstVisible = false
-                } else {
-                    views.setViewPadding(entry.viewId, 0, 0, 0, 0)
+                    // Advance by this item's height + small gap
+                    val itemHeightDp = entry.size * 1.2f  // approximate line height
+                    cumulativeTopDp += itemHeightDp + 2f
                 }
             }
 
@@ -1006,6 +1019,9 @@ class AwidgetProvider : AppWidgetProvider() {
                 }
             }
             
+            val prefs = context.getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
+            val isBold = prefs.getBoolean("bold_screen_time", false)
+
             if (totalForegroundTime > 0) {
                 val totalMinutes = totalForegroundTime / (1000 * 60)
                 val hours = totalMinutes / 60
@@ -1013,10 +1029,12 @@ class AwidgetProvider : AppWidgetProvider() {
                 val timeString = if (hours > 0) "${hours}h ${mins}m \u23F3" else "${mins}m \u23F3" // ⏳
                 val span = android.text.SpannableString(timeString)
                 span.setSpan(android.text.style.RelativeSizeSpan(0.75f), span.length - 2, span.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                if (isBold) span.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, span.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 views.setTextViewText(R.id.text_screen_time, span)
             } else {
                 val span = android.text.SpannableString("0m \u23F3")
                 span.setSpan(android.text.style.RelativeSizeSpan(0.75f), span.length - 2, span.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                if (isBold) span.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, span.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 views.setTextViewText(R.id.text_screen_time, span)
             }
         }
@@ -1050,7 +1068,12 @@ class AwidgetProvider : AppWidgetProvider() {
                      span.setSpan(android.text.style.RelativeSizeSpan(0.5f), mbStr.length, mbStr.length + 3, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE) // MB
                      span
                 }
-                
+
+                val prefs = context.getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
+                if (prefs.getBoolean("bold_data_usage", false) && text is android.text.SpannableString) {
+                    text.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, text.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                }
+
                 views.setTextViewText(R.id.text_data_usage, text)
                 
             } catch (e: SecurityException) {
@@ -1215,7 +1238,7 @@ class AwidgetProvider : AppWidgetProvider() {
             }
         }
 
-        private fun updateStorageStats(views: RemoteViews) {
+        private fun updateStorageStats(context: Context, views: RemoteViews) {
              try {
                  val path = android.os.Environment.getDataDirectory()
                  val stat = android.os.StatFs(path.path)
@@ -1226,6 +1249,11 @@ class AwidgetProvider : AppWidgetProvider() {
                  val gbStr = String.format("%.0f", gb)
                  val span = android.text.SpannableString("$gbStr GB")
                  span.setSpan(android.text.style.RelativeSizeSpan(0.5f), gbStr.length, gbStr.length + 3, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE) // GB
+
+                 val prefs = context.getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
+                 if (prefs.getBoolean("bold_storage", false)) {
+                     span.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, span.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                 }
 
                  views.setTextViewText(R.id.text_storage, span)
              } catch (e: Exception) {
@@ -1242,6 +1270,11 @@ class AwidgetProvider : AppWidgetProvider() {
                 val dailySteps = (totalSteps - baselineSteps).toInt().coerceAtLeast(0)
                 val span = android.text.SpannableString("$dailySteps \uD83D\uDC5F") // 👟 outline sneaker
                 span.setSpan(android.text.style.RelativeSizeSpan(0.75f), span.length - 2, span.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                
+                if (prefs.getBoolean("bold_steps", false)) {
+                    span.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, span.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                }
+
                 views.setTextViewText(R.id.text_steps, span)
             } catch (e: Exception) {
                 // Fallback display if an exception occurs

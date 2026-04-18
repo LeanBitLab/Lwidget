@@ -6,22 +6,15 @@
   <img alt="Lwidget Banner" src="docs/images/banner_light.svg">
 </picture>
 
-[![Download](https://img.shields.io/github/v/release/LeanBitLab/Lwidget?label=Download&style=for-the-badge&color=7C4DFF&v=1)](https://github.com/LeanBitLab/Lwidget/releases/latest) [![Downloads](https://img.shields.io/github/downloads/LeanBitLab/Lwidget/total?style=for-the-badge&color=7C4DFF&label=Downloads)](https://github.com/LeanBitLab/Lwidget/releases) [![Stars](https://img.shields.io/github/stars/LeanBitLab/Lwidget?style=for-the-badge&color=7C4DFF)](https://github.com/LeanBitLab/Lwidget/stargazers)
+<div align="center">
+
+[![Download](https://img.shields.io/github/v/release/LeanBitLab/Lwidget?label=Download&style=flat-square&color=7C4DFF)](https://github.com/LeanBitLab/Lwidget/releases/latest) [![Downloads](https://img.shields.io/github/downloads/LeanBitLab/Lwidget/total?style=flat-square&color=7C4DFF&label=Downloads)](https://github.com/LeanBitLab/Lwidget/releases) [![Stars](https://img.shields.io/github/stars/LeanBitLab/Lwidget?style=flat-square&color=7C4DFF)](https://github.com/LeanBitLab/Lwidget/stargazers)
+
+</div>
 
 **Lwidget** is a modern, open-source Android widget built with **Kotlin** and **Material 3** design principles. It provides essential information at a glance while adhering to your device's dynamic theme.
 
-> ### 🎉 Lwidget is now live on the Play Store!
->
-> A massive **THANK YOU** to all our beta testers! Your testing, feedback, and support were instrumental in getting Lwidget approved for production.
->
-> [![Get it on Google Play](https://img.shields.io/badge/Google_Play-414141?style=for-the-badge&logo=google-play&logoColor=white)](https://play.google.com/store/apps/details?id=com.leanbitlab.lwidget)
->
-> **⚠️ Important Notice for Beta Testers:**
-> Please **uninstall the closed beta version** and install the live app from the Play Store. This is necessary to transition to the stable production track and ensure you continue to receive future updates smoothly without any conflicts from the testing track.
->
-> ---
->
-> 💬 **Feedback & Bugs:** [Telegram Group](https://t.me/leanbitlabchat) · [GitHub Discussions](https://github.com/LeanBitLab/Lwidget/discussions) · [Report a Bug](https://github.com/LeanBitLab/Lwidget/issues)
+💬 **Feedback & Bugs:** [Telegram Group](https://t.me/leanbitlabchat) · [GitHub Discussions](https://github.com/LeanBitLab/Lwidget/discussions) · [Report a Bug](https://github.com/LeanBitLab/Lwidget/issues)
 
 ## Screenshots
 
@@ -66,7 +59,19 @@
 
 ## Download
 
-You can download the latest release from the [Play Store](https://play.google.com/store/apps/details?id=com.leanbitlab.lwidget) or the [GitHub Releases](https://github.com/LeanBitLab/Lwidget/releases) page. *(Note: GitHub releases will resume starting from v1.9.1).*
+You can download the latest release from the [Play Store](https://play.google.com/store/apps/details?id=com.leanbitlab.lwidget) or the [GitHub Releases](https://github.com/LeanBitLab/Lwidget/releases) page.
+
+<br>
+
+<div align="center">
+  <a href="https://play.google.com/store/apps/details?id=com.leanbitlab.lwidget">
+    <img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" height="60">
+  </a>
+  &nbsp;&nbsp;&nbsp;
+  <a href="https://github.com/LeanBitLab/Lwidget/releases/latest">
+    <img alt="Download from GitHub" src="https://img.shields.io/badge/GitHub-Releases-181717?style=for-the-badge&logo=github&logoColor=white" height="42">
+  </a>
+</div>
 
 ## Setup
 

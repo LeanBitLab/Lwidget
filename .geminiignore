@@ -1,0 +1,19 @@
+# Ignore image files as they consume too many tokens when accidentally read
+**/*.png
+**/*.jpg
+**/*.jpeg
+**/*.webp
+**/*.gif
+**/*.svg
+
+# Ignore other heavy or irrelevant files
+.gradle/
+build/
+app/build/
+docs/superpowers/
+.superpowers/
+pdocs/
+*.apk
+*.aab
+*.jks
+*.log

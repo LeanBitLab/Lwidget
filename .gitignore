@@ -35,6 +35,10 @@ pdocs/
 
 # CLI Context
 GEMINI.md
+.geminiignore
 
 .antigravityignore
 .gemini/
+
+docs/superpowers
+.superpowers

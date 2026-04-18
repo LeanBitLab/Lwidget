@@ -56,7 +56,6 @@
         android:text="--%"
         android:textColor="#FFFFFF"
         android:textSize="48sp"
-        android:textStyle="bold"
         android:includeFontPadding="false"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"/>
@@ -72,7 +71,7 @@
         android:includeFontPadding="false"
         android:layout_marginBottom="0dp"
         android:visibility="gone"
-        android:layout_below="@id/text_temp"
+        android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true" />
 
     <!-- Temp (Below Battery) -->
@@ -84,9 +83,7 @@
         android:text="--°C"
         android:textColor="#CCFFFFFF"
         android:textSize="18sp"
-        android:layout_below="@id/text_battery"
-
-    
+        android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"/>
 
     <!-- Data Usage (Below Temp) -->
@@ -98,7 +95,7 @@
         android:textColor="#CCFFFFFF"
         android:textSize="14sp"
         android:visibility="gone"
-        android:layout_below="@id/text_weather_condition"
+        android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="2dp"/>
     <TextView
@@ -109,7 +106,7 @@
         android:textColor="#CCFFFFFF"
         android:textSize="14sp"
         android:visibility="gone"
-        android:layout_below="@id/text_data_usage"
+        android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="2dp"/>
 
@@ -122,7 +119,7 @@
         android:textColor="#CCFFFFFF"
         android:textSize="14sp"
         android:visibility="gone"
-        android:layout_below="@id/text_storage"
+        android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="2dp"/>
     <!-- Screen Time (Below Steps) -->
@@ -134,7 +131,7 @@
         android:textColor="#CCFFFFFF"
         android:textSize="14sp"
         android:visibility="gone"
-        android:layout_below="@id/text_steps"
+        android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="2dp"/>
 

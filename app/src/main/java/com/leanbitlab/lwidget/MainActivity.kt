@@ -37,10 +37,54 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import android.view.ViewGroup
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.slider.Slider
 import com.google.android.material.switchmaterial.SwitchMaterial
+
+// Data class for reorderable items
+data class ReorderItem(
+    val key: String,          // e.g. "show_battery"
+    val label: String,        // e.g. "Battery"
+    var enabled: Boolean
+)
+
+// Adapter for reorder RecyclerView
+class ReorderAdapter(
+    private val items: MutableList<ReorderItem>,
+    private val onOrderChanged: () -> Unit
+) : RecyclerView.Adapter<ReorderAdapter.ViewHolder>() {
+
+    class ViewHolder(val view: android.view.View) : RecyclerView.ViewHolder(view) {
+        val handle: android.widget.ImageView = view.findViewById(R.id.reorder_handle)
+        val name: TextView = view.findViewById(R.id.reorder_item_name)
+        val enabled: SwitchMaterial = view.findViewById(R.id.reorder_item_enabled)
+    }
+
+    override fun onCreateViewHolder(parent: android.view.ViewGroup, viewType: Int): ViewHolder {
+        val view = android.view.LayoutInflater.from(parent.context)
+            .inflate(R.layout.settings_reorder_item, parent, false)
+        return ViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val item = items[position]
+        holder.name.text = item.label
+        holder.enabled.isChecked = item.enabled
+    }
+
+    override fun getItemCount() = items.size
+
+    fun moveItem(from: Int, to: Int) {
+        val moved = items.removeAt(from)
+        items.add(to, moved)
+        notifyItemMoved(from, to)
+        onOrderChanged()
+    }
+}
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var prefs: SharedPreferences
@@ -551,6 +595,10 @@ class MainActivity : AppCompatActivity() {
             searchEdit?.clearFocus()
             listView?.visibility = View.GONE
         }
+        // Appearance reorder section
+        if (sectionKey == "appearance") {
+            // collapse reorder too
+        }
         // Appearance subsections
         if (sectionKey == "appearance") {
             val outlineContent = findViewById<View>(R.id.content_appearance_outline)
@@ -587,6 +635,57 @@ class MainActivity : AppCompatActivity() {
     private fun dismissKeyboard() {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? android.view.inputmethod.InputMethodManager
         currentFocus?.let { imm?.hideSoftInputFromWindow(it.windowToken, 0) }
+    }
+
+    private fun bindReorderSection() {
+        val defaultOrder = listOf(
+            ReorderItem("show_battery", getString(R.string.section_battery), prefs.getBoolean("show_battery", true)),
+            ReorderItem("show_temp", getString(R.string.section_temp), prefs.getBoolean("show_temp", true)),
+            ReorderItem("show_weather_condition", getString(R.string.section_weather_condition), prefs.getBoolean("show_weather_condition", false)),
+            ReorderItem("show_data_usage", getString(R.string.section_data_usage), prefs.getBoolean("show_data_usage", false)),
+            ReorderItem("show_storage", getString(R.string.section_storage), prefs.getBoolean("show_storage", true)),
+            ReorderItem("show_steps", getString(R.string.section_steps), prefs.getBoolean("show_steps", false)),
+            ReorderItem("show_screen_time", getString(R.string.section_screen_time), prefs.getBoolean("show_screen_time", false))
+        )
+
+        val savedOrder = prefs.getString("widget_right_column_order", "")
+        val items = if (savedOrder.isNullOrEmpty()) {
+            defaultOrder.toMutableList()
+        } else {
+            val keys = savedOrder.split(",")
+            val list = mutableListOf<ReorderItem>()
+            keys.forEach { key ->
+                val item = defaultOrder.find { it.key == key }
+                if (item != null) list.add(item)
+                else list.add(ReorderItem(key, key.replace("show_", "").replace("_", " ").capitalize(), prefs.getBoolean(key, false)))
+            }
+            // Add any new items not in saved order
+            defaultOrder.forEach { default ->
+                if (!list.any { it.key == default.key }) list.add(default)
+            }
+            list
+        }
+
+        val recyclerView = findViewById<RecyclerView>(R.id.reorder_recycler)
+        val adapter = ReorderAdapter(items) {
+            // Save order on every move
+            val orderStr = items.joinToString(",") { it.key }
+            prefs.edit().putString("widget_right_column_order", orderStr).apply()
+            updateWidget()
+        }
+        recyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
+        recyclerView.adapter = adapter
+
+        val callback = object : androidx.recyclerview.widget.ItemTouchHelper.SimpleCallback(
+            androidx.recyclerview.widget.ItemTouchHelper.UP or androidx.recyclerview.widget.ItemTouchHelper.DOWN, 0
+        ) {
+            override fun onMove(rv: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+                adapter.moveItem(viewHolder.adapterPosition, target.adapterPosition)
+                return true
+            }
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {}
+        }
+        ItemTouchHelper(callback).attachToRecyclerView(recyclerView)
     }
 
     private fun bindNestedCard(
@@ -677,27 +776,30 @@ class MainActivity : AppCompatActivity() {
             R.id.header_battery, R.drawable.ic_battery, getString(R.string.section_battery),
             R.id.content_battery, R.id.row_battery_toggle,
             "show_battery", true,
-            sizeRowId = R.id.row_battery_size, prefSizeKey = "size_battery", defSize = 24f, minSize = 12f, maxSize = 74f,
+            sizeRowId = R.id.row_battery_size, prefSizeKey = "size_battery", defSize = 24f, minSize = 10f, maxSize = 74f,
             isContent = true
         ).also { it.tag = "battery" }
+        bindToggle(R.id.row_battery_bold, "Bold Text", "bold_battery", false)
 
         // Temp
         bindFoldedSection(
             R.id.header_temp, R.drawable.ic_temp, getString(R.string.section_temp),
             R.id.content_temp, R.id.row_temp_toggle,
             "show_temp", true,
-            sizeRowId = R.id.row_temp_size, prefSizeKey = "size_temp", defSize = 18f, minSize = 10f, maxSize = 32f,
+            sizeRowId = R.id.row_temp_size, prefSizeKey = "size_temp", defSize = 18f, minSize = 10f, maxSize = 74f,
             isContent = true
         ).also { it.tag = "temp" }
+        bindToggle(R.id.row_temp_bold, "Bold Text", "bold_temp", false)
 
         // Weather
         val weatherSwitch = bindFoldedSection(
             R.id.header_weather, R.drawable.ic_weather, getString(R.string.section_weather_condition),
             R.id.content_weather, R.id.row_weather_toggle,
             "show_weather_condition", false,
-            sizeRowId = R.id.row_weather_size, prefSizeKey = "size_weather", defSize = 18f, minSize = 10f, maxSize = 32f,
+            sizeRowId = R.id.row_weather_size, prefSizeKey = "size_weather", defSize = 18f, minSize = 10f, maxSize = 74f,
             isContent = true
         ).also { it.tag = "weather_condition" }
+        bindToggle(R.id.row_weather_bold, "Bold Text", "bold_weather", false)
 
         // Override weather listener for Breezy Weather check
         weatherSwitch.setOnCheckedChangeListener { _, isChecked ->
@@ -750,9 +852,10 @@ class MainActivity : AppCompatActivity() {
             R.id.header_data, R.drawable.ic_data, getString(R.string.section_data_usage),
             R.id.content_data, R.id.row_data_toggle,
             "show_data_usage", false,
-            sizeRowId = R.id.row_data_size, prefSizeKey = "size_data", defSize = 14f, minSize = 10f, maxSize = 24f,
+            sizeRowId = R.id.row_data_size, prefSizeKey = "size_data", defSize = 14f, minSize = 10f, maxSize = 74f,
             isContent = true
         ).also { it.tag = "data" }
+        bindToggle(R.id.row_data_bold, "Bold Text", "bold_data_usage", false)
 
         dataSwitch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
@@ -785,18 +888,20 @@ class MainActivity : AppCompatActivity() {
             R.id.header_storage, R.drawable.ic_storage, getString(R.string.section_storage),
             R.id.content_storage, R.id.row_storage_toggle,
             "show_storage", true,
-            sizeRowId = R.id.row_storage_size, prefSizeKey = "size_storage", defSize = 14f, minSize = 10f, maxSize = 24f,
+            sizeRowId = R.id.row_storage_size, prefSizeKey = "size_storage", defSize = 14f, minSize = 10f, maxSize = 74f,
             isContent = true
         ).also { it.tag = "storage" }
+        bindToggle(R.id.row_storage_bold, "Bold Text", "bold_storage", false)
 
         // Steps
         val stepsSwitch = bindFoldedSection(
             R.id.header_steps, R.drawable.ic_steps, getString(R.string.section_steps),
             R.id.content_steps, R.id.row_steps_toggle,
             "show_steps", false,
-            sizeRowId = R.id.row_steps_size, prefSizeKey = "size_steps", defSize = 14f, minSize = 10f, maxSize = 24f,
+            sizeRowId = R.id.row_steps_size, prefSizeKey = "size_steps", defSize = 14f, minSize = 10f, maxSize = 74f,
             isContent = true
         ).also { it.tag = "steps" }
+        bindToggle(R.id.row_steps_bold, "Bold Text", "bold_steps", false)
 
         stepsSwitch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
@@ -847,9 +952,10 @@ class MainActivity : AppCompatActivity() {
             R.id.header_screen_time, R.drawable.ic_time, getString(R.string.section_screen_time),
             R.id.content_screen_time, R.id.row_screen_time_toggle,
             "show_screen_time", false,
-            sizeRowId = R.id.row_screen_time_size, prefSizeKey = "size_screen_time", defSize = 14f, minSize = 10f, maxSize = 24f,
+            sizeRowId = R.id.row_screen_time_size, prefSizeKey = "size_screen_time", defSize = 14f, minSize = 10f, maxSize = 74f,
             isContent = true
         ).also { it.tag = "screen_time" }
+        bindToggle(R.id.row_screen_time_bold, "Bold Text", "bold_screen_time", false)
 
         screenTimeSwitch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
@@ -1029,6 +1135,10 @@ class MainActivity : AppCompatActivity() {
         bindNestedCard(R.id.header_appearance_theme, "THEME", R.id.content_appearance_theme, "section_appearance_theme_expanded", R.id.header_chevron_appearance_theme)
         bindNestedCard(R.id.header_appearance_font, "FONT", R.id.content_appearance_font, "section_appearance_font_expanded", R.id.header_chevron_appearance_font)
         bindNestedCard(R.id.header_appearance_transparency, "TRANSPARENCY", R.id.content_appearance_transparency, "section_appearance_transparency_expanded", R.id.header_chevron_appearance_transparency)
+
+        // Reorder section
+        bindNestedCard(R.id.header_appearance_reorder, "REORDER", R.id.content_appearance_reorder, "section_appearance_reorder_expanded", R.id.header_chevron_appearance_reorder)
+        bindReorderSection()
 
         // Outline toggle
         bindToggle(R.id.row_outline_toggle, "Show Outline", "show_outline", true) { isChecked ->
