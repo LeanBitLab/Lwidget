@@ -63,15 +63,14 @@ You can download the latest release from the [Play Store](https://play.google.co
 
 <br>
 
-<p align="center">
+<div align="center" style="display: flex; justify-content: center; gap: 10px; align-items: center;">
   <a href="https://play.google.com/store/apps/details?id=com.leanbitlab.lwidget">
-    <img alt="Get it on Google Play" src="https://img.shields.io/badge/Google_Play-414141?style=for-the-badge&logo=googleplay&logoColor=white" height="42">
+    <img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" height="65" style="max-height: 65px; width: auto;">
   </a>
-  &nbsp;&nbsp;
   <a href="https://github.com/LeanBitLab/Lwidget/releases/latest">
-    <img alt="Download from GitHub" src="https://img.shields.io/badge/GitHub_Releases-181717?style=for-the-badge&logo=github&logoColor=white" height="42">
+    <img alt="Get it on GitHub" src="docs/images/get_it_on_github.png" height="65" style="max-height: 65px; width: auto;">
   </a>
-</p>
+</div>
 
 ## Setup
 
