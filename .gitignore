@@ -1,12 +1,15 @@
 # Gradle files
 .gradle/
 build/
+app/build/
+.cxx/
 
 # Local configuration file (sdk user, etc)
 local.properties
 
 # Secrets and Keys
 *.jks
+*.keystore
 keystore.properties
 
 # Log files
@@ -14,7 +17,7 @@ keystore.properties
 build_log.txt
 widget_logs.txt
 
-# IntelliJ / Android Studio
+# IntelliJ / Android Studio / VS Code
 .idea/
 *.iml
 *.iws
@@ -30,15 +33,15 @@ widget_logs.txt
 .DS_Store
 Thumbs.db
 
-# Private Docs
+# Private Docs / Project Specific
 pdocs/
+docs/superpowers
+.superpowers
+refactor_xml.py
 
 # CLI Context
 GEMINI.md
 .geminiignore
-
 .antigravityignore
 .gemini/
-
-docs/superpowers
-.superpowers
+.cline/

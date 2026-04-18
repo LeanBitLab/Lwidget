@@ -33,8 +33,8 @@
     <string name="section_changelog">Note \u0026 Changelog</string>
     <string name="changelog_version">Version %s</string>
     <string name="changelog_note">Lwidget works without any background service. However, some devices may kill the app to save battery, which can stop widget updates. To fix this:\n\n• Mark Lwidget as non-battery-optimized in your device settings.\n• Or, enable Keep Alive — a lightweight background service that keeps the widget updating reliably.\n• Or, enable the Step Counter — it uses the same service and also counts your daily steps.</string>
-    <string name="changelog_content">What\'s New in v1.9:\n• Calendar events now show \"Today\" and \"Tomorrow\" instead of weekday names\n• New \"Keep Alive\" toggle — keeps widget updating reliably without needing Step Counter\n• Improved notification text based on active mode\n• Code cleanup and optimizations</string>
-    <string name="changelog_testing_notice">Lwidget is now available on Google Play! If you enjoy it, please leave a rating — it helps others discover the app.</string>
+    <string name="changelog_content">What\'s New in v2.0:\n• Added Reorder — you can now sort widget items exactly how you want\n• Uniform Customization — consistent design language across all settings\n• Settings Page Improvements — cleaner layout and better navigation\n• Performance optimizations and bug fixes</string>
+    <string name="changelog_testing_notice">If you enjoy Lwidget, please leave a rating on Google Play — it helps others discover the app.</string>
     <string name="github_source_code">Source Code (GitHub)</string>
     <string name="privacy_policy">Privacy Policy</string>
 

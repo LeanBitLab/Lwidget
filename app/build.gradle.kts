@@ -15,8 +15,8 @@ android {
         applicationId = "com.leanbitlab.lwidget"
         minSdk = 26
         targetSdk = 35
-        versionCode = 14
-        versionName = "1.9"
+        versionCode = 15
+        versionName = "2.0"
     }
 
     signingConfigs {
