@@ -6,11 +6,11 @@
   <img alt="Lwidget Banner" src="docs/images/banner_light.svg">
 </picture>
 
-<div align="center">
-
-[![Download](https://img.shields.io/github/v/release/LeanBitLab/Lwidget?label=Download&style=flat-square&color=7C4DFF)](https://github.com/LeanBitLab/Lwidget/releases/latest) [![Downloads](https://img.shields.io/github/downloads/LeanBitLab/Lwidget/total?style=flat-square&color=7C4DFF&label=Downloads)](https://github.com/LeanBitLab/Lwidget/releases) [![Stars](https://img.shields.io/github/stars/LeanBitLab/Lwidget?style=flat-square&color=7C4DFF)](https://github.com/LeanBitLab/Lwidget/stargazers)
-
-</div>
+<p align="center">
+  <a href="https://github.com/LeanBitLab/Lwidget/releases/latest"><img src="https://img.shields.io/github/v/release/LeanBitLab/Lwidget?label=Download&style=flat-square&color=7C4DFF" alt="Download"></a>
+  <a href="https://github.com/LeanBitLab/Lwidget/releases"><img src="https://img.shields.io/github/downloads/LeanBitLab/Lwidget/total?style=flat-square&color=7C4DFF&label=Downloads" alt="Downloads"></a>
+  <a href="https://github.com/LeanBitLab/Lwidget/stargazers"><img src="https://img.shields.io/github/stars/LeanBitLab/Lwidget?style=flat-square&color=7C4DFF" alt="Stars"></a>
+</p>
 
 **Lwidget** is a modern, open-source Android widget built with **Kotlin** and **Material 3** design principles. It provides essential information at a glance while adhering to your device's dynamic theme.
 
@@ -63,11 +63,10 @@ You can download the latest release from the [Play Store](https://play.google.co
 
 <br>
 
-<div align="center">
+<div align="center" style="display: flex; justify-content: center; gap: 10px; align-items: center;">
   <a href="https://play.google.com/store/apps/details?id=com.leanbitlab.lwidget">
     <img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" height="60">
   </a>
-  &nbsp;&nbsp;&nbsp;
   <a href="https://github.com/LeanBitLab/Lwidget/releases/latest">
     <img alt="Download from GitHub" src="https://img.shields.io/badge/GitHub-Releases-181717?style=for-the-badge&logo=github&logoColor=white" height="42">
   </a>
