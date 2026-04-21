@@ -138,8 +138,8 @@ class AwidgetProvider : AppWidgetProvider() {
             android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE
         )
         
-        // 5 minutes
-        val intervalMillis = 5L * 60L * 1000L
+        // 1 minute
+        val intervalMillis = 1L * 60L * 1000L
         
         alarmManager.setInexactRepeating(
             android.app.AlarmManager.RTC,
