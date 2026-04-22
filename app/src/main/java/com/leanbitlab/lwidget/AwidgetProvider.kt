@@ -825,25 +825,13 @@ class AwidgetProvider : AppWidgetProvider() {
         }
 
 
-        private fun loadCalendarEvents(context: Context, views: RemoteViews, textSizeSp: Float, primaryColor: Int, secondaryColor: Int) {
-            if (androidx.core.content.ContextCompat.checkSelfPermission(
-                    context, android.Manifest.permission.READ_CALENDAR
-                ) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
-                return
-            }
+        data class EventInfo(val id: Long, val title: String, val begin: Long, val isLocal: Boolean)
 
-            val eventViews = listOf(
-                R.id.text_event_1, R.id.text_event_2, R.id.text_event_3,
-                R.id.text_event_4, R.id.text_event_5, R.id.text_event_6,
-                R.id.text_event_7, R.id.text_event_8, R.id.text_event_9,
-                R.id.text_event_10
-            )
+        private fun fetchCalendarEvents(context: Context): List<EventInfo> {
+            val syncedCalendarIds = mutableSetOf<Long>()
+            val visibleCalendarIds = mutableSetOf<Long>()
 
-            try {
-                val syncedCalendarIds = mutableSetOf<Long>()
-                val visibleCalendarIds = mutableSetOf<Long>()
-                
-                val calSelection = "${android.provider.CalendarContract.Calendars.VISIBLE} = 1"
+            val calSelection = "${android.provider.CalendarContract.Calendars.VISIBLE} = 1"
 
             context.contentResolver.query(
                 android.provider.CalendarContract.Calendars.CONTENT_URI,
@@ -856,12 +844,10 @@ class AwidgetProvider : AppWidgetProvider() {
                 calSelection, null, null
             )?.use { cursor ->
                 val idIdx = cursor.getColumnIndex(android.provider.CalendarContract.Calendars._ID)
-                // val typeIdx = cursor.getColumnIndex(android.provider.CalendarContract.Calendars.ACCOUNT_TYPE)
                 val nameIdx = cursor.getColumnIndex(android.provider.CalendarContract.Calendars.ACCOUNT_NAME)
                 val displayIdx = cursor.getColumnIndex(android.provider.CalendarContract.Calendars.CALENDAR_DISPLAY_NAME)
                 while (cursor.moveToNext()) {
                     val calId = cursor.getLong(idIdx)
-                    // val accountType = cursor.getString(typeIdx) ?: ""
                     val accountName = cursor.getString(nameIdx) ?: ""
                     val displayName = cursor.getString(displayIdx) ?: ""
                     
@@ -874,7 +860,7 @@ class AwidgetProvider : AppWidgetProvider() {
                 }
             }
             
-            if (visibleCalendarIds.isEmpty()) return
+            if (visibleCalendarIds.isEmpty()) return emptyList()
 
             val projection = arrayOf(
                 android.provider.CalendarContract.Instances.EVENT_ID,
@@ -891,14 +877,11 @@ class AwidgetProvider : AppWidgetProvider() {
                 .appendPath(endQuery.toString())
                 .build()
 
-                val idList = visibleCalendarIds.joinToString(",")
-                // Removed Instances.VISIBLE = 1 because some devices/ROMs crash if Instances table lacks this column.
-                // We are already filtering by CALENDAR_ID IN ($idList) which only contains visibly enabled calendars.
-                val selection = "${android.provider.CalendarContract.Instances.END} >= ? AND ${android.provider.CalendarContract.Instances.CALENDAR_ID} IN ($idList)"
-                val selectionArgs = arrayOf(now.toString())
+            val idList = visibleCalendarIds.joinToString(",")
+            val selection = "${android.provider.CalendarContract.Instances.END} >= ? AND ${android.provider.CalendarContract.Instances.CALENDAR_ID} IN ($idList)"
+            val selectionArgs = arrayOf(now.toString())
             val sortOrder = "${android.provider.CalendarContract.Instances.BEGIN} ASC"
 
-            data class EventInfo(val id: Long, val title: String, val begin: Long, val isLocal: Boolean)
             val events = mutableListOf<EventInfo>()
 
             context.contentResolver.query(uri, projection, selection, selectionArgs, sortOrder)?.use { cursor ->
@@ -916,8 +899,10 @@ class AwidgetProvider : AppWidgetProvider() {
                     events.add(EventInfo(eventId, title, begin, isLocal))
                 }
             }
+            return events
+        }
 
-            // java.time formatters
+        private fun bindCalendarEvents(context: Context, views: RemoteViews, events: List<EventInfo>, textSizeSp: Float, primaryColor: Int, secondaryColor: Int, eventViews: List<Int>) {
             val timeFormatter = DateTimeFormatter.ofPattern("h:mm a", Locale.getDefault())
             val dayFormatter = DateTimeFormatter.ofPattern("EEE", Locale.getDefault())
             val dateFormatter = DateTimeFormatter.ofPattern("d MMM h:mma", Locale.getDefault())
@@ -969,12 +954,31 @@ class AwidgetProvider : AppWidgetProvider() {
                         data = android.content.ContentUris.withAppendedId(android.provider.CalendarContract.Events.CONTENT_URI, event.id)
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
                     }
-                        val eventPendingIntent = PendingIntent.getActivity(context, event.id.toInt(), eventIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-                        views.setOnClickPendingIntent(eventViews[i], eventPendingIntent)
-                    } else {
-                        views.setViewVisibility(eventViews[i], android.view.View.GONE)
-                    }
+                    val eventPendingIntent = PendingIntent.getActivity(context, event.id.toInt(), eventIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+                    views.setOnClickPendingIntent(eventViews[i], eventPendingIntent)
+                } else {
+                    views.setViewVisibility(eventViews[i], android.view.View.GONE)
                 }
+            }
+        }
+
+        private fun loadCalendarEvents(context: Context, views: RemoteViews, textSizeSp: Float, primaryColor: Int, secondaryColor: Int) {
+            if (androidx.core.content.ContextCompat.checkSelfPermission(
+                    context, android.Manifest.permission.READ_CALENDAR
+                ) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                return
+            }
+
+            val eventViews = listOf(
+                R.id.text_event_1, R.id.text_event_2, R.id.text_event_3,
+                R.id.text_event_4, R.id.text_event_5, R.id.text_event_6,
+                R.id.text_event_7, R.id.text_event_8, R.id.text_event_9,
+                R.id.text_event_10
+            )
+
+            try {
+                val events = fetchCalendarEvents(context)
+                bindCalendarEvents(context, views, events, textSizeSp, primaryColor, secondaryColor, eventViews)
             } catch (e: Exception) {
                 // Log and gracefully handle crash
                 android.util.Log.e("LWidget", "Error loading calendar events", e)
