@@ -20,8 +20,8 @@ class WidgetUpdateWorker(
             val appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidget)
 
             // Perform the periodic TICK update (Battery, Temp, Data, Storage)
-            for (appWidgetId in appWidgetIds) {
-                AwidgetProvider.updateAppWidget(context, appWidgetManager, appWidgetId, UpdateMode.TICK)
+            if (appWidgetIds.isNotEmpty()) {
+                AwidgetProvider.updateAppWidget(context, appWidgetManager, appWidgetIds, UpdateMode.TICK)
             }
             Result.success()
         } catch (e: Exception) {

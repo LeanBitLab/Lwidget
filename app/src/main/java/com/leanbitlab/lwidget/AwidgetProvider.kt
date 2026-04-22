@@ -54,9 +54,7 @@ class AwidgetProvider : AppWidgetProvider() {
         val pendingResult = goAsync()
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                for (appWidgetId in appWidgetIds) {
-                    updateAppWidget(context, appWidgetManager, appWidgetId, UpdateMode.FULL)
-                }
+                updateAppWidget(context, appWidgetManager, appWidgetIds, UpdateMode.FULL)
             } finally {
                 pendingResult.finish()
             }
@@ -94,28 +92,28 @@ class AwidgetProvider : AppWidgetProvider() {
                     when (intent.action) {
                         Intent.ACTION_BOOT_COMPLETED -> {
                             scheduleWork(context)
-                            appWidgetIds.forEach { updateAppWidget(context, appWidgetManager, it, UpdateMode.FULL) }
+                            if (appWidgetIds.isNotEmpty()) updateAppWidget(context, appWidgetManager, appWidgetIds, UpdateMode.FULL)
                         }
                         ACTION_BATTERY_UPDATE -> {
-                            appWidgetIds.forEach { updateAppWidget(context, appWidgetManager, it, UpdateMode.TICK) }
+                            if (appWidgetIds.isNotEmpty()) updateAppWidget(context, appWidgetManager, appWidgetIds, UpdateMode.TICK)
                         }
                         StepCounterService.ACTION_STEP_UPDATE -> {
                             // Step event updates match Tick mode conceptually 
-                            appWidgetIds.forEach { updateAppWidget(context, appWidgetManager, it, UpdateMode.TICK) }
+                            if (appWidgetIds.isNotEmpty()) updateAppWidget(context, appWidgetManager, appWidgetIds, UpdateMode.TICK)
                         }
                         android.app.AlarmManager.ACTION_NEXT_ALARM_CLOCK_CHANGED -> {
-                            appWidgetIds.forEach { updateAppWidget(context, appWidgetManager, it, UpdateMode.ALARM_ONLY) }
+                            if (appWidgetIds.isNotEmpty()) updateAppWidget(context, appWidgetManager, appWidgetIds, UpdateMode.ALARM_ONLY)
                         }
                         Intent.ACTION_PROVIDER_CHANGED -> {
                             val host = intent.data?.host
                             val mode = if (host == "com.android.calendar") UpdateMode.CALENDAR_ONLY else UpdateMode.TASKS_ONLY
-                            appWidgetIds.forEach { updateAppWidget(context, appWidgetManager, it, mode) }
+                            if (appWidgetIds.isNotEmpty()) updateAppWidget(context, appWidgetManager, appWidgetIds, mode)
                         }
                         "nodomain.freeyourgadget.gadgetbridge.ACTION_GENERIC_WEATHER" -> {
                             val weatherJson = intent.getStringExtra("WeatherJson")
                             if (!weatherJson.isNullOrEmpty()) {
                                 com.leanbitlab.lwidget.weather.BreezyWeatherFetcher.saveLatestWeatherData(context, weatherJson)
-                                appWidgetIds.forEach { updateAppWidget(context, appWidgetManager, it, UpdateMode.FULL) }
+                                if (appWidgetIds.isNotEmpty()) updateAppWidget(context, appWidgetManager, appWidgetIds, UpdateMode.FULL)
                             }
                         }
                     }
@@ -167,7 +165,7 @@ class AwidgetProvider : AppWidgetProvider() {
         const val ACTION_BATTERY_UPDATE = "com.leanbitlab.lwidget.ACTION_BATTERY_UPDATE"
 
         // Suspended function called from Coroutine
-        fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, mode: UpdateMode = UpdateMode.FULL) {
+        fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray, mode: UpdateMode = UpdateMode.FULL) {
             val prefs = context.getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
 
             // --- Load Preferences ---
@@ -449,22 +447,22 @@ class AwidgetProvider : AppWidgetProvider() {
                 }
                 if (showData) updateDataUsage(context, tickViews)
                 if (showStorage) updateStorageStats(context, tickViews)
-                appWidgetManager.partiallyUpdateAppWidget(appWidgetId, tickViews)
+                appWidgetManager.partiallyUpdateAppWidget(appWidgetIds, tickViews)
                 return
             } else if (mode == UpdateMode.CALENDAR_ONLY) {
                 val calViews = RemoteViews(context.packageName, layoutId)
                 if (showEvents) loadCalendarEvents(context, calViews, sizeEvents, primaryColor, secondaryColor)
-                appWidgetManager.partiallyUpdateAppWidget(appWidgetId, calViews)
+                appWidgetManager.partiallyUpdateAppWidget(appWidgetIds, calViews)
                 return
             } else if (mode == UpdateMode.TASKS_ONLY) {
                 val taskViews = RemoteViews(context.packageName, layoutId)
                 if (showTasks) loadTasks(context, taskViews, sizeTasks, primaryColor)
-                appWidgetManager.partiallyUpdateAppWidget(appWidgetId, taskViews)
+                appWidgetManager.partiallyUpdateAppWidget(appWidgetIds, taskViews)
                 return
             } else if (mode == UpdateMode.ALARM_ONLY) {
                 val alarmViews = RemoteViews(context.packageName, layoutId)
                 if (showNextAlarm) loadNextAlarm(context, alarmViews, sizeNextAlarm, secondaryColor)
-                appWidgetManager.partiallyUpdateAppWidget(appWidgetId, alarmViews)
+                appWidgetManager.partiallyUpdateAppWidget(appWidgetIds, alarmViews)
                 return
             }
 
@@ -821,7 +819,7 @@ class AwidgetProvider : AppWidgetProvider() {
             val settingsPendingIntent = PendingIntent.getActivity(context, 0, settingsIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
             views.setOnClickPendingIntent(R.id.widget_root, settingsPendingIntent)
 
-            appWidgetManager.updateAppWidget(appWidgetId, views)
+            appWidgetManager.updateAppWidget(appWidgetIds, views)
         }
 
 
