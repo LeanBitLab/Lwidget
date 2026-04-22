@@ -1,0 +1,10 @@
+--- app/src/main/res/values/strings.xml
++++ app/src/main/res/values/strings.xml
+@@ -25,6 +25,7 @@
+     <string name="section_bg_transparency">Transparency</string>
+     <string name="section_text_color_primary">Text Color</string>
+     <string name="section_text_color_secondary">Text Color 2</string>
++    <string name="section_date_color">Date Color</string>
+     <string name="section_outline_color">Outline Color</string>
+     <string name="section_font">Font Style</string>
+     <string name="section_bg_color">Background Color</string>
