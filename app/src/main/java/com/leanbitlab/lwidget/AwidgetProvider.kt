@@ -24,6 +24,7 @@ import android.appwidget.AppWidgetProvider
 import android.os.Build
 import android.content.ComponentName
 import android.content.Context
+import android.content.SharedPreferences
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.ConnectivityManager
@@ -165,6 +166,50 @@ class AwidgetProvider : AppWidgetProvider() {
 
     companion object {
         const val ACTION_BATTERY_UPDATE = "com.leanbitlab.lwidget.ACTION_BATTERY_UPDATE"
+
+        // Resolve Colors
+        fun resolveColor(
+            context: Context,
+            prefs: SharedPreferences,
+            useDynamicColors: Boolean,
+            idx: Int,
+            isPrimary: Boolean,
+            isLight: Boolean,
+            sdkInt: Int = android.os.Build.VERSION.SDK_INT
+        ): Int {
+             // When dynamic colors is on, always use dynamic palette regardless of saved color index
+             if (useDynamicColors && sdkInt >= android.os.Build.VERSION_CODES.S) {
+                 return if (isPrimary) {
+                     // High contrast accent for time & battery
+                     context.getColor(if (isLight) android.R.color.system_accent1_800 else android.R.color.system_accent1_50)
+                 } else {
+                     // Muted neutral for secondary items (temp, data, storage, steps)
+                     context.getColor(if (isLight) android.R.color.system_neutral2_600 else android.R.color.system_neutral2_300)
+                 }
+             }
+             return when (idx) {
+                 0 -> { // Default
+                     if (isPrimary) {
+                         if (isLight) context.getColor(R.color.widget_text_light) else android.graphics.Color.WHITE
+                     } else {
+                         if (isLight) context.getColor(R.color.widget_text_secondary_light) else android.graphics.Color.parseColor("#CCFFFFFF")
+                     }
+                 }
+                 1 -> if (sdkInt >= android.os.Build.VERSION_CODES.S) {
+                          context.getColor(android.R.color.system_accent1_500)
+                      } else {
+                          android.graphics.Color.CYAN
+                      }
+                 2 -> {
+                     val prefix = if (isPrimary) "text_color_primary" else "text_color_secondary"
+                     val r = prefs.getInt("${prefix}_r", 255).coerceIn(0, 255)
+                     val g = prefs.getInt("${prefix}_g", 255).coerceIn(0, 255)
+                     val b = prefs.getInt("${prefix}_b", 255).coerceIn(0, 255)
+                     android.graphics.Color.rgb(r, g, b)
+                 }
+                 else -> if (isPrimary) android.graphics.Color.WHITE else android.graphics.Color.parseColor("#CCFFFFFF")
+             }
+        }
 
         // Suspended function called from Coroutine
         fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, mode: UpdateMode = UpdateMode.FULL) {
@@ -359,44 +404,8 @@ class AwidgetProvider : AppWidgetProvider() {
             }
             views.setInt(R.id.widget_outline, "setImageAlpha", 255)
 
-            // Resolve Colors
-            fun resolveColor(idx: Int, isPrimary: Boolean, isLight: Boolean): Int {
-                 // When dynamic colors is on, always use dynamic palette regardless of saved color index
-                 if (useDynamicColors && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-                     return if (isPrimary) {
-                         // High contrast accent for time & battery
-                         context.getColor(if (isLight) android.R.color.system_accent1_800 else android.R.color.system_accent1_50)
-                     } else {
-                         // Muted neutral for secondary items (temp, data, storage, steps)
-                         context.getColor(if (isLight) android.R.color.system_neutral2_600 else android.R.color.system_neutral2_300)
-                     }
-                 }
-                 return when (idx) {
-                     0 -> { // Default
-                         if (isPrimary) {
-                             if (isLight) context.getColor(R.color.widget_text_light) else android.graphics.Color.WHITE
-                         } else {
-                             if (isLight) context.getColor(R.color.widget_text_secondary_light) else android.graphics.Color.parseColor("#CCFFFFFF")
-                         }
-                     }
-                     1 -> if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-                              context.getColor(android.R.color.system_accent1_500)
-                          } else {
-                              android.graphics.Color.CYAN
-                          }
-                     2 -> {
-                         val prefix = if (isPrimary) "text_color_primary" else "text_color_secondary"
-                         val r = prefs.getInt("${prefix}_r", 255)
-                         val g = prefs.getInt("${prefix}_g", 255)
-                         val b = prefs.getInt("${prefix}_b", 255)
-                         android.graphics.Color.rgb(r, g, b)
-                     }
-                     else -> if (isPrimary) android.graphics.Color.WHITE else android.graphics.Color.parseColor("#CCFFFFFF")
-                 }
-            }
-            
-            val primaryColor = resolveColor(textColorPrimaryIdx, true, useLightTheme)
-            val secondaryColor = resolveColor(textColorSecondaryIdx, false, useLightTheme)
+            val primaryColor = resolveColor(context, prefs, useDynamicColors, textColorPrimaryIdx, true, useLightTheme)
+            val secondaryColor = resolveColor(context, prefs, useDynamicColors, textColorSecondaryIdx, false, useLightTheme)
 
             // Slightly distinct colors for date and next alarm
             val dateColor = if (useDynamicColors && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
