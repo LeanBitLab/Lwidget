@@ -434,7 +434,7 @@ class AwidgetProvider : AppWidgetProvider() {
                 batterySpannable.setSpan(android.text.style.RelativeSizeSpan(0.5f), batterySpannable.length - 1, batterySpannable.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 val tempInt = batteryStatus?.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0) ?: 0
                 val tempVal = tempInt / 10f
-                if (showSteps) loadStepCount(context, tickViews)
+                if (showSteps) loadStepCount(context, tickViews, prefs)
                 if (showBattery) tickViews.setTextViewText(R.id.text_battery, batterySpannable)
                 if (showTemp) {
                     val tempStr = String.format("%.1f", tempVal)
@@ -447,8 +447,8 @@ class AwidgetProvider : AppWidgetProvider() {
                     if (boldTemp) tempSpan.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, tempSpan.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     tickViews.setTextViewText(R.id.text_temp, tempSpan)
                 }
-                if (showData) updateDataUsage(context, tickViews)
-                if (showStorage) updateStorageStats(context, tickViews)
+                if (showData) updateDataUsage(context, tickViews, prefs)
+                if (showStorage) updateStorageStats(context, tickViews, prefs)
                 appWidgetManager.partiallyUpdateAppWidget(appWidgetId, tickViews)
                 return
             } else if (mode == UpdateMode.CALENDAR_ONLY) {
@@ -651,7 +651,7 @@ class AwidgetProvider : AppWidgetProvider() {
             if (showData) {
                 views.setTextViewTextSize(R.id.text_data_usage, android.util.TypedValue.COMPLEX_UNIT_SP, sizeData)
                 views.setTextColor(R.id.text_data_usage, secondaryColor)
-                updateDataUsage(context, views)
+                updateDataUsage(context, views, prefs)
             }
 
             // --- Storage ---
@@ -659,7 +659,7 @@ class AwidgetProvider : AppWidgetProvider() {
             if (showStorage) {
                 views.setTextViewTextSize(R.id.text_storage, android.util.TypedValue.COMPLEX_UNIT_SP, sizeStorage)
                 views.setTextColor(R.id.text_storage, secondaryColor)
-                updateStorageStats(context, views)
+                updateStorageStats(context, views, prefs)
             }
 
             // --- Step Counter ---
@@ -667,7 +667,7 @@ class AwidgetProvider : AppWidgetProvider() {
             if (showSteps) {
                 views.setTextViewTextSize(R.id.text_steps, android.util.TypedValue.COMPLEX_UNIT_SP, sizeSteps)
                 views.setTextColor(R.id.text_steps, secondaryColor)
-                loadStepCount(context, views)
+                loadStepCount(context, views, prefs)
             }
             
             // --- Screen Time ---
@@ -677,7 +677,7 @@ class AwidgetProvider : AppWidgetProvider() {
             if (showScreenTime) {
                 views.setTextViewTextSize(R.id.text_screen_time, android.util.TypedValue.COMPLEX_UNIT_SP, sizeScreenTime)
                 views.setTextColor(R.id.text_screen_time, secondaryColor)
-                updateScreenTime(context, views)
+                updateScreenTime(context, views, prefs)
             }
             
             // --- Dynamic Spacing Logic for Both Sides ---
@@ -984,7 +984,7 @@ class AwidgetProvider : AppWidgetProvider() {
             }
         }
 
-        private fun updateScreenTime(context: Context, views: RemoteViews) {
+        private fun updateScreenTime(context: Context, views: RemoteViews, prefs: android.content.SharedPreferences) {
             val appOps = context.getSystemService(Context.APP_OPS_SERVICE) as android.app.AppOpsManager
             val mode = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
                  appOps.unsafeCheckOpNoThrow(android.app.AppOpsManager.OPSTR_GET_USAGE_STATS, android.os.Process.myUid(), context.packageName)
@@ -1019,7 +1019,6 @@ class AwidgetProvider : AppWidgetProvider() {
                 }
             }
             
-            val prefs = context.getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
             val isBold = prefs.getBoolean("bold_screen_time", false)
 
             if (totalForegroundTime > 0) {
@@ -1039,7 +1038,7 @@ class AwidgetProvider : AppWidgetProvider() {
             }
         }
 
-        private fun updateDataUsage(context: Context, views: RemoteViews) {
+        private fun updateDataUsage(context: Context, views: RemoteViews, prefs: android.content.SharedPreferences) {
             val networkStatsManager = context.getSystemService(Context.NETWORK_STATS_SERVICE) as NetworkStatsManager
             // Use java.time
             val startOfDay = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
@@ -1069,7 +1068,6 @@ class AwidgetProvider : AppWidgetProvider() {
                      span
                 }
 
-                val prefs = context.getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
                 if (prefs.getBoolean("bold_data_usage", false) && text is android.text.SpannableString) {
                     text.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, text.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
@@ -1238,7 +1236,7 @@ class AwidgetProvider : AppWidgetProvider() {
             }
         }
 
-        private fun updateStorageStats(context: Context, views: RemoteViews) {
+        private fun updateStorageStats(context: Context, views: RemoteViews, prefs: android.content.SharedPreferences) {
              try {
                  val path = android.os.Environment.getDataDirectory()
                  val stat = android.os.StatFs(path.path)
@@ -1250,7 +1248,6 @@ class AwidgetProvider : AppWidgetProvider() {
                  val span = android.text.SpannableString("$gbStr GB")
                  span.setSpan(android.text.style.RelativeSizeSpan(0.5f), gbStr.length, gbStr.length + 3, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE) // GB
 
-                 val prefs = context.getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
                  if (prefs.getBoolean("bold_storage", false)) {
                      span.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, span.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                  }
@@ -1261,9 +1258,8 @@ class AwidgetProvider : AppWidgetProvider() {
              }
         }
 
-        private fun loadStepCount(context: Context, views: RemoteViews) {
+        private fun loadStepCount(context: Context, views: RemoteViews, prefs: android.content.SharedPreferences) {
             try {
-                val prefs = context.getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
                 val totalSteps = prefs.getFloat("last_total_steps", 0f)
                 val baselineSteps = prefs.getFloat("step_baseline", 0f)
 
