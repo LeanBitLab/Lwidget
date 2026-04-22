@@ -166,6 +166,9 @@ class AwidgetProvider : AppWidgetProvider() {
     companion object {
         const val ACTION_BATTERY_UPDATE = "com.leanbitlab.lwidget.ACTION_BATTERY_UPDATE"
 
+        private var lastUsageStatsCheckTime = 0L
+        private var cachedUsageStatsPermission = false
+
         // Suspended function called from Coroutine
         fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, mode: UpdateMode = UpdateMode.FULL) {
             val prefs = context.getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
@@ -985,13 +988,19 @@ class AwidgetProvider : AppWidgetProvider() {
         }
 
         private fun updateScreenTime(context: Context, views: RemoteViews) {
-            val appOps = context.getSystemService(Context.APP_OPS_SERVICE) as android.app.AppOpsManager
-            val mode = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-                 appOps.unsafeCheckOpNoThrow(android.app.AppOpsManager.OPSTR_GET_USAGE_STATS, android.os.Process.myUid(), context.packageName)
-            } else {
-                 appOps.checkOpNoThrow(android.app.AppOpsManager.OPSTR_GET_USAGE_STATS, android.os.Process.myUid(), context.packageName)
+            val now = System.currentTimeMillis()
+            if (now - lastUsageStatsCheckTime > 60000) {
+                val appOps = context.getSystemService(Context.APP_OPS_SERVICE) as android.app.AppOpsManager
+                val mode = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                    appOps.unsafeCheckOpNoThrow(android.app.AppOpsManager.OPSTR_GET_USAGE_STATS, android.os.Process.myUid(), context.packageName)
+                } else {
+                    appOps.checkOpNoThrow(android.app.AppOpsManager.OPSTR_GET_USAGE_STATS, android.os.Process.myUid(), context.packageName)
+                }
+                cachedUsageStatsPermission = (mode == android.app.AppOpsManager.MODE_ALLOWED)
+                lastUsageStatsCheckTime = now
             }
-            if (mode != android.app.AppOpsManager.MODE_ALLOWED) {
+
+            if (!cachedUsageStatsPermission) {
                  views.setViewVisibility(R.id.text_screen_time, android.view.View.GONE)
                  return
             }
