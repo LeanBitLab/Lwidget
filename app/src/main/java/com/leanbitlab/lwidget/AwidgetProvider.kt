@@ -165,6 +165,8 @@ class AwidgetProvider : AppWidgetProvider() {
 
     companion object {
         const val ACTION_BATTERY_UPDATE = "com.leanbitlab.lwidget.ACTION_BATTERY_UPDATE"
+        const val PERMISSION_READ_TASKS_ORG = "org.tasks.permission.READ_TASKS"
+        const val PERMISSION_READ_TASKS_ASTRID = "com.todoroo.astrid.READ"
 
         private var lastUsageStatsCheckTime = 0L
         private var cachedUsageStatsPermission = false
@@ -239,7 +241,7 @@ class AwidgetProvider : AppWidgetProvider() {
             val sizeStorage = prefs.getFloat("size_storage", 14f)
 
             var showTasks = prefs.getBoolean("show_tasks", false)
-            if (showTasks && androidx.core.content.ContextCompat.checkSelfPermission(context, "org.tasks.permission.READ_TASKS") != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            if (showTasks && androidx.core.content.ContextCompat.checkSelfPermission(context, PERMISSION_READ_TASKS_ORG) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
                 showTasks = false
             }
             val sizeTasks = prefs.getFloat("size_tasks", 14f)
@@ -437,7 +439,7 @@ class AwidgetProvider : AppWidgetProvider() {
                 batterySpannable.setSpan(android.text.style.RelativeSizeSpan(0.5f), batterySpannable.length - 1, batterySpannable.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 val tempInt = batteryStatus?.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0) ?: 0
                 val tempVal = tempInt / 10f
-                if (showSteps) loadStepCount(context, tickViews)
+                if (showSteps) loadStepCount(context, tickViews, prefs)
                 if (showBattery) tickViews.setTextViewText(R.id.text_battery, batterySpannable)
                 if (showTemp) {
                     val tempStr = String.format("%.1f", tempVal)
@@ -450,8 +452,8 @@ class AwidgetProvider : AppWidgetProvider() {
                     if (boldTemp) tempSpan.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, tempSpan.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     tickViews.setTextViewText(R.id.text_temp, tempSpan)
                 }
-                if (showData) updateDataUsage(context, tickViews)
-                if (showStorage) updateStorageStats(context, tickViews)
+                if (showData) updateDataUsage(context, tickViews, prefs)
+                if (showStorage) updateStorageStats(context, tickViews, prefs)
                 appWidgetManager.partiallyUpdateAppWidget(appWidgetId, tickViews)
                 return
             } else if (mode == UpdateMode.CALENDAR_ONLY) {
@@ -654,7 +656,7 @@ class AwidgetProvider : AppWidgetProvider() {
             if (showData) {
                 views.setTextViewTextSize(R.id.text_data_usage, android.util.TypedValue.COMPLEX_UNIT_SP, sizeData)
                 views.setTextColor(R.id.text_data_usage, secondaryColor)
-                updateDataUsage(context, views)
+                updateDataUsage(context, views, prefs)
             }
 
             // --- Storage ---
@@ -662,7 +664,7 @@ class AwidgetProvider : AppWidgetProvider() {
             if (showStorage) {
                 views.setTextViewTextSize(R.id.text_storage, android.util.TypedValue.COMPLEX_UNIT_SP, sizeStorage)
                 views.setTextColor(R.id.text_storage, secondaryColor)
-                updateStorageStats(context, views)
+                updateStorageStats(context, views, prefs)
             }
 
             // --- Step Counter ---
@@ -670,7 +672,7 @@ class AwidgetProvider : AppWidgetProvider() {
             if (showSteps) {
                 views.setTextViewTextSize(R.id.text_steps, android.util.TypedValue.COMPLEX_UNIT_SP, sizeSteps)
                 views.setTextColor(R.id.text_steps, secondaryColor)
-                loadStepCount(context, views)
+                loadStepCount(context, views, prefs)
             }
             
             // --- Screen Time ---
@@ -680,7 +682,7 @@ class AwidgetProvider : AppWidgetProvider() {
             if (showScreenTime) {
                 views.setTextViewTextSize(R.id.text_screen_time, android.util.TypedValue.COMPLEX_UNIT_SP, sizeScreenTime)
                 views.setTextColor(R.id.text_screen_time, secondaryColor)
-                updateScreenTime(context, views)
+                updateScreenTime(context, views, prefs)
             }
             
             // --- Dynamic Spacing Logic for Both Sides ---
@@ -828,25 +830,13 @@ class AwidgetProvider : AppWidgetProvider() {
         }
 
 
-        private fun loadCalendarEvents(context: Context, views: RemoteViews, textSizeSp: Float, primaryColor: Int, secondaryColor: Int) {
-            if (androidx.core.content.ContextCompat.checkSelfPermission(
-                    context, android.Manifest.permission.READ_CALENDAR
-                ) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
-                return
-            }
+        data class EventInfo(val id: Long, val title: String, val begin: Long, val isLocal: Boolean)
 
-            val eventViews = listOf(
-                R.id.text_event_1, R.id.text_event_2, R.id.text_event_3,
-                R.id.text_event_4, R.id.text_event_5, R.id.text_event_6,
-                R.id.text_event_7, R.id.text_event_8, R.id.text_event_9,
-                R.id.text_event_10
-            )
+        private fun fetchCalendarEvents(context: Context): List<EventInfo> {
+            val syncedCalendarIds = mutableSetOf<Long>()
+            val visibleCalendarIds = mutableSetOf<Long>()
 
-            try {
-                val syncedCalendarIds = mutableSetOf<Long>()
-                val visibleCalendarIds = mutableSetOf<Long>()
-                
-                val calSelection = "${android.provider.CalendarContract.Calendars.VISIBLE} = 1"
+            val calSelection = "${android.provider.CalendarContract.Calendars.VISIBLE} = 1"
 
             context.contentResolver.query(
                 android.provider.CalendarContract.Calendars.CONTENT_URI,
@@ -859,12 +849,10 @@ class AwidgetProvider : AppWidgetProvider() {
                 calSelection, null, null
             )?.use { cursor ->
                 val idIdx = cursor.getColumnIndex(android.provider.CalendarContract.Calendars._ID)
-                // val typeIdx = cursor.getColumnIndex(android.provider.CalendarContract.Calendars.ACCOUNT_TYPE)
                 val nameIdx = cursor.getColumnIndex(android.provider.CalendarContract.Calendars.ACCOUNT_NAME)
                 val displayIdx = cursor.getColumnIndex(android.provider.CalendarContract.Calendars.CALENDAR_DISPLAY_NAME)
                 while (cursor.moveToNext()) {
                     val calId = cursor.getLong(idIdx)
-                    // val accountType = cursor.getString(typeIdx) ?: ""
                     val accountName = cursor.getString(nameIdx) ?: ""
                     val displayName = cursor.getString(displayIdx) ?: ""
                     
@@ -877,7 +865,7 @@ class AwidgetProvider : AppWidgetProvider() {
                 }
             }
             
-            if (visibleCalendarIds.isEmpty()) return
+            if (visibleCalendarIds.isEmpty()) return emptyList()
 
             val projection = arrayOf(
                 android.provider.CalendarContract.Instances.EVENT_ID,
@@ -894,14 +882,11 @@ class AwidgetProvider : AppWidgetProvider() {
                 .appendPath(endQuery.toString())
                 .build()
 
-                val idList = visibleCalendarIds.joinToString(",")
-                // Removed Instances.VISIBLE = 1 because some devices/ROMs crash if Instances table lacks this column.
-                // We are already filtering by CALENDAR_ID IN ($idList) which only contains visibly enabled calendars.
-                val selection = "${android.provider.CalendarContract.Instances.END} >= ? AND ${android.provider.CalendarContract.Instances.CALENDAR_ID} IN ($idList)"
-                val selectionArgs = arrayOf(now.toString())
+            val idList = visibleCalendarIds.joinToString(",")
+            val selection = "${android.provider.CalendarContract.Instances.END} >= ? AND ${android.provider.CalendarContract.Instances.CALENDAR_ID} IN ($idList)"
+            val selectionArgs = arrayOf(now.toString())
             val sortOrder = "${android.provider.CalendarContract.Instances.BEGIN} ASC"
 
-            data class EventInfo(val id: Long, val title: String, val begin: Long, val isLocal: Boolean)
             val events = mutableListOf<EventInfo>()
 
             context.contentResolver.query(uri, projection, selection, selectionArgs, sortOrder)?.use { cursor ->
@@ -919,8 +904,10 @@ class AwidgetProvider : AppWidgetProvider() {
                     events.add(EventInfo(eventId, title, begin, isLocal))
                 }
             }
+            return events
+        }
 
-            // java.time formatters
+        private fun bindCalendarEvents(context: Context, views: RemoteViews, events: List<EventInfo>, textSizeSp: Float, primaryColor: Int, secondaryColor: Int, eventViews: List<Int>) {
             val timeFormatter = DateTimeFormatter.ofPattern("h:mm a", Locale.getDefault())
             val dayFormatter = DateTimeFormatter.ofPattern("EEE", Locale.getDefault())
             val dateFormatter = DateTimeFormatter.ofPattern("d MMM h:mma", Locale.getDefault())
@@ -972,12 +959,31 @@ class AwidgetProvider : AppWidgetProvider() {
                         data = android.content.ContentUris.withAppendedId(android.provider.CalendarContract.Events.CONTENT_URI, event.id)
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
                     }
-                        val eventPendingIntent = PendingIntent.getActivity(context, event.id.toInt(), eventIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-                        views.setOnClickPendingIntent(eventViews[i], eventPendingIntent)
-                    } else {
-                        views.setViewVisibility(eventViews[i], android.view.View.GONE)
-                    }
+                    val eventPendingIntent = PendingIntent.getActivity(context, event.id.toInt(), eventIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+                    views.setOnClickPendingIntent(eventViews[i], eventPendingIntent)
+                } else {
+                    views.setViewVisibility(eventViews[i], android.view.View.GONE)
                 }
+            }
+        }
+
+        private fun loadCalendarEvents(context: Context, views: RemoteViews, textSizeSp: Float, primaryColor: Int, secondaryColor: Int) {
+            if (androidx.core.content.ContextCompat.checkSelfPermission(
+                    context, android.Manifest.permission.READ_CALENDAR
+                ) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                return
+            }
+
+            val eventViews = listOf(
+                R.id.text_event_1, R.id.text_event_2, R.id.text_event_3,
+                R.id.text_event_4, R.id.text_event_5, R.id.text_event_6,
+                R.id.text_event_7, R.id.text_event_8, R.id.text_event_9,
+                R.id.text_event_10
+            )
+
+            try {
+                val events = fetchCalendarEvents(context)
+                bindCalendarEvents(context, views, events, textSizeSp, primaryColor, secondaryColor, eventViews)
             } catch (e: Exception) {
                 // Log and gracefully handle crash
                 android.util.Log.e("LWidget", "Error loading calendar events", e)
@@ -987,7 +993,7 @@ class AwidgetProvider : AppWidgetProvider() {
             }
         }
 
-        private fun updateScreenTime(context: Context, views: RemoteViews) {
+        private fun updateScreenTime(context: Context, views: RemoteViews, prefs: android.content.SharedPreferences) {
             val now = System.currentTimeMillis()
             if (now - lastUsageStatsCheckTime > 60000) {
                 val appOps = context.getSystemService(Context.APP_OPS_SERVICE) as android.app.AppOpsManager
@@ -1028,7 +1034,6 @@ class AwidgetProvider : AppWidgetProvider() {
                 }
             }
             
-            val prefs = context.getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
             val isBold = prefs.getBoolean("bold_screen_time", false)
 
             if (totalForegroundTime > 0) {
@@ -1048,7 +1053,7 @@ class AwidgetProvider : AppWidgetProvider() {
             }
         }
 
-        private fun updateDataUsage(context: Context, views: RemoteViews) {
+        private fun updateDataUsage(context: Context, views: RemoteViews, prefs: android.content.SharedPreferences) {
             val networkStatsManager = context.getSystemService(Context.NETWORK_STATS_SERVICE) as NetworkStatsManager
             // Use java.time
             val startOfDay = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
@@ -1078,7 +1083,6 @@ class AwidgetProvider : AppWidgetProvider() {
                      span
                 }
 
-                val prefs = context.getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
                 if (prefs.getBoolean("bold_data_usage", false) && text is android.text.SpannableString) {
                     text.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, text.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
@@ -1095,6 +1099,61 @@ class AwidgetProvider : AppWidgetProvider() {
             }
         }
 
+        private data class TaskData(val title: String, val dueMillis: Long)
+
+        private fun fetchActiveTasks(context: Context, limit: Int): List<TaskData> {
+            val tasks = mutableListOf<TaskData>()
+            val taskUri = android.net.Uri.parse("content://org.tasks/tasks")
+            val selection = "completed=0 AND deleted=0"
+            try {
+                context.contentResolver.query(taskUri, null, selection, null, "dueDate ASC")?.use { cursor ->
+                    val titleIdx = cursor.getColumnIndex("title")
+                    val compIdx = cursor.getColumnIndex("completed")
+                    val delIdx = cursor.getColumnIndex("deleted")
+                    val dueIdx = cursor.getColumnIndex("dueDate")
+
+                    if (titleIdx == -1) return emptyList()
+
+                    while (cursor.moveToNext() && tasks.size < limit) {
+                        val completed = if (compIdx >= 0) cursor.getString(compIdx) else null
+                        val deleted = if (delIdx >= 0) cursor.getString(delIdx) else null
+                        val dueMillis = if (dueIdx >= 0) cursor.getLong(dueIdx) else 0L
+
+                        val isCompleted = completed != null && completed != "0"
+                        val isDeleted = deleted != null && deleted != "0"
+
+                        if (isCompleted || isDeleted) {
+                            continue
+                        }
+
+                        val title = cursor.getString(titleIdx) ?: "No Title"
+                        tasks.add(TaskData(title, dueMillis))
+                    }
+                }
+            } catch (e: Exception) {
+                // Return empty list on failure
+            }
+            return tasks
+        }
+
+        private fun formatDueSuffix(dueMillis: Long): String {
+            if (dueMillis <= 0) return ""
+            val dueDate = LocalDateTime.ofInstant(Instant.ofEpochMilli(dueMillis), ZoneId.systemDefault()).toLocalDate()
+            val today = LocalDate.now()
+            val tomorrow = today.plusDays(1)
+
+            return if (dueDate.isBefore(today)) {
+                " (Overdue)"
+            } else if (dueDate.isEqual(today)) {
+                " (Today)"
+            } else if (dueDate.isEqual(tomorrow)) {
+                " (Tomorrow)"
+            } else {
+                val df = DateTimeFormatter.ofPattern("MMM d", Locale.getDefault())
+                " (${dueDate.format(df)})"
+            }
+        }
+
         private fun loadTasks(context: Context, views: RemoteViews, textSizeSp: Float, primaryColor: Int) {
             val eventViews = listOf(
                 R.id.text_event_1, R.id.text_event_2, R.id.text_event_3,
@@ -1104,107 +1163,50 @@ class AwidgetProvider : AppWidgetProvider() {
             )
             
             // Debugging: Check permission again contextually
-            val hasPerm = context.checkSelfPermission("org.tasks.permission.READ_TASKS") == android.content.pm.PackageManager.PERMISSION_GRANTED ||
-                          context.checkSelfPermission("com.todoroo.astrid.READ") == android.content.pm.PackageManager.PERMISSION_GRANTED
+            val hasPerm = context.checkSelfPermission(PERMISSION_READ_TASKS_ORG) == android.content.pm.PackageManager.PERMISSION_GRANTED ||
+                          context.checkSelfPermission(PERMISSION_READ_TASKS_ASTRID) == android.content.pm.PackageManager.PERMISSION_GRANTED
             
             if (!hasPerm) {
                  views.setTextViewText(eventViews[0], "Missing Permission")
                  views.setViewVisibility(eventViews[0], android.view.View.VISIBLE)
+                 for (j in 1 until eventViews.size) {
+                     views.setViewVisibility(eventViews[j], android.view.View.GONE)
+                 }
                  return
             }
 
+            val tasks = fetchActiveTasks(context, eventViews.size)
 
-            val taskUri = android.net.Uri.parse("content://org.tasks/tasks")
-            // Selection appears to be ignored by provider, so we select all and filter manually
-            val selection = "completed=0 AND deleted=0"
-            
-            try {
-                context.contentResolver.query(taskUri, null, selection, null, "dueDate ASC")?.use { cursor ->
-                     val titleIdx = cursor.getColumnIndex("title")
-                     
-                     if (cursor.count == 0) {
-                         // views.setTextViewText(eventViews[0], "No active tasks found")
-                         // views.setViewVisibility(eventViews[0], android.view.View.VISIBLE)
-                         // views.setTextColor(eventViews[0], secondaryColor)
-                         // Just hide all
-                         for (viewId in eventViews) {
-                             views.setViewVisibility(viewId, android.view.View.GONE)
-                         }
-                         return
-                     }
-
-                     var i = 0
-                     while (cursor.moveToNext() && i < eventViews.size) {
-                         // Manual Filtering: Provider might ignore selection
-                         val compIdx = cursor.getColumnIndex("completed")
-                         val delIdx = cursor.getColumnIndex("deleted")
-                         val dueIdx = cursor.getColumnIndex("dueDate")
-                         val completed = if (compIdx >= 0) cursor.getString(compIdx) else null
-                         val deleted = if (delIdx >= 0) cursor.getString(delIdx) else null
-                         val dueMillis = if (dueIdx >= 0) cursor.getLong(dueIdx) else 0L
-                         
-                         val isCompleted = completed != null && completed != "0"
-                         val isDeleted = deleted != null && deleted != "0"
-                         
-                         if (isCompleted || isDeleted) {
-                             continue
-                         }
-
-                         if (titleIdx != -1) {
-                             val title = cursor.getString(titleIdx) ?: "No Title"
-                             
-                             var dueSuffix = ""
-                             if (dueMillis > 0) {
-                                  val dueDate = LocalDateTime.ofInstant(Instant.ofEpochMilli(dueMillis), ZoneId.systemDefault()).toLocalDate()
-                                  val today = LocalDate.now()
-                                  val tomorrow = today.plusDays(1)
-                                  
-                                  if (dueDate.isBefore(today)) {
-                                      dueSuffix = " (Overdue)"
-                                  } else if (dueDate.isEqual(today)) {
-                                      dueSuffix = " (Today)"
-                                  } else if (dueDate.isEqual(tomorrow)) {
-                                      dueSuffix = " (Tomorrow)"
-                                  } else {
-                                      val df = DateTimeFormatter.ofPattern("MMM d", Locale.getDefault())
-                                      dueSuffix = " (${dueDate.format(df)})"
-                                  }
-                             }
-                             
-                             val fullText = "• $title$dueSuffix"
-                             val spannable = SpannableString(fullText)
-                             val accentColor = context.getColor(R.color.widget_outline) 
-                             spannable.setSpan(ForegroundColorSpan(accentColor), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                             
-                             views.setTextViewText(eventViews[i], spannable)
-                             views.setTextColor(eventViews[i], primaryColor)
-                             views.setTextViewTextSize(eventViews[i], android.util.TypedValue.COMPLEX_UNIT_SP, textSizeSp)
-                             views.setViewVisibility(eventViews[i], android.view.View.VISIBLE)
-                             
-                             val taskIntent = context.packageManager.getLaunchIntentForPackage("org.tasks")
-                             if (taskIntent != null) {
-                                 val taskPendingIntent = PendingIntent.getActivity(context, 1000 + i, taskIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-                                 views.setOnClickPendingIntent(eventViews[i], taskPendingIntent)
-                             }
-                             i++
-                         }
-                     }
-                     
-                     for (j in i until eventViews.size) {
-                         views.setViewVisibility(eventViews[j], android.view.View.GONE)
-                     }
-                     return
-                }
-            } catch (e: Exception) {
-                // Fail silently or log
+            if (tasks.isEmpty()) {
                 for (viewId in eventViews) {
-                     views.setViewVisibility(viewId, android.view.View.GONE)
+                    views.setViewVisibility(viewId, android.view.View.GONE)
+                }
+                return
+            }
+
+            for (i in tasks.indices) {
+                val task = tasks[i]
+                val dueSuffix = formatDueSuffix(task.dueMillis)
+                val fullText = "• ${task.title}$dueSuffix"
+                val spannable = SpannableString(fullText)
+                val accentColor = context.getColor(R.color.widget_outline)
+                spannable.setSpan(ForegroundColorSpan(accentColor), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+                views.setTextViewText(eventViews[i], spannable)
+                views.setTextColor(eventViews[i], primaryColor)
+                views.setTextViewTextSize(eventViews[i], android.util.TypedValue.COMPLEX_UNIT_SP, textSizeSp)
+                views.setViewVisibility(eventViews[i], android.view.View.VISIBLE)
+
+                val taskIntent = context.packageManager.getLaunchIntentForPackage("org.tasks")
+                if (taskIntent != null) {
+                    val taskPendingIntent = PendingIntent.getActivity(context, 1000 + i, taskIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+                    views.setOnClickPendingIntent(eventViews[i], taskPendingIntent)
                 }
             }
-            
-            // If we reached here (query null?), show generic message
-            // views.setTextViewText(eventViews[0], "Query Failed")
-            // views.setViewVisibility(eventViews[0], android.view.View.VISIBLE)
+
+            for (j in tasks.size until eventViews.size) {
+                views.setViewVisibility(eventViews[j], android.view.View.GONE)
+            }
         }
 
         private fun loadWorldClock(views: RemoteViews, textSizeSp: Float, textColor: Int, zoneIdStr: String, is12Hour: Boolean) {
@@ -1247,7 +1249,7 @@ class AwidgetProvider : AppWidgetProvider() {
             }
         }
 
-        private fun updateStorageStats(context: Context, views: RemoteViews) {
+        private fun updateStorageStats(context: Context, views: RemoteViews, prefs: android.content.SharedPreferences) {
              try {
                  val path = android.os.Environment.getDataDirectory()
                  val stat = android.os.StatFs(path.path)
@@ -1259,7 +1261,6 @@ class AwidgetProvider : AppWidgetProvider() {
                  val span = android.text.SpannableString("$gbStr GB")
                  span.setSpan(android.text.style.RelativeSizeSpan(0.5f), gbStr.length, gbStr.length + 3, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE) // GB
 
-                 val prefs = context.getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
                  if (prefs.getBoolean("bold_storage", false)) {
                      span.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, span.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                  }
@@ -1270,9 +1271,8 @@ class AwidgetProvider : AppWidgetProvider() {
              }
         }
 
-        private fun loadStepCount(context: Context, views: RemoteViews) {
+        private fun loadStepCount(context: Context, views: RemoteViews, prefs: android.content.SharedPreferences) {
             try {
-                val prefs = context.getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
                 val totalSteps = prefs.getFloat("last_total_steps", 0f)
                 val baselineSteps = prefs.getFloat("step_baseline", 0f)
 
