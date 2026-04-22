@@ -1285,12 +1285,9 @@ class AwidgetProvider : AppWidgetProvider() {
         private fun getBestIntent(context: Context, packages: List<String>, fallback: Intent): Intent {
             val pm = context.packageManager
             for (pkg in packages) {
-                try {
-                    val intent = pm.getLaunchIntentForPackage(pkg)
-                    if (intent != null) {
-                        return intent
-                    }
-                } catch (e: Exception) {
+                val intent = pm.getLaunchIntentForPackage(pkg)
+                if (intent != null) {
+                    return intent
                 }
             }
             return fallback
