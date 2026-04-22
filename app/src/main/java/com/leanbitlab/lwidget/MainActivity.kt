@@ -739,8 +739,25 @@ class MainActivity : AppCompatActivity() {
         val timeFormatOptions = listOf(getString(R.string.format_12h), getString(R.string.format_24h))
         val colorOptions = listOf(getString(R.string.color_default), getString(R.string.color_system_accent), getString(R.string.color_custom))
 
+        setupTimeSection(timeFormatOptions)
+        setupNextAlarmSection()
+        setupWorldClockSection(zoneIds)
+        setupDateSection(dateFormatOptions)
+        setupBatterySection()
+        setupTempSection()
+        setupWeatherSection()
+        setupDataUsageSection()
+        setupStorageSection()
+        setupStepsSection()
+        setupScreenTimeSection()
+        setupKeepAliveSection()
+        setupEventsAndTasksSections()
+        setupThemeSection(colorOptions)
+    }
+
+    private fun setupTimeSection(timeFormatOptions: List<String>) {
         // Time
-        val timeSwitch = bindFoldedSection(
+        bindFoldedSection(
             R.id.header_time, R.drawable.ic_time, getString(R.string.section_time),
             R.id.content_time, R.id.row_time_toggle,
             "show_time", true,
@@ -748,7 +765,8 @@ class MainActivity : AppCompatActivity() {
             selectorRowId = R.id.row_time_format, selectorOptions = timeFormatOptions, prefSelectorKey = "time_format_idx", defSelectorIdx = 0,
             isContent = true
         )
-
+    }
+    private fun setupNextAlarmSection() {
         // Next Alarm
         bindFoldedSection(
             R.id.header_next_alarm, R.drawable.ic_alarm, getString(R.string.section_next_alarm),
@@ -757,9 +775,10 @@ class MainActivity : AppCompatActivity() {
             sizeRowId = R.id.row_next_alarm_size, prefSizeKey = "size_next_alarm", defSize = 14f, minSize = 10f, maxSize = 24f,
             isContent = true
         )
-
+    }
+    private fun setupWorldClockSection(zoneIds: List<String>) {
         // World Clock
-        val worldClockSwitch = bindFoldedSection(
+        bindFoldedSection(
             R.id.header_world_clock, R.drawable.ic_world, getString(R.string.section_world_clock),
             R.id.content_world_clock, R.id.row_world_clock_toggle,
             "show_world_clock", false,
@@ -767,7 +786,8 @@ class MainActivity : AppCompatActivity() {
             isContent = true
         )
         bindTimezoneSearch(R.id.row_world_clock_zone, zoneIds, "world_clock_zone_str", "UTC")
-
+    }
+    private fun setupDateSection(dateFormatOptions: List<String>) {
         // Date
         bindFoldedSection(
             R.id.header_date, R.drawable.ic_date, getString(R.string.section_date),
@@ -777,9 +797,10 @@ class MainActivity : AppCompatActivity() {
             selectorRowId = R.id.row_date_format, selectorOptions = dateFormatOptions, prefSelectorKey = "date_format_idx", defSelectorIdx = 0,
             isContent = true
         )
-        
+    }
+    private fun setupBatterySection() {
         // Battery
-        val batterySwitch = bindFoldedSection(
+        bindFoldedSection(
             R.id.header_battery, R.drawable.ic_battery, getString(R.string.section_battery),
             R.id.content_battery, R.id.row_battery_toggle,
             "show_battery", true,
@@ -787,7 +808,8 @@ class MainActivity : AppCompatActivity() {
             isContent = true
         ).also { it.tag = "battery" }
         bindToggle(R.id.row_battery_bold, "Bold Text", "bold_battery", false)
-
+    }
+    private fun setupTempSection() {
         // Temp
         bindFoldedSection(
             R.id.header_temp, R.drawable.ic_temp, getString(R.string.section_temp),
@@ -797,7 +819,8 @@ class MainActivity : AppCompatActivity() {
             isContent = true
         ).also { it.tag = "temp" }
         bindToggle(R.id.row_temp_bold, "Bold Text", "bold_temp", false)
-
+    }
+    private fun setupWeatherSection() {
         // Weather
         val weatherSwitch = bindFoldedSection(
             R.id.header_weather, R.drawable.ic_weather, getString(R.string.section_weather_condition),
@@ -853,7 +876,8 @@ class MainActivity : AppCompatActivity() {
                     .show()
             }
         }
-
+    }
+    private fun setupDataUsageSection() {
         // Data Usage
         val dataSwitch = bindFoldedSection(
             R.id.header_data, R.drawable.ic_data, getString(R.string.section_data_usage),
@@ -889,7 +913,8 @@ class MainActivity : AppCompatActivity() {
             updateToggleAvailability()
             checkAllPermissions()
         }
-
+    }
+    private fun setupStorageSection() {
         // Storage
         bindFoldedSection(
             R.id.header_storage, R.drawable.ic_storage, getString(R.string.section_storage),
@@ -899,7 +924,8 @@ class MainActivity : AppCompatActivity() {
             isContent = true
         ).also { it.tag = "storage" }
         bindToggle(R.id.row_storage_bold, "Bold Text", "bold_storage", false)
-
+    }
+    private fun setupStepsSection() {
         // Steps
         val stepsSwitch = bindFoldedSection(
             R.id.header_steps, R.drawable.ic_steps, getString(R.string.section_steps),
@@ -953,7 +979,8 @@ class MainActivity : AppCompatActivity() {
             updateToggleAvailability()
             checkAllPermissions()
         }
-
+    }
+    private fun setupScreenTimeSection() {
         // Screen Time
         val screenTimeSwitch = bindFoldedSection(
             R.id.header_screen_time, R.drawable.ic_time, getString(R.string.section_screen_time),
@@ -989,7 +1016,8 @@ class MainActivity : AppCompatActivity() {
             updateToggleAvailability()
             checkAllPermissions()
         }
-
+    }
+    private fun setupKeepAliveSection() {
         // Keep Alive
         val keepAliveSwitch = bindFoldedSection(
             R.id.header_keep_alive, R.drawable.ic_alarm, getString(R.string.section_keep_alive),
@@ -1022,7 +1050,8 @@ class MainActivity : AppCompatActivity() {
             else { stopService(serviceIntent) }
             updateWidget()
         }
-
+    }
+    private fun setupEventsAndTasksSections() {
         // Events
         val eventsSwitch = bindFoldedSection(
             R.id.header_events, R.drawable.ic_events, getString(R.string.section_events),
@@ -1065,7 +1094,6 @@ class MainActivity : AppCompatActivity() {
                 checkAllPermissions()
             }
         }
-
         tasksSwitch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 if (!isAppInstalled("org.tasks")) {
@@ -1102,7 +1130,8 @@ class MainActivity : AppCompatActivity() {
                 checkAllPermissions()
             }
         }
-
+    }
+    private fun setupThemeSection(colorOptions: List<String>) {
         // ===== THEME =====
         // Use bindFoldedSection for the main card (top-level accordion), not bindNestedCard
         accordionViews["section_appearance_expanded"] = findViewById(R.id.content_appearance)
