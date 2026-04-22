@@ -75,7 +75,7 @@ class AwidgetProvider : AppWidgetProvider() {
 
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
-        
+
         val appWidgetManager = AppWidgetManager.getInstance(context)
         val thisAppWidget = ComponentName(context, AwidgetProvider::class.java)
         val appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidget)
@@ -100,7 +100,7 @@ class AwidgetProvider : AppWidgetProvider() {
                             appWidgetIds.forEach { updateAppWidget(context, appWidgetManager, it, UpdateMode.TICK) }
                         }
                         StepCounterService.ACTION_STEP_UPDATE -> {
-                            // Step event updates match Tick mode conceptually 
+                            // Step event updates match Tick mode conceptually
                             appWidgetIds.forEach { updateAppWidget(context, appWidgetManager, it, UpdateMode.TICK) }
                         }
                         android.app.AlarmManager.ACTION_NEXT_ALARM_CLOCK_CHANGED -> {
@@ -137,10 +137,10 @@ class AwidgetProvider : AppWidgetProvider() {
             intent,
             android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE
         )
-        
+
         // 1 minute
         val intervalMillis = 1L * 60L * 1000L
-        
+
         alarmManager.setInexactRepeating(
             android.app.AlarmManager.RTC,
             System.currentTimeMillis() + intervalMillis,
@@ -175,22 +175,22 @@ class AwidgetProvider : AppWidgetProvider() {
             // --- Load Preferences ---
             val showTime = prefs.getBoolean("show_time", true)
             val sizeTime = prefs.getFloat("size_time", 64f)
-            
+
             val showDate = prefs.getBoolean("show_date", true)
             val sizeDate = prefs.getFloat("size_date", 14f)
-            
+
             val showBattery = prefs.getBoolean("show_battery", true)
             val sizeBattery = prefs.getFloat("size_battery", 24f)
             val boldBattery = prefs.getBoolean("bold_battery", false)
-            
+
             val showTemp = prefs.getBoolean("show_temp", true)
             val sizeTemp = prefs.getFloat("size_temp", 18f)
             val boldTemp = prefs.getBoolean("bold_temp", false)
-            
+
             val showWeatherCondition = prefs.getBoolean("show_weather_condition", false)
             val sizeWeather = prefs.getFloat("size_weather", 18f)
             val boldWeather = prefs.getBoolean("bold_weather", false)
-            
+
             var showEvents = prefs.getBoolean("show_events", true)
             if (showEvents && androidx.core.content.ContextCompat.checkSelfPermission(context, android.Manifest.permission.READ_CALENDAR) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
                 showEvents = false
@@ -199,13 +199,13 @@ class AwidgetProvider : AppWidgetProvider() {
 
             // Fetch Breezy Weather Data
             val bweather = com.leanbitlab.lwidget.weather.BreezyWeatherFetcher.fetchLocalWeather(context)
-            val showWeatherIconOnly = prefs.getBoolean("show_weather_icon_only", false) 
-            
+            val showWeatherIconOnly = prefs.getBoolean("show_weather_icon_only", false)
+
             android.util.Log.d("WidgetLife", "UpdateMode FULL | Condition: $showWeatherCondition | IconOnly: $showWeatherIconOnly | WeatherData: ${bweather?.currentCondition}")
 
             val useSystemTheme = prefs.getBoolean("use_system_theme", false)
             val useDynamicColors = prefs.getBoolean("use_dynamic_colors", true)
-            
+
             // Determine if light theme based on system or manual override
             val useLightTheme = if (useSystemTheme) {
                 val nightMode = context.resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK
@@ -213,10 +213,10 @@ class AwidgetProvider : AppWidgetProvider() {
             } else {
                 false // Default to dark when system theme is off
             }
-            
+
             val timeFormatIdx = prefs.getInt("time_format_idx", 0)
             val dateFormatIdx = prefs.getInt("date_format_idx", 0)
-            
+
             var showData = prefs.getBoolean("show_data_usage", false)
             if (showData) {
                 val appOps = context.getSystemService(Context.APP_OPS_SERVICE) as android.app.AppOpsManager
@@ -229,7 +229,7 @@ class AwidgetProvider : AppWidgetProvider() {
                 if (opMode != android.app.AppOpsManager.MODE_ALLOWED) showData = false
             }
             val sizeData = prefs.getFloat("size_data", 14f)
-            
+
             val showWorldClock = prefs.getBoolean("show_world_clock", false)
             val sizeWorldClock = prefs.getFloat("size_world_clock", 18f)
             val worldClockZoneStr = prefs.getString("world_clock_zone_str", "UTC") ?: "UTC"
@@ -269,7 +269,7 @@ class AwidgetProvider : AppWidgetProvider() {
 
 
             val fontStyle = prefs.getInt("font_style", 0)
-            
+
             val bgOpacity = prefs.getFloat("bg_opacity", 100f)
             val textColorPrimaryIdx = prefs.getInt("text_color_primary_idx", 0)
             val textColorSecondaryIdx = prefs.getInt("text_color_secondary_idx", 0)
@@ -298,7 +298,7 @@ class AwidgetProvider : AppWidgetProvider() {
 
             // --- Background & Outline Application ---
             val outlineColorIdx = prefs.getInt("outline_color_idx", 0)
-             
+
             // Background
             views.setImageViewResource(R.id.widget_background, R.drawable.widget_bg_fill)
 
@@ -326,7 +326,7 @@ class AwidgetProvider : AppWidgetProvider() {
             } else {
                 views.setInt(R.id.widget_background, "setColorFilter", resolveBgColor(bgColorIdx, useLightTheme))
             }
-            
+
             val alpha255 = (bgOpacity * 255 / 100).toInt().coerceIn(0, 255)
             views.setInt(R.id.widget_background, "setImageAlpha", alpha255)
 
@@ -349,7 +349,7 @@ class AwidgetProvider : AppWidgetProvider() {
                      else -> context.getColor(R.color.widget_outline)
                  }
             }
-            
+
             val showOutline = prefs.getBoolean("show_outline", true)
             val outlineColor = resolveOutlineColor(outlineColorIdx)
             views.setImageViewResource(R.id.widget_outline, R.drawable.widget_bg_outline)
@@ -372,34 +372,16 @@ class AwidgetProvider : AppWidgetProvider() {
                     isLight = isLight
                 )
             }
-            
+
             val primaryColor = resolveColor(textColorPrimaryIdx, true, useLightTheme)
             val secondaryColor = resolveColor(textColorSecondaryIdx, false, useLightTheme)
-
-            val dateColorIdx = prefs.getInt("date_color_idx", 0)
 
             // Slightly distinct colors for date and next alarm
             val dateColor = if (useDynamicColors && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
                 // Warm accent for date
                 context.getColor(if (useLightTheme) android.R.color.system_accent2_700 else android.R.color.system_accent2_100)
             } else {
-                when (dateColorIdx) {
-                    2 -> {
-                        android.graphics.Color.rgb(
-                            prefs.getInt("date_color_r", 255),
-                            prefs.getInt("date_color_g", 255),
-                            prefs.getInt("date_color_b", 255)
-                        )
-                    }
-                    1 -> {
-                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-                            context.getColor(android.R.color.system_accent2_500)
-                        } else {
-                            android.graphics.Color.YELLOW
-                        }
-                    }
-                    else -> if (useLightTheme) android.graphics.Color.parseColor("#AA555544") else android.graphics.Color.parseColor("#BBDDDDCC")
-                }
+                if (useLightTheme) android.graphics.Color.parseColor("#AA555544") else android.graphics.Color.parseColor("#BBDDDDCC")
             }
             val alarmColor = if (useDynamicColors && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
                 // Cool tertiary accent for alarm
@@ -467,11 +449,11 @@ class AwidgetProvider : AppWidgetProvider() {
             // --- Apply Time ---
             val timeVisible = showTime || showWorldClock
             views.setViewVisibility(R.id.time_container, if (timeVisible) android.view.View.VISIBLE else android.view.View.GONE)
-            
+
             views.setViewVisibility(R.id.clock_time, if (showTime) android.view.View.VISIBLE else android.view.View.GONE)
             views.setTextViewTextSize(R.id.clock_time, android.util.TypedValue.COMPLEX_UNIT_SP, sizeTime)
             views.setTextColor(R.id.clock_time, primaryColor)
-            
+
             val (timeFormat12, timeFormat24) = when(timeFormatIdx) {
                 0 -> "h:mm" to "H:mm"
                 1 -> "H:mm" to "H:mm"
@@ -493,7 +475,7 @@ class AwidgetProvider : AppWidgetProvider() {
             views.setViewVisibility(R.id.clock_date, if (showDate) android.view.View.VISIBLE else android.view.View.GONE)
             views.setTextViewTextSize(R.id.clock_date, android.util.TypedValue.COMPLEX_UNIT_SP, sizeDate)
             views.setTextColor(R.id.clock_date, dateColor)
-            
+
             val (dateFormat12, dateFormat24) = when(dateFormatIdx) {
                 0 -> "EEEE, MMMM dd" to "EEEE, MMMM dd"
                 1 -> "EEE, MMM dd" to "EEE, MMM dd"
@@ -506,7 +488,7 @@ class AwidgetProvider : AppWidgetProvider() {
             // --- Apply Battery & Temp ---
             views.setViewVisibility(R.id.text_battery, if (showBattery) android.view.View.VISIBLE else android.view.View.GONE)
             views.setTextViewTextSize(R.id.text_battery, android.util.TypedValue.COMPLEX_UNIT_SP, sizeBattery)
-            
+
             views.setViewVisibility(R.id.text_temp, if (showTemp) android.view.View.VISIBLE else android.view.View.GONE)
             views.setTextViewTextSize(R.id.text_temp, android.util.TypedValue.COMPLEX_UNIT_SP, sizeTemp)
             views.setTextColor(R.id.text_battery, secondaryColor)
@@ -515,11 +497,11 @@ class AwidgetProvider : AppWidgetProvider() {
             val batteryStatus: Intent? = IntentFilter(Intent.ACTION_BATTERY_CHANGED).let { ifilter ->
                 context.registerReceiver(null, ifilter)
             }
-            
+
             val level = batteryStatus?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) ?: 0
             val scale = batteryStatus?.getIntExtra(BatteryManager.EXTRA_SCALE, -1) ?: 100
             val batteryPct = (level * 100 / scale.toFloat()).toInt()
-            
+
             val tempInt = batteryStatus?.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0) ?: 0
             val tempVal = tempInt / 10f
 
@@ -540,7 +522,7 @@ class AwidgetProvider : AppWidgetProvider() {
                 if (boldTemp) tempSpan.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, tempSpan.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 views.setTextViewText(R.id.text_temp, tempSpan)
             }
-            
+
             // --- Weather Condition ---
             val showWeather = showWeatherCondition && bweather != null
             views.setViewVisibility(R.id.text_weather_condition, if (showWeather) android.view.View.VISIBLE else android.view.View.GONE)
@@ -548,7 +530,7 @@ class AwidgetProvider : AppWidgetProvider() {
                 var weatherCode = bweather.currentConditionCode
                 var weatherText = bweather.currentCondition
                 var hasWarning = false
-                
+
                 // Check week forecasts for warnings
                 val forecasts = bweather.forecasts
                 if (forecasts != null && forecasts.isNotEmpty()) {
@@ -561,7 +543,7 @@ class AwidgetProvider : AppWidgetProvider() {
                         )) {
                             hasWarning = true
                             weatherCode = fCode
-                            
+
                             // Determine string representation of the day
                             val dayText = when (index) {
                                 0 -> "today"
@@ -571,7 +553,7 @@ class AwidgetProvider : AppWidgetProvider() {
                                     localDate.dayOfWeek.getDisplayName(java.time.format.TextStyle.SHORT, java.util.Locale.getDefault())
                                 }
                             }
-                            
+
                             // Extract probability and create warning string
                             val precipString = if (forecast.precipProbability != null && forecast.precipProbability > 0) "${forecast.precipProbability}% " else ""
                             val conditionWarning = when (fCode) {
@@ -581,11 +563,11 @@ class AwidgetProvider : AppWidgetProvider() {
                                 else -> "Warning"
                             }
                             weatherText = "$precipString$conditionWarning"
-                            break 
+                            break
                         }
                     }
                 }
-                
+
                 var conditionText = weatherText
                 if (conditionText.isNullOrEmpty()) {
                     conditionText = "Unknown"
@@ -602,20 +584,20 @@ class AwidgetProvider : AppWidgetProvider() {
                     741 -> "🌫️" // Fog
                     751 -> "🌁" // Haze
                     210, 211, 212, 221, 230, 231, 232 -> "⛈️" // Thunderstorm
-                    else -> "" 
+                    else -> ""
                 }
-                
+
                 val displayString = if (showWeatherIconOnly && !hasWarning) weatherIcon else "$conditionText $weatherIcon"
-                
+
                 // If it has warning format like "Rain on Sun 🌧️", make " on Sun 🌧️" smaller
                 if (hasWarning) {
                     val fullMatch = weatherText ?: "Unknown"
                     val span = android.text.SpannableString(displayString.trim())
-                    
+
                     // The day portion is the last word for today/tomorrow, or the last two words for "on Sun"
                     val lastSpaceIdx = fullMatch.lastIndexOf(' ')
                     val onSpaceIdx = fullMatch.lastIndexOf(" on ")
-                    
+
                     val shrinkStartIndex = if (onSpaceIdx != -1) onSpaceIdx else lastSpaceIdx
                     if (shrinkStartIndex != -1 && shrinkStartIndex < span.length) {
                         span.setSpan(android.text.style.RelativeSizeSpan(0.75f), shrinkStartIndex, span.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -631,11 +613,11 @@ class AwidgetProvider : AppWidgetProvider() {
                 }
                 views.setTextViewTextSize(R.id.text_weather_condition, android.util.TypedValue.COMPLEX_UNIT_SP, sizeWeather)
                 views.setTextColor(R.id.text_weather_condition, secondaryColor)
-                
+
                 val launchIntent = context.packageManager.getLaunchIntentForPackage("org.breezyweather")
                 if (launchIntent != null) {
                     val pendingIntent = android.app.PendingIntent.getActivity(
-                        context, 0, launchIntent, 
+                        context, 0, launchIntent,
                         android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE
                     )
                     views.setOnClickPendingIntent(R.id.text_weather_condition, pendingIntent)
@@ -665,7 +647,7 @@ class AwidgetProvider : AppWidgetProvider() {
                 views.setTextColor(R.id.text_steps, secondaryColor)
                 loadStepCount(context, views, prefs)
             }
-            
+
             // --- Screen Time ---
             val showScreenTime = prefs.getBoolean("show_screen_time", false)
             val sizeScreenTime = prefs.getFloat("size_screen_time", 14f)
@@ -675,7 +657,7 @@ class AwidgetProvider : AppWidgetProvider() {
                 views.setTextColor(R.id.text_screen_time, secondaryColor)
                 updateScreenTime(context, views, prefs)
             }
-            
+
             // --- Dynamic Spacing Logic for Both Sides ---
             fun dpToPx(dp: Float): Int {
                 return (dp * context.resources.displayMetrics.density).toInt()
@@ -701,7 +683,7 @@ class AwidgetProvider : AppWidgetProvider() {
                 views.setViewPadding(R.id.time_container, 0, 0, 0, 0)
                 views.setViewPadding(R.id.date_container, 0, 0, 0, 0)
             }
-            
+
             // Events container: add spacing gap below date/time if they exist
             val eventsVisible = showEvents || showTasks
             val leftHasContent = (showTime || showWorldClock || showDate || showNextAlarm)
@@ -758,8 +740,8 @@ class AwidgetProvider : AppWidgetProvider() {
             views.setOnClickPendingIntent(R.id.clock_time, alarmPendingIntent)
 
             val calendarPackages = listOf("org.fossify.calendar", "com.simplemobiletools.calendar", "com.google.android.calendar", "com.android.calendar")
-            val baseCalIntent = Intent(Intent.ACTION_VIEW).apply { 
-                data = android.net.Uri.parse("content://com.android.calendar/time") 
+            val baseCalIntent = Intent(Intent.ACTION_VIEW).apply {
+                data = android.net.Uri.parse("content://com.android.calendar/time")
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
             }
             val calendarIntent = getBestIntent(context, calendarPackages, baseCalIntent)
@@ -770,7 +752,7 @@ class AwidgetProvider : AppWidgetProvider() {
             val batteryPendingIntent = PendingIntent.getActivity(context, 2, batteryIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
             views.setOnClickPendingIntent(R.id.text_battery, batteryPendingIntent)
             views.setOnClickPendingIntent(R.id.text_temp, batteryPendingIntent)
-            
+
             val storageIntent = Intent(android.provider.Settings.ACTION_INTERNAL_STORAGE_SETTINGS)
             val storagePendingIntent = PendingIntent.getActivity(context, 3, storageIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
             views.setOnClickPendingIntent(R.id.text_storage, storagePendingIntent)
@@ -781,7 +763,7 @@ class AwidgetProvider : AppWidgetProvider() {
 
             // --- Calendar Events OR Tasks ---
             views.setViewVisibility(R.id.events_container, if (showEvents || showTasks) android.view.View.VISIBLE else android.view.View.GONE)
-            
+
             if (showEvents) {
                 loadCalendarEvents(context, views, sizeEvents, primaryColor, secondaryColor)
             } else if (showTasks) {
@@ -832,7 +814,7 @@ class AwidgetProvider : AppWidgetProvider() {
             context.contentResolver.query(
                 android.provider.CalendarContract.Calendars.CONTENT_URI,
                 arrayOf(
-                    android.provider.CalendarContract.Calendars._ID, 
+                    android.provider.CalendarContract.Calendars._ID,
                     android.provider.CalendarContract.Calendars.ACCOUNT_TYPE,
                     android.provider.CalendarContract.Calendars.ACCOUNT_NAME,
                     android.provider.CalendarContract.Calendars.CALENDAR_DISPLAY_NAME
@@ -846,7 +828,7 @@ class AwidgetProvider : AppWidgetProvider() {
                     val calId = cursor.getLong(idIdx)
                     val accountName = cursor.getString(nameIdx) ?: ""
                     val displayName = cursor.getString(displayIdx) ?: ""
-                    
+
                     visibleCalendarIds.add(calId)
 
                     if (displayName.contains("holiday", ignoreCase = true) ||
@@ -855,7 +837,7 @@ class AwidgetProvider : AppWidgetProvider() {
                     }
                 }
             }
-            
+
             if (visibleCalendarIds.isEmpty()) return emptyList()
 
             val projection = arrayOf(
@@ -866,7 +848,7 @@ class AwidgetProvider : AppWidgetProvider() {
             )
 
             val now = System.currentTimeMillis()
-            val endQuery = now + android.text.format.DateUtils.DAY_IN_MILLIS * 30 
+            val endQuery = now + android.text.format.DateUtils.DAY_IN_MILLIS * 30
 
             val uri = android.provider.CalendarContract.Instances.CONTENT_URI.buildUpon()
                 .appendPath(now.toString())
@@ -908,7 +890,7 @@ class AwidgetProvider : AppWidgetProvider() {
                 views.setTextColor(eventViews[0], secondaryColor)
                 views.setTextViewTextSize(eventViews[0], android.util.TypedValue.COMPLEX_UNIT_SP, textSizeSp)
                 views.setViewVisibility(eventViews[0], android.view.View.VISIBLE)
-                
+
                 val emptyIntent = PendingIntent.getActivity(context, 0, Intent(), PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
                 views.setOnClickPendingIntent(eventViews[0], emptyIntent)
 
@@ -925,7 +907,7 @@ class AwidgetProvider : AppWidgetProvider() {
                     val today = LocalDate.now()
                     val tomorrow = today.plusDays(1)
                     val oneWeekLater = today.plusWeeks(1)
-                    
+
                     val timeText = if (eventTime.toLocalDate().isEqual(today)) {
                         "Today ${eventTime.format(timeFormatter)}"
                     } else if (eventTime.toLocalDate().isEqual(tomorrow)) {
@@ -935,17 +917,17 @@ class AwidgetProvider : AppWidgetProvider() {
                     } else {
                         eventTime.format(dateFormatter)
                     }
-                    
+
                     val fullText = "• $timeText  ${event.title}"
                     val spannable = SpannableString(fullText)
-                    val accentColor = context.getColor(R.color.widget_outline) 
+                    val accentColor = context.getColor(R.color.widget_outline)
                     spannable.setSpan(ForegroundColorSpan(accentColor), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    
+
                     views.setTextViewText(eventViews[i], spannable)
                     views.setTextColor(eventViews[i], if (event.isLocal) primaryColor else secondaryColor)
                     views.setTextViewTextSize(eventViews[i], android.util.TypedValue.COMPLEX_UNIT_SP, textSizeSp)
                     views.setViewVisibility(eventViews[i], android.view.View.VISIBLE)
-                    
+
                     val eventIntent = Intent(Intent.ACTION_VIEW).apply {
                         data = android.content.ContentUris.withAppendedId(android.provider.CalendarContract.Events.CONTENT_URI, event.id)
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -997,18 +979,18 @@ class AwidgetProvider : AppWidgetProvider() {
             }
 
             val usageStatsManager = context.getSystemService(Context.USAGE_STATS_SERVICE) as android.app.usage.UsageStatsManager
-            
+
             val calendar = java.util.Calendar.getInstance()
             calendar.set(java.util.Calendar.HOUR_OF_DAY, 0)
             calendar.set(java.util.Calendar.MINUTE, 0)
             calendar.set(java.util.Calendar.SECOND, 0)
             calendar.set(java.util.Calendar.MILLISECOND, 0)
-            
+
             val startTime = calendar.timeInMillis
             val endTime = System.currentTimeMillis()
-            
+
             val stats = usageStatsManager.queryUsageStats(android.app.usage.UsageStatsManager.INTERVAL_DAILY, startTime, endTime)
-            
+
             var totalForegroundTime = 0L
             if (stats != null) {
                 for (usage in stats) {
@@ -1018,7 +1000,7 @@ class AwidgetProvider : AppWidgetProvider() {
                     }
                 }
             }
-            
+
             val isBold = prefs.getBoolean("bold_screen_time", false)
 
             if (totalForegroundTime > 0) {
@@ -1051,11 +1033,11 @@ class AwidgetProvider : AppWidgetProvider() {
                     startOfDay,
                     endTime
                 )
-                
+
                 val bytes = bucket.rxBytes + bucket.txBytes
                 val mb = bytes / (1024f * 1024f)
                 val gb = mb / 1024f
-                
+
                 val text: CharSequence = if (gb >= 1.0f) {
                      val gbStr = String.format("%.2f", gb)
                      val span = android.text.SpannableString("$gbStr GB")
@@ -1073,7 +1055,7 @@ class AwidgetProvider : AppWidgetProvider() {
                 }
 
                 views.setTextViewText(R.id.text_data_usage, text)
-                
+
             } catch (e: SecurityException) {
                 val res = context.resources
                 // Assuming R.string.no_perm exists (we created strings.xml)
@@ -1146,11 +1128,11 @@ class AwidgetProvider : AppWidgetProvider() {
                 R.id.text_event_7, R.id.text_event_8, R.id.text_event_9,
                 R.id.text_event_10
             )
-            
+
             // Debugging: Check permission again contextually
             val hasPerm = context.checkSelfPermission(PERMISSION_READ_TASKS_ORG) == android.content.pm.PackageManager.PERMISSION_GRANTED ||
                           context.checkSelfPermission(PERMISSION_READ_TASKS_ASTRID) == android.content.pm.PackageManager.PERMISSION_GRANTED
-            
+
             if (!hasPerm) {
                  views.setTextViewText(eventViews[0], "Missing Permission")
                  views.setViewVisibility(eventViews[0], android.view.View.VISIBLE)
@@ -1217,12 +1199,12 @@ class AwidgetProvider : AppWidgetProvider() {
         private fun loadNextAlarm(context: Context, views: RemoteViews, textSizeSp: Float, textColor: Int) {
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             val nextAlarm = alarmManager.nextAlarmClock
-            
+
             if (nextAlarm != null) {
                 val nextAlarmTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(nextAlarm.triggerTime), ZoneId.systemDefault())
                 val timeFormatter = DateTimeFormatter.ofPattern("h:mm a", Locale.getDefault())
                 val timeText = nextAlarmTime.format(timeFormatter)
-                
+
                 // Format: "| ⏰ 7:00 AM"
                 val fullText = "| ⏰ $timeText"
                 views.setTextViewText(R.id.text_next_alarm, fullText)
@@ -1239,9 +1221,9 @@ class AwidgetProvider : AppWidgetProvider() {
                  val path = android.os.Environment.getDataDirectory()
                  val stat = android.os.StatFs(path.path)
                  val freeBytes = stat.availableBlocksLong * stat.blockSizeLong
-                 
+
                  val gb = freeBytes / (1024f * 1024f * 1024f)
-                 
+
                  val gbStr = String.format("%.0f", gb)
                  val span = android.text.SpannableString("$gbStr GB")
                  span.setSpan(android.text.style.RelativeSizeSpan(0.5f), gbStr.length, gbStr.length + 3, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE) // GB
@@ -1264,7 +1246,7 @@ class AwidgetProvider : AppWidgetProvider() {
                 val dailySteps = (totalSteps - baselineSteps).toInt().coerceAtLeast(0)
                 val span = android.text.SpannableString("$dailySteps \uD83D\uDC5F") // 👟 outline sneaker
                 span.setSpan(android.text.style.RelativeSizeSpan(0.75f), span.length - 2, span.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                
+
                 if (prefs.getBoolean("bold_steps", false)) {
                     span.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, span.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
