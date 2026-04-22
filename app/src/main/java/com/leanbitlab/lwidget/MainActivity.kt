@@ -193,7 +193,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Check Tasks
-        if (prefs.getBoolean("show_tasks", false) && ContextCompat.checkSelfPermission(this, "org.tasks.permission.READ_TASKS") != PackageManager.PERMISSION_GRANTED) {
+        if (prefs.getBoolean("show_tasks", false) && ContextCompat.checkSelfPermission(this, AwidgetProvider.PERMISSION_READ_TASKS_ORG) != PackageManager.PERMISSION_GRANTED) {
              prefs.edit().putBoolean("show_tasks", false).apply()
              findViewById<View>(R.id.row_tasks_toggle).findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.row_switch).isChecked = false
              findViewById<View>(R.id.row_tasks_size).visibility = View.GONE
@@ -1083,8 +1083,8 @@ class MainActivity : AppCompatActivity() {
                     }.show()
                     return@setOnCheckedChangeListener
                 }
-                if (ContextCompat.checkSelfPermission(this, "org.tasks.permission.READ_TASKS") != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(this, arrayOf("org.tasks.permission.READ_TASKS"), 101)
+                if (ContextCompat.checkSelfPermission(this, AwidgetProvider.PERMISSION_READ_TASKS_ORG) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this, arrayOf(AwidgetProvider.PERMISSION_READ_TASKS_ORG), 101)
                 }
                 if (checkLimit()) {
                     eventsSwitch.isChecked = false

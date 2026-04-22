@@ -165,6 +165,8 @@ class AwidgetProvider : AppWidgetProvider() {
 
     companion object {
         const val ACTION_BATTERY_UPDATE = "com.leanbitlab.lwidget.ACTION_BATTERY_UPDATE"
+        const val PERMISSION_READ_TASKS_ORG = "org.tasks.permission.READ_TASKS"
+        const val PERMISSION_READ_TASKS_ASTRID = "com.todoroo.astrid.READ"
 
         // Suspended function called from Coroutine
         fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, mode: UpdateMode = UpdateMode.FULL) {
@@ -236,7 +238,7 @@ class AwidgetProvider : AppWidgetProvider() {
             val sizeStorage = prefs.getFloat("size_storage", 14f)
 
             var showTasks = prefs.getBoolean("show_tasks", false)
-            if (showTasks && androidx.core.content.ContextCompat.checkSelfPermission(context, "org.tasks.permission.READ_TASKS") != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            if (showTasks && androidx.core.content.ContextCompat.checkSelfPermission(context, PERMISSION_READ_TASKS_ORG) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
                 showTasks = false
             }
             val sizeTasks = prefs.getFloat("size_tasks", 14f)
@@ -1095,8 +1097,8 @@ class AwidgetProvider : AppWidgetProvider() {
             )
             
             // Debugging: Check permission again contextually
-            val hasPerm = context.checkSelfPermission("org.tasks.permission.READ_TASKS") == android.content.pm.PackageManager.PERMISSION_GRANTED ||
-                          context.checkSelfPermission("com.todoroo.astrid.READ") == android.content.pm.PackageManager.PERMISSION_GRANTED
+            val hasPerm = context.checkSelfPermission(PERMISSION_READ_TASKS_ORG) == android.content.pm.PackageManager.PERMISSION_GRANTED ||
+                          context.checkSelfPermission(PERMISSION_READ_TASKS_ASTRID) == android.content.pm.PackageManager.PERMISSION_GRANTED
             
             if (!hasPerm) {
                  views.setTextViewText(eventViews[0], "Missing Permission")
