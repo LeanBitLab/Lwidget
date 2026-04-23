@@ -100,7 +100,7 @@ class MainActivity : AppCompatActivity() {
 
         checkAllPermissions()
         setupSections()
-        
+
         // Setup Changelog
         val versionName = try {
             packageManager.getPackageInfo(packageName, 0).versionName
@@ -140,7 +140,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        
+
         val fab = findViewById<ExtendedFloatingActionButton>(R.id.fab_update)
         fab.setOnClickListener {
             updateWidget()
@@ -160,11 +160,11 @@ class MainActivity : AppCompatActivity() {
         val appBar = findViewById<com.google.android.material.appbar.AppBarLayout>(R.id.app_bar)
         val titleApp = findViewById<TextView>(R.id.title_app)
         val expandedHeader = findViewById<View>(R.id.header_expanded)
-        
+
         appBar.addOnOffsetChangedListener(com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
             val totalScrollRange = appBar.totalScrollRange
             val percentage = kotlin.math.abs(verticalOffset).toFloat() / totalScrollRange.toFloat()
-            
+
             // Fade in toolbar title when nearing collapse (e.g. last 20% of scroll)
             val alphaTitle = ((percentage - 0.8f) / 0.2f).coerceIn(0f, 1f)
             titleApp.alpha = alphaTitle
@@ -675,7 +675,7 @@ class MainActivity : AppCompatActivity() {
         }
         recyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         recyclerView.adapter = adapter
-        
+
         // Intercept touch events so parent NestedScrollView doesn't steal them
         recyclerView.setOnTouchListener { v, event ->
             v.parent.requestDisallowInterceptTouchEvent(true)
@@ -1191,7 +1191,6 @@ class MainActivity : AppCompatActivity() {
                     prefs.edit()
                         .putInt("text_color_primary_idx", 0)
                         .putInt("text_color_secondary_idx", 0)
-                        .putInt("date_color_idx", 0)
                         .putInt("outline_color_idx", 0)
                         .putInt("bg_color_idx", 0)
                         .apply()
@@ -1235,15 +1234,6 @@ class MainActivity : AppCompatActivity() {
         }
         bindColorSliders(R.id.row_text_color_secondary_custom, "text_color_secondary")
         secondarySliderRow.visibility = if (prefs.getInt("text_color_secondary_idx", 0) == 2) View.VISIBLE else View.GONE
-
-        // Date Color
-        val dateSliderRow = findViewById<View>(R.id.row_date_color_custom)
-        bindSelector(R.id.row_date_color, getString(R.string.section_date_color), "date_color_idx", colorOptions, 0) { idx ->
-            dateSliderRow.visibility = if (idx == 2) View.VISIBLE else View.GONE
-            if (idx != 2) updateWidget()
-        }
-        bindColorSliders(R.id.row_date_color_custom, "date_color")
-        dateSliderRow.visibility = if (prefs.getInt("date_color_idx", 0) == 2) View.VISIBLE else View.GONE
 
         // Outline Color
         val outlineSliderRow = findViewById<View>(R.id.row_outline_color_custom)
@@ -1407,7 +1397,6 @@ class MainActivity : AppCompatActivity() {
             R.id.row_bg_color, R.id.row_bg_color_custom,
             R.id.row_text_color_primary, R.id.row_text_color_primary_custom,
             R.id.row_text_color_secondary, R.id.row_text_color_secondary_custom,
-            R.id.row_date_color, R.id.row_date_color_custom,
             R.id.row_outline_color, R.id.row_outline_color_custom
         )
         manualColorIds.forEach { id ->
@@ -1424,14 +1413,14 @@ class MainActivity : AppCompatActivity() {
         // Global limit removed per user request
 
         // Subset Limit: Battery, Weather, Temp, Data, Storage (Max 5 allowed now to fit stack)
-        val subsetCount = contentSwitches.count { 
-            it.isChecked && (it.tag == "battery" || it.tag == "weather_condition" || it.tag == "temp" || it.tag == "data" || it.tag == "storage") 
+        val subsetCount = contentSwitches.count {
+            it.isChecked && (it.tag == "battery" || it.tag == "weather_condition" || it.tag == "temp" || it.tag == "data" || it.tag == "storage")
         }
-        
+
         if (subsetCount > 5) {
              com.google.android.material.snackbar.Snackbar.make(
-                findViewById(R.id.fab_update), 
-                getString(R.string.error_max_subset_items), 
+                findViewById(R.id.fab_update),
+                getString(R.string.error_max_subset_items),
                 com.google.android.material.snackbar.Snackbar.LENGTH_SHORT
             ).show()
             return false
@@ -1439,16 +1428,16 @@ class MainActivity : AppCompatActivity() {
 
         return true
     }
-    
+
     // Check usage stats permission
     private fun hasUsageStatsPermission(): Boolean {
         val appOps = getSystemService(Context.APP_OPS_SERVICE) as android.app.AppOpsManager
         val opMode = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-            appOps.unsafeCheckOpNoThrow(android.app.AppOpsManager.OPSTR_GET_USAGE_STATS, 
+            appOps.unsafeCheckOpNoThrow(android.app.AppOpsManager.OPSTR_GET_USAGE_STATS,
                 android.os.Process.myUid(), packageName)
         } else {
             @Suppress("DEPRECATION")
-            appOps.checkOpNoThrow(android.app.AppOpsManager.OPSTR_GET_USAGE_STATS, 
+            appOps.checkOpNoThrow(android.app.AppOpsManager.OPSTR_GET_USAGE_STATS,
                 android.os.Process.myUid(), packageName)
         }
         return opMode == android.app.AppOpsManager.MODE_ALLOWED
@@ -1475,7 +1464,7 @@ class MainActivity : AppCompatActivity() {
     private fun updateWidget() {
         // Animation: Subtle Outline Shine
         val fab = findViewById<ExtendedFloatingActionButton>(R.id.fab_update)
-        
+
         // Get dynamic colors
         // val colorSurface = com.google.android.material.color.MaterialColors.getColor(fab, com.google.android.material.R.attr.colorSurface)
         val colorPrimary = com.google.android.material.color.MaterialColors.getColor(fab, com.google.android.material.R.attr.colorPrimary)
