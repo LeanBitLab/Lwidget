@@ -1246,6 +1246,16 @@
                                         android:layout_height="wrap_content"/>
 
                                     <include layout="@layout/settings_selector_row"
+                                        android:id="@+id/row_date_color"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"/>
+
+                                    <include layout="@layout/settings_color_row"
+                                        android:id="@+id/row_date_color_custom"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"/>
+
+                                    <include layout="@layout/settings_selector_row"
                                         android:id="@+id/row_outline_color"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"/>
