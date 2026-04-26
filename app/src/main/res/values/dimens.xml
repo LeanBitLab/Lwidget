@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Base inner radius -->
-    <dimen name="widget_radius_inner">16dp</dimen>
+    <dimen name="widget_radius_inner">24dp</dimen>
 </resources>
