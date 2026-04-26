@@ -98,6 +98,12 @@ class MainActivity : AppCompatActivity() {
 
         prefs = getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
 
+        if (prefs.getBoolean("is_first_launch", true)) {
+            startActivity(Intent(this, SetupActivity::class.java))
+            finish()
+            return
+        }
+
         checkAllPermissions()
         setupSections()
         

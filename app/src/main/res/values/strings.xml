@@ -76,4 +76,16 @@
     <string name="color_default">Default</string>
     <string name="color_system_accent">System Accent</string>
     <string name="color_custom">Custom</string>
+
+    <!-- Setup / Onboarding -->
+    <string name="setup_welcome_title">Welcome to Lwidget</string>
+    <string name="setup_welcome_desc">A customizable widget for your home screen. Let\'s get everything set up so it works perfectly.</string>
+    <string name="setup_keep_alive_title">Keep Alive</string>
+    <string name="setup_keep_alive_desc">Some devices kill background apps to save battery, stopping widget updates. Enable Keep Alive (a lightweight background service) to prevent this.</string>
+    <string name="setup_permissions_title">Optional Permissions</string>
+    <string name="setup_permissions_desc">Grant permissions to enable optional features like calendar events, tasks, or the step counter.</string>
+    <string name="btn_next">Next</string>
+    <string name="btn_skip">Skip</string>
+    <string name="btn_finish">Finish</string>
+    <string name="btn_grant">Grant</string>
 </resources>
