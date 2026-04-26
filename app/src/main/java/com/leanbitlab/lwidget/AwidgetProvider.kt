@@ -168,6 +168,29 @@ class AwidgetProvider : AppWidgetProvider() {
         const val PERMISSION_READ_TASKS_ORG = "org.tasks.permission.READ_TASKS"
         const val PERMISSION_READ_TASKS_ASTRID = "com.todoroo.astrid.READ"
 
+        private var lastUsageStatsCheckTime = 0L
+        private var lastUsageStatsResult = false
+        private const val USAGE_STATS_CACHE_TTL = 60000L
+
+        private fun hasUsageStatsPermission(context: Context): Boolean {
+            val now = System.currentTimeMillis()
+            if (now - lastUsageStatsCheckTime < USAGE_STATS_CACHE_TTL) {
+                return lastUsageStatsResult
+            }
+
+            val appOps = context.getSystemService(Context.APP_OPS_SERVICE) as android.app.AppOpsManager
+            val mode = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                appOps.unsafeCheckOpNoThrow(android.app.AppOpsManager.OPSTR_GET_USAGE_STATS, android.os.Process.myUid(), context.packageName)
+            } else {
+                @Suppress("DEPRECATION")
+                appOps.checkOpNoThrow(android.app.AppOpsManager.OPSTR_GET_USAGE_STATS, android.os.Process.myUid(), context.packageName)
+            }
+
+            lastUsageStatsResult = (mode == android.app.AppOpsManager.MODE_ALLOWED)
+            lastUsageStatsCheckTime = now
+            return lastUsageStatsResult
+        }
+
         // Suspended function called from Coroutine
         fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, mode: UpdateMode = UpdateMode.FULL) {
             val prefs = context.getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
@@ -219,14 +242,7 @@ class AwidgetProvider : AppWidgetProvider() {
             
             var showData = prefs.getBoolean("show_data_usage", false)
             if (showData) {
-                val appOps = context.getSystemService(Context.APP_OPS_SERVICE) as android.app.AppOpsManager
-                val opMode = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-                    appOps.unsafeCheckOpNoThrow(android.app.AppOpsManager.OPSTR_GET_USAGE_STATS, android.os.Process.myUid(), context.packageName)
-                } else {
-                    @Suppress("DEPRECATION")
-                    appOps.checkOpNoThrow(android.app.AppOpsManager.OPSTR_GET_USAGE_STATS, android.os.Process.myUid(), context.packageName)
-                }
-                if (opMode != android.app.AppOpsManager.MODE_ALLOWED) showData = false
+                if (!hasUsageStatsPermission(context)) showData = false
             }
             val sizeData = prefs.getFloat("size_data", 14f)
             
@@ -985,13 +1001,7 @@ class AwidgetProvider : AppWidgetProvider() {
         }
 
         private fun updateScreenTime(context: Context, views: RemoteViews, prefs: android.content.SharedPreferences) {
-            val appOps = context.getSystemService(Context.APP_OPS_SERVICE) as android.app.AppOpsManager
-            val mode = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-                 appOps.unsafeCheckOpNoThrow(android.app.AppOpsManager.OPSTR_GET_USAGE_STATS, android.os.Process.myUid(), context.packageName)
-            } else {
-                 appOps.checkOpNoThrow(android.app.AppOpsManager.OPSTR_GET_USAGE_STATS, android.os.Process.myUid(), context.packageName)
-            }
-            if (mode != android.app.AppOpsManager.MODE_ALLOWED) {
+            if (!hasUsageStatsPermission(context)) {
                  views.setViewVisibility(R.id.text_screen_time, android.view.View.GONE)
                  return
             }
