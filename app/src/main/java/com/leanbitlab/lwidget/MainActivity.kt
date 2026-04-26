@@ -100,6 +100,7 @@ class MainActivity : AppCompatActivity() {
 
         checkAllPermissions()
         setupSections()
+        updateLivePreview()
         
         // Setup Changelog
         val versionName = try {
@@ -178,6 +179,18 @@ class MainActivity : AppCompatActivity() {
             expandedHeader.scaleX = scale
             expandedHeader.scaleY = scale
         })
+    }
+
+    private fun updateLivePreview() {
+        val previewContainer = findViewById<android.widget.FrameLayout>(R.id.preview_container)
+        try {
+            val remoteViews = AwidgetProvider.Companion.buildAppWidgetRemoteViews(this, UpdateMode.FULL)
+            val view = remoteViews.apply(this, previewContainer)
+            previewContainer.removeAllViews()
+            previewContainer.addView(view)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun checkAllPermissions() {
@@ -1473,6 +1486,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateWidget() {
+        updateLivePreview()
         // Animation: Subtle Outline Shine
         val fab = findViewById<ExtendedFloatingActionButton>(R.id.fab_update)
         

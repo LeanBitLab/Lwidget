@@ -87,6 +87,14 @@
             android:clipToPadding="false"
             android:paddingBottom="80dp">
 
+            <!-- WIDGET PREVIEW CONTAINER -->
+            <FrameLayout
+                android:id="@+id/preview_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:clipChildren="false"/>
+
             <!-- GROUP: MISSING PERMISSIONS -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_permission_list"

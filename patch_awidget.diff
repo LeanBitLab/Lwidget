@@ -1,33 +1,117 @@
---- app/src/main/java/com/leanbitlab/lwidget/AwidgetProvider.kt
-+++ app/src/main/java/com/leanbitlab/lwidget/AwidgetProvider.kt
-@@ -377,10 +377,28 @@
-             val primaryColor = resolveColor(textColorPrimaryIdx, true, useLightTheme)
-             val secondaryColor = resolveColor(textColorSecondaryIdx, false, useLightTheme)
+<<<<<<< SEARCH
+        // Suspended function called from Coroutine
+        fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, mode: UpdateMode = UpdateMode.FULL) {
+            val prefs = context.getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
+=======
+        fun buildAppWidgetRemoteViews(context: Context, mode: UpdateMode = UpdateMode.FULL): RemoteViews {
+            val prefs = context.getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
+>>>>>>> REPLACE
+<<<<<<< SEARCH
+            if (mode == UpdateMode.TICK) {
+                val tickViews = RemoteViews(context.packageName, layoutId)
+                val batteryStatus: Intent? = IntentFilter(Intent.ACTION_BATTERY_CHANGED).let { ifilter ->
+                    context.registerReceiver(null, ifilter)
+                }
+                val level = batteryStatus?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) ?: 0
+                val scale = batteryStatus?.getIntExtra(BatteryManager.EXTRA_SCALE, -1) ?: 100
+                val batteryPct = (level * 100 / scale.toFloat()).toInt()
+                val batterySpannable = android.text.SpannableString("${batteryPct}%")
+                batterySpannable.setSpan(android.text.style.RelativeSizeSpan(0.5f), batterySpannable.length - 1, batterySpannable.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                val tempInt = batteryStatus?.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0) ?: 0
+                val tempVal = tempInt / 10f
+                if (showSteps) loadStepCount(context, tickViews, prefs)
+                if (showBattery) tickViews.setTextViewText(R.id.text_battery, batterySpannable)
+                if (showTemp) {
+                    val tempStr = String.format("%.1f", tempVal)
+                    val tempText = "$tempStr°C"
+                    val tempSpan = android.text.SpannableString(tempText)
+                    val cIdx = tempText.indexOf("°C")
+                    if (cIdx != -1) {
+                        tempSpan.setSpan(android.text.style.RelativeSizeSpan(0.5f), cIdx, cIdx + 2, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    }
+                    if (boldTemp) tempSpan.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, tempSpan.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    tickViews.setTextViewText(R.id.text_temp, tempSpan)
+                }
+                if (showData) updateDataUsage(context, tickViews, prefs)
+                if (showStorage) updateStorageStats(context, tickViews, prefs)
+                appWidgetManager.partiallyUpdateAppWidget(appWidgetId, tickViews)
+                return
+            } else if (mode == UpdateMode.CALENDAR_ONLY) {
+                val calViews = RemoteViews(context.packageName, layoutId)
+                if (showEvents) loadCalendarEvents(context, calViews, sizeEvents, primaryColor, secondaryColor)
+                appWidgetManager.partiallyUpdateAppWidget(appWidgetId, calViews)
+                return
+            } else if (mode == UpdateMode.TASKS_ONLY) {
+                val taskViews = RemoteViews(context.packageName, layoutId)
+                if (showTasks) loadTasks(context, taskViews, sizeTasks, primaryColor)
+                appWidgetManager.partiallyUpdateAppWidget(appWidgetId, taskViews)
+                return
+            } else if (mode == UpdateMode.ALARM_ONLY) {
+                val alarmViews = RemoteViews(context.packageName, layoutId)
+                if (showNextAlarm) loadNextAlarm(context, alarmViews, sizeNextAlarm, secondaryColor)
+                appWidgetManager.partiallyUpdateAppWidget(appWidgetId, alarmViews)
+                return
+            }
+=======
+            if (mode == UpdateMode.TICK) {
+                val tickViews = RemoteViews(context.packageName, layoutId)
+                val batteryStatus: Intent? = IntentFilter(Intent.ACTION_BATTERY_CHANGED).let { ifilter ->
+                    context.registerReceiver(null, ifilter)
+                }
+                val level = batteryStatus?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) ?: 0
+                val scale = batteryStatus?.getIntExtra(BatteryManager.EXTRA_SCALE, -1) ?: 100
+                val batteryPct = (level * 100 / scale.toFloat()).toInt()
+                val batterySpannable = android.text.SpannableString("${batteryPct}%")
+                batterySpannable.setSpan(android.text.style.RelativeSizeSpan(0.5f), batterySpannable.length - 1, batterySpannable.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                val tempInt = batteryStatus?.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0) ?: 0
+                val tempVal = tempInt / 10f
+                if (showSteps) loadStepCount(context, tickViews, prefs)
+                if (showBattery) tickViews.setTextViewText(R.id.text_battery, batterySpannable)
+                if (showTemp) {
+                    val tempStr = String.format("%.1f", tempVal)
+                    val tempText = "$tempStr°C"
+                    val tempSpan = android.text.SpannableString(tempText)
+                    val cIdx = tempText.indexOf("°C")
+                    if (cIdx != -1) {
+                        tempSpan.setSpan(android.text.style.RelativeSizeSpan(0.5f), cIdx, cIdx + 2, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    }
+                    if (boldTemp) tempSpan.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, tempSpan.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    tickViews.setTextViewText(R.id.text_temp, tempSpan)
+                }
+                if (showData) updateDataUsage(context, tickViews, prefs)
+                if (showStorage) updateStorageStats(context, tickViews, prefs)
+                return tickViews
+            } else if (mode == UpdateMode.CALENDAR_ONLY) {
+                val calViews = RemoteViews(context.packageName, layoutId)
+                if (showEvents) loadCalendarEvents(context, calViews, sizeEvents, primaryColor, secondaryColor)
+                return calViews
+            } else if (mode == UpdateMode.TASKS_ONLY) {
+                val taskViews = RemoteViews(context.packageName, layoutId)
+                if (showTasks) loadTasks(context, taskViews, sizeTasks, primaryColor)
+                return taskViews
+            } else if (mode == UpdateMode.ALARM_ONLY) {
+                val alarmViews = RemoteViews(context.packageName, layoutId)
+                if (showNextAlarm) loadNextAlarm(context, alarmViews, sizeNextAlarm, secondaryColor)
+                return alarmViews
+            }
+>>>>>>> REPLACE
+<<<<<<< SEARCH
+            views.setOnClickPendingIntent(R.id.widget_root, settingsPendingIntent)
 
-+            val dateColorIdx = prefs.getInt("date_color_idx", 0)
-+
-             // Slightly distinct colors for date and next alarm
-             val dateColor = if (useDynamicColors && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-                 // Warm accent for date
-                 context.getColor(if (useLightTheme) android.R.color.system_accent2_700 else android.R.color.system_accent2_100)
-             } else {
--                if (useLightTheme) android.graphics.Color.parseColor("#AA555544") else android.graphics.Color.parseColor("#BBDDDDCC")
-+                when (dateColorIdx) {
-+                    2 -> {
-+                        android.graphics.Color.rgb(
-+                            prefs.getInt("date_color_r", 255),
-+                            prefs.getInt("date_color_g", 255),
-+                            prefs.getInt("date_color_b", 255)
-+                        )
-+                    }
-+                    1 -> {
-+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-+                            context.getColor(android.R.color.system_accent2_500)
-+                        } else {
-+                            android.graphics.Color.YELLOW
-+                        }
-+                    }
-+                    else -> if (useLightTheme) android.graphics.Color.parseColor("#AA555544") else android.graphics.Color.parseColor("#BBDDDDCC")
-+                }
-             }
-             val alarmColor = if (useDynamicColors && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            appWidgetManager.updateAppWidget(appWidgetId, views)
+        }
+=======
+            views.setOnClickPendingIntent(R.id.widget_root, settingsPendingIntent)
+
+            return views
+        }
+
+        fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, mode: UpdateMode = UpdateMode.FULL) {
+            val views = buildAppWidgetRemoteViews(context, mode)
+            if (mode == UpdateMode.FULL) {
+                appWidgetManager.updateAppWidget(appWidgetId, views)
+            } else {
+                appWidgetManager.partiallyUpdateAppWidget(appWidgetId, views)
+            }
+        }
+>>>>>>> REPLACE

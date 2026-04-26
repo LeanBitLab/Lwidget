@@ -1,19 +1,17 @@
 --- app/src/main/res/layout/activity_main.xml
 +++ app/src/main/res/layout/activity_main.xml
-@@ -1245,6 +1245,16 @@
-                                         android:layout_width="match_parent"
-                                         android:layout_height="wrap_content"/>
+@@ -88,6 +88,14 @@
+             android:clipToPadding="false"
+             android:paddingBottom="80dp">
 
-+                                    <include layout="@layout/settings_selector_row"
-+                                        android:id="@+id/row_date_color"
-+                                        android:layout_width="match_parent"
-+                                        android:layout_height="wrap_content"/>
++            <!-- WIDGET PREVIEW CONTAINER -->
++            <FrameLayout
++                android:id="@+id/preview_container"
++                android:layout_width="match_parent"
++                android:layout_height="wrap_content"
++                android:layout_marginBottom="16dp"
++                android:clipChildren="false"/>
 +
-+                                    <include layout="@layout/settings_color_row"
-+                                        android:id="@+id/row_date_color_custom"
-+                                        android:layout_width="match_parent"
-+                                        android:layout_height="wrap_content"/>
-+
-                                     <include layout="@layout/settings_selector_row"
-                                         android:id="@+id/row_outline_color"
-                                         android:layout_width="match_parent"
+             <!-- GROUP: MISSING PERMISSIONS -->
+             <com.google.android.material.card.MaterialCardView
+                 android:id="@+id/card_permission_list"
