@@ -192,7 +192,7 @@ class AwidgetProvider : AppWidgetProvider() {
         }
 
         // Suspended function called from Coroutine
-        fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, mode: UpdateMode = UpdateMode.FULL) {
+        fun buildAppWidgetRemoteViews(context: Context, mode: UpdateMode = UpdateMode.FULL): RemoteViews {
             val prefs = context.getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
 
             // --- Load Preferences ---
@@ -461,23 +461,19 @@ class AwidgetProvider : AppWidgetProvider() {
                 }
                 if (showData) updateDataUsage(context, tickViews, prefs)
                 if (showStorage) updateStorageStats(context, tickViews, prefs)
-                appWidgetManager.partiallyUpdateAppWidget(appWidgetId, tickViews)
-                return
+                return tickViews
             } else if (mode == UpdateMode.CALENDAR_ONLY) {
                 val calViews = RemoteViews(context.packageName, layoutId)
                 if (showEvents) loadCalendarEvents(context, calViews, sizeEvents, primaryColor, secondaryColor)
-                appWidgetManager.partiallyUpdateAppWidget(appWidgetId, calViews)
-                return
+                return calViews
             } else if (mode == UpdateMode.TASKS_ONLY) {
                 val taskViews = RemoteViews(context.packageName, layoutId)
                 if (showTasks) loadTasks(context, taskViews, sizeTasks, primaryColor)
-                appWidgetManager.partiallyUpdateAppWidget(appWidgetId, taskViews)
-                return
+                return taskViews
             } else if (mode == UpdateMode.ALARM_ONLY) {
                 val alarmViews = RemoteViews(context.packageName, layoutId)
                 if (showNextAlarm) loadNextAlarm(context, alarmViews, sizeNextAlarm, secondaryColor)
-                appWidgetManager.partiallyUpdateAppWidget(appWidgetId, alarmViews)
-                return
+                return alarmViews
             }
 
             // --- Apply Time ---
@@ -833,7 +829,16 @@ class AwidgetProvider : AppWidgetProvider() {
             val settingsPendingIntent = PendingIntent.getActivity(context, 0, settingsIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
             views.setOnClickPendingIntent(R.id.widget_root, settingsPendingIntent)
 
-            appWidgetManager.updateAppWidget(appWidgetId, views)
+            return views
+        }
+
+        fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, mode: UpdateMode = UpdateMode.FULL) {
+            val views = buildAppWidgetRemoteViews(context, mode)
+            if (mode == UpdateMode.FULL) {
+                appWidgetManager.updateAppWidget(appWidgetId, views)
+            } else {
+                appWidgetManager.partiallyUpdateAppWidget(appWidgetId, views)
+            }
         }
 
 
