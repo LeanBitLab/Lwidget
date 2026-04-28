@@ -98,6 +98,12 @@ class MainActivity : AppCompatActivity() {
 
         prefs = getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
 
+        if (prefs.getBoolean("is_first_launch", true)) {
+            startActivity(Intent(this, SetupActivity::class.java))
+            finish()
+            return
+        }
+
         checkAllPermissions()
         setupSections()
 
@@ -1191,6 +1197,7 @@ class MainActivity : AppCompatActivity() {
                     prefs.edit()
                         .putInt("text_color_primary_idx", 0)
                         .putInt("text_color_secondary_idx", 0)
+                        .putInt("date_color_idx", 0)
                         .putInt("outline_color_idx", 0)
                         .putInt("bg_color_idx", 0)
                         .apply()
@@ -1234,6 +1241,15 @@ class MainActivity : AppCompatActivity() {
         }
         bindColorSliders(R.id.row_text_color_secondary_custom, "text_color_secondary")
         secondarySliderRow.visibility = if (prefs.getInt("text_color_secondary_idx", 0) == 2) View.VISIBLE else View.GONE
+
+        // Date Color
+        val dateSliderRow = findViewById<View>(R.id.row_date_color_custom)
+        bindSelector(R.id.row_date_color, getString(R.string.section_date_color), "date_color_idx", colorOptions, 0) { idx ->
+            dateSliderRow.visibility = if (idx == 2) View.VISIBLE else View.GONE
+            if (idx != 2) updateWidget()
+        }
+        bindColorSliders(R.id.row_date_color_custom, "date_color")
+        dateSliderRow.visibility = if (prefs.getInt("date_color_idx", 0) == 2) View.VISIBLE else View.GONE
 
         // Outline Color
         val outlineSliderRow = findViewById<View>(R.id.row_outline_color_custom)
@@ -1397,6 +1413,7 @@ class MainActivity : AppCompatActivity() {
             R.id.row_bg_color, R.id.row_bg_color_custom,
             R.id.row_text_color_primary, R.id.row_text_color_primary_custom,
             R.id.row_text_color_secondary, R.id.row_text_color_secondary_custom,
+            R.id.row_date_color, R.id.row_date_color_custom,
             R.id.row_outline_color, R.id.row_outline_color_custom
         )
         manualColorIds.forEach { id ->

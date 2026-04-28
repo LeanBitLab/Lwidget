@@ -62,6 +62,11 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".SetupActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Lwidget" />
+
         <receiver android:name=".AwidgetProvider"
             android:exported="true">
             <intent-filter>

@@ -98,6 +98,12 @@ class MainActivity : AppCompatActivity() {
 
         prefs = getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
 
+        if (prefs.getBoolean("is_first_launch", true)) {
+            startActivity(Intent(this, SetupActivity::class.java))
+            finish()
+            return
+        }
+
         checkAllPermissions()
         setupSections()
         updateLivePreview()
@@ -145,6 +151,7 @@ class MainActivity : AppCompatActivity() {
         val fab = findViewById<ExtendedFloatingActionButton>(R.id.fab_update)
         fab.setOnClickListener {
             updateWidget()
+            updateLivePreview()
         }
 
         // Apply navigation bar insets to FAB so it doesn't overlap gesture nav

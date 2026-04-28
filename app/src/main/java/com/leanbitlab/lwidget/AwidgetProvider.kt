@@ -168,6 +168,30 @@ class AwidgetProvider : AppWidgetProvider() {
         const val PERMISSION_READ_TASKS_ORG = "org.tasks.permission.READ_TASKS"
         const val PERMISSION_READ_TASKS_ASTRID = "com.todoroo.astrid.READ"
 
+        private var lastUsageStatsCheckTime = 0L
+        private var lastUsageStatsResult = false
+        private const val USAGE_STATS_CACHE_TTL = 60000L
+
+        private fun hasUsageStatsPermission(context: Context): Boolean {
+            val now = System.currentTimeMillis()
+            if (now - lastUsageStatsCheckTime < USAGE_STATS_CACHE_TTL) {
+                return lastUsageStatsResult
+            }
+
+            val appOps = context.getSystemService(Context.APP_OPS_SERVICE) as android.app.AppOpsManager
+            val mode = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                appOps.unsafeCheckOpNoThrow(android.app.AppOpsManager.OPSTR_GET_USAGE_STATS, android.os.Process.myUid(), context.packageName)
+            } else {
+                @Suppress("DEPRECATION")
+                appOps.checkOpNoThrow(android.app.AppOpsManager.OPSTR_GET_USAGE_STATS, android.os.Process.myUid(), context.packageName)
+            }
+
+            lastUsageStatsResult = (mode == android.app.AppOpsManager.MODE_ALLOWED)
+            lastUsageStatsCheckTime = now
+            return lastUsageStatsResult
+        }
+
+        // Suspended function called from Coroutine
         fun buildAppWidgetRemoteViews(context: Context, mode: UpdateMode = UpdateMode.FULL): RemoteViews {
             val prefs = context.getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
 
@@ -218,14 +242,7 @@ class AwidgetProvider : AppWidgetProvider() {
             
             var showData = prefs.getBoolean("show_data_usage", false)
             if (showData) {
-                val appOps = context.getSystemService(Context.APP_OPS_SERVICE) as android.app.AppOpsManager
-                val opMode = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-                    appOps.unsafeCheckOpNoThrow(android.app.AppOpsManager.OPSTR_GET_USAGE_STATS, android.os.Process.myUid(), context.packageName)
-                } else {
-                    @Suppress("DEPRECATION")
-                    appOps.checkOpNoThrow(android.app.AppOpsManager.OPSTR_GET_USAGE_STATS, android.os.Process.myUid(), context.packageName)
-                }
-                if (opMode != android.app.AppOpsManager.MODE_ALLOWED) showData = false
+                if (!hasUsageStatsPermission(context)) showData = false
             }
             val sizeData = prefs.getFloat("size_data", 14f)
             
@@ -678,20 +695,20 @@ class AwidgetProvider : AppWidgetProvider() {
 
             // To precisely manage font intrinsic top padding, we drop the container's top padding to 0
             // and apply a custom top padding precisely computed based on the top item sizes.
-            val basePadding = dpToPx(16f)
+            val basePadding = dpToPx(24f)
             views.setViewPadding(R.id.inner_container, basePadding, 0, basePadding, basePadding)
 
             // Left Side: Time or Date or Events
             if (showTime || showWorldClock) {
                 val size = if (showTime) sizeTime else sizeWorldClock
                 val intrinsicGap = size * 0.18f
-                views.setViewPadding(R.id.time_container, 0, maxOf(0, dpToPx(16f - intrinsicGap)), 0, 0)
+                views.setViewPadding(R.id.time_container, 0, maxOf(0, dpToPx(24f - intrinsicGap)), 0, 0)
                 views.setViewPadding(R.id.date_container, 0, 0, 0, 0)
             } else if (showDate || showNextAlarm) {
                 views.setViewPadding(R.id.time_container, 0, 0, 0, 0)
                 val size = if (showDate) sizeDate else sizeNextAlarm
                 val intrinsicGap = size * 0.18f
-                views.setViewPadding(R.id.date_container, 0, maxOf(0, dpToPx(16f - intrinsicGap)), 0, 0)
+                views.setViewPadding(R.id.date_container, 0, maxOf(0, dpToPx(24f - intrinsicGap)), 0, 0)
             } else {
                 views.setViewPadding(R.id.time_container, 0, 0, 0, 0)
                 views.setViewPadding(R.id.date_container, 0, 0, 0, 0)
@@ -704,7 +721,7 @@ class AwidgetProvider : AppWidgetProvider() {
                 val topMargin = if (leftHasContent) dpToPx(8f) else {
                     val size = if (showEvents) sizeEvents else sizeTasks
                     val intrinsicGap = size * 0.18f
-                    maxOf(0, dpToPx(16f - intrinsicGap))
+                    maxOf(0, dpToPx(24f - intrinsicGap))
                 }
                 views.setViewPadding(R.id.events_container, 0, topMargin, 0, 0)
             }
@@ -735,7 +752,7 @@ class AwidgetProvider : AppWidgetProvider() {
             // Position items using explicit padding instead of layout_below
             // Calculate cumulative Y positions for each visible item
             val rightDp = context.resources.displayMetrics.density
-            var cumulativeTopDp = 16f  // Starting top margin from top of widget
+            var cumulativeTopDp = 24f  // Starting top margin from top of widget
             for (entry in rightStack) {
                 if (entry.isVisible) {
                     val topPaddingPx = (cumulativeTopDp * rightDp).toInt()
@@ -989,13 +1006,7 @@ class AwidgetProvider : AppWidgetProvider() {
         }
 
         private fun updateScreenTime(context: Context, views: RemoteViews, prefs: android.content.SharedPreferences) {
-            val appOps = context.getSystemService(Context.APP_OPS_SERVICE) as android.app.AppOpsManager
-            val mode = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-                 appOps.unsafeCheckOpNoThrow(android.app.AppOpsManager.OPSTR_GET_USAGE_STATS, android.os.Process.myUid(), context.packageName)
-            } else {
-                 appOps.checkOpNoThrow(android.app.AppOpsManager.OPSTR_GET_USAGE_STATS, android.os.Process.myUid(), context.packageName)
-            }
-            if (mode != android.app.AppOpsManager.MODE_ALLOWED) {
+            if (!hasUsageStatsPermission(context)) {
                  views.setViewVisibility(R.id.text_screen_time, android.view.View.GONE)
                  return
             }
