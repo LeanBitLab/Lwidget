@@ -197,16 +197,16 @@ class AwidgetProvider : AppWidgetProvider() {
 
             // --- Load Preferences ---
             val showTime = prefs.getBoolean("show_time", true)
-            val sizeTime = prefs.getFloat("size_time", 64f)
+            val sizeTime = prefs.getFloat("size_time", 56f)
             
             val showDate = prefs.getBoolean("show_date", true)
-            val sizeDate = prefs.getFloat("size_date", 14f)
+            val sizeDate = prefs.getFloat("size_date", 16f)
             
             val showBattery = prefs.getBoolean("show_battery", true)
-            val sizeBattery = prefs.getFloat("size_battery", 24f)
-            val boldBattery = prefs.getBoolean("bold_battery", false)
+            val sizeBattery = prefs.getFloat("size_battery", 32f)
+            val boldBattery = prefs.getBoolean("bold_battery", true)
             
-            val showTemp = prefs.getBoolean("show_temp", true)
+            val showTemp = prefs.getBoolean("show_temp", false)
             val sizeTemp = prefs.getFloat("size_temp", 18f)
             val boldTemp = prefs.getBoolean("bold_temp", false)
             
@@ -214,7 +214,7 @@ class AwidgetProvider : AppWidgetProvider() {
             val sizeWeather = prefs.getFloat("size_weather", 18f)
             val boldWeather = prefs.getBoolean("bold_weather", false)
             
-            var showEvents = prefs.getBoolean("show_events", true)
+            var showEvents = prefs.getBoolean("show_events", false)
             if (showEvents && androidx.core.content.ContextCompat.checkSelfPermission(context, android.Manifest.permission.READ_CALENDAR) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
                 showEvents = false
             }
@@ -250,7 +250,7 @@ class AwidgetProvider : AppWidgetProvider() {
             val sizeWorldClock = prefs.getFloat("size_world_clock", 18f)
             val worldClockZoneStr = prefs.getString("world_clock_zone_str", "UTC") ?: "UTC"
 
-            val showStorage = prefs.getBoolean("show_storage", true)
+            val showStorage = prefs.getBoolean("show_storage", false)
             val sizeStorage = prefs.getFloat("size_storage", 14f)
 
             var showTasks = prefs.getBoolean("show_tasks", false)
@@ -286,7 +286,7 @@ class AwidgetProvider : AppWidgetProvider() {
 
             val fontStyle = prefs.getInt("font_style", 0)
             
-            val bgOpacity = prefs.getFloat("bg_opacity", 100f)
+            val bgOpacity = prefs.getFloat("bg_opacity", 85f)
             val textColorPrimaryIdx = prefs.getInt("text_color_primary_idx", 0)
             val textColorSecondaryIdx = prefs.getInt("text_color_secondary_idx", 0)
             val bgColorIdx = prefs.getInt("bg_color_idx", 0)
@@ -366,7 +366,7 @@ class AwidgetProvider : AppWidgetProvider() {
                  }
             }
             
-            val showOutline = prefs.getBoolean("show_outline", true)
+            val showOutline = prefs.getBoolean("show_outline", false)
             val outlineColor = resolveOutlineColor(outlineColorIdx)
             views.setImageViewResource(R.id.widget_outline, R.drawable.widget_bg_outline)
             views.setViewVisibility(R.id.widget_outline, if (showOutline) android.view.View.VISIBLE else android.view.View.GONE)

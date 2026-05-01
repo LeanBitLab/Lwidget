@@ -341,6 +341,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun resetChevron(header: View) {
         val chevron = header.findViewById<android.widget.ImageView>(R.id.header_chevron)
+            ?: header.findViewById<android.widget.ImageView>(R.id.header_chevron_appearance_presets)
             ?: header.findViewById<android.widget.ImageView>(R.id.header_chevron_appearance_outline)
             ?: header.findViewById<android.widget.ImageView>(R.id.header_chevron_appearance_colors)
             ?: header.findViewById<android.widget.ImageView>(R.id.header_chevron_appearance_theme)
@@ -621,17 +622,20 @@ class MainActivity : AppCompatActivity() {
         }
         // Appearance subsections
         if (sectionKey == "appearance") {
+            val presetsContent = findViewById<View>(R.id.content_appearance_presets)
             val outlineContent = findViewById<View>(R.id.content_appearance_outline)
             val colorsContent = findViewById<View>(R.id.content_appearance_colors)
             val themeContent = findViewById<View>(R.id.content_appearance_theme)
             val fontContent = findViewById<View>(R.id.content_appearance_font)
             val transparencyContent = findViewById<View>(R.id.content_appearance_transparency)
+            presetsContent?.visibility = View.GONE
             outlineContent?.visibility = View.GONE
             colorsContent?.visibility = View.GONE
             themeContent?.visibility = View.GONE
             fontContent?.visibility = View.GONE
             transparencyContent?.visibility = View.GONE
             prefs.edit()
+                .putBoolean("section_appearance_presets_expanded", false)
                 .putBoolean("section_appearance_outline_expanded", false)
                 .putBoolean("section_appearance_colors_expanded", false)
                 .putBoolean("section_appearance_theme_expanded", false)
@@ -640,6 +644,7 @@ class MainActivity : AppCompatActivity() {
                 .apply()
             // Reset nested chevrons
             listOf(
+                R.id.header_chevron_appearance_presets,
                 R.id.header_chevron_appearance_outline,
                 R.id.header_chevron_appearance_colors,
                 R.id.header_chevron_appearance_theme,
@@ -660,10 +665,10 @@ class MainActivity : AppCompatActivity() {
     private fun bindReorderSection() {
         val defaultOrder = listOf(
             ReorderItem("show_battery", getString(R.string.section_battery), prefs.getBoolean("show_battery", true)),
-            ReorderItem("show_temp", getString(R.string.section_temp), prefs.getBoolean("show_temp", true)),
+            ReorderItem("show_temp", getString(R.string.section_temp), prefs.getBoolean("show_temp", false)),
             ReorderItem("show_weather_condition", getString(R.string.section_weather_condition), prefs.getBoolean("show_weather_condition", false)),
             ReorderItem("show_data_usage", getString(R.string.section_data_usage), prefs.getBoolean("show_data_usage", false)),
-            ReorderItem("show_storage", getString(R.string.section_storage), prefs.getBoolean("show_storage", true)),
+            ReorderItem("show_storage", getString(R.string.section_storage), prefs.getBoolean("show_storage", false)),
             ReorderItem("show_steps", getString(R.string.section_steps), prefs.getBoolean("show_steps", false)),
             ReorderItem("show_screen_time", getString(R.string.section_screen_time), prefs.getBoolean("show_screen_time", false))
         )
@@ -781,7 +786,7 @@ class MainActivity : AppCompatActivity() {
             R.id.header_time, R.drawable.ic_time, getString(R.string.section_time),
             R.id.content_time, R.id.row_time_toggle,
             "show_time", true,
-            sizeRowId = R.id.row_time_size, prefSizeKey = "size_time", defSize = 64f, minSize = 12f, maxSize = 120f,
+            sizeRowId = R.id.row_time_size, prefSizeKey = "size_time", defSize = 56f, minSize = 12f, maxSize = 120f,
             selectorRowId = R.id.row_time_format, selectorOptions = timeFormatOptions, prefSelectorKey = "time_format_idx", defSelectorIdx = 0,
             isContent = true
         )
@@ -813,7 +818,7 @@ class MainActivity : AppCompatActivity() {
             R.id.header_date, R.drawable.ic_date, getString(R.string.section_date),
             R.id.content_date, R.id.row_date_toggle,
             "show_date", true,
-            sizeRowId = R.id.row_date_size, prefSizeKey = "size_date", defSize = 14f, minSize = 10f, maxSize = 24f,
+            sizeRowId = R.id.row_date_size, prefSizeKey = "size_date", defSize = 16f, minSize = 10f, maxSize = 24f,
             selectorRowId = R.id.row_date_format, selectorOptions = dateFormatOptions, prefSelectorKey = "date_format_idx", defSelectorIdx = 0,
             isContent = true
         )
@@ -824,17 +829,17 @@ class MainActivity : AppCompatActivity() {
             R.id.header_battery, R.drawable.ic_battery, getString(R.string.section_battery),
             R.id.content_battery, R.id.row_battery_toggle,
             "show_battery", true,
-            sizeRowId = R.id.row_battery_size, prefSizeKey = "size_battery", defSize = 24f, minSize = 10f, maxSize = 74f,
+            sizeRowId = R.id.row_battery_size, prefSizeKey = "size_battery", defSize = 32f, minSize = 10f, maxSize = 74f,
             isContent = true
         ).also { it.tag = "battery" }
-        bindToggle(R.id.row_battery_bold, "Bold Text", "bold_battery", false)
+        bindToggle(R.id.row_battery_bold, "Bold Text", "bold_battery", true)
     }
     private fun setupTempSection() {
         // Temp
         bindFoldedSection(
             R.id.header_temp, R.drawable.ic_temp, getString(R.string.section_temp),
             R.id.content_temp, R.id.row_temp_toggle,
-            "show_temp", true,
+            "show_temp", false,
             sizeRowId = R.id.row_temp_size, prefSizeKey = "size_temp", defSize = 18f, minSize = 10f, maxSize = 74f,
             isContent = true
         ).also { it.tag = "temp" }
@@ -939,7 +944,7 @@ class MainActivity : AppCompatActivity() {
         bindFoldedSection(
             R.id.header_storage, R.drawable.ic_storage, getString(R.string.section_storage),
             R.id.content_storage, R.id.row_storage_toggle,
-            "show_storage", true,
+            "show_storage", false,
             sizeRowId = R.id.row_storage_size, prefSizeKey = "size_storage", defSize = 14f, minSize = 10f, maxSize = 74f,
             isContent = true
         ).also { it.tag = "storage" }
@@ -1047,17 +1052,9 @@ class MainActivity : AppCompatActivity() {
 
         keepAliveSwitch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                val neededPermissions = mutableListOf<String>()
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q &&
-                    ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED) {
-                    neededPermissions.add(Manifest.permission.ACTIVITY_RECOGNITION)
-                }
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU &&
                     ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                    neededPermissions.add(Manifest.permission.POST_NOTIFICATIONS)
-                }
-                if (neededPermissions.isNotEmpty()) {
-                    ActivityCompat.requestPermissions(this, neededPermissions.toTypedArray(), 104)
+                    ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 104)
                     keepAliveSwitch.isChecked = false
                     return@setOnCheckedChangeListener
                 }
@@ -1186,6 +1183,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Appearance Subsections (nested cards)
+        bindNestedCard(R.id.header_appearance_presets, "PRESETS", R.id.content_appearance_presets, "section_appearance_presets_expanded", R.id.header_chevron_appearance_presets)
+        setupPresetsSection()
         bindNestedCard(R.id.header_appearance_outline, "OUTLINE", R.id.content_appearance_outline, "section_appearance_outline_expanded", R.id.header_chevron_appearance_outline)
         bindNestedCard(R.id.header_appearance_colors, "COLORS", R.id.content_appearance_colors, "section_appearance_colors_expanded", R.id.header_chevron_appearance_colors)
         bindNestedCard(R.id.header_appearance_theme, "THEME", R.id.content_appearance_theme, "section_appearance_theme_expanded", R.id.header_chevron_appearance_theme)
@@ -1197,7 +1196,7 @@ class MainActivity : AppCompatActivity() {
         bindReorderSection()
 
         // Outline toggle
-        bindToggle(R.id.row_outline_toggle, "Show Outline", "show_outline", true) { isChecked ->
+        bindToggle(R.id.row_outline_toggle, "Show Outline", "show_outline", false) { isChecked ->
             updateWidget()
         }
 
@@ -1227,7 +1226,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         // BG Transparency
-        bindSlider(R.id.row_bg_transparency, "Background Opacity", "bg_opacity", 100f, 0f, 100f)
+        bindSlider(R.id.row_bg_transparency, "Background Opacity", "bg_opacity", 85f, 0f, 100f)
 
         // Background Color
         val bgSliderRow = findViewById<View>(R.id.row_bg_color_custom)
@@ -1285,6 +1284,171 @@ class MainActivity : AppCompatActivity() {
         ), 0)
 
         updateToggleAvailability()
+    }
+
+    private fun setupPresetsSection() {
+        data class Preset(
+            val key: String,
+            val label: String,
+            val prefs: Map<String, Any>
+        )
+
+        val presets = listOf(
+            // Minimal: just time+date, white text, fully transparent, thin font
+            Preset("minimal", "Minimal", mapOf(
+                "show_time" to true, "size_time" to 58f,
+                "show_date" to true, "size_date" to 16f,
+                "show_battery" to false, "show_temp" to false,
+                "show_storage" to false, "show_data_usage" to false,
+                "show_steps" to false, "show_screen_time" to false,
+                "show_next_alarm" to false, "show_world_clock" to false,
+                "show_events" to false, "show_tasks" to false,
+                "show_outline" to false, "bg_opacity" to 0f,
+                "font_style" to 9, // Thin
+                "use_dynamic_colors" to false,
+                "text_color_primary_idx" to 2, "text_color_primary_r" to 255, "text_color_primary_g" to 255, "text_color_primary_b" to 255,
+                "text_color_secondary_idx" to 2, "text_color_secondary_r" to 200, "text_color_secondary_g" to 200, "text_color_secondary_b" to 200,
+                "date_color_idx" to 2, "date_color_r" to 180, "date_color_g" to 180, "date_color_b" to 190,
+                "bold_battery" to false, "bold_temp" to false
+            )),
+            // Neon: cyan time, magenta date, dark bg, bold condensed font
+            Preset("neon", "Neon", mapOf(
+                "show_time" to true, "size_time" to 64f,
+                "show_date" to true, "size_date" to 14f,
+                "show_battery" to true, "size_battery" to 28f, "bold_battery" to true,
+                "show_temp" to true, "size_temp" to 18f, "bold_temp" to true,
+                "show_storage" to false, "show_data_usage" to false,
+                "show_steps" to false, "show_screen_time" to false,
+                "show_next_alarm" to true, "size_next_alarm" to 12f,
+                "show_world_clock" to false,
+                "show_events" to false, "show_tasks" to false,
+                "show_outline" to true, "bg_opacity" to 95f,
+                "font_style" to 4, // Condensed
+                "use_dynamic_colors" to false,
+                "text_color_primary_idx" to 2, "text_color_primary_r" to 0, "text_color_primary_g" to 255, "text_color_primary_b" to 255,
+                "text_color_secondary_idx" to 2, "text_color_secondary_r" to 0, "text_color_secondary_g" to 200, "text_color_secondary_b" to 200,
+                "date_color_idx" to 2, "date_color_r" to 255, "date_color_g" to 0, "date_color_b" to 180,
+                "outline_color_idx" to 2, "outline_color_r" to 0, "outline_color_g" to 200, "outline_color_b" to 255,
+                "bg_color_idx" to 2, "bg_color_r" to 10, "bg_color_g" to 10, "bg_color_b" to 20,
+                "widget_right_column_order" to "show_battery,show_temp,show_weather_condition,show_data_usage,show_storage,show_steps,show_screen_time"
+            )),
+            // Cockpit: green on dark, monospace, info-heavy, terminal look
+            Preset("cockpit", "Cockpit", mapOf(
+                "show_time" to true, "size_time" to 42f,
+                "show_date" to true, "size_date" to 14f,
+                "show_battery" to true, "size_battery" to 18f, "bold_battery" to false,
+                "show_temp" to true, "size_temp" to 16f, "bold_temp" to false,
+                "show_storage" to true, "size_storage" to 14f, "bold_storage" to false,
+                "show_data_usage" to true, "size_data" to 14f, "bold_data_usage" to false,
+                "show_steps" to false, "show_screen_time" to false,
+                "show_next_alarm" to true, "size_next_alarm" to 14f,
+                "show_world_clock" to false,
+                "show_events" to false, "show_tasks" to false,
+                "show_outline" to true, "bg_opacity" to 90f,
+                "font_style" to 2, // Monospace
+                "use_dynamic_colors" to false,
+                "text_color_primary_idx" to 2, "text_color_primary_r" to 0, "text_color_primary_g" to 255, "text_color_primary_b" to 65,
+                "text_color_secondary_idx" to 2, "text_color_secondary_r" to 0, "text_color_secondary_g" to 180, "text_color_secondary_b" to 50,
+                "date_color_idx" to 2, "date_color_r" to 0, "date_color_g" to 200, "date_color_b" to 80,
+                "outline_color_idx" to 2, "outline_color_r" to 0, "outline_color_g" to 120, "outline_color_b" to 40,
+                "bg_color_idx" to 2, "bg_color_r" to 5, "bg_color_g" to 15, "bg_color_b" to 5,
+                "widget_right_column_order" to "show_battery,show_storage,show_data_usage,show_temp,show_weather_condition,show_steps,show_screen_time"
+            )),
+            // Sunset: warm oranges/gold, serif font, elegant minimal
+            Preset("sunset", "Sunset", mapOf(
+                "show_time" to true, "size_time" to 54f,
+                "show_date" to true, "size_date" to 18f,
+                "show_battery" to true, "size_battery" to 24f, "bold_battery" to true,
+                "show_temp" to false, "show_storage" to false,
+                "show_data_usage" to false, "show_steps" to false,
+                "show_screen_time" to false,
+                "show_next_alarm" to true, "size_next_alarm" to 14f,
+                "show_world_clock" to false,
+                "show_events" to false, "show_tasks" to false,
+                "show_outline" to false, "bg_opacity" to 70f,
+                "font_style" to 1, // Serif
+                "use_dynamic_colors" to false,
+                "text_color_primary_idx" to 2, "text_color_primary_r" to 255, "text_color_primary_g" to 180, "text_color_primary_b" to 50,
+                "text_color_secondary_idx" to 2, "text_color_secondary_r" to 230, "text_color_secondary_g" to 140, "text_color_secondary_b" to 60,
+                "date_color_idx" to 2, "date_color_r" to 255, "date_color_g" to 120, "date_color_b" to 50,
+                "bg_color_idx" to 2, "bg_color_r" to 30, "bg_color_g" to 15, "bg_color_b" to 8,
+                "widget_right_column_order" to "show_battery,show_temp,show_weather_condition,show_data_usage,show_storage,show_steps,show_screen_time"
+            )),
+            // Monochrome: white outline, all white text, medium font, classic layout
+            Preset("monochrome", "Monochrome", mapOf(
+                "show_time" to true, "size_time" to 48f,
+                "show_date" to true, "size_date" to 14f,
+                "show_battery" to true, "size_battery" to 22f, "bold_battery" to false,
+                "show_temp" to false, "show_storage" to true, "size_storage" to 14f,
+                "show_data_usage" to false, "show_steps" to false,
+                "show_screen_time" to false,
+                "show_next_alarm" to true, "size_next_alarm" to 14f,
+                "show_world_clock" to false,
+                "show_events" to false, "show_tasks" to false,
+                "show_outline" to true, "bg_opacity" to 50f,
+                "font_style" to 7, // Medium
+                "use_dynamic_colors" to false,
+                "text_color_primary_idx" to 2, "text_color_primary_r" to 240, "text_color_primary_g" to 240, "text_color_primary_b" to 240,
+                "text_color_secondary_idx" to 2, "text_color_secondary_r" to 170, "text_color_secondary_g" to 170, "text_color_secondary_b" to 170,
+                "date_color_idx" to 2, "date_color_r" to 200, "date_color_g" to 200, "date_color_b" to 200,
+                "outline_color_idx" to 2, "outline_color_r" to 100, "outline_color_g" to 100, "outline_color_b" to 100,
+                "bg_color_idx" to 2, "bg_color_r" to 25, "bg_color_g" to 25, "bg_color_b" to 25,
+                "widget_right_column_order" to "show_battery,show_storage,show_temp,show_weather_condition,show_data_usage,show_steps,show_screen_time"
+            )),
+            // Snowfall: icy blues, light font, airy feel
+            Preset("snowfall", "Snowfall", mapOf(
+                "show_time" to true, "size_time" to 60f,
+                "show_date" to true, "size_date" to 16f,
+                "show_battery" to false, "show_temp" to true, "size_temp" to 20f, "bold_temp" to false,
+                "show_storage" to false, "show_data_usage" to false,
+                "show_steps" to false, "show_screen_time" to false,
+                "show_next_alarm" to false,
+                "show_world_clock" to false,
+                "show_events" to false, "show_tasks" to false,
+                "show_outline" to false, "bg_opacity" to 60f,
+                "font_style" to 6, // Light
+                "use_dynamic_colors" to false,
+                "text_color_primary_idx" to 2, "text_color_primary_r" to 180, "text_color_primary_g" to 220, "text_color_primary_b" to 255,
+                "text_color_secondary_idx" to 2, "text_color_secondary_r" to 130, "text_color_secondary_g" to 180, "text_color_secondary_b" to 230,
+                "date_color_idx" to 2, "date_color_r" to 100, "date_color_g" to 170, "date_color_b" to 255,
+                "bg_color_idx" to 2, "bg_color_r" to 10, "bg_color_g" to 20, "bg_color_b" to 40,
+                "widget_right_column_order" to "show_temp,show_battery,show_weather_condition,show_data_usage,show_storage,show_steps,show_screen_time"
+            ))
+        )
+
+        val chipGroup = findViewById<com.google.android.material.chip.ChipGroup>(R.id.preset_chip_group)
+        chipGroup.removeAllViews()
+        val activePreset = prefs.getString("active_preset", null)
+
+        for (preset in presets) {
+            val chip = com.google.android.material.chip.Chip(this).apply {
+                text = preset.label
+                isCheckable = true
+                isChecked = (preset.key == activePreset)
+                chipBackgroundColor = android.content.res.ColorStateList.valueOf(
+                    com.google.android.material.color.MaterialColors.getColor(this, com.google.android.material.R.attr.colorSurfaceContainerHighest)
+                )
+                setTextColor(com.google.android.material.color.MaterialColors.getColor(this, com.google.android.material.R.attr.colorOnSurface))
+                checkedIcon = androidx.core.content.ContextCompat.getDrawable(context, android.R.drawable.checkbox_on_background)
+                isCheckedIconVisible = true
+                setOnClickListener {
+                    val editor = prefs.edit()
+                    for ((k, v) in preset.prefs) {
+                        when (v) {
+                            is Boolean -> editor.putBoolean(k, v)
+                            is Float -> editor.putFloat(k, v)
+                            is Int -> editor.putInt(k, v)
+                            is String -> editor.putString(k, v)
+                        }
+                    }
+                    editor.putString("active_preset", preset.key)
+                    editor.apply()
+                    updateWidget()
+                    recreate()
+                }
+            }
+            chipGroup.addView(chip)
+        }
     }
 
     private fun bindToggle(
