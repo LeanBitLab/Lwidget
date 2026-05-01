@@ -753,12 +753,19 @@ class AwidgetProvider : AppWidgetProvider() {
             // Calculate cumulative Y positions for each visible item
             val rightDp = context.resources.displayMetrics.density
             var cumulativeTopDp = 24f  // Starting top margin from top of widget
+            var isFirstVisible = true
             for (entry in rightStack) {
                 if (entry.isVisible) {
+                    if (isFirstVisible) {
+                        // Compensate for font intrinsic top padding (matches left side logic)
+                        val intrinsicGap = entry.size * 0.18f
+                        cumulativeTopDp = maxOf(0f, 24f - intrinsicGap)
+                        isFirstVisible = false
+                    }
                     val topPaddingPx = (cumulativeTopDp * rightDp).toInt()
                     views.setViewPadding(entry.viewId, 0, topPaddingPx, 0, 0)
                     // Advance by this item's height + small gap
-                    val itemHeightDp = entry.size * 1.2f  // approximate line height
+                    val itemHeightDp = entry.size * 1.15f  // approximate line height
                     cumulativeTopDp += itemHeightDp + 2f
                 }
             }
