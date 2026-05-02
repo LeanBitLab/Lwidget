@@ -43,21 +43,16 @@ class StepCounterService : Service(), SensorEventListener {
         super.onCreate()
         createNotificationChannel()
 
-        val hasActivityPerm = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACTIVITY_RECOGNITION) == android.content.pm.PackageManager.PERMISSION_GRANTED
-
         try {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                val fgsType = if (hasActivityPerm) {
-                    android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_HEALTH
-                } else {
-                    1073741824 // FOREGROUND_SERVICE_TYPE_SPECIAL_USE
-                }
-                startForeground(NOTIFICATION_ID, createNotification(), fgsType)
+                startForeground(NOTIFICATION_ID, createNotification(), android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_HEALTH)
             } else {
                 startForeground(NOTIFICATION_ID, createNotification())
             }
-        } catch (e: Exception) {
-            android.util.Log.e("LWidget", "Cannot start foreground service", e)
+        } catch (e: SecurityException) {
+            android.util.Log.e("LWidget", "Cannot start foreground service: missing permission", e)
+            stopSelf()
+            return
         }
         
         val prefs = getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
@@ -78,6 +73,7 @@ class StepCounterService : Service(), SensorEventListener {
         
         // Always register the step sensor if available and permission is granted
         // (even in keep-alive-only mode, counting in background doesn't hurt)
+        val hasActivityPerm = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACTIVITY_RECOGNITION) == android.content.pm.PackageManager.PERMISSION_GRANTED
         if (hasActivityPerm) {
             stepSensor?.let {
                 sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL)
