@@ -92,7 +92,10 @@
             android:name=".StepCounterService"
             android:enabled="true"
             android:exported="false"
-            android:foregroundServiceType="health" />
+            android:foregroundServiceType="health|specialUse">
+            <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                      android:value="Update the widget periodically in the background" />
+        </service>
 
     </application>
 
