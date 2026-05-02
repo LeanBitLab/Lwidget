@@ -1470,15 +1470,53 @@
                         android:paddingBottom="16dp"
                         android:paddingTop="8dp">
 
-                        <TextView
-                            android:id="@+id/tv_changelog_version"
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Version %s"
-                            android:textAppearance="?attr/textAppearanceBodyMedium"
-                            android:textColor="?attr/colorOnSurfaceVariant"
-                            android:textStyle="bold"
-                            android:layout_marginBottom="12dp" />
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:paddingTop="16dp"
+                            android:paddingBottom="24dp">
+
+                            <ImageView
+                                android:layout_width="64dp"
+                                android:layout_height="64dp"
+                                android:src="@mipmap/ic_launcher"
+                                android:contentDescription="Lwidget Icon"
+                                android:layout_marginBottom="12dp"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Lwidget"
+                                android:textSize="22sp"
+                                android:textStyle="bold"
+                                android:textColor="?attr/colorOnSurface"
+                                android:fontFamily="monospace"
+                                android:layout_marginBottom="4dp"/>
+
+                            <TextView
+                                android:id="@+id/tv_changelog_version"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Version %s"
+                                android:textAppearance="?attr/textAppearanceBodyMedium"
+                                android:textColor="?attr/colorOnSurfaceVariant"
+                                android:layout_marginBottom="12dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="by LeanBitLab"
+                                android:textSize="14sp"
+                                android:textColor="?attr/colorOnSurfaceVariant"/>
+
+                        </LinearLayout>
+
+                        <com.google.android.material.divider.MaterialDivider
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="16dp"/>
 
                         <TextView
                             android:id="@+id/tv_github_link"
@@ -1495,7 +1533,7 @@
                             android:id="@+id/tv_privacy_policy"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
+                            android:layout_marginTop="16dp"
                             android:text="@string/privacy_policy"
                             android:textAppearance="?attr/textAppearanceBodyMedium"
                             android:textColor="?attr/colorPrimary"
