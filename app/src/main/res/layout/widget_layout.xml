@@ -152,6 +152,10 @@
         android:format24Hour="EEEE, MMMM dd"
         android:textSize="18sp"
         android:textColor="#CCFFFFFF"
+        android:shadowColor="#80000000"
+        android:shadowRadius="3"
+        android:shadowDx="1"
+        android:shadowDy="1"
         />
 
         <TextView

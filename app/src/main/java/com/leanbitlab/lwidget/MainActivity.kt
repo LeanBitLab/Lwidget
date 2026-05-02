@@ -108,6 +108,9 @@ class MainActivity : AppCompatActivity() {
         setupSections()
         updateLivePreview()
         
+        // Advanced Section
+        bindSlider(R.id.row_update_interval, "Update Interval (m)", "update_interval", 15f, 1f, 60f, "m")
+        
         // Setup Changelog
         val versionName = try {
             packageManager.getPackageInfo(packageName, 0).versionName
@@ -116,26 +119,6 @@ class MainActivity : AppCompatActivity() {
         }
         val tvVersion = findViewById<TextView>(R.id.tv_changelog_version)
         tvVersion.text = getString(R.string.changelog_version, versionName)
-
-        val cardChangelog = findViewById<MaterialCardView>(R.id.card_changelog)
-        val changelogContent = findViewById<View>(R.id.changelog_expandable_content)
-        val ivChangelogExpand = findViewById<android.widget.ImageView>(R.id.iv_changelog_expand)
-        cardChangelog.setOnClickListener {
-            val isCurrentlyVisible = changelogContent.visibility == View.VISIBLE
-            changelogContent.visibility = if (isCurrentlyVisible) View.GONE else View.VISIBLE
-            ivChangelogExpand.animate().rotation(if (isCurrentlyVisible) 0f else 180f).setDuration(200).start()
-        }
-
-        // Prevent parent scroll when touching the inner changelog scroll area
-        findViewById<View>(R.id.changelog_scroll).setOnTouchListener { v, event ->
-            when (event.action) {
-                android.view.MotionEvent.ACTION_DOWN, android.view.MotionEvent.ACTION_MOVE ->
-                    v.parent.requestDisallowInterceptTouchEvent(true)
-                android.view.MotionEvent.ACTION_UP, android.view.MotionEvent.ACTION_CANCEL ->
-                    v.parent.requestDisallowInterceptTouchEvent(false)
-            }
-            false
-        }
 
         findViewById<View>(R.id.tv_github_link).setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW, android.net.Uri.parse("https://github.com/LeanBitLab/Lwidget"))
@@ -201,11 +184,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkAllPermissions() {
-        val cardPermissionList = findViewById<View>(R.id.card_permission_list)
         var widgetNeedsUpdate = false
 
         // Check Calendar
-        if (prefs.getBoolean("show_events", false) && ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+        val calMissing = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED
+        if (prefs.getBoolean("show_events", false) && calMissing) {
             prefs.edit().putBoolean("show_events", false).apply()
             findViewById<View>(R.id.row_events_toggle).findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.row_switch).isChecked = false
             findViewById<View>(R.id.row_events_size).visibility = View.GONE
@@ -213,7 +196,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Check Tasks
-        if (prefs.getBoolean("show_tasks", false) && ContextCompat.checkSelfPermission(this, AwidgetProvider.PERMISSION_READ_TASKS_ORG) != PackageManager.PERMISSION_GRANTED) {
+        val tasksMissing = ContextCompat.checkSelfPermission(this, AwidgetProvider.PERMISSION_READ_TASKS_ORG) != PackageManager.PERMISSION_GRANTED
+        if (prefs.getBoolean("show_tasks", false) && tasksMissing) {
              prefs.edit().putBoolean("show_tasks", false).apply()
              findViewById<View>(R.id.row_tasks_toggle).findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.row_switch).isChecked = false
              findViewById<View>(R.id.row_tasks_size).visibility = View.GONE
@@ -222,15 +206,13 @@ class MainActivity : AppCompatActivity() {
 
         // Check Steps
         var stepMissing = false
-        if (prefs.getBoolean("show_steps", false)) {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q && ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED) {
-                stepMissing = true
-            }
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU && ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                stepMissing = true
-            }
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q && ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED) {
+            stepMissing = true
         }
-        if (stepMissing) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU && ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            stepMissing = true
+        }
+        if (prefs.getBoolean("show_steps", false) && stepMissing) {
              prefs.edit().putBoolean("show_steps", false).apply()
              findViewById<View>(R.id.row_steps_toggle).findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.row_switch).isChecked = false
              findViewById<View>(R.id.row_steps_size).visibility = View.GONE
@@ -238,7 +220,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Check Screen Time
-        if (prefs.getBoolean("show_screen_time", false) && !hasUsageStatsPermission()) {
+        val usageMissing = !hasUsageStatsPermission()
+        if (prefs.getBoolean("show_screen_time", false) && usageMissing) {
             prefs.edit().putBoolean("show_screen_time", false).apply()
             findViewById<View>(R.id.row_screen_time_toggle).findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.row_switch).isChecked = false
             findViewById<View>(R.id.row_screen_time_size).visibility = View.GONE
@@ -246,7 +229,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Check Data Usage
-        if (prefs.getBoolean("show_data_usage", false) && !hasUsageStatsPermission()) {
+        if (prefs.getBoolean("show_data_usage", false) && usageMissing) {
             prefs.edit().putBoolean("show_data_usage", false).apply()
             findViewById<View>(R.id.row_data_toggle).findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.row_switch).isChecked = false
             findViewById<View>(R.id.row_data_size).visibility = View.GONE
@@ -254,21 +237,81 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Check Breezy Weather
-        if (prefs.getBoolean("show_weather_condition", false)) {
-            if (!isAppInstalled("org.breezyweather") || ContextCompat.checkSelfPermission(this, "org.breezyweather.READ_PROVIDER") != PackageManager.PERMISSION_GRANTED) {
-                prefs.edit().putBoolean("show_weather_condition", false).apply()
-                findViewById<View>(R.id.row_weather_toggle).findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.row_switch).isChecked = false
-                findViewById<View>(R.id.row_weather_size).visibility = View.GONE
-                widgetNeedsUpdate = true
-            }
+        val weatherMissing = !isAppInstalled("org.breezyweather") || ContextCompat.checkSelfPermission(this, "org.breezyweather.READ_PROVIDER") != PackageManager.PERMISSION_GRANTED
+        if (prefs.getBoolean("show_weather_condition", false) && weatherMissing) {
+            prefs.edit().putBoolean("show_weather_condition", false).apply()
+            findViewById<View>(R.id.row_weather_toggle).findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.row_switch).isChecked = false
+            findViewById<View>(R.id.row_weather_size).visibility = View.GONE
+            widgetNeedsUpdate = true
         }
-
-        cardPermissionList.visibility = View.GONE
 
         if (widgetNeedsUpdate) {
             updateWidget()
             updateToggleAvailability()
         }
+        
+        // Update Permission Toggles
+        updatePermissionToggle(R.id.row_perm_calendar, "Calendar Events", !calMissing) {
+            if (calMissing) ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_CALENDAR), 100)
+            else openAppSettings()
+        }
+        updatePermissionToggle(R.id.row_perm_tasks, "Tasks", !tasksMissing) {
+            if (tasksMissing) ActivityCompat.requestPermissions(this, arrayOf(AwidgetProvider.PERMISSION_READ_TASKS_ORG), 101)
+            else openAppSettings()
+        }
+        updatePermissionToggle(R.id.row_perm_steps, "Step Counter", !stepMissing) {
+            if (stepMissing) {
+                val neededPermissions = mutableListOf<String>()
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                    neededPermissions.add(Manifest.permission.ACTIVITY_RECOGNITION)
+                }
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                    neededPermissions.add(Manifest.permission.POST_NOTIFICATIONS)
+                }
+                ActivityCompat.requestPermissions(this, neededPermissions.toTypedArray(), 102)
+            } else openAppSettings()
+        }
+        updatePermissionToggle(R.id.row_perm_data_usage, "Data Usage", !usageMissing) {
+            try { startActivity(Intent(android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS)) } catch (e: Exception) {}
+        }
+        updatePermissionToggle(R.id.row_perm_screen_time, "Screen Time", !usageMissing) {
+            try { startActivity(Intent(android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS)) } catch (e: Exception) {}
+        }
+        updatePermissionToggle(R.id.row_perm_weather, "Weather", !weatherMissing) {
+            if (weatherMissing && !isAppInstalled("org.breezyweather")) {
+                try {
+                    startActivity(Intent(Intent.ACTION_VIEW, android.net.Uri.parse("market://details?id=org.breezyweather")))
+                } catch (e: Exception) {
+                    try {
+                        startActivity(Intent(Intent.ACTION_VIEW, android.net.Uri.parse("https://f-droid.org/packages/org.breezyweather/")))
+                    } catch (e2: Exception) {}
+                }
+            } else if (weatherMissing) {
+                ActivityCompat.requestPermissions(this, arrayOf("org.breezyweather.READ_PROVIDER"), 104)
+            } else openAppSettings()
+        }
+    }
+    
+    private fun updatePermissionToggle(viewId: Int, label: String, isGranted: Boolean, onClick: () -> Unit) {
+        val row = findViewById<View>(viewId)
+        if (row != null) {
+            row.findViewById<TextView>(R.id.row_label).text = label
+            val switchView = row.findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.row_switch)
+            switchView.setOnCheckedChangeListener(null)
+            switchView.isChecked = isGranted
+            
+            row.setOnClickListener { onClick() }
+            switchView.setOnClickListener {
+                switchView.isChecked = isGranted // Revert instantly
+                onClick()
+            }
+        }
+    }
+    
+    private fun openAppSettings() {
+        val intent = Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+        intent.data = android.net.Uri.parse("package:" + packageName)
+        startActivity(intent)
     }
 
     override fun onResume() {
@@ -756,6 +799,44 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+
+    private fun bindCategoryFoldable(headerId: Int, contentId: Int, title: String, iconResId: Int, prefKey: String) {
+        accordionViews[prefKey] = findViewById(contentId)
+        accordionHeaders[prefKey] = findViewById(headerId)
+        
+        val header = findViewById<View>(headerId)
+        header.findViewById<TextView>(R.id.header_title).text = title
+        val headerIcon = header.findViewById<android.widget.ImageView>(R.id.header_icon)
+        if (iconResId != 0) {
+            headerIcon.setImageResource(iconResId)
+            headerIcon.visibility = View.VISIBLE
+        } else {
+            headerIcon.visibility = View.GONE
+        }
+        
+        val content = findViewById<View>(contentId)
+        val chevron = header.findViewById<android.widget.ImageView>(R.id.header_chevron)
+        val isExpanded = prefs.getBoolean(prefKey, false)
+        content.visibility = if (isExpanded) View.VISIBLE else View.GONE
+        chevron.rotation = if (isExpanded) 180f else 0f
+        
+        header.setOnClickListener {
+            val nowExpanded = content.visibility != View.VISIBLE
+            if (nowExpanded) {
+                collapseAllExcept(prefKey)
+                content.visibility = View.VISIBLE
+                prefs.edit().putBoolean(prefKey, true).apply()
+            } else {
+                content.visibility = View.GONE
+                prefs.edit().putBoolean(prefKey, false).apply()
+            }
+            android.animation.ObjectAnimator.ofFloat(chevron, "rotation", if (nowExpanded) 180f else 0f).apply {
+                duration = 300
+                start()
+            }
+        }
+    }
+
     private fun setupSections() {
         contentSwitches.clear()
 
@@ -778,6 +859,11 @@ class MainActivity : AppCompatActivity() {
         setupKeepAliveSection()
         setupEventsAndTasksSections()
         setupThemeSection(colorOptions)
+        
+        // System sections
+        bindCategoryFoldable(R.id.header_advanced, R.id.content_advanced, "Advanced", 0, "section_advanced_expanded")
+        bindCategoryFoldable(R.id.header_permissions, R.id.content_permissions, "Permissions", 0, "section_permissions_expanded")
+        bindCategoryFoldable(R.id.header_about, R.id.content_about, "About", 0, "section_about_expanded")
     }
 
     private fun setupTimeSection(timeFormatOptions: List<String>) {
@@ -1043,29 +1129,39 @@ class MainActivity : AppCompatActivity() {
         }
     }
     private fun setupKeepAliveSection() {
-        // Keep Alive
-        val keepAliveSwitch = bindFoldedSection(
-            R.id.header_keep_alive, R.drawable.ic_alarm, getString(R.string.section_keep_alive),
-            R.id.content_keep_alive, R.id.row_keep_alive_toggle,
-            "keep_alive", false
-        )
-
-        keepAliveSwitch.setOnCheckedChangeListener { _, isChecked ->
+        // Keep Alive (now inside Advanced section, not folded)
+        bindToggle(R.id.row_keep_alive_toggle, "Enable Keep Alive", "keep_alive", false) { isChecked ->
             if (isChecked) {
+                val neededPermissions = mutableListOf<String>()
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q &&
+                    ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED) {
+                    neededPermissions.add(Manifest.permission.ACTIVITY_RECOGNITION)
+                }
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU &&
                     ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 104)
-                    keepAliveSwitch.isChecked = false
-                    return@setOnCheckedChangeListener
+                    neededPermissions.add(Manifest.permission.POST_NOTIFICATIONS)
+                }
+                if (neededPermissions.isNotEmpty()) {
+                    val switch = findViewById<View>(R.id.row_keep_alive_toggle).findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.row_switch)
+                    switch.isChecked = false
+                    ActivityCompat.requestPermissions(this, neededPermissions.toTypedArray(), 105)
+                    return@bindToggle
                 }
             }
             prefs.edit().putBoolean("keep_alive", isChecked).apply()
-            updateFeatureRowVisibility(keepAliveSwitch, isChecked)
             val showSteps = prefs.getBoolean("show_steps", false)
             val serviceIntent = Intent(this, StepCounterService::class.java)
-            if (isChecked || showSteps) { startForegroundService(serviceIntent) }
-            else { stopService(serviceIntent) }
-            updateWidget()
+            val hasActivityPerm = android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.Q ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED
+            if ((isChecked || showSteps) && hasActivityPerm) {
+                try {
+                    ContextCompat.startForegroundService(this, serviceIntent)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            } else {
+                stopService(serviceIntent)
+            }
         }
     }
     private fun setupEventsAndTasksSections() {
@@ -1482,7 +1578,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun bindSlider(
         viewId: Int, title: String, prefKey: String, defValue: Float,
-        minValue: Float, maxValue: Float
+        minValue: Float, maxValue: Float, suffix: String = "%"
     ) {
         val row = findViewById<View>(viewId)
         val tvTitle = row.findViewById<TextView>(R.id.row_label)
@@ -1495,11 +1591,11 @@ class MainActivity : AppCompatActivity() {
         slider.valueFrom = minValue
         slider.valueTo = maxValue
         slider.value = currentValue.coerceIn(minValue, maxValue)
-        tvValue.text = "${currentValue.toInt()}%"
+        tvValue.text = "${currentValue.toInt()}$suffix"
 
         slider.addOnChangeListener { _, value, fromUser ->
             if (fromUser) {
-                tvValue.text = "${value.toInt()}%"
+                tvValue.text = "${value.toInt()}$suffix"
                 prefs.edit().putFloat(prefKey, value).apply()
                 updateWidget()
             }

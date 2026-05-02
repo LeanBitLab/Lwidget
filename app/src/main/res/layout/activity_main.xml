@@ -95,962 +95,6 @@
                 android:layout_marginBottom="16dp"
                 android:clipChildren="false"/>
 
-            <!-- GROUP: MISSING PERMISSIONS -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/card_permission_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:visibility="gone"
-                app:cardBackgroundColor="#330000"
-                app:strokeColor="#FF5555"
-                app:strokeWidth="1dp"
-                app:cardCornerRadius="16dp">
-
-                <LinearLayout
-                    android:id="@+id/permission_list_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:text="Missing Permissions"
-                        android:textColor="#FF5555"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <!-- Calendar Permission Row -->
-                    <LinearLayout
-                        android:id="@+id/perm_row_calendar"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:visibility="gone">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Calendar access is required for Events."
-                            android:textColor="#FFFFFF" />
-
-                        <Button
-                            android:id="@+id/btn_grant_calendar"
-                            style="@style/Widget.MaterialComponents.Button.TextButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Grant"
-                            android:textColor="#FF5555" />
-                    </LinearLayout>
-
-                    <!-- Tasks Permission Row -->
-                    <LinearLayout
-                        android:id="@+id/perm_row_tasks"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:visibility="gone">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Tasks.org access is required."
-                            android:textColor="#FFFFFF" />
-
-                        <Button
-                            android:id="@+id/btn_grant_tasks"
-                            style="@style/Widget.MaterialComponents.Button.TextButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Grant"
-                            android:textColor="#FF5555" />
-                    </LinearLayout>
-
-                    <!-- Steps Permission Row -->
-                    <LinearLayout
-                        android:id="@+id/perm_row_steps"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:visibility="gone">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Physical Activity permission is required."
-                            android:textColor="#FFFFFF" />
-
-                        <Button
-                            android:id="@+id/btn_grant_steps"
-                            style="@style/Widget.MaterialComponents.Button.TextButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Grant"
-                            android:textColor="#FF5555" />
-                    </LinearLayout>
-
-                    <!-- Data Usage Permission Row -->
-                    <LinearLayout
-                        android:id="@+id/perm_row_data"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:visibility="gone">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Usage Access is required for Data Usage."
-                            android:textColor="#FFFFFF" />
-
-                        <Button
-                            android:id="@+id/btn_grant_data"
-                            style="@style/Widget.MaterialComponents.Button.TextButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Grant"
-                            android:textColor="#FF5555" />
-                    </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- GROUP: CHANGELOG -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/section_changelog"
-                android:textColor="?attr/colorPrimary"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp"/>
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/card_changelog"
-                style="@style/Widget.Material3.CardView.Outlined"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:clickable="true"
-                android:focusable="true"
-                app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="0dp">
-
-                        <TextView
-                            android:id="@+id/tv_changelog_version"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Version %s"
-                            android:textAppearance="?attr/textAppearanceBodyMedium"
-                            android:textColor="?attr/colorOnSurfaceVariant"
-                            android:textStyle="bold" />
-
-                        <ImageView
-                            android:id="@+id/iv_changelog_expand"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_chevron_down"
-                            android:rotation="0"
-                            app:tint="?attr/colorOnSurfaceVariant"
-                            android:contentDescription="Expand changelog"/>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/changelog_expandable_content"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:visibility="gone">
-
-                        <ScrollView
-                            android:id="@+id/changelog_scroll"
-                            android:layout_width="match_parent"
-                            android:layout_height="240dp"
-                            android:layout_marginTop="8dp"
-                            android:fadingEdge="vertical"
-                            android:fadingEdgeLength="16dp"
-                            android:requiresFadingEdge="vertical">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="📌 Note"
-                                    android:textAppearance="?attr/textAppearanceTitleSmall"
-                                    android:textColor="?attr/colorPrimary"
-                                    android:textStyle="bold"
-                                    android:layout_marginBottom="4dp"/>
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/changelog_note"
-                                    android:textAppearance="?attr/textAppearanceBodyMedium"
-                                    android:textColor="?attr/colorOnSurface"
-                                    android:lineSpacingExtra="3dp"/>
-
-                                <com.google.android.material.divider.MaterialDivider
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="12dp"
-                                    android:layout_marginBottom="12dp"/>
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="📋 Changelog"
-                                    android:textAppearance="?attr/textAppearanceTitleSmall"
-                                    android:textColor="?attr/colorPrimary"
-                                    android:textStyle="bold"
-                                    android:layout_marginBottom="4dp"/>
-
-                                <TextView
-                                    android:id="@+id/tv_changelog_content"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/changelog_content"
-                                    android:textAppearance="?attr/textAppearanceBodyMedium"
-                                    android:textColor="?attr/colorOnSurface"
-                                    android:lineSpacingExtra="3dp"/>
-
-                            </LinearLayout>
-                        </ScrollView>
-
-                        <com.google.android.material.divider.MaterialDivider
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="12dp"
-                            android:layout_marginBottom="12dp"/>
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/changelog_testing_notice"
-                            android:textAppearance="?attr/textAppearanceBodySmall"
-                            android:textColor="?attr/colorPrimary"
-                            android:layout_marginBottom="12dp"
-                            android:textStyle="italic"/>
-
-                        <TextView
-                            android:id="@+id/tv_github_link"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/github_source_code"
-                            android:textAppearance="?attr/textAppearanceBodyMedium"
-                            android:textColor="?attr/colorPrimary"
-                            android:textStyle="bold"
-                            android:autoLink="web"
-                            android:linksClickable="true"/>
-
-                        <TextView
-                            android:id="@+id/tv_privacy_policy"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:text="@string/privacy_policy"
-                            android:textAppearance="?attr/textAppearanceBodyMedium"
-                            android:textColor="?attr/colorPrimary"
-                            android:textStyle="bold"/>
-
-                    </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- CATEGORY: CONTENT -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Content"
-                android:textColor="?attr/colorPrimary"
-                android:textStyle="bold"
-                android:textSize="14sp"
-                android:letterSpacing="0.05"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="4dp"/>
-
-            <!-- FEATURE: Time -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/card_time"
-                style="@style/Widget.Material3.CardView.Outlined"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <include layout="@layout/settings_folded_header"
-                        android:id="@+id/header_time"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
-
-                    <LinearLayout
-                        android:id="@+id/content_time"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:visibility="gone"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp"
-                        android:paddingBottom="8dp">
-
-                        <include layout="@layout/settings_toggle_row"
-                            android:id="@+id/row_time_toggle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-
-                        <include layout="@layout/settings_slider_row"
-                            android:id="@+id/row_time_size"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-
-                        <include layout="@layout/settings_selector_row"
-                            android:id="@+id/row_time_format"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-                    </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- FEATURE: Next Alarm -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/card_next_alarm"
-                style="@style/Widget.Material3.CardView.Outlined"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <include layout="@layout/settings_folded_header"
-                        android:id="@+id/header_next_alarm"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
-
-                    <LinearLayout
-                        android:id="@+id/content_next_alarm"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:visibility="gone"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp"
-                        android:paddingBottom="8dp">
-
-                        <include layout="@layout/settings_toggle_row"
-                            android:id="@+id/row_next_alarm_toggle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-
-                        <include layout="@layout/settings_slider_row"
-                            android:id="@+id/row_next_alarm_size"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-                    </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- FEATURE: World Clock -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/card_world_clock"
-                style="@style/Widget.Material3.CardView.Outlined"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <include layout="@layout/settings_folded_header"
-                        android:id="@+id/header_world_clock"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
-
-                    <LinearLayout
-                        android:id="@+id/content_world_clock"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:visibility="gone"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp"
-                        android:paddingBottom="8dp">
-
-                        <include layout="@layout/settings_toggle_row"
-                            android:id="@+id/row_world_clock_toggle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-
-                        <include layout="@layout/settings_slider_row"
-                            android:id="@+id/row_world_clock_size"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-
-                        <include layout="@layout/settings_timezone_search"
-                            android:id="@+id/row_world_clock_zone"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-                    </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- FEATURE: Date -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/card_date"
-                style="@style/Widget.Material3.CardView.Outlined"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <include layout="@layout/settings_folded_header"
-                        android:id="@+id/header_date"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
-
-                    <LinearLayout
-                        android:id="@+id/content_date"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:visibility="gone"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp"
-                        android:paddingBottom="8dp">
-
-                        <include layout="@layout/settings_toggle_row"
-                            android:id="@+id/row_date_toggle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-
-                        <include layout="@layout/settings_slider_row"
-                            android:id="@+id/row_date_size"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-
-                        <include layout="@layout/settings_selector_row"
-                            android:id="@+id/row_date_format"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-                    </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- CATEGORY: STATS -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Stats"
-                android:textColor="?attr/colorPrimary"
-                android:textStyle="bold"
-                android:textSize="14sp"
-                android:letterSpacing="0.05"
-                android:layout_marginTop="12dp"
-                android:layout_marginBottom="4dp"/>
-
-            <!-- FEATURE: Battery -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/card_battery"
-                style="@style/Widget.Material3.CardView.Outlined"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <include layout="@layout/settings_folded_header"
-                        android:id="@+id/header_battery"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
-
-                    <LinearLayout
-                        android:id="@+id/content_battery"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:visibility="gone"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp"
-                        android:paddingBottom="8dp">
-
-                        <include layout="@layout/settings_toggle_row"
-                            android:id="@+id/row_battery_toggle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-
-                        <include layout="@layout/settings_slider_row"
-                            android:id="@+id/row_battery_size"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-
-                        <include layout="@layout/settings_toggle_row"
-                            android:id="@+id/row_battery_bold"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-                    </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- FEATURE: Temp -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/card_temp"
-                style="@style/Widget.Material3.CardView.Outlined"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <include layout="@layout/settings_folded_header"
-                        android:id="@+id/header_temp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
-
-                    <LinearLayout
-                        android:id="@+id/content_temp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:visibility="gone"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp"
-                        android:paddingBottom="8dp">
-
-                        <include layout="@layout/settings_toggle_row"
-                            android:id="@+id/row_temp_toggle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-
-                        <include layout="@layout/settings_slider_row"
-                            android:id="@+id/row_temp_size"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-
-                        <include layout="@layout/settings_toggle_row"
-                            android:id="@+id/row_temp_bold"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-                    </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- FEATURE: Weather Condition -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/card_weather"
-                style="@style/Widget.Material3.CardView.Outlined"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <include layout="@layout/settings_folded_header"
-                        android:id="@+id/header_weather"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
-
-                    <LinearLayout
-                        android:id="@+id/content_weather"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:visibility="gone"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp"
-                        android:paddingBottom="8dp">
-
-                        <include layout="@layout/settings_toggle_row"
-                            android:id="@+id/row_weather_toggle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-
-                        <include layout="@layout/settings_slider_row"
-                            android:id="@+id/row_weather_size"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-
-                        <include layout="@layout/settings_toggle_row"
-                            android:id="@+id/row_weather_bold"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-                    </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- FEATURE: Data Usage -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/card_data"
-                style="@style/Widget.Material3.CardView.Outlined"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <include layout="@layout/settings_folded_header"
-                        android:id="@+id/header_data"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
-
-                    <LinearLayout
-                        android:id="@+id/content_data"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:visibility="gone"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp"
-                        android:paddingBottom="8dp">
-
-                        <include layout="@layout/settings_toggle_row"
-                            android:id="@+id/row_data_toggle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-
-                        <include layout="@layout/settings_slider_row"
-                            android:id="@+id/row_data_size"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-
-                        <include layout="@layout/settings_toggle_row"
-                            android:id="@+id/row_data_bold"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-                    </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- FEATURE: Storage -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/card_storage"
-                style="@style/Widget.Material3.CardView.Outlined"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <include layout="@layout/settings_folded_header"
-                        android:id="@+id/header_storage"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
-
-                    <LinearLayout
-                        android:id="@+id/content_storage"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:visibility="gone"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp"
-                        android:paddingBottom="8dp">
-
-                        <include layout="@layout/settings_toggle_row"
-                            android:id="@+id/row_storage_toggle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-
-                        <include layout="@layout/settings_slider_row"
-                            android:id="@+id/row_storage_size"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-
-                        <include layout="@layout/settings_toggle_row"
-                            android:id="@+id/row_storage_bold"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-                    </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- FEATURE: Steps -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/card_steps"
-                style="@style/Widget.Material3.CardView.Outlined"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <include layout="@layout/settings_folded_header"
-                        android:id="@+id/header_steps"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
-
-                    <LinearLayout
-                        android:id="@+id/content_steps"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:visibility="gone"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp"
-                        android:paddingBottom="8dp">
-
-                        <include layout="@layout/settings_toggle_row"
-                            android:id="@+id/row_steps_toggle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-
-                        <include layout="@layout/settings_slider_row"
-                            android:id="@+id/row_steps_size"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-
-                        <include layout="@layout/settings_toggle_row"
-                            android:id="@+id/row_steps_bold"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-                    </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- FEATURE: Screen Time -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/card_screen_time"
-                style="@style/Widget.Material3.CardView.Outlined"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <include layout="@layout/settings_folded_header"
-                        android:id="@+id/header_screen_time"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
-
-                    <LinearLayout
-                        android:id="@+id/content_screen_time"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:visibility="gone"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp"
-                        android:paddingBottom="8dp">
-
-                        <include layout="@layout/settings_toggle_row"
-                            android:id="@+id/row_screen_time_toggle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-
-                        <include layout="@layout/settings_slider_row"
-                            android:id="@+id/row_screen_time_size"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-
-                        <include layout="@layout/settings_toggle_row"
-                            android:id="@+id/row_screen_time_bold"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-                    </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- FEATURE: Keep Alive -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/card_keep_alive"
-                style="@style/Widget.Material3.CardView.Outlined"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <include layout="@layout/settings_folded_header"
-                        android:id="@+id/header_keep_alive"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
-
-                    <LinearLayout
-                        android:id="@+id/content_keep_alive"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:visibility="gone"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp"
-                        android:paddingBottom="8dp">
-
-                        <include layout="@layout/settings_toggle_row"
-                            android:id="@+id/row_keep_alive_toggle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-                    </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- CATEGORY: AGENDA -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Agenda"
-                android:textColor="?attr/colorPrimary"
-                android:textStyle="bold"
-                android:textSize="14sp"
-                android:letterSpacing="0.05"
-                android:layout_marginTop="12dp"
-                android:layout_marginBottom="4dp"/>
-
-            <!-- FEATURE: Events -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/card_events"
-                style="@style/Widget.Material3.CardView.Outlined"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <include layout="@layout/settings_folded_header"
-                        android:id="@+id/header_events"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
-
-                    <LinearLayout
-                        android:id="@+id/content_events"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:visibility="gone"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp"
-                        android:paddingBottom="8dp">
-
-                        <include layout="@layout/settings_toggle_row"
-                            android:id="@+id/row_events_toggle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-
-                        <include layout="@layout/settings_slider_row"
-                            android:id="@+id/row_events_size"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-                    </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- FEATURE: Tasks -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/card_tasks"
-                style="@style/Widget.Material3.CardView.Outlined"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <include layout="@layout/settings_folded_header"
-                        android:id="@+id/header_tasks"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
-
-                    <LinearLayout
-                        android:id="@+id/content_tasks"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:visibility="gone"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp"
-                        android:paddingBottom="8dp">
-
-                        <include layout="@layout/settings_toggle_row"
-                            android:id="@+id/row_tasks_toggle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-
-                        <include layout="@layout/settings_slider_row"
-                            android:id="@+id/row_tasks_size"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-                    </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
             <!-- CATEGORY: APPEARANCE -->
             <TextView
                 android:layout_width="wrap_content"
@@ -1633,7 +677,873 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-        </LinearLayout>
+        <!-- CATEGORY: CONTENT -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Content"
+                android:textColor="?attr/colorPrimary"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:letterSpacing="0.05"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="4dp"/>
+
+            <!-- FEATURE: Time -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_time"
+                style="@style/Widget.Material3.CardView.Outlined"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/settings_folded_header"
+                        android:id="@+id/header_time"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <LinearLayout
+                        android:id="@+id/content_time"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:paddingBottom="8dp">
+
+                        <include layout="@layout/settings_toggle_row"
+                            android:id="@+id/row_time_toggle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                        <include layout="@layout/settings_slider_row"
+                            android:id="@+id/row_time_size"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                        <include layout="@layout/settings_selector_row"
+                            android:id="@+id/row_time_format"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- FEATURE: Next Alarm -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_next_alarm"
+                style="@style/Widget.Material3.CardView.Outlined"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/settings_folded_header"
+                        android:id="@+id/header_next_alarm"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <LinearLayout
+                        android:id="@+id/content_next_alarm"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:paddingBottom="8dp">
+
+                        <include layout="@layout/settings_toggle_row"
+                            android:id="@+id/row_next_alarm_toggle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                        <include layout="@layout/settings_slider_row"
+                            android:id="@+id/row_next_alarm_size"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- FEATURE: World Clock -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_world_clock"
+                style="@style/Widget.Material3.CardView.Outlined"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/settings_folded_header"
+                        android:id="@+id/header_world_clock"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <LinearLayout
+                        android:id="@+id/content_world_clock"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:paddingBottom="8dp">
+
+                        <include layout="@layout/settings_toggle_row"
+                            android:id="@+id/row_world_clock_toggle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                        <include layout="@layout/settings_slider_row"
+                            android:id="@+id/row_world_clock_size"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                        <include layout="@layout/settings_timezone_search"
+                            android:id="@+id/row_world_clock_zone"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- FEATURE: Date -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_date"
+                style="@style/Widget.Material3.CardView.Outlined"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/settings_folded_header"
+                        android:id="@+id/header_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <LinearLayout
+                        android:id="@+id/content_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:paddingBottom="8dp">
+
+                        <include layout="@layout/settings_toggle_row"
+                            android:id="@+id/row_date_toggle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                        <include layout="@layout/settings_slider_row"
+                            android:id="@+id/row_date_size"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                        <include layout="@layout/settings_selector_row"
+                            android:id="@+id/row_date_format"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- CATEGORY: STATS -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Stats"
+                android:textColor="?attr/colorPrimary"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:letterSpacing="0.05"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="4dp"/>
+
+            <!-- FEATURE: Battery -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_battery"
+                style="@style/Widget.Material3.CardView.Outlined"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/settings_folded_header"
+                        android:id="@+id/header_battery"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <LinearLayout
+                        android:id="@+id/content_battery"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:paddingBottom="8dp">
+
+                        <include layout="@layout/settings_toggle_row"
+                            android:id="@+id/row_battery_toggle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                        <include layout="@layout/settings_slider_row"
+                            android:id="@+id/row_battery_size"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                        <include layout="@layout/settings_toggle_row"
+                            android:id="@+id/row_battery_bold"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- FEATURE: Temp -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_temp"
+                style="@style/Widget.Material3.CardView.Outlined"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/settings_folded_header"
+                        android:id="@+id/header_temp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <LinearLayout
+                        android:id="@+id/content_temp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:paddingBottom="8dp">
+
+                        <include layout="@layout/settings_toggle_row"
+                            android:id="@+id/row_temp_toggle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                        <include layout="@layout/settings_slider_row"
+                            android:id="@+id/row_temp_size"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                        <include layout="@layout/settings_toggle_row"
+                            android:id="@+id/row_temp_bold"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- FEATURE: Weather Condition -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_weather"
+                style="@style/Widget.Material3.CardView.Outlined"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/settings_folded_header"
+                        android:id="@+id/header_weather"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <LinearLayout
+                        android:id="@+id/content_weather"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:paddingBottom="8dp">
+
+                        <include layout="@layout/settings_toggle_row"
+                            android:id="@+id/row_weather_toggle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                        <include layout="@layout/settings_slider_row"
+                            android:id="@+id/row_weather_size"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                        <include layout="@layout/settings_toggle_row"
+                            android:id="@+id/row_weather_bold"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- FEATURE: Data Usage -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_data"
+                style="@style/Widget.Material3.CardView.Outlined"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/settings_folded_header"
+                        android:id="@+id/header_data"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <LinearLayout
+                        android:id="@+id/content_data"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:paddingBottom="8dp">
+
+                        <include layout="@layout/settings_toggle_row"
+                            android:id="@+id/row_data_toggle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                        <include layout="@layout/settings_slider_row"
+                            android:id="@+id/row_data_size"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                        <include layout="@layout/settings_toggle_row"
+                            android:id="@+id/row_data_bold"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- FEATURE: Storage -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_storage"
+                style="@style/Widget.Material3.CardView.Outlined"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/settings_folded_header"
+                        android:id="@+id/header_storage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <LinearLayout
+                        android:id="@+id/content_storage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:paddingBottom="8dp">
+
+                        <include layout="@layout/settings_toggle_row"
+                            android:id="@+id/row_storage_toggle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                        <include layout="@layout/settings_slider_row"
+                            android:id="@+id/row_storage_size"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                        <include layout="@layout/settings_toggle_row"
+                            android:id="@+id/row_storage_bold"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- FEATURE: Steps -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_steps"
+                style="@style/Widget.Material3.CardView.Outlined"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/settings_folded_header"
+                        android:id="@+id/header_steps"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <LinearLayout
+                        android:id="@+id/content_steps"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:paddingBottom="8dp">
+
+                        <include layout="@layout/settings_toggle_row"
+                            android:id="@+id/row_steps_toggle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                        <include layout="@layout/settings_slider_row"
+                            android:id="@+id/row_steps_size"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                        <include layout="@layout/settings_toggle_row"
+                            android:id="@+id/row_steps_bold"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- FEATURE: Screen Time -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_screen_time"
+                style="@style/Widget.Material3.CardView.Outlined"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/settings_folded_header"
+                        android:id="@+id/header_screen_time"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <LinearLayout
+                        android:id="@+id/content_screen_time"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:paddingBottom="8dp">
+
+                        <include layout="@layout/settings_toggle_row"
+                            android:id="@+id/row_screen_time_toggle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                        <include layout="@layout/settings_slider_row"
+                            android:id="@+id/row_screen_time_size"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                        <include layout="@layout/settings_toggle_row"
+                            android:id="@+id/row_screen_time_bold"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- CATEGORY: AGENDA -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Agenda"
+                android:textColor="?attr/colorPrimary"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:letterSpacing="0.05"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="4dp"/>
+
+            <!-- FEATURE: Events -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_events"
+                style="@style/Widget.Material3.CardView.Outlined"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/settings_folded_header"
+                        android:id="@+id/header_events"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <LinearLayout
+                        android:id="@+id/content_events"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:paddingBottom="8dp">
+
+                        <include layout="@layout/settings_toggle_row"
+                            android:id="@+id/row_events_toggle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                        <include layout="@layout/settings_slider_row"
+                            android:id="@+id/row_events_size"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- FEATURE: Tasks -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_tasks"
+                style="@style/Widget.Material3.CardView.Outlined"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/settings_folded_header"
+                        android:id="@+id/header_tasks"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <LinearLayout
+                        android:id="@+id/content_tasks"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:paddingBottom="8dp">
+
+                        <include layout="@layout/settings_toggle_row"
+                            android:id="@+id/row_tasks_toggle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                        <include layout="@layout/settings_slider_row"
+                            android:id="@+id/row_tasks_size"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            
+            
+            
+            <!-- CATEGORY: SYSTEM -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="System"
+                android:textColor="?attr/colorPrimary"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:letterSpacing="0.05"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="4dp"/>
+
+            <!-- FEATURE: Advanced -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_advanced"
+                style="@style/Widget.Material3.CardView.Outlined"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/settings_folded_header"
+                        android:id="@+id/header_advanced"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <LinearLayout
+                        android:id="@+id/content_advanced"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:paddingBottom="8dp">
+
+                        <include layout="@layout/settings_slider_row"
+                            android:id="@+id/row_update_interval"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                            
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Note: Update interval is irrelevant when Keep Alive is toggled on."
+                            android:textSize="12sp"
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp"
+                            android:layout_marginBottom="8dp"/>
+                            
+                        <include layout="@layout/settings_toggle_row"
+                            android:id="@+id/row_keep_alive_toggle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- FEATURE: Permissions -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_permissions"
+                style="@style/Widget.Material3.CardView.Outlined"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/settings_folded_header"
+                        android:id="@+id/header_permissions"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <LinearLayout
+                        android:id="@+id/content_permissions"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:paddingBottom="8dp">
+
+                        <include layout="@layout/settings_toggle_row"
+                            android:id="@+id/row_perm_calendar"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                            
+                        <include layout="@layout/settings_toggle_row"
+                            android:id="@+id/row_perm_tasks"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                            
+                        <include layout="@layout/settings_toggle_row"
+                            android:id="@+id/row_perm_steps"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                            
+                        <include layout="@layout/settings_toggle_row"
+                            android:id="@+id/row_perm_data_usage"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                            
+                        <include layout="@layout/settings_toggle_row"
+                            android:id="@+id/row_perm_screen_time"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                            
+                        <include layout="@layout/settings_toggle_row"
+                            android:id="@+id/row_perm_weather"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- FEATURE: About -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_about"
+                style="@style/Widget.Material3.CardView.Outlined"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/settings_folded_header"
+                        android:id="@+id/header_about"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <LinearLayout
+                        android:id="@+id/content_about"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:paddingBottom="16dp"
+                        android:paddingTop="8dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:paddingTop="16dp"
+                            android:paddingBottom="24dp">
+
+                            <ImageView
+                                android:layout_width="64dp"
+                                android:layout_height="64dp"
+                                android:src="@mipmap/ic_launcher"
+                                android:contentDescription="Lwidget Icon"
+                                android:layout_marginBottom="12dp"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Lwidget"
+                                android:textSize="22sp"
+                                android:textStyle="bold"
+                                android:textColor="?attr/colorOnSurface"
+                                android:fontFamily="monospace"
+                                android:layout_marginBottom="4dp"/>
+
+                            <TextView
+                                android:id="@+id/tv_changelog_version"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Version %s"
+                                android:textAppearance="?attr/textAppearanceBodyMedium"
+                                android:textColor="?attr/colorOnSurfaceVariant"
+                                android:layout_marginBottom="12dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="by LeanBitLab"
+                                android:textSize="14sp"
+                                android:textColor="?attr/colorOnSurfaceVariant"/>
+
+                        </LinearLayout>
+
+                        <com.google.android.material.divider.MaterialDivider
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="16dp"/>
+
+                        <TextView
+                            android:id="@+id/tv_github_link"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/github_source_code"
+                            android:textAppearance="?attr/textAppearanceBodyMedium"
+                            android:textColor="?attr/colorPrimary"
+                            android:textStyle="bold"
+                            android:autoLink="web"
+                            android:linksClickable="true"/>
+
+                        <TextView
+                            android:id="@+id/tv_privacy_policy"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:text="@string/privacy_policy"
+                            android:textAppearance="?attr/textAppearanceBodyMedium"
+                            android:textColor="?attr/colorPrimary"
+                            android:textStyle="bold"/>
+
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
     <!-- Save/Apply FAB -->
