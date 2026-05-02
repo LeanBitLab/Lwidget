@@ -59,9 +59,19 @@ class SetupActivity : AppCompatActivity() {
         switchKeepAlive.isChecked = prefs.getBoolean("keep_alive", false)
         switchKeepAlive.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
+                val neededPermissions = mutableListOf<String>()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
+                    ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED) {
+                    neededPermissions.add(Manifest.permission.ACTIVITY_RECOGNITION)
+                }
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
                     ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                    requestPermissionLauncher.launch(arrayOf(Manifest.permission.POST_NOTIFICATIONS))
+                    neededPermissions.add(Manifest.permission.POST_NOTIFICATIONS)
+                }
+                if (neededPermissions.isNotEmpty()) {
+                    switchKeepAlive.isChecked = false
+                    requestPermissionLauncher.launch(neededPermissions.toTypedArray())
+                    return@setOnCheckedChangeListener
                 }
             }
             prefs.edit().putBoolean("keep_alive", isChecked).apply()
@@ -206,7 +216,10 @@ class SetupActivity : AppCompatActivity() {
 
         val keepAlive = prefs.getBoolean("keep_alive", false)
         val showSteps = prefs.getBoolean("show_steps", false)
-        if (keepAlive || showSteps) {
+        val hasActivityPerm = Build.VERSION.SDK_INT < Build.VERSION_CODES.Q ||
+            ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED
+
+        if ((keepAlive || showSteps) && hasActivityPerm) {
             val serviceIntent = Intent(this, StepCounterService::class.java)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 startForegroundService(serviceIntent)

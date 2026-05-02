@@ -1132,17 +1132,28 @@ class MainActivity : AppCompatActivity() {
         // Keep Alive (now inside Advanced section, not folded)
         bindToggle(R.id.row_keep_alive_toggle, "Enable Keep Alive", "keep_alive", false) { isChecked ->
             if (isChecked) {
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU && ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                val neededPermissions = mutableListOf<String>()
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q &&
+                    ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED) {
+                    neededPermissions.add(Manifest.permission.ACTIVITY_RECOGNITION)
+                }
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU &&
+                    ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                    neededPermissions.add(Manifest.permission.POST_NOTIFICATIONS)
+                }
+                if (neededPermissions.isNotEmpty()) {
                     val switch = findViewById<View>(R.id.row_keep_alive_toggle).findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.row_switch)
                     switch.isChecked = false
-                    ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 105)
+                    ActivityCompat.requestPermissions(this, neededPermissions.toTypedArray(), 105)
                     return@bindToggle
                 }
             }
             prefs.edit().putBoolean("keep_alive", isChecked).apply()
             val showSteps = prefs.getBoolean("show_steps", false)
             val serviceIntent = Intent(this, StepCounterService::class.java)
-            if (isChecked || showSteps) {
+            val hasActivityPerm = android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.Q ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED
+            if ((isChecked || showSteps) && hasActivityPerm) {
                 try {
                     ContextCompat.startForegroundService(this, serviceIntent)
                 } catch (e: Exception) {
