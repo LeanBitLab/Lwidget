@@ -108,6 +108,9 @@ class MainActivity : AppCompatActivity() {
         setupSections()
         updateLivePreview()
         
+        // Advanced Section
+        bindSlider(R.id.row_update_interval, "Update Interval (m)", "update_interval", 15f, 1f, 60f, "m")
+        
         // Setup Changelog
         val versionName = try {
             packageManager.getPackageInfo(packageName, 0).versionName
@@ -205,36 +208,55 @@ class MainActivity : AppCompatActivity() {
         var widgetNeedsUpdate = false
 
         // Check Calendar
-        if (prefs.getBoolean("show_events", false) && ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+        val calMissing = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED
+        if (prefs.getBoolean("show_events", false) && calMissing) {
             prefs.edit().putBoolean("show_events", false).apply()
             findViewById<View>(R.id.row_events_toggle).findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.row_switch).isChecked = false
             findViewById<View>(R.id.row_events_size).visibility = View.GONE
             widgetNeedsUpdate = true
         }
+        findViewById<View>(R.id.perm_row_calendar).visibility = if (calMissing) View.VISIBLE else View.GONE
+        findViewById<View>(R.id.btn_grant_calendar).setOnClickListener {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_CALENDAR), 100)
+        }
 
         // Check Tasks
-        if (prefs.getBoolean("show_tasks", false) && ContextCompat.checkSelfPermission(this, AwidgetProvider.PERMISSION_READ_TASKS_ORG) != PackageManager.PERMISSION_GRANTED) {
+        val tasksMissing = ContextCompat.checkSelfPermission(this, AwidgetProvider.PERMISSION_READ_TASKS_ORG) != PackageManager.PERMISSION_GRANTED
+        if (prefs.getBoolean("show_tasks", false) && tasksMissing) {
              prefs.edit().putBoolean("show_tasks", false).apply()
              findViewById<View>(R.id.row_tasks_toggle).findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.row_switch).isChecked = false
              findViewById<View>(R.id.row_tasks_size).visibility = View.GONE
              widgetNeedsUpdate = true
         }
+        findViewById<View>(R.id.perm_row_tasks).visibility = if (tasksMissing) View.VISIBLE else View.GONE
+        findViewById<View>(R.id.btn_grant_tasks).setOnClickListener {
+            ActivityCompat.requestPermissions(this, arrayOf(AwidgetProvider.PERMISSION_READ_TASKS_ORG), 101)
+        }
 
         // Check Steps
         var stepMissing = false
-        if (prefs.getBoolean("show_steps", false)) {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q && ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED) {
-                stepMissing = true
-            }
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU && ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                stepMissing = true
-            }
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q && ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED) {
+            stepMissing = true
         }
-        if (stepMissing) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU && ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            stepMissing = true
+        }
+        if (prefs.getBoolean("show_steps", false) && stepMissing) {
              prefs.edit().putBoolean("show_steps", false).apply()
              findViewById<View>(R.id.row_steps_toggle).findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.row_switch).isChecked = false
              findViewById<View>(R.id.row_steps_size).visibility = View.GONE
              widgetNeedsUpdate = true
+        }
+        findViewById<View>(R.id.perm_row_steps).visibility = if (stepMissing) View.VISIBLE else View.GONE
+        findViewById<View>(R.id.btn_grant_steps).setOnClickListener {
+            val neededPermissions = mutableListOf<String>()
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                neededPermissions.add(Manifest.permission.ACTIVITY_RECOGNITION)
+            }
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                neededPermissions.add(Manifest.permission.POST_NOTIFICATIONS)
+            }
+            ActivityCompat.requestPermissions(this, neededPermissions.toTypedArray(), 102)
         }
 
         // Check Screen Time
@@ -252,6 +274,14 @@ class MainActivity : AppCompatActivity() {
             findViewById<View>(R.id.row_data_size).visibility = View.GONE
             widgetNeedsUpdate = true
         }
+        
+        val usageMissing = !hasUsageStatsPermission()
+        findViewById<View>(R.id.perm_row_data).visibility = if (usageMissing) View.VISIBLE else View.GONE
+        findViewById<View>(R.id.btn_grant_data).setOnClickListener {
+            try {
+                startActivity(Intent(android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS))
+            } catch (e: Exception) {}
+        }
 
         // Check Breezy Weather
         if (prefs.getBoolean("show_weather_condition", false)) {
@@ -263,7 +293,13 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        cardPermissionList.visibility = View.GONE
+        // We removed cardPermissionList.visibility = View.GONE so the card is always visible if there are missing permissions.
+        // Let's actually hide the card if ALL permissions are granted.
+        if (!calMissing && !tasksMissing && !stepMissing && !usageMissing) {
+            cardPermissionList.visibility = View.GONE
+        } else {
+            cardPermissionList.visibility = View.VISIBLE
+        }
 
         if (widgetNeedsUpdate) {
             updateWidget()
@@ -1482,7 +1518,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun bindSlider(
         viewId: Int, title: String, prefKey: String, defValue: Float,
-        minValue: Float, maxValue: Float
+        minValue: Float, maxValue: Float, suffix: String = "%"
     ) {
         val row = findViewById<View>(viewId)
         val tvTitle = row.findViewById<TextView>(R.id.row_label)
@@ -1495,11 +1531,11 @@ class MainActivity : AppCompatActivity() {
         slider.valueFrom = minValue
         slider.valueTo = maxValue
         slider.value = currentValue.coerceIn(minValue, maxValue)
-        tvValue.text = "${currentValue.toInt()}%"
+        tvValue.text = "${currentValue.toInt()}$suffix"
 
         slider.addOnChangeListener { _, value, fromUser ->
             if (fromUser) {
-                tvValue.text = "${value.toInt()}%"
+                tvValue.text = "${value.toInt()}$suffix"
                 prefs.edit().putFloat(prefKey, value).apply()
                 updateWidget()
             }
