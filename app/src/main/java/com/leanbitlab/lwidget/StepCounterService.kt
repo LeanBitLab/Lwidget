@@ -42,6 +42,18 @@ class StepCounterService : Service(), SensorEventListener {
     override fun onCreate() {
         super.onCreate()
         createNotificationChannel()
+
+        try {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                startForeground(NOTIFICATION_ID, createNotification(), android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_HEALTH)
+            } else {
+                startForeground(NOTIFICATION_ID, createNotification())
+            }
+        } catch (e: SecurityException) {
+            android.util.Log.e("LWidget", "Cannot start foreground service: missing permission", e)
+            stopSelf()
+            return
+        }
         
         val prefs = getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
         val showSteps = prefs.getBoolean("show_steps", false)
@@ -54,18 +66,6 @@ class StepCounterService : Service(), SensorEventListener {
                 stopSelf()
                 return
             }
-        }
-
-        try {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                startForeground(NOTIFICATION_ID, createNotification(), android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_HEALTH)
-            } else {
-                startForeground(NOTIFICATION_ID, createNotification())
-            }
-        } catch (e: SecurityException) {
-            android.util.Log.e("LWidget", "Cannot start foreground service: missing permission", e)
-            stopSelf()
-            return
         }
 
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
