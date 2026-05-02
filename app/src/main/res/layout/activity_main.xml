@@ -1092,6 +1092,83 @@
                         android:paddingEnd="8dp"
                         android:paddingBottom="8dp">
 
+                        <!-- Subsection: Presets -->
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/card_appearance_presets"
+                            style="@style/Widget.Material3.CardView.Outlined"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="6dp"
+                            app:cardBackgroundColor="?attr/colorSurfaceContainerLow">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <LinearLayout
+                                    android:id="@+id/header_appearance_presets"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    android:gravity="center_vertical"
+                                    android:paddingStart="14dp"
+                                    android:paddingEnd="14dp"
+                                    android:paddingTop="10dp"
+                                    android:paddingBottom="10dp"
+                                    android:background="?attr/selectableItemBackground"
+                                    android:clickable="true"
+                                    android:focusable="true">
+
+                                    <TextView
+                                        android:id="@+id/header_title_appearance_presets"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="PRESETS"
+                                        android:textColor="?attr/colorOnSurfaceVariant"
+                                        android:textSize="13sp"
+                                        android:textStyle="bold"
+                                        android:letterSpacing="0.05"/>
+
+                                    <ImageView
+                                        android:id="@+id/header_chevron_appearance_presets"
+                                        android:layout_width="20dp"
+                                        android:layout_height="20dp"
+                                        android:src="@drawable/ic_chevron_down"
+                                        android:rotation="0"
+                                        app:tint="?attr/colorOnSurfaceVariant"
+                                        android:contentDescription="Expand/collapse"/>
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:id="@+id/content_appearance_presets"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical"
+                                    android:visibility="gone"
+                                    android:paddingStart="8dp"
+                                    android:paddingEnd="8dp"
+                                    android:paddingBottom="12dp">
+
+                                    <HorizontalScrollView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:scrollbars="none"
+                                        android:layout_marginTop="4dp">
+
+                                        <com.google.android.material.chip.ChipGroup
+                                            android:id="@+id/preset_chip_group"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            app:singleSelection="true"
+                                            app:chipSpacingHorizontal="8dp"
+                                            app:singleLine="true"/>
+                                    </HorizontalScrollView>
+                                </LinearLayout>
+                            </LinearLayout>
+                        </com.google.android.material.card.MaterialCardView>
+
                         <!-- Subsection: Outline -->
                         <com.google.android.material.card.MaterialCardView
                             android:id="@+id/card_appearance_outline"
