@@ -799,6 +799,44 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+
+    private fun bindCategoryFoldable(headerId: Int, contentId: Int, title: String, iconResId: Int, prefKey: String) {
+        accordionViews[prefKey] = findViewById(contentId)
+        accordionHeaders[prefKey] = findViewById(headerId)
+        
+        val header = findViewById<View>(headerId)
+        header.findViewById<TextView>(R.id.header_title).text = title
+        val headerIcon = header.findViewById<android.widget.ImageView>(R.id.header_icon)
+        if (iconResId != 0) {
+            headerIcon.setImageResource(iconResId)
+            headerIcon.visibility = View.VISIBLE
+        } else {
+            headerIcon.visibility = View.GONE
+        }
+        
+        val content = findViewById<View>(contentId)
+        val chevron = header.findViewById<android.widget.ImageView>(R.id.header_chevron)
+        val isExpanded = prefs.getBoolean(prefKey, false)
+        content.visibility = if (isExpanded) View.VISIBLE else View.GONE
+        chevron.rotation = if (isExpanded) 180f else 0f
+        
+        header.setOnClickListener {
+            val nowExpanded = content.visibility != View.VISIBLE
+            if (nowExpanded) {
+                collapseAllExcept(prefKey)
+                content.visibility = View.VISIBLE
+                prefs.edit().putBoolean(prefKey, true).apply()
+            } else {
+                content.visibility = View.GONE
+                prefs.edit().putBoolean(prefKey, false).apply()
+            }
+            android.animation.ObjectAnimator.ofFloat(chevron, "rotation", if (nowExpanded) 180f else 0f).apply {
+                duration = 300
+                start()
+            }
+        }
+    }
+
     private fun setupSections() {
         contentSwitches.clear()
 
@@ -821,6 +859,11 @@ class MainActivity : AppCompatActivity() {
         setupKeepAliveSection()
         setupEventsAndTasksSections()
         setupThemeSection(colorOptions)
+        
+        // System sections
+        bindCategoryFoldable(R.id.header_advanced, R.id.content_advanced, "Advanced", 0, "section_advanced_expanded")
+        bindCategoryFoldable(R.id.header_permissions, R.id.content_permissions, "Permissions", 0, "section_permissions_expanded")
+        bindCategoryFoldable(R.id.header_about, R.id.content_about, "About", 0, "section_about_expanded")
     }
 
     private fun setupTimeSection(timeFormatOptions: List<String>) {
