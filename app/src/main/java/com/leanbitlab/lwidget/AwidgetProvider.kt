@@ -322,11 +322,11 @@ class AwidgetProvider : AppWidgetProvider() {
             // Resolve background color (0=Default, 1=System Accent, 2=Custom)
             fun resolveBgColor(idx: Int, isLight: Boolean): Int {
                  return when (idx) {
-                     0 -> if (isLight) android.graphics.Color.WHITE else android.graphics.Color.parseColor("#212121")
+                     0 -> if (isLight) android.graphics.Color.WHITE else context.getColor(R.color.widget_bg_dark)
                      1 -> if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
                               context.getColor(android.R.color.system_accent1_500)
                           } else {
-                              android.graphics.Color.CYAN
+                              context.getColor(R.color.widget_fallback_cyan)
                           }
                      2 -> {
                           val r = prefs.getInt("bg_color_r", 255)
@@ -334,7 +334,7 @@ class AwidgetProvider : AppWidgetProvider() {
                           val b = prefs.getInt("bg_color_b", 255)
                           android.graphics.Color.rgb(r, g, b)
                      }
-                     else -> if (isLight) android.graphics.Color.WHITE else android.graphics.Color.parseColor("#212121")
+                     else -> if (isLight) android.graphics.Color.WHITE else context.getColor(R.color.widget_bg_dark)
                  }
             }
 
@@ -355,7 +355,7 @@ class AwidgetProvider : AppWidgetProvider() {
                      1 -> if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
                               context.getColor(android.R.color.system_accent1_500)
                           } else {
-                              android.graphics.Color.CYAN
+                              context.getColor(R.color.widget_fallback_cyan)
                           }
                      2 -> {
                           val r = prefs.getInt("outline_color_r", 255)
@@ -412,17 +412,17 @@ class AwidgetProvider : AppWidgetProvider() {
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
                             context.getColor(android.R.color.system_accent2_500)
                         } else {
-                            android.graphics.Color.YELLOW
+                            context.getColor(R.color.widget_fallback_yellow)
                         }
                     }
-                    else -> if (useLightTheme) android.graphics.Color.parseColor("#AA555544") else android.graphics.Color.parseColor("#BBDDDDCC")
+                    else -> if (useLightTheme) context.getColor(R.color.widget_date_light) else context.getColor(R.color.widget_date_dark)
                 }
             }
             val alarmColor = if (useDynamicColors && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
                 // Cool tertiary accent for alarm
                 context.getColor(if (useLightTheme) android.R.color.system_accent3_700 else android.R.color.system_accent3_100)
             } else {
-                if (useLightTheme) android.graphics.Color.parseColor("#AA445566") else android.graphics.Color.parseColor("#BBAACCDD")
+                if (useLightTheme) context.getColor(R.color.widget_alarm_light) else context.getColor(R.color.widget_alarm_dark)
             }
 
             // Background & outline dynamic color

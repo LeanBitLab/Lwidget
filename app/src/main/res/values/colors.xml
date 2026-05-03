@@ -5,4 +5,13 @@
     <!-- Light Theme Colors -->
     <color name="widget_text_light">#FF1C1B1F</color>
     <color name="widget_text_secondary_light">#FF49454F</color>
+
+    <!-- Widget Colors -->
+    <color name="widget_bg_dark">#212121</color>
+    <color name="widget_date_light">#AA555544</color>
+    <color name="widget_date_dark">#BBDDDDCC</color>
+    <color name="widget_alarm_light">#AA445566</color>
+    <color name="widget_alarm_dark">#BBAACCDD</color>
+    <color name="widget_fallback_cyan">#00FFFF</color>
+    <color name="widget_fallback_yellow">#FFFF00</color>
 </resources>
