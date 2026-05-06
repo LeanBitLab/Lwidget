@@ -135,7 +135,7 @@ class AwidgetProvider : AppWidgetProvider() {
             context,
             500,
             intent,
-            android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE
+            android.app.PendingIntent.FLAG_IMMUTABLE
         )
         
         val prefs = context.getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
@@ -159,7 +159,7 @@ class AwidgetProvider : AppWidgetProvider() {
             context,
             500,
             intent,
-            android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE
+            android.app.PendingIntent.FLAG_IMMUTABLE
         )
         alarmManager.cancel(pendingIntent)
     }
@@ -649,7 +649,7 @@ class AwidgetProvider : AppWidgetProvider() {
                 if (launchIntent != null) {
                     val pendingIntent = android.app.PendingIntent.getActivity(
                         context, 0, launchIntent, 
-                        android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE
+                        android.app.PendingIntent.FLAG_IMMUTABLE
                     )
                     views.setOnClickPendingIntent(R.id.text_weather_condition, pendingIntent)
                 }
@@ -774,7 +774,7 @@ class AwidgetProvider : AppWidgetProvider() {
             // --- Click Actions ---
             val clockPackages = listOf("com.android.deskclock", "com.google.android.deskclock", "com.simplemobiletools.clock", "org.fossify.clock")
             val alarmIntent = getBestIntent(context, clockPackages, Intent(android.provider.AlarmClock.ACTION_SHOW_ALARMS))
-            val alarmPendingIntent = PendingIntent.getActivity(context, 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+            val alarmPendingIntent = PendingIntent.getActivity(context, 0, alarmIntent, PendingIntent.FLAG_IMMUTABLE)
             views.setOnClickPendingIntent(R.id.clock_time, alarmPendingIntent)
 
             val calendarPackages = listOf("org.fossify.calendar", "com.simplemobiletools.calendar", "com.google.android.calendar", "com.android.calendar")
@@ -783,20 +783,20 @@ class AwidgetProvider : AppWidgetProvider() {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
             }
             val calendarIntent = getBestIntent(context, calendarPackages, baseCalIntent)
-            val calendarPendingIntent = PendingIntent.getActivity(context, 1, calendarIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+            val calendarPendingIntent = PendingIntent.getActivity(context, 1, calendarIntent, PendingIntent.FLAG_IMMUTABLE)
             views.setOnClickPendingIntent(R.id.clock_date, calendarPendingIntent)
 
             val batteryIntent = Intent(Intent.ACTION_POWER_USAGE_SUMMARY)
-            val batteryPendingIntent = PendingIntent.getActivity(context, 2, batteryIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+            val batteryPendingIntent = PendingIntent.getActivity(context, 2, batteryIntent, PendingIntent.FLAG_IMMUTABLE)
             views.setOnClickPendingIntent(R.id.text_battery, batteryPendingIntent)
             views.setOnClickPendingIntent(R.id.text_temp, batteryPendingIntent)
             
             val storageIntent = Intent(android.provider.Settings.ACTION_INTERNAL_STORAGE_SETTINGS)
-            val storagePendingIntent = PendingIntent.getActivity(context, 3, storageIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+            val storagePendingIntent = PendingIntent.getActivity(context, 3, storageIntent, PendingIntent.FLAG_IMMUTABLE)
             views.setOnClickPendingIntent(R.id.text_storage, storagePendingIntent)
 
             val dataIntent = Intent(android.provider.Settings.ACTION_DATA_USAGE_SETTINGS)
-            val dataPendingIntent = PendingIntent.getActivity(context, 4, dataIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+            val dataPendingIntent = PendingIntent.getActivity(context, 4, dataIntent, PendingIntent.FLAG_IMMUTABLE)
             views.setOnClickPendingIntent(R.id.text_data_usage, dataPendingIntent)
 
             // --- Calendar Events OR Tasks ---
@@ -819,12 +819,12 @@ class AwidgetProvider : AppWidgetProvider() {
             val refreshIntent = Intent(context, AwidgetProvider::class.java).apply {
                 action = ACTION_BATTERY_UPDATE
             }
-            val refreshPendingIntent = PendingIntent.getBroadcast(context, 10, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+            val refreshPendingIntent = PendingIntent.getBroadcast(context, 10, refreshIntent, PendingIntent.FLAG_IMMUTABLE)
 
             if (showTasks) {
                  val tasksIntent = context.packageManager.getLaunchIntentForPackage("org.tasks")
                  if (tasksIntent != null) {
-                     val tasksPendingIntent = PendingIntent.getActivity(context, 11, tasksIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+                     val tasksPendingIntent = PendingIntent.getActivity(context, 11, tasksIntent, PendingIntent.FLAG_IMMUTABLE)
                      views.setOnClickPendingIntent(R.id.events_container, tasksPendingIntent)
                  } else {
                      views.setOnClickPendingIntent(R.id.events_container, refreshPendingIntent)
@@ -834,7 +834,7 @@ class AwidgetProvider : AppWidgetProvider() {
             }
 
             val settingsIntent = Intent(context, MainActivity::class.java)
-            val settingsPendingIntent = PendingIntent.getActivity(context, 0, settingsIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+            val settingsPendingIntent = PendingIntent.getActivity(context, 0, settingsIntent, PendingIntent.FLAG_IMMUTABLE)
             views.setOnClickPendingIntent(R.id.widget_root, settingsPendingIntent)
 
             return views
@@ -938,7 +938,7 @@ class AwidgetProvider : AppWidgetProvider() {
                 views.setTextViewTextSize(eventViews[0], android.util.TypedValue.COMPLEX_UNIT_SP, textSizeSp)
                 views.setViewVisibility(eventViews[0], android.view.View.VISIBLE)
                 
-                val emptyIntent = PendingIntent.getActivity(context, 0, Intent(), PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+                val emptyIntent = PendingIntent.getActivity(context, 0, Intent(), PendingIntent.FLAG_IMMUTABLE)
                 views.setOnClickPendingIntent(eventViews[0], emptyIntent)
 
                 for (i in 1 until eventViews.size) {
@@ -979,7 +979,7 @@ class AwidgetProvider : AppWidgetProvider() {
                         data = android.content.ContentUris.withAppendedId(android.provider.CalendarContract.Events.CONTENT_URI, event.id)
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
                     }
-                    val eventPendingIntent = PendingIntent.getActivity(context, event.id.toInt(), eventIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+                    val eventPendingIntent = PendingIntent.getActivity(context, event.id.toInt(), eventIntent, PendingIntent.FLAG_IMMUTABLE)
                     views.setOnClickPendingIntent(eventViews[i], eventPendingIntent)
                 } else {
                     views.setViewVisibility(eventViews[i], android.view.View.GONE)
@@ -1207,7 +1207,7 @@ class AwidgetProvider : AppWidgetProvider() {
 
                 val taskIntent = context.packageManager.getLaunchIntentForPackage("org.tasks")
                 if (taskIntent != null) {
-                    val taskPendingIntent = PendingIntent.getActivity(context, 1000 + i, taskIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+                    val taskPendingIntent = PendingIntent.getActivity(context, 1000 + i, taskIntent, PendingIntent.FLAG_IMMUTABLE)
                     views.setOnClickPendingIntent(eventViews[i], taskPendingIntent)
                 }
             }
