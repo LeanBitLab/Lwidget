@@ -165,6 +165,21 @@ class AwidgetProvider : AppWidgetProvider() {
     }
 
     companion object {
+
+        private var cachedLocale: java.util.Locale? = null
+        private val formatters = java.util.concurrent.ConcurrentHashMap<String, java.time.format.DateTimeFormatter>()
+
+        private fun getFormatter(pattern: String): java.time.format.DateTimeFormatter {
+            val currentLocale = java.util.Locale.getDefault()
+            if (cachedLocale != currentLocale) {
+                cachedLocale = currentLocale
+                formatters.clear()
+            }
+            return formatters.getOrPut(pattern) {
+                java.time.format.DateTimeFormatter.ofPattern(pattern, currentLocale)
+            }
+        }
+
         const val ACTION_BATTERY_UPDATE = "com.leanbitlab.lwidget.ACTION_BATTERY_UPDATE"
         const val PERMISSION_READ_TASKS_ORG = "org.tasks.permission.READ_TASKS"
         const val PERMISSION_READ_TASKS_ASTRID = "com.todoroo.astrid.READ"
@@ -928,9 +943,9 @@ class AwidgetProvider : AppWidgetProvider() {
         }
 
         private fun bindCalendarEvents(context: Context, views: RemoteViews, events: List<EventInfo>, textSizeSp: Float, primaryColor: Int, secondaryColor: Int, eventViews: List<Int>) {
-            val timeFormatter = DateTimeFormatter.ofPattern("h:mm a", Locale.getDefault())
-            val dayFormatter = DateTimeFormatter.ofPattern("EEE", Locale.getDefault())
-            val dateFormatter = DateTimeFormatter.ofPattern("d MMM h:mma", Locale.getDefault())
+            val timeFormatter = getFormatter("h:mm a")
+            val dayFormatter = getFormatter("EEE")
+            val dateFormatter = getFormatter("d MMM h:mma")
 
             if (events.isEmpty()) {
                 views.setTextViewText(eventViews[0], "No events today")
@@ -1157,7 +1172,7 @@ class AwidgetProvider : AppWidgetProvider() {
             } else if (dueDate.isEqual(tomorrow)) {
                 " (Tomorrow)"
             } else {
-                val df = DateTimeFormatter.ofPattern("MMM d", Locale.getDefault())
+                val df = getFormatter("MMM d")
                 " (${dueDate.format(df)})"
             }
         }
@@ -1222,7 +1237,7 @@ class AwidgetProvider : AppWidgetProvider() {
                  val zoneId = ZoneId.of(zoneIdStr)
                  val zdt = java.time.ZonedDateTime.now(zoneId)
                  val pattern = if (is12Hour) "h:mm a" else "H:mm"
-                 val formatter = DateTimeFormatter.ofPattern(pattern, Locale.getDefault())
+                 val formatter = getFormatter(pattern)
                  val timeStr = zdt.format(formatter)
 
                  // Format: "🌍 10:30 AM"
@@ -1243,7 +1258,7 @@ class AwidgetProvider : AppWidgetProvider() {
             
             if (nextAlarm != null) {
                 val nextAlarmTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(nextAlarm.triggerTime), ZoneId.systemDefault())
-                val timeFormatter = DateTimeFormatter.ofPattern("h:mm a", Locale.getDefault())
+                val timeFormatter = getFormatter("h:mm a")
                 val timeText = nextAlarmTime.format(timeFormatter)
                 
                 // Format: "| ⏰ 7:00 AM"
