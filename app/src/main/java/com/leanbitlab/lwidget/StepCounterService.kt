@@ -7,6 +7,7 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -21,6 +22,11 @@ class StepCounterService : Service(), SensorEventListener {
     private lateinit var sensorManager: SensorManager
     private var stepSensor: Sensor? = null
     
+    private lateinit var prefs: SharedPreferences
+    private var lastTotalSteps: Float = 0f
+    private var baselineSteps: Float = 0f
+    private var stepDate: String = ""
+
     private val updateReceiver = object : android.content.BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             val action = intent.action
@@ -41,6 +47,12 @@ class StepCounterService : Service(), SensorEventListener {
 
     override fun onCreate() {
         super.onCreate()
+
+        prefs = getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
+        lastTotalSteps = prefs.getFloat("last_total_steps", 0f)
+        baselineSteps = prefs.getFloat("step_baseline", 0f)
+        stepDate = prefs.getString("step_date", "") ?: ""
+
         createNotificationChannel()
 
         try {
@@ -55,7 +67,6 @@ class StepCounterService : Service(), SensorEventListener {
             return
         }
         
-        val prefs = getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
         val showSteps = prefs.getBoolean("show_steps", false)
         val keepAlive = prefs.getBoolean("keep_alive", false)
         
@@ -110,9 +121,6 @@ class StepCounterService : Service(), SensorEventListener {
         if (event == null) return
         
         val totalSteps = event.values[0]
-        val prefs = getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
-        val lastTotalSteps = prefs.getFloat("last_total_steps", 0f)
-        var baselineSteps = prefs.getFloat("step_baseline", 0f)
 
         // Hardware rebooted and reset the total steps to 0
         if (totalSteps < lastTotalSteps) {
@@ -120,13 +128,15 @@ class StepCounterService : Service(), SensorEventListener {
             prefs.edit().putFloat("step_baseline", baselineSteps).apply()
         }
         
+        lastTotalSteps = totalSteps
         prefs.edit().putFloat("last_total_steps", totalSteps).apply()
 
         // Daily reset logic
         val today = java.time.LocalDate.now().toString()
-        val savedDate = prefs.getString("step_date", "")
 
-        if (savedDate != today) {
+        if (stepDate != today) {
+            stepDate = today
+            baselineSteps = totalSteps
             prefs.edit()
                 .putString("step_date", today)
                 .putFloat("step_baseline", totalSteps)
@@ -148,7 +158,6 @@ class StepCounterService : Service(), SensorEventListener {
         val settingsIntent = Intent(this, MainActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(this, 0, settingsIntent, PendingIntent.FLAG_IMMUTABLE)
 
-        val prefs = getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
         val showSteps = prefs.getBoolean("show_steps", false)
         
         val title = if (showSteps) "Lwidget Step Counter" else "Lwidget Keep Alive"
