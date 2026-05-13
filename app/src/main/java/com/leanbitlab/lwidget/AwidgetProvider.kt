@@ -269,6 +269,9 @@ class AwidgetProvider : AppWidgetProvider() {
             val showStorage = prefs.getBoolean("show_storage", false)
             val sizeStorage = prefs.getFloat("size_storage", 14f)
 
+            val showRam = prefs.getBoolean("show_ram", false)
+            val sizeRam = prefs.getFloat("size_ram", 14f)
+
             var showTasks = prefs.getBoolean("show_tasks", false)
             if (showTasks && androidx.core.content.ContextCompat.checkSelfPermission(context, PERMISSION_READ_TASKS_ORG) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
                 showTasks = false
@@ -477,6 +480,7 @@ class AwidgetProvider : AppWidgetProvider() {
                 }
                 if (showData) updateDataUsage(context, tickViews, prefs)
                 if (showStorage) updateStorageStats(context, tickViews, prefs)
+                if (showRam) updateRamStats(context, tickViews, prefs)
                 return tickViews
             } else if (mode == UpdateMode.CALENDAR_ONLY) {
                 val calViews = RemoteViews(context.packageName, layoutId)
@@ -686,6 +690,14 @@ class AwidgetProvider : AppWidgetProvider() {
                 updateStorageStats(context, views, prefs)
             }
 
+            // --- RAM ---
+            views.setViewVisibility(R.id.text_ram, if (showRam) android.view.View.VISIBLE else android.view.View.GONE)
+            if (showRam) {
+                views.setTextViewTextSize(R.id.text_ram, android.util.TypedValue.COMPLEX_UNIT_SP, sizeRam)
+                views.setTextColor(R.id.text_ram, secondaryColor)
+                updateRamStats(context, views, prefs)
+            }
+
             // --- Step Counter ---
             views.setViewVisibility(R.id.text_steps, if (showSteps) android.view.View.VISIBLE else android.view.View.GONE)
             if (showSteps) {
@@ -751,6 +763,7 @@ class AwidgetProvider : AppWidgetProvider() {
                 StackEntry(R.id.text_weather_condition, showWeather, sizeWeather, "show_weather_condition"),
                 StackEntry(R.id.text_data_usage, showData, sizeData, "show_data_usage"),
                 StackEntry(R.id.text_storage, showStorage, sizeStorage, "show_storage"),
+                StackEntry(R.id.text_ram, showRam, sizeRam, "show_ram"),
                 StackEntry(R.id.text_steps, showSteps, sizeSteps, "show_steps"),
                 StackEntry(R.id.text_screen_time, showScreenTime, sizeScreenTime, "show_screen_time")
             )
@@ -809,6 +822,10 @@ class AwidgetProvider : AppWidgetProvider() {
             val storageIntent = Intent(android.provider.Settings.ACTION_INTERNAL_STORAGE_SETTINGS)
             val storagePendingIntent = PendingIntent.getActivity(context, 3, storageIntent, PendingIntent.FLAG_IMMUTABLE)
             views.setOnClickPendingIntent(R.id.text_storage, storagePendingIntent)
+
+            // fallback to internal storage settings if memory card settings not available or device specific
+            val ramPendingIntent = PendingIntent.getActivity(context, 10, Intent(android.provider.Settings.ACTION_INTERNAL_STORAGE_SETTINGS), PendingIntent.FLAG_IMMUTABLE)
+            views.setOnClickPendingIntent(R.id.text_ram, ramPendingIntent)
 
             val dataIntent = Intent(android.provider.Settings.ACTION_DATA_USAGE_SETTINGS)
             val dataPendingIntent = PendingIntent.getActivity(context, 4, dataIntent, PendingIntent.FLAG_IMMUTABLE)
@@ -1291,6 +1308,29 @@ class AwidgetProvider : AppWidgetProvider() {
                  views.setTextViewText(R.id.text_storage, span)
              } catch (e: Exception) {
                  views.setTextViewText(R.id.text_storage, "Err")
+             }
+        }
+
+        private fun updateRamStats(context: Context, views: RemoteViews, prefs: android.content.SharedPreferences) {
+             try {
+                 val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as android.app.ActivityManager
+                 val memoryInfo = android.app.ActivityManager.MemoryInfo()
+                 activityManager.getMemoryInfo(memoryInfo)
+                 val freeBytes = memoryInfo.availMem
+
+                 val gb = freeBytes / (1024f * 1024f * 1024f)
+
+                 val gbStr = String.format("%.1f", gb)
+                 val span = android.text.SpannableString("$gbStr GB")
+                 span.setSpan(android.text.style.RelativeSizeSpan(0.5f), gbStr.length, gbStr.length + 3, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE) // GB
+
+                 if (prefs.getBoolean("bold_ram", false)) {
+                     span.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, span.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                 }
+
+                 views.setTextViewText(R.id.text_ram, span)
+             } catch (e: Exception) {
+                 views.setTextViewText(R.id.text_ram, "Err")
              }
         }
 

@@ -15,6 +15,7 @@
     <string name="section_next_alarm">Next Alarm</string>
     <string name="section_world_clock">World Clock</string>
     <string name="section_storage">Storage</string>
+    <string name="section_ram">RAM</string>
     <string name="section_tasks">Tasks</string>
     <string name="section_steps">Step Counter</string>
     <string name="section_keep_alive">Keep Alive</string>
@@ -42,7 +43,7 @@
     <!-- Permissions & Errors -->
     <string name="perm_usage_access_title">Please grant Usage Access for Lwidget</string>
 
-    <string name="error_max_subset_items">Max 5 of Battery, Weather, Temp, Data, Storage allowed.</string>
+    <string name="error_max_subset_items">Max 6 of Battery, Weather, Temp, Data, Storage, RAM allowed.</string>
     <string name="no_perm">No Perm</string>
     <string name="error">Err</string>
     

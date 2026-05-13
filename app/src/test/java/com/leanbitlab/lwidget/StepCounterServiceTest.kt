@@ -26,7 +26,10 @@ class StepCounterServiceTest {
         val context = ApplicationProvider.getApplicationContext<Context>()
         prefs = context.getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
         prefs.edit().clear().apply()
+        // Create service but don't call onCreate yet so tests can set initial SharedPreferences
+    }
 
+    private fun startService() {
         service = Robolectric.buildService(StepCounterService::class.java).create().get()
     }
 
@@ -34,7 +37,11 @@ class StepCounterServiceTest {
         val constructor = SensorEvent::class.java.declaredConstructors.first { it.parameterCount == 1 }
         constructor.isAccessible = true
         val event = constructor.newInstance(1) as SensorEvent
-        event.values[0] = steps
+        val valuesField = android.hardware.SensorEvent::class.java.getField("values")
+        valuesField.isAccessible = true
+        val values = FloatArray(1)
+        values[0] = steps
+        valuesField.set(event, values)
         return event
     }
 
@@ -49,6 +56,7 @@ class StepCounterServiceTest {
             .apply()
 
         // Hardware rebooted, now sensor says 50 steps
+        startService()
         val event = createMockSensorEvent(50f)
         service.onSensorChanged(event)
 
@@ -67,6 +75,7 @@ class StepCounterServiceTest {
             .apply()
 
         // First reboot, sensor goes from 1000 -> 50
+        startService()
         service.onSensorChanged(createMockSensorEvent(50f))
 
         // Expected: baseline = 50 - (1000 - 200) = -750
@@ -98,6 +107,7 @@ class StepCounterServiceTest {
             .putFloat("step_baseline", 100f)
             .apply()
 
+        startService()
         val event = createMockSensorEvent(600f)
         service.onSensorChanged(event)
 
@@ -117,6 +127,7 @@ class StepCounterServiceTest {
             .apply()
 
         // Step increases to 1050
+        startService()
         val event = createMockSensorEvent(1050f)
         service.onSensorChanged(event)
 
@@ -135,6 +146,7 @@ class StepCounterServiceTest {
             .putBoolean("was_called", false) // marker to check if prefs was edited
             .apply()
 
+        startService()
         service.onSensorChanged(null)
 
         // Ensure nothing was updated or changed
