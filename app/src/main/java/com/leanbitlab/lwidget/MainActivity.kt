@@ -22,6 +22,7 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import androidx.browser.customtabs.CustomTabsIntent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -121,13 +122,11 @@ class MainActivity : AppCompatActivity() {
         tvVersion.text = getString(R.string.changelog_version, versionName)
 
         findViewById<View>(R.id.tv_github_link).setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW, android.net.Uri.parse("https://github.com/LeanBitLab/Lwidget"))
-            startActivity(intent)
+            CustomTabsIntent.Builder().build().launchUrl(this@MainActivity, android.net.Uri.parse("https://github.com/LeanBitLab/Lwidget"))
         }
 
         findViewById<View>(R.id.tv_privacy_policy).setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW, android.net.Uri.parse("https://github.com/LeanBitLab/Lwidget/wiki/Privacy-Policy"))
-            startActivity(intent)
+            CustomTabsIntent.Builder().build().launchUrl(this@MainActivity, android.net.Uri.parse("https://github.com/LeanBitLab/Lwidget/wiki/Privacy-Policy"))
         }
 
         
@@ -283,7 +282,7 @@ class MainActivity : AppCompatActivity() {
                     startActivity(Intent(Intent.ACTION_VIEW, android.net.Uri.parse("market://details?id=org.breezyweather")))
                 } catch (e: Exception) {
                     try {
-                        startActivity(Intent(Intent.ACTION_VIEW, android.net.Uri.parse("https://f-droid.org/packages/org.breezyweather/")))
+                        CustomTabsIntent.Builder().build().launchUrl(this@MainActivity, android.net.Uri.parse("https://f-droid.org/packages/org.breezyweather/"))
                     } catch (e2: Exception) {}
                 }
             } else if (weatherMissing) {
@@ -953,7 +952,7 @@ class MainActivity : AppCompatActivity() {
                         com.google.android.material.snackbar.Snackbar.LENGTH_LONG
                     ).setAction("Install") {
                         try {
-                            startActivity(Intent(Intent.ACTION_VIEW, android.net.Uri.parse("https://github.com/breezy-weather/breezy-weather/releases")))
+                            CustomTabsIntent.Builder().build().launchUrl(this@MainActivity, android.net.Uri.parse("https://github.com/breezy-weather/breezy-weather/releases"))
                         } catch (e: Exception) {}
                     }.show()
                     return@setOnCheckedChangeListener
@@ -1219,7 +1218,7 @@ class MainActivity : AppCompatActivity() {
                         try {
                             startActivity(Intent(Intent.ACTION_VIEW, android.net.Uri.parse("market://details?id=org.tasks")))
                         } catch (e: Exception) {
-                            startActivity(Intent(Intent.ACTION_VIEW, android.net.Uri.parse("https://play.google.com/store/apps/details?id=org.tasks")))
+                            CustomTabsIntent.Builder().build().launchUrl(this@MainActivity, android.net.Uri.parse("https://play.google.com/store/apps/details?id=org.tasks"))
                         }
                     }.show()
                     return@setOnCheckedChangeListener
