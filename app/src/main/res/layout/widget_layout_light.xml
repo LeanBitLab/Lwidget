@@ -109,6 +109,17 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="2dp"/>
+    <TextView
+        android:id="@+id/text_ram"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textColor="#CCFFFFFF"
+        android:textSize="14sp"
+        android:visibility="gone"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="2dp"/>
 
     <!-- Steps (Below Storage) -->
     <TextView

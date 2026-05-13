@@ -711,6 +711,7 @@ class MainActivity : AppCompatActivity() {
             ReorderItem("show_weather_condition", getString(R.string.section_weather_condition), prefs.getBoolean("show_weather_condition", false)),
             ReorderItem("show_data_usage", getString(R.string.section_data_usage), prefs.getBoolean("show_data_usage", false)),
             ReorderItem("show_storage", getString(R.string.section_storage), prefs.getBoolean("show_storage", false)),
+            ReorderItem("show_ram", getString(R.string.section_ram), prefs.getBoolean("show_ram", false)),
             ReorderItem("show_steps", getString(R.string.section_steps), prefs.getBoolean("show_steps", false)),
             ReorderItem("show_screen_time", getString(R.string.section_screen_time), prefs.getBoolean("show_screen_time", false))
         )
@@ -853,6 +854,7 @@ class MainActivity : AppCompatActivity() {
         setupWeatherSection()
         setupDataUsageSection()
         setupStorageSection()
+        setupRamSection()
         setupStepsSection()
         setupScreenTimeSection()
         setupKeepAliveSection()
@@ -1024,6 +1026,18 @@ class MainActivity : AppCompatActivity() {
             checkAllPermissions()
         }
     }
+    private fun setupRamSection() {
+        // RAM
+        bindFoldedSection(
+            R.id.header_ram, R.drawable.ic_storage, getString(R.string.section_ram),
+            R.id.content_ram, R.id.row_ram_toggle,
+            "show_ram", false,
+            sizeRowId = R.id.row_ram_size, prefSizeKey = "size_ram", defSize = 14f, minSize = 10f, maxSize = 74f,
+            isContent = true
+        ).also { it.tag = "ram" }
+        bindToggle(R.id.row_ram_bold, "Bold Text", "bold_ram", false)
+    }
+
     private fun setupStorageSection() {
         // Storage
         bindFoldedSection(
@@ -1394,7 +1408,7 @@ class MainActivity : AppCompatActivity() {
                 "show_time" to true, "size_time" to 58f,
                 "show_date" to true, "size_date" to 16f,
                 "show_battery" to false, "show_temp" to false,
-                "show_storage" to false, "show_data_usage" to false,
+                "show_storage" to false, "show_ram" to false, "show_data_usage" to false,
                 "show_steps" to false, "show_screen_time" to false,
                 "show_next_alarm" to false, "show_world_clock" to false,
                 "show_events" to false, "show_tasks" to false,
@@ -1412,7 +1426,7 @@ class MainActivity : AppCompatActivity() {
                 "show_date" to true, "size_date" to 14f,
                 "show_battery" to true, "size_battery" to 28f, "bold_battery" to true,
                 "show_temp" to true, "size_temp" to 18f, "bold_temp" to true,
-                "show_storage" to false, "show_data_usage" to false,
+                "show_storage" to false, "show_ram" to false, "show_data_usage" to false,
                 "show_steps" to false, "show_screen_time" to false,
                 "show_next_alarm" to true, "size_next_alarm" to 12f,
                 "show_world_clock" to false,
@@ -1425,7 +1439,7 @@ class MainActivity : AppCompatActivity() {
                 "date_color_idx" to 2, "date_color_r" to 255, "date_color_g" to 0, "date_color_b" to 180,
                 "outline_color_idx" to 2, "outline_color_r" to 0, "outline_color_g" to 200, "outline_color_b" to 255,
                 "bg_color_idx" to 2, "bg_color_r" to 10, "bg_color_g" to 10, "bg_color_b" to 20,
-                "widget_right_column_order" to "show_battery,show_temp,show_weather_condition,show_data_usage,show_storage,show_steps,show_screen_time"
+                "widget_right_column_order" to "show_battery,show_temp,show_weather_condition,show_data_usage,show_storage,show_ram,show_steps,show_screen_time"
             )),
             // Cockpit: green on dark, monospace, info-heavy, terminal look
             Preset("cockpit", "Cockpit", mapOf(
@@ -1433,7 +1447,7 @@ class MainActivity : AppCompatActivity() {
                 "show_date" to true, "size_date" to 14f,
                 "show_battery" to true, "size_battery" to 18f, "bold_battery" to false,
                 "show_temp" to true, "size_temp" to 16f, "bold_temp" to false,
-                "show_storage" to true, "size_storage" to 14f, "bold_storage" to false,
+                "show_storage" to true, "size_storage" to 14f, "bold_storage" to false, "show_ram" to false, "size_ram" to 14f, "bold_ram" to false,
                 "show_data_usage" to true, "size_data" to 14f, "bold_data_usage" to false,
                 "show_steps" to false, "show_screen_time" to false,
                 "show_next_alarm" to true, "size_next_alarm" to 14f,
@@ -1447,14 +1461,14 @@ class MainActivity : AppCompatActivity() {
                 "date_color_idx" to 2, "date_color_r" to 0, "date_color_g" to 200, "date_color_b" to 80,
                 "outline_color_idx" to 2, "outline_color_r" to 0, "outline_color_g" to 120, "outline_color_b" to 40,
                 "bg_color_idx" to 2, "bg_color_r" to 5, "bg_color_g" to 15, "bg_color_b" to 5,
-                "widget_right_column_order" to "show_battery,show_storage,show_data_usage,show_temp,show_weather_condition,show_steps,show_screen_time"
+                "widget_right_column_order" to "show_battery,show_storage,show_ram,show_data_usage,show_temp,show_weather_condition,show_steps,show_screen_time"
             )),
             // Sunset: warm oranges/gold, serif font, elegant minimal
             Preset("sunset", "Sunset", mapOf(
                 "show_time" to true, "size_time" to 54f,
                 "show_date" to true, "size_date" to 18f,
                 "show_battery" to true, "size_battery" to 24f, "bold_battery" to true,
-                "show_temp" to false, "show_storage" to false,
+                "show_temp" to false, "show_storage" to false, "show_ram" to false,
                 "show_data_usage" to false, "show_steps" to false,
                 "show_screen_time" to false,
                 "show_next_alarm" to true, "size_next_alarm" to 14f,
@@ -1467,14 +1481,14 @@ class MainActivity : AppCompatActivity() {
                 "text_color_secondary_idx" to 2, "text_color_secondary_r" to 230, "text_color_secondary_g" to 140, "text_color_secondary_b" to 60,
                 "date_color_idx" to 2, "date_color_r" to 255, "date_color_g" to 120, "date_color_b" to 50,
                 "bg_color_idx" to 2, "bg_color_r" to 30, "bg_color_g" to 15, "bg_color_b" to 8,
-                "widget_right_column_order" to "show_battery,show_temp,show_weather_condition,show_data_usage,show_storage,show_steps,show_screen_time"
+                "widget_right_column_order" to "show_battery,show_temp,show_weather_condition,show_data_usage,show_storage,show_ram,show_steps,show_screen_time"
             )),
             // Monochrome: white outline, all white text, medium font, classic layout
             Preset("monochrome", "Monochrome", mapOf(
                 "show_time" to true, "size_time" to 48f,
                 "show_date" to true, "size_date" to 14f,
                 "show_battery" to true, "size_battery" to 22f, "bold_battery" to false,
-                "show_temp" to false, "show_storage" to true, "size_storage" to 14f,
+                "show_temp" to false, "show_storage" to true, "size_storage" to 14f, "show_ram" to false, "size_ram" to 14f,
                 "show_data_usage" to false, "show_steps" to false,
                 "show_screen_time" to false,
                 "show_next_alarm" to true, "size_next_alarm" to 14f,
@@ -1488,14 +1502,14 @@ class MainActivity : AppCompatActivity() {
                 "date_color_idx" to 2, "date_color_r" to 200, "date_color_g" to 200, "date_color_b" to 200,
                 "outline_color_idx" to 2, "outline_color_r" to 100, "outline_color_g" to 100, "outline_color_b" to 100,
                 "bg_color_idx" to 2, "bg_color_r" to 25, "bg_color_g" to 25, "bg_color_b" to 25,
-                "widget_right_column_order" to "show_battery,show_storage,show_temp,show_weather_condition,show_data_usage,show_steps,show_screen_time"
+                "widget_right_column_order" to "show_battery,show_storage,show_ram,show_temp,show_weather_condition,show_data_usage,show_steps,show_screen_time"
             )),
             // Snowfall: icy blues, light font, airy feel
             Preset("snowfall", "Snowfall", mapOf(
                 "show_time" to true, "size_time" to 60f,
                 "show_date" to true, "size_date" to 16f,
                 "show_battery" to false, "show_temp" to true, "size_temp" to 20f, "bold_temp" to false,
-                "show_storage" to false, "show_data_usage" to false,
+                "show_storage" to false, "show_ram" to false, "show_data_usage" to false,
                 "show_steps" to false, "show_screen_time" to false,
                 "show_next_alarm" to false,
                 "show_world_clock" to false,
@@ -1507,7 +1521,7 @@ class MainActivity : AppCompatActivity() {
                 "text_color_secondary_idx" to 2, "text_color_secondary_r" to 130, "text_color_secondary_g" to 180, "text_color_secondary_b" to 230,
                 "date_color_idx" to 2, "date_color_r" to 100, "date_color_g" to 170, "date_color_b" to 255,
                 "bg_color_idx" to 2, "bg_color_r" to 10, "bg_color_g" to 20, "bg_color_b" to 40,
-                "widget_right_column_order" to "show_temp,show_battery,show_weather_condition,show_data_usage,show_storage,show_steps,show_screen_time"
+                "widget_right_column_order" to "show_temp,show_battery,show_weather_condition,show_data_usage,show_storage,show_ram,show_steps,show_screen_time"
             ))
         )
 
@@ -1704,10 +1718,10 @@ class MainActivity : AppCompatActivity() {
 
         // Subset Limit: Battery, Weather, Temp, Data, Storage (Max 5 allowed now to fit stack)
         val subsetCount = contentSwitches.count { 
-            it.isChecked && (it.tag == "battery" || it.tag == "weather_condition" || it.tag == "temp" || it.tag == "data" || it.tag == "storage") 
+            it.isChecked && (it.tag == "battery" || it.tag == "weather_condition" || it.tag == "temp" || it.tag == "data" || it.tag == "storage" || it.tag == "ram")
         }
         
-        if (subsetCount > 5) {
+        if (subsetCount > 6) {
              com.google.android.material.snackbar.Snackbar.make(
                 findViewById(R.id.fab_update), 
                 getString(R.string.error_max_subset_items), 
