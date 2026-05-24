@@ -1353,14 +1353,27 @@ class AwidgetProvider : AppWidgetProvider() {
             }
         }
 
+        private data class CacheEntry(val intent: Intent, val timestamp: Long)
+        private val intentCache = java.util.concurrent.ConcurrentHashMap<String, CacheEntry>()
+        private const val CACHE_TTL_MS = 60000L // 60 seconds TTL
+
         private fun getBestIntent(context: Context, packages: List<String>, fallback: Intent): Intent {
+            val cacheKey = packages.joinToString(",") + "|" + fallback.action
+            val cached = intentCache[cacheKey]
+            val now = android.os.SystemClock.elapsedRealtime()
+            if (cached != null && (now - cached.timestamp < CACHE_TTL_MS)) {
+                return Intent(cached.intent) // Return a copy to prevent mutation
+            }
+
             val pm = context.packageManager
             for (pkg in packages) {
                 val intent = pm.getLaunchIntentForPackage(pkg)
                 if (intent != null) {
+                    intentCache[cacheKey] = CacheEntry(Intent(intent), now)
                     return intent
                 }
             }
+            intentCache[cacheKey] = CacheEntry(Intent(fallback), now)
             return fallback
         }
     }
