@@ -283,4 +283,76 @@ class ColorResolverTest {
 
         assertEquals(Color.parseColor("#CCFFFFFF"), result)
     }
+
+    @Test
+    fun testResolveColor_NegativeIdx_Primary() {
+        val mockContext = mock<Context>()
+        val mockPrefs = mock<SharedPreferences>()
+
+        val result = ColorResolver.resolveColor(
+            context = mockContext,
+            prefs = mockPrefs,
+            useDynamicColors = false,
+            idx = -1,
+            isPrimary = true,
+            isLight = true,
+            sdkInt = Build.VERSION_CODES.S
+        )
+
+        assertEquals(Color.WHITE, result)
+    }
+
+    @Test
+    fun testResolveColor_NegativeIdx_Secondary() {
+        val mockContext = mock<Context>()
+        val mockPrefs = mock<SharedPreferences>()
+
+        val result = ColorResolver.resolveColor(
+            context = mockContext,
+            prefs = mockPrefs,
+            useDynamicColors = false,
+            idx = -999,
+            isPrimary = false,
+            isLight = false,
+            sdkInt = Build.VERSION_CODES.S
+        )
+
+        assertEquals(Color.parseColor("#CCFFFFFF"), result)
+    }
+
+    @Test
+    fun testResolveColor_MaxIntIdx_Primary() {
+        val mockContext = mock<Context>()
+        val mockPrefs = mock<SharedPreferences>()
+
+        val result = ColorResolver.resolveColor(
+            context = mockContext,
+            prefs = mockPrefs,
+            useDynamicColors = false,
+            idx = Int.MAX_VALUE,
+            isPrimary = true,
+            isLight = true,
+            sdkInt = Build.VERSION_CODES.S
+        )
+
+        assertEquals(Color.WHITE, result)
+    }
+
+    @Test
+    fun testResolveColor_MinIntIdx_Secondary() {
+        val mockContext = mock<Context>()
+        val mockPrefs = mock<SharedPreferences>()
+
+        val result = ColorResolver.resolveColor(
+            context = mockContext,
+            prefs = mockPrefs,
+            useDynamicColors = false,
+            idx = Int.MIN_VALUE,
+            isPrimary = false,
+            isLight = true,
+            sdkInt = Build.VERSION_CODES.S
+        )
+
+        assertEquals(Color.parseColor("#CCFFFFFF"), result)
+    }
 }
