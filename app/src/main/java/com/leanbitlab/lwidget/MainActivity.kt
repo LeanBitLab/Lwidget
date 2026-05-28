@@ -17,6 +17,7 @@
 
 package com.leanbitlab.lwidget
 
+import android.util.Log
 import android.Manifest
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
@@ -271,10 +272,10 @@ class MainActivity : AppCompatActivity() {
             } else openAppSettings()
         }
         updatePermissionToggle(R.id.row_perm_data_usage, "Data Usage", !usageMissing) {
-            try { startActivity(Intent(android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS)) } catch (e: Exception) {}
+            try { startActivity(Intent(android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS)) } catch (e: Exception) { Log.e("MainActivity", "Failed to open settings", e) }
         }
         updatePermissionToggle(R.id.row_perm_screen_time, "Screen Time", !usageMissing) {
-            try { startActivity(Intent(android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS)) } catch (e: Exception) {}
+            try { startActivity(Intent(android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS)) } catch (e: Exception) { Log.e("MainActivity", "Failed to open settings", e) }
         }
         updatePermissionToggle(R.id.row_perm_weather, "Weather", !weatherMissing) {
             if (weatherMissing && !isAppInstalled("org.breezyweather")) {
@@ -283,7 +284,7 @@ class MainActivity : AppCompatActivity() {
                 } catch (e: Exception) {
                     try {
                         CustomTabsIntent.Builder().build().launchUrl(this@MainActivity, android.net.Uri.parse("https://f-droid.org/packages/org.breezyweather/"))
-                    } catch (e2: Exception) {}
+                    } catch (e2: Exception) { Log.e("MainActivity", "Failed to open link", e2) }
                 }
             } else if (weatherMissing) {
                 ActivityCompat.requestPermissions(this, arrayOf("org.breezyweather.READ_PROVIDER"), 104)
@@ -955,7 +956,7 @@ class MainActivity : AppCompatActivity() {
                     ).setAction("Install") {
                         try {
                             CustomTabsIntent.Builder().build().launchUrl(this@MainActivity, android.net.Uri.parse("https://github.com/breezy-weather/breezy-weather/releases"))
-                        } catch (e: Exception) {}
+                        } catch (e: Exception) { Log.e("MainActivity", "Failed to open release link", e) }
                     }.show()
                     return@setOnCheckedChangeListener
                 }
@@ -1011,7 +1012,7 @@ class MainActivity : AppCompatActivity() {
                             getString(R.string.perm_usage_access_title),
                             com.google.android.material.snackbar.Snackbar.LENGTH_LONG
                         ).show()
-                    } catch (e: Exception) {}
+                    } catch (e: Exception) { Log.e("MainActivity", "Failed to show Snackbar", e) }
                     return@setOnCheckedChangeListener
                 }
                 if (!checkLimit()) {
@@ -1126,7 +1127,7 @@ class MainActivity : AppCompatActivity() {
                             getString(R.string.perm_usage_access_title),
                             com.google.android.material.snackbar.Snackbar.LENGTH_LONG
                         ).show()
-                    } catch (e: Exception) {}
+                    } catch (e: Exception) { Log.e("MainActivity", "Failed to show Snackbar", e) }
                     return@setOnCheckedChangeListener
                 }
                 if (!checkLimit()) {
