@@ -18,6 +18,7 @@
 package com.leanbitlab.lwidget
 
 import android.Manifest
+import android.util.Log
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
@@ -271,19 +272,19 @@ class MainActivity : AppCompatActivity() {
             } else openAppSettings()
         }
         updatePermissionToggle(R.id.row_perm_data_usage, "Data Usage", !usageMissing) {
-            try { startActivity(Intent(android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS)) } catch (e: Exception) {}
+            try { startActivity(Intent(android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS)) } catch (e: Exception) { Log.w("MainActivity", "Failed to launch usage access settings", e) }
         }
         updatePermissionToggle(R.id.row_perm_screen_time, "Screen Time", !usageMissing) {
-            try { startActivity(Intent(android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS)) } catch (e: Exception) {}
+            try { startActivity(Intent(android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS)) } catch (e: Exception) { Log.w("MainActivity", "Failed to launch usage access settings", e) }
         }
         updatePermissionToggle(R.id.row_perm_weather, "Weather", !weatherMissing) {
             if (weatherMissing && !isAppInstalled("org.breezyweather")) {
                 try {
                     startActivity(Intent(Intent.ACTION_VIEW, android.net.Uri.parse("market://details?id=org.breezyweather")))
-                } catch (e: Exception) {
+                } catch (e: Exception) { Log.w("MainActivity", "Failed to open market link for BreezyWeather", e)
                     try {
                         CustomTabsIntent.Builder().build().launchUrl(this@MainActivity, android.net.Uri.parse("https://f-droid.org/packages/org.breezyweather/"))
-                    } catch (e2: Exception) {}
+                    } catch (e2: Exception) { Log.w("MainActivity", "Failed to launch custom tab for BreezyWeather", e2) }
                 }
             } else if (weatherMissing) {
                 ActivityCompat.requestPermissions(this, arrayOf("org.breezyweather.READ_PROVIDER"), 104)
