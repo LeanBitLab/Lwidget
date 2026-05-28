@@ -1126,7 +1126,7 @@ class MainActivity : AppCompatActivity() {
                             getString(R.string.perm_usage_access_title),
                             com.google.android.material.snackbar.Snackbar.LENGTH_LONG
                         ).show()
-                    } catch (e: Exception) {}
+                    } catch (e: Exception) { android.util.Log.e("MainActivity", "Failed to open Usage Access Settings", e) }
                     return@setOnCheckedChangeListener
                 }
                 if (!checkLimit()) {
