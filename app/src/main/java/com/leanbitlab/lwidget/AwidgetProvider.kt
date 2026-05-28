@@ -165,6 +165,8 @@ class AwidgetProvider : AppWidgetProvider() {
 
     companion object {
 
+        private const val TAG = "WidgetLife"
+
         private var cachedLocale: java.util.Locale? = null
         private val formatters = java.util.concurrent.ConcurrentHashMap<String, java.time.format.DateTimeFormatter>()
 
@@ -239,7 +241,7 @@ class AwidgetProvider : AppWidgetProvider() {
             val bweather = com.leanbitlab.lwidget.weather.BreezyWeatherFetcher.fetchLocalWeather(context)
             val showWeatherIconOnly = prefs.getBoolean("show_weather_icon_only", false) 
             
-            android.util.Log.d("WidgetLife", "UpdateMode FULL | Condition: $showWeatherCondition | IconOnly: $showWeatherIconOnly | WeatherData: ${bweather?.currentCondition}")
+            android.util.Log.d(TAG, "UpdateMode FULL | Condition: $showWeatherCondition | IconOnly: $showWeatherIconOnly | WeatherData: ${bweather?.currentCondition}")
 
             val useSystemTheme = prefs.getBoolean("use_system_theme", false)
             val useDynamicColors = prefs.getBoolean("use_dynamic_colors", true)
