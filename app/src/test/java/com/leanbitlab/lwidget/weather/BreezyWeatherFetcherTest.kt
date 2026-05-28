@@ -18,12 +18,37 @@ class BreezyWeatherFetcherTest {
     private val prefsName = "lwidget_breezy_weather_data"
     private val keyWeatherJson = "weather_json"
 
+    private lateinit var mockEditor: SharedPreferences.Editor
+
     @Before
     fun setup() {
-        mockPrefs = mock()
+        mockEditor = mock {
+            on { putString(org.mockito.kotlin.any(), org.mockito.kotlin.any()) } doReturn it
+        }
+        mockPrefs = mock {
+            on { edit() } doReturn mockEditor
+        }
         mockContext = mock {
             on { getSharedPreferences(prefsName, Context.MODE_PRIVATE) } doReturn mockPrefs
         }
+    }
+
+    @Test
+    fun `saveLatestWeatherData saves json string to preferences`() {
+        val validJson = """{"temp": 20}"""
+
+        BreezyWeatherFetcher.saveLatestWeatherData(mockContext, validJson)
+
+        org.mockito.kotlin.verify(mockEditor).putString(keyWeatherJson, validJson)
+        org.mockito.kotlin.verify(mockEditor).apply()
+    }
+
+    @Test
+    fun `saveLatestWeatherData with empty string saves empty string`() {
+        BreezyWeatherFetcher.saveLatestWeatherData(mockContext, "")
+
+        org.mockito.kotlin.verify(mockEditor).putString(keyWeatherJson, "")
+        org.mockito.kotlin.verify(mockEditor).apply()
     }
 
     @Test
