@@ -799,6 +799,11 @@
                             android:id="@+id/row_time_format"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"/>
+
+                        <include layout="@layout/settings_selector_row"
+                            android:id="@+id/row_time_clock_app"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>

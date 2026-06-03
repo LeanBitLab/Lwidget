@@ -5,6 +5,7 @@
     <!-- Widget Sections -->
     <string name="section_time">Time</string>
     <string name="section_time_format">Time Format</string>
+    <string name="section_time_clock_app">Clock App</string>
     <string name="section_date">Date</string>
     <string name="section_date_format">Date Format</string>
     <string name="section_battery">Battery</string>

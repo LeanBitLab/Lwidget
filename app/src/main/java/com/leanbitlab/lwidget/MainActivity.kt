@@ -91,6 +91,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var prefs: SharedPreferences
     private val contentSwitches = mutableListOf<SwitchMaterial>()
+    private var clockAppPackages = listOf("default")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -868,7 +869,59 @@ class MainActivity : AppCompatActivity() {
         bindCategoryFoldable(R.id.header_about, R.id.content_about, "About", 0, "section_about_expanded")
     }
 
+    private fun getInstalledClockApps(): Pair<List<String>, List<String>> {
+        val labels = mutableListOf("Default")
+        val packages = mutableListOf("default")
+
+        val knownPackages = listOf(
+            "com.android.deskclock",
+            "com.google.android.deskclock",
+            "com.simplemobiletools.clock",
+            "org.fossify.clock",
+            "com.sec.android.app.clockpackage",
+            "com.huawei.deskclock",
+            "com.coloros.alarmclock",
+            "com.oneplus.deskclock",
+            "com.htc.sec.android.app.clockpackage"
+        )
+
+        val pm = packageManager
+        
+        val alarmIntent = Intent(android.provider.AlarmClock.ACTION_SHOW_ALARMS)
+        val resolveInfos = pm.queryIntentActivities(alarmIntent, PackageManager.MATCH_DEFAULT_ONLY)
+        
+        val foundPackages = mutableSetOf<String>()
+        for (info in resolveInfos) {
+            val pkg = info.activityInfo.packageName
+            foundPackages.add(pkg)
+        }
+        
+        for (pkg in knownPackages) {
+            if (isAppInstalled(pkg)) {
+                foundPackages.add(pkg)
+            }
+        }
+        
+        for (pkg in foundPackages) {
+            try {
+                val appInfo = pm.getApplicationInfo(pkg, 0)
+                val label = pm.getApplicationLabel(appInfo).toString()
+                labels.add(label)
+                packages.add(pkg)
+            } catch (e: Exception) {
+                // ignore
+            }
+        }
+        
+        return Pair(labels, packages)
+    }
+
     private fun setupTimeSection(timeFormatOptions: List<String>) {
+        val (labels, packages) = getInstalledClockApps()
+        clockAppPackages = packages
+
+        val clockAppRow = findViewById<View>(R.id.row_time_clock_app)
+
         // Time
         bindFoldedSection(
             R.id.header_time, R.drawable.ic_time, getString(R.string.section_time),
@@ -876,7 +929,18 @@ class MainActivity : AppCompatActivity() {
             "show_time", true,
             sizeRowId = R.id.row_time_size, prefSizeKey = "size_time", defSize = 56f, minSize = 12f, maxSize = 120f,
             selectorRowId = R.id.row_time_format, selectorOptions = timeFormatOptions, prefSelectorKey = "time_format_idx", defSelectorIdx = 0,
-            isContent = true
+            isContent = true,
+            onChanged = { isShown ->
+                clockAppRow?.visibility = if (isShown) View.VISIBLE else View.GONE
+            }
+        )
+
+        bindSelector(
+            R.id.row_time_clock_app,
+            getString(R.string.section_time_clock_app),
+            "clock_app_package",
+            labels,
+            0
         )
     }
     private fun setupNextAlarmSection() {
@@ -1642,6 +1706,18 @@ class MainActivity : AppCompatActivity() {
                 val selected = options.getOrElse(position) { "UTC" }
                 prefs.edit().putString(prefKey, selected).apply()
                 updateWidget()
+            }
+        } else if (prefKey == "clock_app_package") {
+            val currentVal = prefs.getString(prefKey, "default") ?: "default"
+            val currentIdx = clockAppPackages.indexOf(currentVal).coerceAtLeast(0)
+            autoCompleteTextView.setText(options.getOrElse(currentIdx) { options[0] }, false)
+            autoCompleteTextView.setOnItemClickListener { _, _, position, _ ->
+                val selected = clockAppPackages.getOrElse(position) { "default" }
+                prefs.edit().putString(prefKey, selected).apply()
+                updateWidget()
+                onSelectionChanged?.invoke(position)
+                row.requestFocus()
+                autoCompleteTextView.clearFocus()
             }
         } else {
             val currentIdx = prefs.getInt(prefKey, defaultIdx)

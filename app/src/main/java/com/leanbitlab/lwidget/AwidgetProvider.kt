@@ -811,8 +811,14 @@ class AwidgetProvider : AppWidgetProvider() {
             }
 
             // --- Click Actions ---
-            val clockPackages = listOf("com.android.deskclock", "com.google.android.deskclock", "com.simplemobiletools.clock", "org.fossify.clock")
-            val alarmIntent = getBestIntent(context, clockPackages, Intent(android.provider.AlarmClock.ACTION_SHOW_ALARMS))
+            val selectedClockPkg = prefs.getString("clock_app_package", "default") ?: "default"
+            val alarmIntent = if (selectedClockPkg != "default") {
+                context.packageManager.getLaunchIntentForPackage(selectedClockPkg)
+                    ?: getBestIntent(context, listOf("com.android.deskclock", "com.google.android.deskclock", "com.simplemobiletools.clock", "org.fossify.clock"), Intent(android.provider.AlarmClock.ACTION_SHOW_ALARMS))
+            } else {
+                val clockPackages = listOf("com.android.deskclock", "com.google.android.deskclock", "com.simplemobiletools.clock", "org.fossify.clock")
+                getBestIntent(context, clockPackages, Intent(android.provider.AlarmClock.ACTION_SHOW_ALARMS))
+            }
             val alarmPendingIntent = PendingIntent.getActivity(context, 0, alarmIntent, PendingIntent.FLAG_IMMUTABLE)
             views.setOnClickPendingIntent(R.id.clock_time, alarmPendingIntent)
 
