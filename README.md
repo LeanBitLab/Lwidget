@@ -8,8 +8,8 @@
 
 <p align="center">
   <a href="https://github.com/LeanBitLab/Lwidget/releases/latest"><img src="https://img.shields.io/github/v/release/LeanBitLab/Lwidget?label=Download&style=flat-square&color=7C4DFF" alt="Download"></a>
-  <a href="https://github.com/LeanBitLab/Lwidget/releases"><img src="https://img.shields.io/github/downloads/LeanBitLab/Lwidget/total?style=flat-square&color=7C4DFF&label=Downloads" alt="Downloads"></a>
-  <a href="https://github.com/LeanBitLab/Lwidget/stargazers"><img src="https://img.shields.io/github/stars/LeanBitLab/Lwidget?style=flat-square&color=7C4DFF" alt="Stars"></a>
+  <a href="https://github.com/LeanBitLab/Lwidget/releases"><img src="docs/images/downloads_badge.svg" alt="Downloads"></a>
+  <a href="https://github.com/LeanBitLab/Lwidget/stargazers"><img src="docs/images/stars_badge.svg" alt="Stars"></a>
 </p>
 
 **Lwidget** is a modern, open-source Android widget built with **Kotlin** and **Material 3** design principles. It provides essential information at a glance while adhering to your device's dynamic theme.

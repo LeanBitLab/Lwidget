@@ -1,0 +1,52 @@
+name: Update Badges Daily
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-badges:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Fetch Stars and Downloads and Download Badges
+        run: |
+          # Fetch repository stars count
+          STARS=$(curl -s "https://api.github.com/repos/LeanBitLab/Lwidget" | jq '.stargazers_count')
+          if [ "$STARS" = "null" ] || [ -z "$STARS" ]; then
+            STARS=0
+          fi
+          echo "Stars: $STARS"
+
+          # Fetch releases and calculate total download count
+          RELEASES_JSON=$(curl -s "https://api.github.com/repos/LeanBitLab/Lwidget/releases")
+          DOWNLOADS=$(echo "$RELEASES_JSON" | jq '[.[].assets[].download_count] | add')
+          if [ "$DOWNLOADS" = "null" ] || [ -z "$DOWNLOADS" ]; then
+            DOWNLOADS=0
+          fi
+          echo "Downloads: $DOWNLOADS"
+
+          # Create directory if it doesn't exist
+          mkdir -p docs/images
+
+          # Download badges from Shields.io
+          curl -L -o docs/images/stars_badge.svg "https://img.shields.io/badge/Stars-${STARS}-7C4DFF?style=flat-square"
+          curl -L -o docs/images/downloads_badge.svg "https://img.shields.io/badge/Downloads-${DOWNLOADS}-7C4DFF?style=flat-square"
+
+      - name: Commit and Push Badges
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/images/stars_badge.svg docs/images/downloads_badge.svg
+          if git diff --staged --quiet; then
+            echo "No changes in badge metrics"
+          else
+            git commit -m "chore: update daily downloads and stars badges [skip ci]"
+            git push
+          fi
