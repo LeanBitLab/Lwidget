@@ -1302,6 +1302,7 @@ class MainActivity : AppCompatActivity() {
         bindNestedCard(R.id.header_appearance_theme, "THEME", R.id.content_appearance_theme, "section_appearance_theme_expanded", R.id.header_chevron_appearance_theme)
         bindNestedCard(R.id.header_appearance_font, "FONT", R.id.content_appearance_font, "section_appearance_font_expanded", R.id.header_chevron_appearance_font)
         bindNestedCard(R.id.header_appearance_transparency, "TRANSPARENCY", R.id.content_appearance_transparency, "section_appearance_transparency_expanded", R.id.header_chevron_appearance_transparency)
+        bindNestedCard(R.id.header_appearance_padding, "PADDING", R.id.content_appearance_padding, "section_appearance_padding_expanded", R.id.header_chevron_appearance_padding)
 
         // Reorder section
         bindNestedCard(R.id.header_appearance_reorder, "REORDER", R.id.content_appearance_reorder, "section_appearance_reorder_expanded", R.id.header_chevron_appearance_reorder)
@@ -1339,6 +1340,9 @@ class MainActivity : AppCompatActivity() {
 
         // BG Transparency
         bindSlider(R.id.row_bg_transparency, "Background Opacity", "bg_opacity", 85f, 0f, 100f)
+
+        // Widget Padding
+        bindSlider(R.id.row_widget_padding, "Widget Padding", "widget_padding", 24f, 0f, 48f, suffix = "dp")
 
         // Background Color
         val bgSliderRow = findViewById<View>(R.id.row_bg_color_custom)
