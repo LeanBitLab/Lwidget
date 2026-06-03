@@ -965,6 +965,11 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"/>
 
+                        <include layout="@layout/settings_selector_row"
+                            android:id="@+id/row_temp_unit"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
                         <include layout="@layout/settings_slider_row"
                             android:id="@+id/row_temp_size"
                             android:layout_width="match_parent"

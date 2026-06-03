@@ -15,8 +15,8 @@ android {
         applicationId = "com.leanbitlab.lwidget"
         minSdk = 26
         targetSdk = 35
-        versionCode = 16
-        versionName = "2.1"
+        versionCode = 17
+        versionName = "2.2"
     }
 
     testOptions {
@@ -47,6 +47,15 @@ android {
         debug {
             applicationIdSuffix = ".debug"
             versionNameSuffix = "-DEBUG"
+        }
+    }
+    packaging {
+        resources {
+            excludes += "**/LICENSE*"
+            excludes += "**/README*"
+            excludes += "**/*.md"
+            excludes += "docs/**"
+            excludes += "pdocs/**"
         }
     }
     compileOptions {

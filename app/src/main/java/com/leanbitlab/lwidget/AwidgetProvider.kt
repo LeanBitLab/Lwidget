@@ -81,6 +81,7 @@ class AwidgetProvider : AppWidgetProvider() {
 
         if (intent.action in listOf(
             Intent.ACTION_BOOT_COMPLETED,
+            Intent.ACTION_MY_PACKAGE_REPLACED,
             ACTION_BATTERY_UPDATE,
             StepCounterService.ACTION_STEP_UPDATE,
             Intent.ACTION_PROVIDER_CHANGED,
@@ -91,7 +92,7 @@ class AwidgetProvider : AppWidgetProvider() {
             CoroutineScope(Dispatchers.IO).launch {
                 try {
                     when (intent.action) {
-                        Intent.ACTION_BOOT_COMPLETED -> {
+                        Intent.ACTION_BOOT_COMPLETED, Intent.ACTION_MY_PACKAGE_REPLACED -> {
                             scheduleWork(context)
                             appWidgetIds.forEach { updateAppWidget(context, appWidgetManager, it, UpdateMode.FULL) }
                         }
@@ -465,14 +466,19 @@ class AwidgetProvider : AppWidgetProvider() {
                 val batterySpannable = android.text.SpannableString("${batteryPct}%")
                 batterySpannable.setSpan(android.text.style.RelativeSizeSpan(0.5f), batterySpannable.length - 1, batterySpannable.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 val tempInt = batteryStatus?.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0) ?: 0
-                val tempVal = tempInt / 10f
+                var tempVal = tempInt / 10f
+                val isFahrenheit = prefs.getInt("temp_unit_idx", 0) == 1
+                val unitStr = if (isFahrenheit) "°F" else "°C"
+                if (isFahrenheit) {
+                    tempVal = (tempVal * 9f / 5f) + 32f
+                }
                 if (showSteps) loadStepCount(context, tickViews, prefs)
                 if (showBattery) tickViews.setTextViewText(R.id.text_battery, batterySpannable)
                 if (showTemp) {
                     val tempStr = String.format("%.1f", tempVal)
-                    val tempText = "$tempStr°C"
+                    val tempText = "$tempStr$unitStr"
                     val tempSpan = android.text.SpannableString(tempText)
-                    val cIdx = tempText.indexOf("°C")
+                    val cIdx = tempText.indexOf(unitStr)
                     if (cIdx != -1) {
                         tempSpan.setSpan(android.text.style.RelativeSizeSpan(0.5f), cIdx, cIdx + 2, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     }
@@ -554,7 +560,12 @@ class AwidgetProvider : AppWidgetProvider() {
             val batteryPct = (level * 100 / scale.toFloat()).toInt()
             
             val tempInt = batteryStatus?.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0) ?: 0
-            val tempVal = tempInt / 10f
+            var tempVal = tempInt / 10f
+            val isFahrenheit = prefs.getInt("temp_unit_idx", 0) == 1
+            val unitStr = if (isFahrenheit) "°F" else "°C"
+            if (isFahrenheit) {
+                tempVal = (tempVal * 9f / 5f) + 32f
+            }
 
             if (showBattery) {
                 val batterySpannable = android.text.SpannableString("${batteryPct}%")
@@ -564,9 +575,9 @@ class AwidgetProvider : AppWidgetProvider() {
             }
             if (showTemp) {
                 val tempStr = String.format("%.1f", tempVal)
-                val tempText = "$tempStr°C"
+                val tempText = "$tempStr$unitStr"
                 val tempSpan = android.text.SpannableString(tempText)
-                val cIdx = tempText.indexOf("°C")
+                val cIdx = tempText.indexOf(unitStr)
                 if (cIdx != -1) {
                     tempSpan.setSpan(android.text.style.RelativeSizeSpan(0.5f), cIdx, cIdx + 2, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
@@ -782,21 +793,19 @@ class AwidgetProvider : AppWidgetProvider() {
             // Position items using explicit padding instead of layout_below
             // Calculate cumulative Y positions for each visible item
             val rightDp = context.resources.displayMetrics.density
-            var cumulativeTopDp = 24f  // Starting top margin from top of widget
+            var currentTextY = 24f
             var isFirstVisible = true
             for (entry in rightStack) {
                 if (entry.isVisible) {
+                    val intrinsicGap = entry.size * 0.18f
+                    val topPaddingDp = maxOf(0f, currentTextY - intrinsicGap)
                     if (isFirstVisible) {
-                        // Compensate for font intrinsic top padding (matches left side logic)
-                        val intrinsicGap = entry.size * 0.18f
-                        cumulativeTopDp = maxOf(0f, 24f - intrinsicGap)
                         isFirstVisible = false
                     }
-                    val topPaddingPx = (cumulativeTopDp * rightDp).toInt()
+                    val topPaddingPx = (topPaddingDp * rightDp).toInt()
                     views.setViewPadding(entry.viewId, 0, topPaddingPx, 0, 0)
-                    // Advance by this item's height + small gap
-                    val itemHeightDp = entry.size * 1.15f  // approximate line height
-                    cumulativeTopDp += itemHeightDp + 2f
+                    // Advance Y by text size + fixed gap of 3dp to maintain uniform margin
+                    currentTextY += entry.size + 3f
                 }
             }
 
@@ -1318,12 +1327,13 @@ class AwidgetProvider : AppWidgetProvider() {
                  val memoryInfo = android.app.ActivityManager.MemoryInfo()
                  activityManager.getMemoryInfo(memoryInfo)
                  val freeBytes = memoryInfo.availMem
+                 val totalBytes = memoryInfo.totalMem
 
-                 val gb = freeBytes / (1024f * 1024f * 1024f)
+                 val percentage = if (totalBytes > 0) (freeBytes.toFloat() / totalBytes.toFloat() * 100) else 0f
 
-                 val gbStr = String.format("%.1f", gb)
-                 val span = android.text.SpannableString("$gbStr GB")
-                 span.setSpan(android.text.style.RelativeSizeSpan(0.5f), gbStr.length, gbStr.length + 3, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE) // GB
+                 val pctStr = String.format("%.0f", percentage)
+                 val span = android.text.SpannableString("$pctStr%")
+                 span.setSpan(android.text.style.RelativeSizeSpan(0.5f), pctStr.length, pctStr.length + 1, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE) // %
 
                  if (prefs.getBoolean("bold_ram", false)) {
                      span.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, span.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)

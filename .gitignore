@@ -1,8 +1,7 @@
 # Gradle files
-.gradle/
-build/
-app/build/
-.cxx/
+**/.gradle/
+**/build/
+**/.cxx/
 
 # Local configuration file (sdk user, etc)
 local.properties
@@ -32,6 +31,7 @@ widget_logs.txt
 # OS specific
 .DS_Store
 Thumbs.db
+**/*.original.md
 
 # Private Docs / Project Specific
 pdocs/
@@ -43,5 +43,7 @@ refactor_xml.py
 GEMINI.md
 .geminiignore
 .antigravityignore
+.antigravitycli/
 .gemini/
 .cline/
+.agents

@@ -72,6 +72,7 @@
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
                 <action android:name="com.leanbitlab.lwidget.ACTION_BATTERY_UPDATE" /> 
                 <action android:name="com.leanbitlab.lwidget.ACTION_STEP_UPDATE" /> 
                 <action android:name="android.app.action.NEXT_ALARM_CLOCK_CHANGED" />

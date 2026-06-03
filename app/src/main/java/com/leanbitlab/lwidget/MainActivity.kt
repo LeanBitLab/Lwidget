@@ -924,11 +924,13 @@ class MainActivity : AppCompatActivity() {
     }
     private fun setupTempSection() {
         // Temp
+        val tempUnitOptions = listOf("Celsius (°C)", "Fahrenheit (°F)")
         bindFoldedSection(
             R.id.header_temp, R.drawable.ic_temp, getString(R.string.section_temp),
             R.id.content_temp, R.id.row_temp_toggle,
             "show_temp", false,
             sizeRowId = R.id.row_temp_size, prefSizeKey = "size_temp", defSize = 18f, minSize = 10f, maxSize = 74f,
+            selectorRowId = R.id.row_temp_unit, selectorOptions = tempUnitOptions, prefSelectorKey = "temp_unit_idx", defSelectorIdx = 0,
             isContent = true
         ).also { it.tag = "temp" }
         bindToggle(R.id.row_temp_bold, "Bold Text", "bold_temp", false)
