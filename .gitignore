@@ -1,49 +1,69 @@
-# Gradle files
-**/.gradle/
-**/build/
+# ── Gradle & Build ──
+.gradle/
+build/
 **/.cxx/
+.externalNativeBuild/
+*.class
+*.dex
 
-# Local configuration file (sdk user, etc)
+# ── Local Config ──
 local.properties
-
-# Secrets and Keys
-*.jks
-*.keystore
 keystore.properties
 
-# Log files
-*.log
-build_log.txt
-widget_logs.txt
+# ── Secrets & Keys ──
+*.jks
+*.keystore
+*.p12
+*.pfx
 
-# IntelliJ / Android Studio / VS Code
+# ── IDE / Editor ──
 .idea/
 *.iml
 *.iws
 *.ipr
 .vscode/
+*~
+*.swp
+*.swo
+*.bak
+*.tmp
+.directory
 
-# Build artifacts
+# ── Android / Studio Artifacts ──
 *.apk
 *.ap_
 *.aab
+*.hprof
+captures/
 
-# OS specific
+# ── Logs ──
+*.log
+build_log.txt
+widget_logs.txt
+
+# ── OS ──
 .DS_Store
 Thumbs.db
 **/*.original.md
 
-# Private Docs / Project Specific
+# ── Project Specific ──
 pdocs/
 docs/superpowers
 .superpowers
 refactor_xml.py
 
-# CLI Context
+# ── AI / CLI Context ──
 GEMINI.md
 .geminiignore
-.antigravityignore
-.antigravitycli/
 .gemini/
 .cline/
-.agents
+.agents/
+.antigravityignore
+.antigravitycli/
+
+# ── Environment & Agent Config ──
+.env
+.env.local
+.env.*.local
+.pi/
+
