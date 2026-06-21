@@ -51,7 +51,6 @@ You can download the latest release from the [Play Store](https://play.google.co
 ## Features
 
 -   **Material You**: Full dynamic color support.
--   **Configurable**: Adjust text sizes and visibility for all elements.
 -   **Time & Date**: Clear, customizable display.
 -   **Battery & Temperature**: Real-time device status.
 -   **Step Counter**: Track your daily steps directly from the widget.
@@ -63,6 +62,11 @@ You can download the latest release from the [Play Store](https://play.google.co
 -   **Daily Data Usage**: Monitor your daily data consumption.
 -   **Screen Time**: Track your daily device usage directly from the widget.
 -   **Internal Storage**: Monitor available device storage.
+-   **RAM**: Monitor available device memory.
+-   **Reorder**: Drag to sort widget items in any order you like.
+-   **Font Style**: 11 fonts — Default, Serif, Monospace, Cursive, Condensed, and more.
+-   **Update Interval**: Set how often the widget refreshes.
+-   **Widget Padding**: Adjust inner spacing for a cleaner look.
 -   **Custom Formats**: Choose your preferred Time and Date formats.
 -   **Light/Dark Mode**: Optimized contrast for readability.
 -   **Privacy Focused**: No internet permission required.
