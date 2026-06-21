@@ -65,10 +65,10 @@ You can download the latest release from the [Play Store](https://play.google.co
 
 <div align="center" style="display: flex; justify-content: center; gap: 10px; align-items: center;">
   <a href="https://play.google.com/store/apps/details?id=com.leanbitlab.lwidget">
-    <img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" height="65" style="max-height: 65px; width: auto;">
+    <img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" height="80" style="max-height: 80px; width: auto;">
   </a>
   <a href="https://github.com/LeanBitLab/Lwidget/releases/latest">
-    <img alt="Get it on GitHub" src="docs/images/get_it_on_github.png" height="65" style="max-height: 65px; width: auto;">
+    <img alt="Get it on GitHub" src="docs/images/get_it_on_github.png" height="80" style="max-height: 80px; width: auto;">
   </a>
 </div>
 
