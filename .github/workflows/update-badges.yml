@@ -26,7 +26,14 @@ jobs:
 
           # Fetch releases and calculate total download count
           RELEASES_JSON=$(curl -s "https://api.github.com/repos/LeanBitLab/Lwidget/releases")
-          DOWNLOADS=$(echo "$RELEASES_JSON" | jq '[.[].assets[].download_count] | add')
+          
+          # Validate that RELEASES_JSON is valid JSON and is an array
+          if echo "$RELEASES_JSON" | jq empty 2>/dev/null && echo "$RELEASES_JSON" | jq -e 'type == "array"' >/dev/null 2>&1; then
+            DOWNLOADS=$(echo "$RELEASES_JSON" | jq '[.[].assets[].download_count] | add')
+          else
+            DOWNLOADS=0
+          fi
+          
           if [ "$DOWNLOADS" = "null" ] || [ -z "$DOWNLOADS" ]; then
             DOWNLOADS=0
           fi
