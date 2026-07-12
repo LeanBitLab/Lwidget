@@ -23,7 +23,7 @@ def main():
     commits = []
     for c in raw_list:
         c_lower = c.lower()
-        if c_lower.startswith("merge pull request") or c_lower.startswith("merge branch"):
+        if "leanbitlab/jules" in c_lower or "jules" in c_lower:
             continue
         if c_lower.startswith("chore: update daily downloads and stars badges"):
             continue
