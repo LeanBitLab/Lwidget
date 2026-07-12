@@ -131,11 +131,13 @@ class SetupActivity : AppCompatActivity() {
 
         updateButtons()
         updatePermissionButtons()
+        updateBatteryOptimizationSwitch()
     }
 
     override fun onResume() {
         super.onResume()
         updatePermissionButtons()
+        updateBatteryOptimizationSwitch()
     }
 
     private fun updateButtons() {
@@ -229,5 +231,50 @@ class SetupActivity : AppCompatActivity() {
 
         startActivity(Intent(this, MainActivity::class.java))
         finish()
+    }
+
+    private fun updateBatteryOptimizationSwitch() {
+        val switchOpt = findViewById<SwitchMaterial>(R.id.switch_setup_battery_optimization) ?: return
+        val powerManager = getSystemService(Context.POWER_SERVICE) as android.os.PowerManager
+        val isIgnoring = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            powerManager.isIgnoringBatteryOptimizations(packageName)
+        } else true
+        
+        switchOpt.setOnCheckedChangeListener(null)
+        switchOpt.isChecked = isIgnoring
+        switchOpt.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    val isCurrentlyIgnoring = powerManager.isIgnoringBatteryOptimizations(packageName)
+                    if (!isCurrentlyIgnoring) {
+                        try {
+                            val intent = Intent(android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
+                                data = android.net.Uri.parse("package:$packageName")
+                            }
+                            startActivity(intent)
+                        } catch (e: Exception) {
+                            try {
+                                val intent = Intent(android.provider.Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+                                startActivity(intent)
+                            } catch (ex: Exception) {
+                                ex.printStackTrace()
+                            }
+                        }
+                    }
+                }
+            } else {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    val isCurrentlyIgnoring = powerManager.isIgnoringBatteryOptimizations(packageName)
+                    if (isCurrentlyIgnoring) {
+                        try {
+                            val intent = Intent(android.provider.Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+                            startActivity(intent)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
+                }
+            }
+        }
     }
 }

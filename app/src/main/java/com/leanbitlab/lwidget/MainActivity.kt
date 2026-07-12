@@ -321,6 +321,8 @@ class MainActivity : AppCompatActivity() {
         checkAllPermissions()
         // Force a full widget update every time the app is opened
         updateWidget()
+        // Update battery optimization switch state
+        updateBatteryOptimizationSwitch()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -860,6 +862,7 @@ class MainActivity : AppCompatActivity() {
         setupStepsSection()
         setupScreenTimeSection()
         setupKeepAliveSection()
+        setupBatteryOptimizationSection()
         setupEventsAndTasksSections()
         setupThemeSection(colorOptions)
         
@@ -1241,6 +1244,57 @@ class MainActivity : AppCompatActivity() {
                 }
             } else {
                 stopService(serviceIntent)
+            }
+        }
+    }
+    private fun setupBatteryOptimizationSection() {
+        val row = findViewById<View>(R.id.row_battery_optimization_toggle)
+        val tvTitle = row.findViewById<TextView>(R.id.row_label)
+        tvTitle.text = "Disable Battery Optimization"
+        updateBatteryOptimizationSwitch()
+    }
+    private fun updateBatteryOptimizationSwitch() {
+        val row = findViewById<View>(R.id.row_battery_optimization_toggle) ?: return
+        val switchOpt = row.findViewById<SwitchMaterial>(R.id.row_switch) ?: return
+        val powerManager = getSystemService(Context.POWER_SERVICE) as android.os.PowerManager
+        val isIgnoring = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            powerManager.isIgnoringBatteryOptimizations(packageName)
+        } else true
+        
+        switchOpt.setOnCheckedChangeListener(null)
+        switchOpt.isChecked = isIgnoring
+        switchOpt.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                    val isCurrentlyIgnoring = powerManager.isIgnoringBatteryOptimizations(packageName)
+                    if (!isCurrentlyIgnoring) {
+                        try {
+                            val intent = Intent(android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
+                                data = android.net.Uri.parse("package:$packageName")
+                            }
+                            startActivity(intent)
+                        } catch (e: Exception) {
+                            try {
+                                val intent = Intent(android.provider.Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+                                startActivity(intent)
+                            } catch (ex: Exception) {
+                                ex.printStackTrace()
+                            }
+                        }
+                    }
+                }
+            } else {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                    val isCurrentlyIgnoring = powerManager.isIgnoringBatteryOptimizations(packageName)
+                    if (isCurrentlyIgnoring) {
+                        try {
+                            val intent = Intent(android.provider.Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+                            startActivity(intent)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
+                }
             }
         }
     }
