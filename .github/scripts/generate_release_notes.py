@@ -17,7 +17,17 @@ def main():
     
     # Get commits
     commits_raw = run_cmd(["git", "log", log_range, "--pretty=format:%s"])
-    commits = [c.strip() for c in commits_raw.split("\n") if c.strip()] if commits_raw else []
+    raw_list = [c.strip() for c in commits_raw.split("\n") if c.strip()] if commits_raw else []
+    
+    # Filter commits
+    commits = []
+    for c in raw_list:
+        c_lower = c.lower()
+        if c_lower.startswith("merge pull request") or c_lower.startswith("merge branch"):
+            continue
+        if c_lower.startswith("chore: update daily downloads and stars badges"):
+            continue
+        commits.append(c)
     
     # Categorized lists
     customization = []
@@ -39,11 +49,10 @@ def main():
     # Build release notes markdown
     lines = []
     lines.append(f"## {tag_name}")
-    lines.append(f"Commit: {commit_sha}")
     lines.append("")
     
     lines.append("💖 **Support Our Work**")
-    lines.append("We are committed to making our apps as powerful and polished as possible. As an entirely community-funded project, we rely on your support to keep going, please consider becoming a sponsor. A huge thank you to all our current supporters!")
+    lines.append("We are committed to making our apps as powerful and polished as possible. As an entirely community-funded project, we rely on your support to keep going, please consider becoming a [sponsor](https://github.com/sponsors/LeanBitLab). A huge thank you to all our current supporters!")
     lines.append("")
     
     lines.append("🚀 **What's New**")
