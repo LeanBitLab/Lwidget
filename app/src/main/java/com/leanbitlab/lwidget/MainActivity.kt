@@ -92,6 +92,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var prefs: SharedPreferences
     private val contentSwitches = mutableListOf<SwitchMaterial>()
     private var clockAppPackages = listOf("default")
+    private var currentWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        recreate()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -99,12 +106,64 @@ class MainActivity : AppCompatActivity() {
         com.google.android.material.color.DynamicColors.applyToActivityIfAvailable(this)
         setContentView(R.layout.activity_main)
 
-        prefs = getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
+        val globalPrefs = getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
 
-        if (prefs.getBoolean("is_first_launch", true)) {
+        if (globalPrefs.getBoolean("is_first_launch", true)) {
             startActivity(Intent(this, SetupActivity::class.java))
             finish()
             return
+        }
+
+        var widgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
+        val appWidgetManager = AppWidgetManager.getInstance(this)
+        val ids = appWidgetManager.getAppWidgetIds(ComponentName(this, AwidgetProvider::class.java))
+        if (widgetId == AppWidgetManager.INVALID_APPWIDGET_ID && ids.size == 1) {
+            widgetId = ids[0]
+        }
+        currentWidgetId = widgetId
+
+        prefs = if (currentWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
+            val wPrefs = getSharedPreferences("com.leanbitlab.lwidget.PREFS_$currentWidgetId", Context.MODE_PRIVATE)
+            FallbackPreferences(wPrefs, globalPrefs)
+        } else {
+            globalPrefs
+        }
+
+        // Update titles to reflect configured widget ID
+        val titleApp = findViewById<TextView>(R.id.title_app)
+        val subtitleApp = findViewById<TextView>(R.id.subtitle_app)
+
+        if (currentWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
+            val labelText = "Widget #$currentWidgetId ▾"
+            titleApp.text = "Lwidget #$currentWidgetId"
+            subtitleApp.text = labelText
+        } else {
+            titleApp.text = "Lwidget"
+            subtitleApp.text = "Default Settings ▾"
+        }
+
+        subtitleApp.setOnClickListener {
+            val options = mutableListOf<String>()
+            val optionIds = mutableListOf<Int>()
+
+            options.add("Default Settings")
+            optionIds.add(AppWidgetManager.INVALID_APPWIDGET_ID)
+
+            ids.forEachIndexed { index, id ->
+                options.add("Widget #${index + 1} (ID: $id)")
+                optionIds.add(id)
+            }
+
+            com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                .setTitle("Select Widget to Configure")
+                .setItems(options.toTypedArray()) { _, which ->
+                    val selectedId = optionIds[which]
+                    val newIntent = Intent(this, MainActivity::class.java).apply {
+                        putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, selectedId)
+                    }
+                    onNewIntent(newIntent)
+                }
+                .show()
         }
 
         checkAllPermissions()
@@ -150,7 +209,6 @@ class MainActivity : AppCompatActivity() {
 
         // Handle Collapsing Toolbar Title Fade and Header Fade
         val appBar = findViewById<com.google.android.material.appbar.AppBarLayout>(R.id.app_bar)
-        val titleApp = findViewById<TextView>(R.id.title_app)
         val expandedHeader = findViewById<View>(R.id.header_expanded)
         
         appBar.addOnOffsetChangedListener(com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
@@ -175,7 +233,7 @@ class MainActivity : AppCompatActivity() {
     private fun updateLivePreview() {
         val previewContainer = findViewById<android.widget.FrameLayout>(R.id.preview_container)
         try {
-            val remoteViews = AwidgetProvider.Companion.buildAppWidgetRemoteViews(this, UpdateMode.FULL)
+            val remoteViews = AwidgetProvider.Companion.buildAppWidgetRemoteViews(this, currentWidgetId, UpdateMode.FULL)
             val view = remoteViews.apply(this, previewContainer)
             previewContainer.removeAllViews()
             previewContainer.addView(view)
@@ -343,7 +401,7 @@ class MainActivity : AppCompatActivity() {
                  updateToggleAvailability()
 
                  // Show Gadgetbridge module prompt
-                 android.app.AlertDialog.Builder(this)
+                 com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
                      .setTitle("Important Step")
                      .setMessage("If the weather doesn't show up on your widget soon:\n\nOpen Breezy Weather → Settings → External Modules → Enable 'Send Gadgetbridge Data' & toggle on 'Lwidget'.")
                      .setPositiveButton("Got it", null)
@@ -1031,7 +1089,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 if (ContextCompat.checkSelfPermission(this, "org.breezyweather.READ_PROVIDER") != PackageManager.PERMISSION_GRANTED) {
                     weatherSwitch.isChecked = false
-                    android.app.AlertDialog.Builder(this)
+                    com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
                         .setTitle("Permission Clarification")
                         .setMessage("To display the weather, Lwidget needs to read data from Breezy Weather.\n\nAndroid will now ask for 'Location' access. Please note: Lwidget DOES NOT access your location, nor does it have permission to access the internet. This is simply how Android categorizes Breezy Weather's data sharing permission.")
                         .setPositiveButton("Continue") { _, _ ->
@@ -1051,7 +1109,7 @@ class MainActivity : AppCompatActivity() {
             updateWidget()
             updateToggleAvailability()
             if (isChecked) {
-                android.app.AlertDialog.Builder(this)
+                com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
                     .setTitle("Important Step")
                     .setMessage("If the weather doesn't show up on your widget soon:\n\nOpen Breezy Weather → Settings → External Modules → Enable 'Send Gadgetbridge Data' & toggle on 'Lwidget'.")
                     .setPositiveButton("Got it", null)

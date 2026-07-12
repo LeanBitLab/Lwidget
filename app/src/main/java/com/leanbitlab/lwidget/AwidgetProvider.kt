@@ -25,6 +25,7 @@ import android.os.Build
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.IntentFilter
 import android.net.NetworkCapabilities
 import android.app.usage.NetworkStatsManager
@@ -210,8 +211,14 @@ class AwidgetProvider : AppWidgetProvider() {
         }
 
         // Suspended function called from Coroutine
-        fun buildAppWidgetRemoteViews(context: Context, mode: UpdateMode = UpdateMode.FULL): RemoteViews {
-            val prefs = context.getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
+        fun buildAppWidgetRemoteViews(context: Context, appWidgetId: Int, mode: UpdateMode = UpdateMode.FULL): RemoteViews {
+            val globalPrefs = context.getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
+            val prefs = if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
+                val wPrefs = context.getSharedPreferences("com.leanbitlab.lwidget.PREFS_$appWidgetId", Context.MODE_PRIVATE)
+                FallbackPreferences(wPrefs, globalPrefs)
+            } else {
+                globalPrefs
+            }
 
             // --- Load Preferences ---
             val showTime = prefs.getBoolean("show_time", true)
@@ -491,7 +498,7 @@ class AwidgetProvider : AppWidgetProvider() {
                 return tickViews
             } else if (mode == UpdateMode.CALENDAR_ONLY) {
                 val calViews = RemoteViews(context.packageName, layoutId)
-                if (showEvents) loadCalendarEvents(context, calViews, sizeEvents, primaryColor, secondaryColor)
+                if (showEvents) loadCalendarEvents(context, calViews, sizeEvents, primaryColor, secondaryColor, prefs)
                 return calViews
             } else if (mode == UpdateMode.TASKS_ONLY) {
                 val taskViews = RemoteViews(context.packageName, layoutId)
@@ -852,7 +859,7 @@ class AwidgetProvider : AppWidgetProvider() {
             views.setViewVisibility(R.id.events_container, if (showEvents || showTasks) android.view.View.VISIBLE else android.view.View.GONE)
             
             if (showEvents) {
-                loadCalendarEvents(context, views, sizeEvents, primaryColor, secondaryColor)
+                loadCalendarEvents(context, views, sizeEvents, primaryColor, secondaryColor, prefs)
             } else if (showTasks) {
                 loadTasks(context, views, sizeTasks, primaryColor)
             }
@@ -882,15 +889,18 @@ class AwidgetProvider : AppWidgetProvider() {
                  views.setOnClickPendingIntent(R.id.events_container, refreshPendingIntent)
             }
 
-            val settingsIntent = Intent(context, MainActivity::class.java)
-            val settingsPendingIntent = PendingIntent.getActivity(context, 0, settingsIntent, PendingIntent.FLAG_IMMUTABLE)
+            val settingsIntent = Intent(context, MainActivity::class.java).apply {
+                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+                data = android.net.Uri.parse("lwidget://widget/$appWidgetId")
+            }
+            val settingsPendingIntent = PendingIntent.getActivity(context, appWidgetId, settingsIntent, PendingIntent.FLAG_IMMUTABLE)
             views.setOnClickPendingIntent(R.id.widget_root, settingsPendingIntent)
 
             return views
         }
 
         fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, mode: UpdateMode = UpdateMode.FULL) {
-            val views = buildAppWidgetRemoteViews(context, mode)
+            val views = buildAppWidgetRemoteViews(context, appWidgetId, mode)
             if (mode == UpdateMode.FULL) {
                 appWidgetManager.updateAppWidget(appWidgetId, views)
             } else {
@@ -979,8 +989,7 @@ class AwidgetProvider : AppWidgetProvider() {
             return events
         }
 
-        private fun bindCalendarEvents(context: Context, views: RemoteViews, events: List<EventInfo>, textSizeSp: Float, primaryColor: Int, secondaryColor: Int, eventViews: List<Int>) {
-            val prefs = context.getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
+        private fun bindCalendarEvents(context: Context, views: RemoteViews, events: List<EventInfo>, textSizeSp: Float, primaryColor: Int, secondaryColor: Int, eventViews: List<Int>, prefs: SharedPreferences) {
             val showDayAbbr = prefs.getBoolean("show_day_abbr_in_events", true)
 
             val timeFormatter = getFormatter("h:mm")
@@ -1057,7 +1066,7 @@ class AwidgetProvider : AppWidgetProvider() {
             }
         }
 
-        private fun loadCalendarEvents(context: Context, views: RemoteViews, textSizeSp: Float, primaryColor: Int, secondaryColor: Int) {
+        private fun loadCalendarEvents(context: Context, views: RemoteViews, textSizeSp: Float, primaryColor: Int, secondaryColor: Int, prefs: SharedPreferences) {
             if (androidx.core.content.ContextCompat.checkSelfPermission(
                     context, android.Manifest.permission.READ_CALENDAR
                 ) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
@@ -1073,7 +1082,7 @@ class AwidgetProvider : AppWidgetProvider() {
 
             try {
                 val events = fetchCalendarEvents(context)
-                bindCalendarEvents(context, views, events, textSizeSp, primaryColor, secondaryColor, eventViews)
+                bindCalendarEvents(context, views, events, textSizeSp, primaryColor, secondaryColor, eventViews, prefs)
             } catch (e: Exception) {
                 // Log and gracefully handle crash
                 android.util.Log.e("LWidget", "Error loading calendar events", e)

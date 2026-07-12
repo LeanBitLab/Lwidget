@@ -62,6 +62,7 @@
                     android:fontFamily="monospace"/>
 
                 <TextView
+                    android:id="@+id/subtitle_app"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="LeanBitLab"
