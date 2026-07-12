@@ -306,7 +306,11 @@ class AwidgetProvider : AppWidgetProvider() {
                 androidx.core.content.ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACTIVITY_RECOGNITION) == android.content.pm.PackageManager.PERMISSION_GRANTED
             } else true
             if ((showSteps || keepAlive) && hasActivityPerm) {
-                context.startForegroundService(serviceIntent)
+                try {
+                    context.startForegroundService(serviceIntent)
+                } catch (e: Exception) {
+                    android.util.Log.e("AwidgetProvider", "Failed to start StepCounterService from background: ${e.message}")
+                }
             } else {
                 context.stopService(serviceIntent)
             }
