@@ -54,11 +54,16 @@ jobs:
       - name: Build Release APK
         run: ./gradlew assembleRelease
 
+      - name: Generate Release Notes
+        env:
+          TAG_NAME: ${{ github.event.inputs.tag_name || github.ref_name }}
+        run: python3 .github/scripts/generate_release_notes.py
+
       - name: Create GitHub Release and Upload APK
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event.inputs.tag_name || github.ref_name }}
-          generate_release_notes: true
+          body_path: release_notes.md
           files: |
             app/build/outputs/apk/release/*.apk
           draft: false
