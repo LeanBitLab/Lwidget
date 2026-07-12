@@ -1254,6 +1254,9 @@ class MainActivity : AppCompatActivity() {
             isContent = true
         )
 
+        // Show day abbreviation in events (from issue #71)
+        bindToggle(R.id.row_events_day_abbr, "Show day abbreviation", "show_day_abbr_in_events", true)
+
         // Tasks
         val tasksSwitch = bindFoldedSection(
             R.id.header_tasks, R.drawable.ic_tasks, getString(R.string.section_tasks),

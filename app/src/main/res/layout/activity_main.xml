@@ -1387,6 +1387,11 @@
                             android:id="@+id/row_events_size"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"/>
+
+                        <include layout="@layout/settings_toggle_row"
+                            android:id="@+id/row_events_day_abbr"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
