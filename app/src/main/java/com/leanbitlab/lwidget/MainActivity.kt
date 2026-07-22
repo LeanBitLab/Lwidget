@@ -234,7 +234,7 @@ class MainActivity : AppCompatActivity() {
         val previewContainer = findViewById<android.widget.FrameLayout>(R.id.preview_container)
         try {
             val remoteViews = AwidgetProvider.Companion.buildAppWidgetRemoteViews(this, currentWidgetId, UpdateMode.FULL)
-            val view = remoteViews.apply(this, previewContainer)
+            val view = remoteViews.apply(applicationContext, previewContainer)
             previewContainer.removeAllViews()
             previewContainer.addView(view)
         } catch (e: Exception) {
@@ -1591,13 +1591,6 @@ class MainActivity : AppCompatActivity() {
         val presets = listOf(
             // Minimal: just time+date, white text, fully transparent, thin font
             Preset("minimal", "Minimal", mapOf(
-                "show_time" to true, "size_time" to 58f,
-                "show_date" to true, "size_date" to 16f,
-                "show_battery" to false, "show_temp" to false,
-                "show_storage" to false, "show_ram" to false, "show_data_usage" to false,
-                "show_steps" to false, "show_screen_time" to false,
-                "show_next_alarm" to false, "show_world_clock" to false,
-                "show_events" to false, "show_tasks" to false,
                 "show_outline" to false, "bg_opacity" to 0f,
                 "font_style" to 9, // Thin
                 "use_dynamic_colors" to false,
@@ -1608,15 +1601,7 @@ class MainActivity : AppCompatActivity() {
             )),
             // Neon: cyan time, magenta date, dark bg, bold condensed font
             Preset("neon", "Neon", mapOf(
-                "show_time" to true, "size_time" to 64f,
-                "show_date" to true, "size_date" to 14f,
-                "show_battery" to true, "size_battery" to 28f, "bold_battery" to true,
-                "show_temp" to true, "size_temp" to 18f, "bold_temp" to true,
-                "show_storage" to false, "show_ram" to false, "show_data_usage" to false,
-                "show_steps" to false, "show_screen_time" to false,
-                "show_next_alarm" to true, "size_next_alarm" to 12f,
-                "show_world_clock" to false,
-                "show_events" to false, "show_tasks" to false,
+                "bold_battery" to true, "bold_temp" to true,
                 "show_outline" to true, "bg_opacity" to 95f,
                 "font_style" to 4, // Condensed
                 "use_dynamic_colors" to false,
@@ -1624,21 +1609,12 @@ class MainActivity : AppCompatActivity() {
                 "text_color_secondary_idx" to 2, "text_color_secondary_r" to 0, "text_color_secondary_g" to 200, "text_color_secondary_b" to 200,
                 "date_color_idx" to 2, "date_color_r" to 255, "date_color_g" to 0, "date_color_b" to 180,
                 "outline_color_idx" to 2, "outline_color_r" to 0, "outline_color_g" to 200, "outline_color_b" to 255,
-                "bg_color_idx" to 2, "bg_color_r" to 10, "bg_color_g" to 10, "bg_color_b" to 20,
-                "widget_right_column_order" to "show_battery,show_temp,show_weather_condition,show_data_usage,show_storage,show_ram,show_steps,show_screen_time"
+                "bg_color_idx" to 2, "bg_color_r" to 10, "bg_color_g" to 10, "bg_color_b" to 20
             )),
             // Cockpit: green on dark, monospace, info-heavy, terminal look
             Preset("cockpit", "Cockpit", mapOf(
-                "show_time" to true, "size_time" to 42f,
-                "show_date" to true, "size_date" to 14f,
-                "show_battery" to true, "size_battery" to 18f, "bold_battery" to false,
-                "show_temp" to true, "size_temp" to 16f, "bold_temp" to false,
-                "show_storage" to true, "size_storage" to 14f, "bold_storage" to false, "show_ram" to false, "size_ram" to 14f, "bold_ram" to false,
-                "show_data_usage" to true, "size_data" to 14f, "bold_data_usage" to false,
-                "show_steps" to false, "show_screen_time" to false,
-                "show_next_alarm" to true, "size_next_alarm" to 14f,
-                "show_world_clock" to false,
-                "show_events" to false, "show_tasks" to false,
+                "bold_battery" to false, "bold_temp" to false,
+                "bold_storage" to false, "bold_ram" to false, "bold_data_usage" to false,
                 "show_outline" to true, "bg_opacity" to 90f,
                 "font_style" to 2, // Monospace
                 "use_dynamic_colors" to false,
@@ -1646,40 +1622,22 @@ class MainActivity : AppCompatActivity() {
                 "text_color_secondary_idx" to 2, "text_color_secondary_r" to 0, "text_color_secondary_g" to 180, "text_color_secondary_b" to 50,
                 "date_color_idx" to 2, "date_color_r" to 0, "date_color_g" to 200, "date_color_b" to 80,
                 "outline_color_idx" to 2, "outline_color_r" to 0, "outline_color_g" to 120, "outline_color_b" to 40,
-                "bg_color_idx" to 2, "bg_color_r" to 5, "bg_color_g" to 15, "bg_color_b" to 5,
-                "widget_right_column_order" to "show_battery,show_storage,show_ram,show_data_usage,show_temp,show_weather_condition,show_steps,show_screen_time"
+                "bg_color_idx" to 2, "bg_color_r" to 5, "bg_color_g" to 15, "bg_color_b" to 5
             )),
             // Sunset: warm oranges/gold, serif font, elegant minimal
             Preset("sunset", "Sunset", mapOf(
-                "show_time" to true, "size_time" to 54f,
-                "show_date" to true, "size_date" to 18f,
-                "show_battery" to true, "size_battery" to 24f, "bold_battery" to true,
-                "show_temp" to false, "show_storage" to false, "show_ram" to false,
-                "show_data_usage" to false, "show_steps" to false,
-                "show_screen_time" to false,
-                "show_next_alarm" to true, "size_next_alarm" to 14f,
-                "show_world_clock" to false,
-                "show_events" to false, "show_tasks" to false,
+                "bold_battery" to true,
                 "show_outline" to false, "bg_opacity" to 70f,
                 "font_style" to 1, // Serif
                 "use_dynamic_colors" to false,
                 "text_color_primary_idx" to 2, "text_color_primary_r" to 255, "text_color_primary_g" to 180, "text_color_primary_b" to 50,
                 "text_color_secondary_idx" to 2, "text_color_secondary_r" to 230, "text_color_secondary_g" to 140, "text_color_secondary_b" to 60,
                 "date_color_idx" to 2, "date_color_r" to 255, "date_color_g" to 120, "date_color_b" to 50,
-                "bg_color_idx" to 2, "bg_color_r" to 30, "bg_color_g" to 15, "bg_color_b" to 8,
-                "widget_right_column_order" to "show_battery,show_temp,show_weather_condition,show_data_usage,show_storage,show_ram,show_steps,show_screen_time"
+                "bg_color_idx" to 2, "bg_color_r" to 30, "bg_color_g" to 15, "bg_color_b" to 8
             )),
             // Monochrome: white outline, all white text, medium font, classic layout
             Preset("monochrome", "Monochrome", mapOf(
-                "show_time" to true, "size_time" to 48f,
-                "show_date" to true, "size_date" to 14f,
-                "show_battery" to true, "size_battery" to 22f, "bold_battery" to false,
-                "show_temp" to false, "show_storage" to true, "size_storage" to 14f, "show_ram" to false, "size_ram" to 14f,
-                "show_data_usage" to false, "show_steps" to false,
-                "show_screen_time" to false,
-                "show_next_alarm" to true, "size_next_alarm" to 14f,
-                "show_world_clock" to false,
-                "show_events" to false, "show_tasks" to false,
+                "bold_battery" to false,
                 "show_outline" to true, "bg_opacity" to 50f,
                 "font_style" to 7, // Medium
                 "use_dynamic_colors" to false,
@@ -1687,27 +1645,18 @@ class MainActivity : AppCompatActivity() {
                 "text_color_secondary_idx" to 2, "text_color_secondary_r" to 170, "text_color_secondary_g" to 170, "text_color_secondary_b" to 170,
                 "date_color_idx" to 2, "date_color_r" to 200, "date_color_g" to 200, "date_color_b" to 200,
                 "outline_color_idx" to 2, "outline_color_r" to 100, "outline_color_g" to 100, "outline_color_b" to 100,
-                "bg_color_idx" to 2, "bg_color_r" to 25, "bg_color_g" to 25, "bg_color_b" to 25,
-                "widget_right_column_order" to "show_battery,show_storage,show_ram,show_temp,show_weather_condition,show_data_usage,show_steps,show_screen_time"
+                "bg_color_idx" to 2, "bg_color_r" to 25, "bg_color_g" to 25, "bg_color_b" to 25
             )),
             // Snowfall: icy blues, light font, airy feel
             Preset("snowfall", "Snowfall", mapOf(
-                "show_time" to true, "size_time" to 60f,
-                "show_date" to true, "size_date" to 16f,
-                "show_battery" to false, "show_temp" to true, "size_temp" to 20f, "bold_temp" to false,
-                "show_storage" to false, "show_ram" to false, "show_data_usage" to false,
-                "show_steps" to false, "show_screen_time" to false,
-                "show_next_alarm" to false,
-                "show_world_clock" to false,
-                "show_events" to false, "show_tasks" to false,
+                "bold_temp" to false,
                 "show_outline" to false, "bg_opacity" to 60f,
                 "font_style" to 6, // Light
                 "use_dynamic_colors" to false,
                 "text_color_primary_idx" to 2, "text_color_primary_r" to 180, "text_color_primary_g" to 220, "text_color_primary_b" to 255,
                 "text_color_secondary_idx" to 2, "text_color_secondary_r" to 130, "text_color_secondary_g" to 180, "text_color_secondary_b" to 230,
                 "date_color_idx" to 2, "date_color_r" to 100, "date_color_g" to 170, "date_color_b" to 255,
-                "bg_color_idx" to 2, "bg_color_r" to 10, "bg_color_g" to 20, "bg_color_b" to 40,
-                "widget_right_column_order" to "show_temp,show_battery,show_weather_condition,show_data_usage,show_storage,show_ram,show_steps,show_screen_time"
+                "bg_color_idx" to 2, "bg_color_r" to 10, "bg_color_g" to 20, "bg_color_b" to 40
             ))
         )
 

@@ -56,10 +56,18 @@ jobs:
       - name: Build Release APK
         run: ./gradlew assembleRelease
 
-      - name: Generate Release Notes
+      - name: Prepare Release Notes
         env:
           TAG_NAME: ${{ github.event.inputs.tag_name || github.ref_name }}
-        run: python3 .github/scripts/generate_release_notes.py
+        run: |
+          SHORT_TAG="${TAG_NAME%.*}"
+          if [ -f "docs/release-notes/${TAG_NAME}.md" ]; then
+            cp "docs/release-notes/${TAG_NAME}.md" release_notes.md
+          elif [ -f "docs/release-notes/${SHORT_TAG}.md" ]; then
+            cp "docs/release-notes/${SHORT_TAG}.md" release_notes.md
+          else
+            echo "Release notes for ${TAG_NAME} not found." > release_notes.md
+          fi
 
       - name: Create GitHub Release and Upload APK
         uses: softprops/action-gh-release@v2
