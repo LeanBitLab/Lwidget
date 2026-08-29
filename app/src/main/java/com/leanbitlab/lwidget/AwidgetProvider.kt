@@ -510,7 +510,7 @@ class AwidgetProvider : AppWidgetProvider() {
                 return taskViews
             } else if (mode == UpdateMode.ALARM_ONLY) {
                 val alarmViews = RemoteViews(context.packageName, layoutId)
-                if (showNextAlarm) loadNextAlarm(context, alarmViews, sizeNextAlarm, secondaryColor)
+                if (showNextAlarm) loadNextAlarm(context, alarmViews, sizeNextAlarm, secondaryColor, prefs, showDate || showWorldClock)
                 return alarmViews
             }
 
@@ -722,20 +722,22 @@ class AwidgetProvider : AppWidgetProvider() {
             }
 
             // --- Step Counter ---
-            views.setViewVisibility(R.id.text_steps, if (showSteps) android.view.View.VISIBLE else android.view.View.GONE)
+            views.setViewVisibility(R.id.layout_steps, if (showSteps) android.view.View.VISIBLE else android.view.View.GONE)
             if (showSteps) {
                 views.setTextViewTextSize(R.id.text_steps, android.util.TypedValue.COMPLEX_UNIT_SP, sizeSteps)
                 views.setTextColor(R.id.text_steps, secondaryColor)
+                views.setInt(R.id.icon_steps, "setColorFilter", secondaryColor)
                 loadStepCount(context, views, prefs)
             }
             
             // --- Screen Time ---
             val showScreenTime = prefs.getBoolean("show_screen_time", false)
             val sizeScreenTime = prefs.getFloat("size_screen_time", 14f)
-            views.setViewVisibility(R.id.text_screen_time, if (showScreenTime) android.view.View.VISIBLE else android.view.View.GONE)
+            views.setViewVisibility(R.id.layout_screen_time, if (showScreenTime) android.view.View.VISIBLE else android.view.View.GONE)
             if (showScreenTime) {
                 views.setTextViewTextSize(R.id.text_screen_time, android.util.TypedValue.COMPLEX_UNIT_SP, sizeScreenTime)
                 views.setTextColor(R.id.text_screen_time, secondaryColor)
+                views.setInt(R.id.icon_screen_time, "setColorFilter", secondaryColor)
                 updateScreenTime(context, views, prefs)
             }
             
@@ -788,8 +790,8 @@ class AwidgetProvider : AppWidgetProvider() {
                 StackEntry(R.id.text_data_usage, showData, sizeData, "show_data_usage"),
                 StackEntry(R.id.text_storage, showStorage, sizeStorage, "show_storage"),
                 StackEntry(R.id.text_ram, showRam, sizeRam, "show_ram"),
-                StackEntry(R.id.text_steps, showSteps, sizeSteps, "show_steps"),
-                StackEntry(R.id.text_screen_time, showScreenTime, sizeScreenTime, "show_screen_time")
+                StackEntry(R.id.layout_steps, showSteps, sizeSteps, "show_steps"),
+                StackEntry(R.id.layout_screen_time, showScreenTime, sizeScreenTime, "show_screen_time")
             )
 
             val savedOrder = prefs.getString("widget_right_column_order", "")
@@ -869,12 +871,12 @@ class AwidgetProvider : AppWidgetProvider() {
             }
 
             // --- Next Alarm ---
-            views.setViewVisibility(R.id.text_next_alarm, if (showNextAlarm) android.view.View.VISIBLE else android.view.View.GONE)
+            views.setViewVisibility(R.id.layout_next_alarm, if (showNextAlarm) android.view.View.VISIBLE else android.view.View.GONE)
             if (showNextAlarm) {
-                loadNextAlarm(context, views, sizeNextAlarm, alarmColor)
+                loadNextAlarm(context, views, sizeNextAlarm, alarmColor, prefs, showDate || showWorldClock)
             }
             // Click action for Next Alarm (same as Clock)
-            views.setOnClickPendingIntent(R.id.text_next_alarm, alarmPendingIntent)
+            views.setOnClickPendingIntent(R.id.layout_next_alarm, alarmPendingIntent)
 
             val refreshIntent = Intent(context, AwidgetProvider::class.java).apply {
                 action = ACTION_BATTERY_UPDATE
@@ -1098,7 +1100,7 @@ class AwidgetProvider : AppWidgetProvider() {
 
         private fun updateScreenTime(context: Context, views: RemoteViews, prefs: android.content.SharedPreferences) {
             if (!hasUsageStatsPermission(context)) {
-                 views.setViewVisibility(R.id.text_screen_time, android.view.View.GONE)
+                 views.setViewVisibility(R.id.layout_screen_time, android.view.View.GONE)
                  return
             }
 
@@ -1131,14 +1133,12 @@ class AwidgetProvider : AppWidgetProvider() {
                 val totalMinutes = totalForegroundTime / (1000 * 60)
                 val hours = totalMinutes / 60
                 val mins = totalMinutes % 60
-                val timeString = if (hours > 0) "${hours}h ${mins}m \u23F3" else "${mins}m \u23F3" // ⏳
+                val timeString = if (hours > 0) "${hours}h ${mins}m" else "${mins}m"
                 val span = android.text.SpannableString(timeString)
-                span.setSpan(android.text.style.RelativeSizeSpan(0.75f), span.length - 2, span.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 if (isBold) span.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, span.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 views.setTextViewText(R.id.text_screen_time, span)
             } else {
-                val span = android.text.SpannableString("0m \u23F3")
-                span.setSpan(android.text.style.RelativeSizeSpan(0.75f), span.length - 2, span.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                val span = android.text.SpannableString("0m")
                 if (isBold) span.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, span.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 views.setTextViewText(R.id.text_screen_time, span)
             }
@@ -1320,23 +1320,27 @@ class AwidgetProvider : AppWidgetProvider() {
              }
         }
 
-        private fun loadNextAlarm(context: Context, views: RemoteViews, textSizeSp: Float, textColor: Int) {
+        private fun loadNextAlarm(context: Context, views: RemoteViews, textSizeSp: Float, textColor: Int, prefs: android.content.SharedPreferences, hasPrecedingDate: Boolean = true) {
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             val nextAlarm = alarmManager.nextAlarmClock
             
             if (nextAlarm != null) {
                 val nextAlarmTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(nextAlarm.triggerTime), ZoneId.systemDefault())
-                val timeFormatter = getFormatter("h:mm a")
+                val timeFormatIdx = prefs.getInt("time_format_idx", 0)
+                val is24Hour = timeFormatIdx == 1 || (timeFormatIdx == 0 && android.text.format.DateFormat.is24HourFormat(context))
+                val timeFormatter = if (is24Hour) getFormatter("H:mm") else getFormatter("h:mm a")
                 val timeText = nextAlarmTime.format(timeFormatter)
                 
-                // Format: "| ⏰ 7:00 AM"
-                val fullText = "| ⏰ $timeText"
-                views.setTextViewText(R.id.text_next_alarm, fullText)
+                views.setTextViewText(R.id.text_next_alarm, timeText)
                 views.setTextViewTextSize(R.id.text_next_alarm, android.util.TypedValue.COMPLEX_UNIT_SP, textSizeSp)
                 views.setTextColor(R.id.text_next_alarm, textColor)
-                views.setViewVisibility(R.id.text_next_alarm, android.view.View.VISIBLE)
+                views.setTextViewTextSize(R.id.text_alarm_divider, android.util.TypedValue.COMPLEX_UNIT_SP, textSizeSp)
+                views.setTextColor(R.id.text_alarm_divider, textColor)
+                views.setInt(R.id.icon_next_alarm, "setColorFilter", textColor)
+                views.setViewVisibility(R.id.text_alarm_divider, if (hasPrecedingDate) android.view.View.VISIBLE else android.view.View.GONE)
+                views.setViewVisibility(R.id.layout_next_alarm, android.view.View.VISIBLE)
             } else {
-                 views.setViewVisibility(R.id.text_next_alarm, android.view.View.GONE)
+                 views.setViewVisibility(R.id.layout_next_alarm, android.view.View.GONE)
             }
         }
 
@@ -1392,8 +1396,7 @@ class AwidgetProvider : AppWidgetProvider() {
                 val baselineSteps = prefs.getFloat("step_baseline", 0f)
 
                 val dailySteps = (totalSteps - baselineSteps).toInt().coerceAtLeast(0)
-                val span = android.text.SpannableString("$dailySteps \uD83D\uDC5F") // 👟 outline sneaker
-                span.setSpan(android.text.style.RelativeSizeSpan(0.75f), span.length - 2, span.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                val span = android.text.SpannableString("$dailySteps")
                 
                 if (prefs.getBoolean("bold_steps", false)) {
                     span.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, span.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)

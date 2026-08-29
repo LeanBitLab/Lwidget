@@ -122,29 +122,59 @@
         android:layout_marginTop="2dp"/>
 
     <!-- Steps (Below Storage) -->
-    <TextView
-        android:id="@+id/text_steps"
+    <LinearLayout
+        android:id="@+id/layout_steps"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="0"
-        android:textColor="#CCFFFFFF"
-        android:textSize="14sp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
         android:visibility="gone"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="2dp"/>
+        android:layout_marginTop="2dp">
+        <TextView
+            android:id="@+id/text_steps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textColor="#CCFFFFFF"
+            android:textSize="14sp"
+            android:includeFontPadding="false"/>
+        <ImageView
+            android:id="@+id/icon_steps"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_marginStart="3dp"
+            android:src="@drawable/ic_steps"
+            android:importantForAccessibility="no"/>
+    </LinearLayout>
     <!-- Screen Time (Below Steps) -->
-    <TextView
-        android:id="@+id/text_screen_time"
+    <LinearLayout
+        android:id="@+id/layout_screen_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="0h 0m"
-        android:textColor="#CCFFFFFF"
-        android:textSize="14sp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
         android:visibility="gone"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="2dp"/>
+        android:layout_marginTop="2dp">
+        <TextView
+            android:id="@+id/text_screen_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0h 0m"
+            android:textColor="#CCFFFFFF"
+            android:textSize="14sp"
+            android:includeFontPadding="false"/>
+        <ImageView
+            android:id="@+id/icon_screen_time"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_marginStart="3dp"
+            android:src="@drawable/ic_time"
+            android:importantForAccessibility="no"/>
+    </LinearLayout>
 
     <!-- Date (Below Time) -->
     
@@ -178,16 +208,39 @@
             android:includeFontPadding="false"
             android:visibility="gone"/>
 
-        <TextView
-            android:id="@+id/text_next_alarm"
+        <LinearLayout
+            android:id="@+id/layout_next_alarm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=""
-            android:textColor="#CCFFFFFF"
-            android:textSize="14sp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
             android:layout_marginStart="8dp"
-            android:includeFontPadding="false"
-            android:visibility="gone"/>
+            android:visibility="gone">
+            <TextView
+                android:id="@+id/text_alarm_divider"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="|"
+                android:textColor="#CCFFFFFF"
+                android:textSize="14sp"
+                android:includeFontPadding="false"
+                android:layout_marginEnd="6dp" />
+            <ImageView
+                android:id="@+id/icon_next_alarm"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:src="@drawable/ic_alarm"
+                android:layout_marginEnd="4dp"
+                android:importantForAccessibility="no" />
+            <TextView
+                android:id="@+id/text_next_alarm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="#CCFFFFFF"
+                android:textSize="14sp"
+                android:includeFontPadding="false" />
+        </LinearLayout>
     </LinearLayout>
 
     <!-- Calendar Events (for expanded sizes - dynamically filled) -->
