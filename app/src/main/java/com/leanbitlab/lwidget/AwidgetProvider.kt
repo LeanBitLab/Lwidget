@@ -83,6 +83,7 @@ class AwidgetProvider : AppWidgetProvider() {
         if (intent.action in listOf(
             Intent.ACTION_BOOT_COMPLETED,
             Intent.ACTION_MY_PACKAGE_REPLACED,
+            Intent.ACTION_CONFIGURATION_CHANGED,
             ACTION_BATTERY_UPDATE,
             StepCounterService.ACTION_STEP_UPDATE,
             Intent.ACTION_PROVIDER_CHANGED,
@@ -93,7 +94,7 @@ class AwidgetProvider : AppWidgetProvider() {
             CoroutineScope(Dispatchers.IO).launch {
                 try {
                     when (intent.action) {
-                        Intent.ACTION_BOOT_COMPLETED, Intent.ACTION_MY_PACKAGE_REPLACED -> {
+                        Intent.ACTION_BOOT_COMPLETED, Intent.ACTION_MY_PACKAGE_REPLACED, Intent.ACTION_CONFIGURATION_CHANGED -> {
                             scheduleWork(context)
                             appWidgetIds.forEach { updateAppWidget(context, appWidgetManager, it, UpdateMode.FULL) }
                         }
@@ -251,15 +252,23 @@ class AwidgetProvider : AppWidgetProvider() {
             
             android.util.Log.d(TAG, "UpdateMode FULL | Condition: $showWeatherCondition | IconOnly: $showWeatherIconOnly | WeatherData: ${bweather?.currentCondition}")
 
-            val useSystemTheme = prefs.getBoolean("use_system_theme", false)
             val useDynamicColors = prefs.getBoolean("use_dynamic_colors", true)
             
-            // Determine if light theme based on system or manual override
-            val useLightTheme = if (useSystemTheme) {
-                val nightMode = context.resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK
-                nightMode != android.content.res.Configuration.UI_MODE_NIGHT_YES
+            // Determine if light theme based on theme mode (0=Auto, 1=Light, 2=Dark)
+            val isSystemInNightMode = (context.resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES
+            val themeMode = if (prefs.contains("theme_mode")) {
+                prefs.getInt("theme_mode", 0)
+            } else if (prefs.contains("use_system_theme")) {
+                if (prefs.getBoolean("use_system_theme", true)) 0 else 2
             } else {
-                false // Default to dark when system theme is off
+                0 // Default to Auto (Follow System)
+            }
+            
+            val useLightTheme = when (themeMode) {
+                0 -> !isSystemInNightMode // Auto: Light when system is not in Night mode
+                1 -> true                 // Always Light
+                2 -> false                // Always Dark
+                else -> !isSystemInNightMode
             }
             
             val timeFormatIdx = prefs.getInt("time_format_idx", 0)
@@ -531,7 +540,7 @@ class AwidgetProvider : AppWidgetProvider() {
             views.setCharSequence(R.id.clock_time, "setFormat24Hour", timeFormat24)
 
             // --- World Clock ---
-            views.setViewVisibility(R.id.text_world_clock, if (showWorldClock) android.view.View.VISIBLE else android.view.View.GONE)
+            views.setViewVisibility(R.id.layout_world_clock, if (showWorldClock) android.view.View.VISIBLE else android.view.View.GONE)
             if (showWorldClock) {
                 loadWorldClock(views, sizeWorldClock, secondaryColor, worldClockZoneStr, timeFormat12.contains("a"))
             }
@@ -598,7 +607,7 @@ class AwidgetProvider : AppWidgetProvider() {
             
             // --- Weather Condition ---
             val showWeather = showWeatherCondition && bweather != null
-            views.setViewVisibility(R.id.text_weather_condition, if (showWeather) android.view.View.VISIBLE else android.view.View.GONE)
+            views.setViewVisibility(R.id.layout_weather_condition, if (showWeather) android.view.View.VISIBLE else android.view.View.GONE)
             if (showWeather && bweather != null) {
                 var weatherCode = bweather.currentConditionCode
                 var weatherText = bweather.currentCondition
@@ -646,46 +655,48 @@ class AwidgetProvider : AppWidgetProvider() {
                     conditionText = "Unknown"
                 }
 
-                // Get weather icon string representation
-                val weatherIcon = when (weatherCode) {
-                    800 -> "☀️" // Clear
-                    801, 802 -> "⛅" // Partly Cloudy
-                    803, 804 -> "☁️" // Cloudy
-                    500, 501, 502, 503, 504, 511, 520, 521, 522, 531 -> "🌧️" // Rain
-                    600, 601, 602, 611, 612, 615, 616, 620, 621, 622 -> "❄️" // Snow
-                    771 -> "🌬️" // Wind
-                    741 -> "🌫️" // Fog
-                    751 -> "🌁" // Haze
-                    210, 211, 212, 221, 230, 231, 232 -> "⛈️" // Thunderstorm
-                    else -> "" 
+                val weatherDrawableRes = when (weatherCode) {
+                    800 -> R.drawable.ic_weather_sunny
+                    801, 802 -> R.drawable.ic_weather_partly_cloudy
+                    803, 804 -> R.drawable.ic_weather_cloudy
+                    in listOf(500, 501, 502, 503, 504, 511, 520, 521, 522, 531) -> R.drawable.ic_weather_rainy
+                    in listOf(600, 601, 602, 611, 612, 615, 616, 620, 621, 622) -> R.drawable.ic_weather_snowy
+                    771 -> R.drawable.ic_weather_windy
+                    741 -> R.drawable.ic_weather_foggy
+                    751 -> R.drawable.ic_weather_mist
+                    in listOf(210, 211, 212, 221, 230, 231, 232) -> R.drawable.ic_weather_thunderstorm
+                    else -> R.drawable.ic_weather_cloudy
                 }
-                
-                val displayString = if (showWeatherIconOnly && !hasWarning) weatherIcon else "$conditionText $weatherIcon"
-                
-                // If it has warning format like "Rain on Sun 🌧️", make " on Sun 🌧️" smaller
-                if (hasWarning) {
-                    val fullMatch = weatherText ?: "Unknown"
-                    val span = android.text.SpannableString(displayString.trim())
-                    
-                    // The day portion is the last word for today/tomorrow, or the last two words for "on Sun"
-                    val lastSpaceIdx = fullMatch.lastIndexOf(' ')
-                    val onSpaceIdx = fullMatch.lastIndexOf(" on ")
-                    
-                    val shrinkStartIndex = if (onSpaceIdx != -1) onSpaceIdx else lastSpaceIdx
-                    if (shrinkStartIndex != -1 && shrinkStartIndex < span.length) {
-                        span.setSpan(android.text.style.RelativeSizeSpan(0.75f), shrinkStartIndex, span.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    } else if (weatherIcon.isNotEmpty()) {
-                        span.setSpan(android.text.style.RelativeSizeSpan(0.75f), span.length - weatherIcon.length, span.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    }
-                    if (boldWeather) span.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, span.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    views.setTextViewText(R.id.text_weather_condition, span)
+
+                views.setImageViewResource(R.id.icon_weather, weatherDrawableRes)
+                views.setInt(R.id.icon_weather, "setColorFilter", secondaryColor)
+                views.setViewVisibility(R.id.icon_weather, android.view.View.VISIBLE)
+
+                if (showWeatherIconOnly && !hasWarning) {
+                    views.setViewVisibility(R.id.text_weather_condition, android.view.View.GONE)
                 } else {
-                    val weatherSpan = android.text.SpannableString(displayString.trim())
-                    if (boldWeather) weatherSpan.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, weatherSpan.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    views.setTextViewText(R.id.text_weather_condition, weatherSpan)
+                    views.setViewVisibility(R.id.text_weather_condition, android.view.View.VISIBLE)
+                    if (hasWarning) {
+                        val fullMatch = conditionText
+                        val span = android.text.SpannableString(fullMatch)
+                        
+                        val lastSpaceIdx = fullMatch.lastIndexOf(' ')
+                        val onSpaceIdx = fullMatch.lastIndexOf(" on ")
+                        
+                        val shrinkStartIndex = if (onSpaceIdx != -1) onSpaceIdx else lastSpaceIdx
+                        if (shrinkStartIndex != -1 && shrinkStartIndex < span.length) {
+                            span.setSpan(android.text.style.RelativeSizeSpan(0.75f), shrinkStartIndex, span.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        }
+                        if (boldWeather) span.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, span.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        views.setTextViewText(R.id.text_weather_condition, span)
+                    } else {
+                        val weatherSpan = android.text.SpannableString(conditionText)
+                        if (boldWeather) weatherSpan.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, weatherSpan.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        views.setTextViewText(R.id.text_weather_condition, weatherSpan)
+                    }
+                    views.setTextViewTextSize(R.id.text_weather_condition, android.util.TypedValue.COMPLEX_UNIT_SP, sizeWeather)
+                    views.setTextColor(R.id.text_weather_condition, secondaryColor)
                 }
-                views.setTextViewTextSize(R.id.text_weather_condition, android.util.TypedValue.COMPLEX_UNIT_SP, sizeWeather)
-                views.setTextColor(R.id.text_weather_condition, secondaryColor)
                 
                 val launchIntent = context.packageManager.getLaunchIntentForPackage("org.breezyweather")
                 if (launchIntent != null) {
@@ -693,6 +704,7 @@ class AwidgetProvider : AppWidgetProvider() {
                         context, 0, launchIntent, 
                         android.app.PendingIntent.FLAG_IMMUTABLE
                     )
+                    views.setOnClickPendingIntent(R.id.layout_weather_condition, pendingIntent)
                     views.setOnClickPendingIntent(R.id.text_weather_condition, pendingIntent)
                 }
             }
@@ -786,7 +798,7 @@ class AwidgetProvider : AppWidgetProvider() {
             val allRightItems = listOf(
                 StackEntry(R.id.text_battery, showBattery, sizeBattery, "show_battery"),
                 StackEntry(R.id.text_temp, showTemp, sizeTemp, "show_temp"),
-                StackEntry(R.id.text_weather_condition, showWeather, sizeWeather, "show_weather_condition"),
+                StackEntry(R.id.layout_weather_condition, showWeather, sizeWeather, "show_weather_condition"),
                 StackEntry(R.id.text_data_usage, showData, sizeData, "show_data_usage"),
                 StackEntry(R.id.text_storage, showStorage, sizeStorage, "show_storage"),
                 StackEntry(R.id.text_ram, showRam, sizeRam, "show_ram"),
@@ -1308,15 +1320,14 @@ class AwidgetProvider : AppWidgetProvider() {
                  val formatter = getFormatter(pattern)
                  val timeStr = zdt.format(formatter)
 
-                 // Format: "🌍 10:30 AM"
-                 val text = "\uD83C\uDF0D $timeStr"
-                 views.setTextViewText(R.id.text_world_clock, text)
+                 views.setTextViewText(R.id.text_world_clock, timeStr)
                  views.setTextViewTextSize(R.id.text_world_clock, android.util.TypedValue.COMPLEX_UNIT_SP, textSizeSp)
                  views.setTextColor(R.id.text_world_clock, textColor)
-                 views.setViewVisibility(R.id.text_world_clock, android.view.View.VISIBLE)
+                 views.setInt(R.id.icon_world_clock, "setColorFilter", textColor)
+                 views.setViewVisibility(R.id.layout_world_clock, android.view.View.VISIBLE)
 
              } catch (e: Exception) {
-                 views.setViewVisibility(R.id.text_world_clock, android.view.View.GONE)
+                 views.setViewVisibility(R.id.layout_world_clock, android.view.View.GONE)
              }
         }
 

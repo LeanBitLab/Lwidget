@@ -457,8 +457,8 @@
                                     android:paddingEnd="8dp"
                                     android:paddingBottom="8dp">
 
-                                    <include layout="@layout/settings_toggle_row"
-                                        android:id="@+id/row_theme_toggle"
+                                    <include layout="@layout/settings_selector_row"
+                                        android:id="@+id/row_theme_mode"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"/>
                                 </LinearLayout>

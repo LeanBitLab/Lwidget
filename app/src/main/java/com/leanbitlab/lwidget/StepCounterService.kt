@@ -94,6 +94,7 @@ class StepCounterService : Service(), SensorEventListener {
         val filter = android.content.IntentFilter().apply {
             addAction(Intent.ACTION_BATTERY_CHANGED)
             addAction(Intent.ACTION_TIME_TICK)
+            addAction(Intent.ACTION_CONFIGURATION_CHANGED)
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             registerReceiver(updateReceiver, filter, Context.RECEIVER_NOT_EXPORTED)

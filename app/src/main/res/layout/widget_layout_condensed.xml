@@ -61,18 +61,31 @@
         android:layout_alignParentEnd="true"/>
 
     <!-- Weather Condition (Below Battery) -->
-    <TextView
-        android:id="@+id/text_weather_condition"
+    <LinearLayout
+        android:id="@+id/layout_weather_condition"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text=""
-        android:textColor="#CCFFFFFF"
-        android:textSize="18sp"
-        android:includeFontPadding="false"
-        android:layout_marginBottom="0dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
         android:visibility="gone"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true" />
+        android:layout_alignParentTop="true">
+        <TextView
+            android:id="@+id/text_weather_condition"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="#CCFFFFFF"
+            android:textSize="18sp"
+            android:includeFontPadding="false" />
+        <ImageView
+            android:id="@+id/icon_weather"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="3dp"
+            android:src="@drawable/ic_weather_sunny"
+            android:importantForAccessibility="no" />
+    </LinearLayout>
 
     <!-- Temp (Below Battery) -->
     <TextView
@@ -197,16 +210,30 @@
         android:textColor="#CCFFFFFF"
         />
 
-        <TextView
-            android:id="@+id/text_world_clock"
+        <LinearLayout
+            android:id="@+id/layout_world_clock"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=""
-            android:textColor="#CCFFFFFF"
-            android:textSize="18sp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
             android:layout_marginStart="8dp"
-            android:includeFontPadding="false"
-            android:visibility="gone"/>
+            android:visibility="gone">
+            <ImageView
+                android:id="@+id/icon_world_clock"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:src="@drawable/ic_world"
+                android:layout_marginEnd="4dp"
+                android:importantForAccessibility="no" />
+            <TextView
+                android:id="@+id/text_world_clock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="#CCFFFFFF"
+                android:textSize="14sp"
+                android:includeFontPadding="false"/>
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/layout_next_alarm"

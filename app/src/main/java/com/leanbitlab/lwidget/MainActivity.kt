@@ -1512,8 +1512,11 @@ class MainActivity : AppCompatActivity() {
             rowDynamicColors.visibility = View.GONE
         }
 
-        // Theme toggle
-        bindToggle(R.id.row_theme_toggle, "Light Theme", "use_system_theme", false) { isChecked ->
+        // Theme selector (Auto / Light / Dark)
+        bindSelector(
+            R.id.row_theme_mode, "Theme Mode", "theme_mode",
+            listOf("Auto (Follow System)", "Light", "Dark"), 0
+        ) { idx ->
             applyTheme()
         }
 
