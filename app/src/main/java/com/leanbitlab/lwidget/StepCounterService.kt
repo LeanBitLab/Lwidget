@@ -61,8 +61,8 @@ class StepCounterService : Service(), SensorEventListener {
             } else {
                 startForeground(NOTIFICATION_ID, createNotification())
             }
-        } catch (e: SecurityException) {
-            android.util.Log.e("LWidget", "Cannot start foreground service: missing permission", e)
+        } catch (e: Exception) {
+            android.util.Log.e("LWidget", "Cannot start foreground service", e)
             stopSelf()
             return
         }
@@ -112,8 +112,14 @@ class StepCounterService : Service(), SensorEventListener {
     }
 
     override fun onDestroy() {
-        unregisterReceiver(updateReceiver)
-        sensorManager.unregisterListener(this)
+        try {
+            unregisterReceiver(updateReceiver)
+        } catch (e: Exception) {
+            // Receiver might not have been registered if initialization stopped early
+        }
+        if (::sensorManager.isInitialized) {
+            sensorManager.unregisterListener(this)
+        }
         super.onDestroy()
     }
 
