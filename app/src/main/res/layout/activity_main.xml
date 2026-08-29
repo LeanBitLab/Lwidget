@@ -89,24 +89,13 @@
             android:paddingBottom="80dp">
 
             <!-- WIDGET PREVIEW CONTAINER -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/card_preview"
-                style="@style/Widget.Material3.CardView.Filled"
+            <FrameLayout
+                android:id="@+id/preview_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                app:cardCornerRadius="24dp"
-                app:strokeWidth="1dp"
-                app:strokeColor="?attr/colorOutlineVariant"
-                app:cardBackgroundColor="?attr/colorSurfaceContainer">
-
-                <FrameLayout
-                    android:id="@+id/preview_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="8dp"
-                    android:clipChildren="false"/>
-            </com.google.android.material.card.MaterialCardView>
+                android:clipChildren="false"
+                android:clipToPadding="false"/>
 
             <!-- CATEGORY: APPEARANCE -->
             <TextView
