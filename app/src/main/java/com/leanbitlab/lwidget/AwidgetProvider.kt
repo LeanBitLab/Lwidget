@@ -255,17 +255,11 @@ class AwidgetProvider : AppWidgetProvider() {
             val useDynamicColors = prefs.getBoolean("use_dynamic_colors", true)
             
             // Determine if light theme based on theme mode (0=Auto, 1=Light, 2=Dark)
-            val isSystemInNightMode = (context.resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES
-            val themeMode = if (prefs.contains("theme_mode")) {
-                prefs.getInt("theme_mode", 0)
-            } else if (prefs.contains("use_system_theme")) {
-                if (prefs.getBoolean("use_system_theme", true)) 0 else 2
-            } else {
-                0 // Default to Auto (Follow System)
-            }
+            val isSystemInNightMode = (android.content.res.Resources.getSystem().configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES
+            val themeMode = prefs.getInt("theme_mode", if (prefs.getBoolean("use_system_theme", true)) 0 else 2)
             
             val useLightTheme = when (themeMode) {
-                0 -> !isSystemInNightMode // Auto: Light when system is not in Night mode
+                0 -> !isSystemInNightMode // Auto: Light when system is not in Night mode, Dark when system is in Night mode
                 1 -> true                 // Always Light
                 2 -> false                // Always Dark
                 else -> !isSystemInNightMode
