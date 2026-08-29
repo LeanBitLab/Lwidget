@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Lwidget</string>
+    <string name="category_appearance">Aparência</string>
+    <string name="category_content">Conteúdo</string>
+    <string name="category_stats">Estatísticas</string>
+    <string name="category_agenda">Agenda</string>
+    <string name="category_system">Sistema</string>
+    <string name="header_presets">PREDEFINIÇÕES</string>
+    <string name="header_theme">TEMA</string>
+    <string name="header_font">FONTE</string>
+    <string name="header_colors">CORES</string>
+    <string name="header_outline">BORDA</string>
+    <string name="header_transparency">TRANSPARÊNCIA</string>
+    <string name="header_padding">ESPAÇAMENTO</string>
+    <string name="header_reorder">REORDENAR</string>
+    <string name="header_advanced">Avançado</string>
+    <string name="header_permissions">Permissões</string>
+    <string name="header_about">Sobre</string>
     <string name="section_time">Hora</string>
     <string name="section_time_format">Formato de hora</string>
     <string name="section_time_clock_app">App de relógio</string>
@@ -38,6 +54,20 @@
     <string name="row_dynamic_colors">Cores dinâmicas</string>
     <string name="row_enable_keep_alive">Ativar manter ativo</string>
     <string name="row_show_day_abbr">Mostrar abreviação do dia</string>
+    <string name="row_theme_mode">Modo de tema</string>
+    <string name="row_update_interval">Intervalo de atualização (m)</string>
+    <string name="row_bg_opacity">Opacidade do fundo</string>
+    <string name="row_widget_padding">Espaçamento do widget</string>
+    <string name="row_battery_optimization">Ignorar otimização de bateria</string>
+    <string name="btn_update_widget">Atualizar</string>
+    <string name="note_update_interval">Nota: O intervalo de atualização não é necessário quando Manter ativo está ativado.</string>
+    <string name="note_battery_optimization">Nota: É altamente recomendável desativar a otimização de bateria para que o widget atualize com precisão após reiniciar o dispositivo.</string>
+    <string name="preset_minimal">Mínimo</string>
+    <string name="preset_neon">Neon</string>
+    <string name="preset_cockpit">Cockpit</string>
+    <string name="preset_sunset">Pôr do sol</string>
+    <string name="preset_monochrome">Monocromático</string>
+    <string name="preset_snowfall">Nevasca</string>
     <string name="section_changelog">Notas e alterações</string>
     <string name="changelog_version">Versão %s</string>
     <string name="changelog_note">Lwidget funciona sem serviços em segundo plano. Para garantir atualizações contínuas, desative a otimização de bateria.</string>

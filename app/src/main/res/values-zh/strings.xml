@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Lwidget</string>
+    <string name="category_appearance">外观</string>
+    <string name="category_content">内容</string>
+    <string name="category_stats">统计</string>
+    <string name="category_agenda">日程</string>
+    <string name="category_system">系统</string>
+    <string name="header_presets">预设</string>
+    <string name="header_theme">主题</string>
+    <string name="header_font">字体</string>
+    <string name="header_colors">颜色</string>
+    <string name="header_outline">边框</string>
+    <string name="header_transparency">透明度</string>
+    <string name="header_padding">边距</string>
+    <string name="header_reorder">排序</string>
+    <string name="header_advanced">高级设置</string>
+    <string name="header_permissions">权限管理</string>
+    <string name="header_about">关于</string>
     <string name="section_time">时间</string>
     <string name="section_time_format">时间格式</string>
     <string name="section_time_clock_app">时钟应用</string>
@@ -38,6 +54,20 @@
     <string name="row_dynamic_colors">动态取色 (Material You)</string>
     <string name="row_enable_keep_alive">开启后台保活</string>
     <string name="row_show_day_abbr">显示星期缩写</string>
+    <string name="row_theme_mode">主题模式</string>
+    <string name="row_update_interval">更新间隔 (分钟)</string>
+    <string name="row_bg_opacity">背景不透明度</string>
+    <string name="row_widget_padding">小部件内边距</string>
+    <string name="row_battery_optimization">忽略电池优化</string>
+    <string name="btn_update_widget">更新小部件</string>
+    <string name="note_update_interval">提示：启用后台保活时无需设置更新间隔。</string>
+    <string name="note_battery_optimization">提示：强烈建议关闭电池优化，以确保小部件在设备重启后稳定更新。</string>
+    <string name="preset_minimal">极简</string>
+    <string name="preset_neon">霓虹</string>
+    <string name="preset_cockpit">驾驶舱</string>
+    <string name="preset_sunset">日落</string>
+    <string name="preset_monochrome">黑白</string>
+    <string name="preset_snowfall">落雪</string>
     <string name="section_changelog">说明与更新日志</string>
     <string name="changelog_version">版本 %s</string>
     <string name="changelog_note">Lwidget 无需后台服务即可运行。但某些设备可能会杀后台以省电，导致小部件停止更新：\n\n• 请在系统设置中将 Lwidget 设为不受电池优化限制。\n• 或开启“后台保活”。\n• 或开启“计步器”。</string>

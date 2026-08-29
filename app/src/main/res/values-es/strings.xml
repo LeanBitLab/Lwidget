@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Lwidget</string>
+    <string name="category_appearance">Apariencia</string>
+    <string name="category_content">Contenido</string>
+    <string name="category_stats">Estadísticas</string>
+    <string name="category_agenda">Agenda</string>
+    <string name="category_system">Sistema</string>
+    <string name="header_presets">PREAJUSTES</string>
+    <string name="header_theme">TEMA</string>
+    <string name="header_font">FUENTE</string>
+    <string name="header_colors">COLORES</string>
+    <string name="header_outline">BORDE</string>
+    <string name="header_transparency">TRANSPARENCIA</string>
+    <string name="header_padding">ESPACIADO</string>
+    <string name="header_reorder">REORDENAR</string>
+    <string name="header_advanced">Avanzado</string>
+    <string name="header_permissions">Permisos</string>
+    <string name="header_about">Acerca de</string>
     <string name="section_time">Hora</string>
     <string name="section_time_format">Formato de hora</string>
     <string name="section_time_clock_app">App de reloj</string>
@@ -38,9 +54,23 @@
     <string name="row_dynamic_colors">Colores dinámicos</string>
     <string name="row_enable_keep_alive">Activar mantener activo</string>
     <string name="row_show_day_abbr">Mostrar abreviatura del día</string>
+    <string name="row_theme_mode">Modo de tema</string>
+    <string name="row_update_interval">Intervalo de actualización (m)</string>
+    <string name="row_bg_opacity">Opacidad del fondo</string>
+    <string name="row_widget_padding">Espaciado del widget</string>
+    <string name="row_battery_optimization">Ignorar optimización de batería</string>
+    <string name="btn_update_widget">Actualizar</string>
+    <string name="note_update_interval">Nota: El intervalo de actualización es irrelevante cuando Mantener activo está activado.</string>
+    <string name="note_battery_optimization">Nota: Se recomienda desactivar la optimización de batería para que el widget se actualice de forma fiable tras reiniciar el dispositivo.</string>
+    <string name="preset_minimal">Mínimo</string>
+    <string name="preset_neon">Neón</string>
+    <string name="preset_cockpit">Cabina</string>
+    <string name="preset_sunset">Atardecer</string>
+    <string name="preset_monochrome">Monocromático</string>
+    <string name="preset_snowfall">Nevada</string>
     <string name="section_changelog">Notas y cambios</string>
     <string name="changelog_version">Versión %s</string>
-    <string name="changelog_note">Lwidget funciona sin servicios en segundo plano. Sin embargo, algunos dispositivos cierran apps para ahorrar batería. Para solucionarlo:\n\n• Desactiva la optimización de batería para Lwidget.\n• O activa Mantener activo.\n• O activa el Contador de pasos.</string>
+    <string name="changelog_note">Lwidget funciona sin servicios en segundo plano. Para solucionarlo:\n\n• Desactiva la optimización de batería para Lwidget.\n• O activa Mantener activo.\n• O activa el Contador de pasos.</string>
     <string name="changelog_content">Novedades en v2.0:\n• Reordenar elementos del widget a tu gusto\n• Personalización uniforme\n• Mejoras en la página de ajustes\n• Optimizaciones y correcciones</string>
     <string name="changelog_testing_notice">Si disfrutas de Lwidget, califícanos en Google Play.</string>
     <string name="github_source_code">Código fuente (GitHub)</string>

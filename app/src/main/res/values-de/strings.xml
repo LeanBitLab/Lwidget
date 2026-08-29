@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Lwidget</string>
+    <string name="category_appearance">Erscheinungsbild</string>
+    <string name="category_content">Inhalt</string>
+    <string name="category_stats">Statistiken</string>
+    <string name="category_agenda">Agenda</string>
+    <string name="category_system">System</string>
+    <string name="header_presets">VORLAGEN</string>
+    <string name="header_theme">DESIGN</string>
+    <string name="header_font">SCHRIFTART</string>
+    <string name="header_colors">FARBEN</string>
+    <string name="header_outline">UMRANDUNG</string>
+    <string name="header_transparency">TRANSPARENZ</string>
+    <string name="header_padding">ABSTAND</string>
+    <string name="header_reorder">REIHENFOLGE</string>
+    <string name="header_advanced">Erweitert</string>
+    <string name="header_permissions">Berechtigungen</string>
+    <string name="header_about">Über</string>
     <string name="section_time">Uhrzeit</string>
     <string name="section_time_format">Zeitformat</string>
     <string name="section_time_clock_app">Uhr-App</string>
@@ -38,6 +54,20 @@
     <string name="row_dynamic_colors">Dynamische Farben</string>
     <string name="row_enable_keep_alive">Aktiv halten aktivieren</string>
     <string name="row_show_day_abbr">Wochentag-Abkürzung anzeigen</string>
+    <string name="row_theme_mode">Design-Modus</string>
+    <string name="row_update_interval">Aktualisierungsintervall (m)</string>
+    <string name="row_bg_opacity">Hintergrund-Deckkraft</string>
+    <string name="row_widget_padding">Widget-Abstand</string>
+    <string name="row_battery_optimization">Akku-Optimierung ignorieren</string>
+    <string name="btn_update_widget">Aktualisieren</string>
+    <string name="note_update_interval">Hinweis: Aktualisierungsintervall ist bei aktiviertem \'Aktiv halten\' nicht relevant.</string>
+    <string name="note_battery_optimization">Hinweis: Es wird dringend empfohlen, die Akku-Optimierung zu deaktivieren, damit das Widget zuverlässig aktualisiert wird.</string>
+    <string name="preset_minimal">Minimal</string>
+    <string name="preset_neon">Neon</string>
+    <string name="preset_cockpit">Cockpit</string>
+    <string name="preset_sunset">Sonnenuntergang</string>
+    <string name="preset_monochrome">Monochrom</string>
+    <string name="preset_snowfall">Schneefall</string>
     <string name="section_changelog">Hinweise &amp; Änderungsprotokoll</string>
     <string name="changelog_version">Version %s</string>
     <string name="changelog_note">Lwidget funktioniert ohne Hintergrunddienst. Deaktivieren Sie die Akku-Optimierung für zuverlässige Aktualisierungen.</string>

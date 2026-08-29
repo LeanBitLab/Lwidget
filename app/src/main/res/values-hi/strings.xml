@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Lwidget</string>
+    <string name="category_appearance">दिखावट</string>
+    <string name="category_content">सामग्री</string>
+    <string name="category_stats">आँकड़े</string>
+    <string name="category_agenda">एजेंडा</string>
+    <string name="category_system">सिस्टम</string>
+    <string name="header_presets">प्रीसेट</string>
+    <string name="header_theme">थीम</string>
+    <string name="header_font">फ़ॉन्ट</string>
+    <string name="header_colors">रंग</string>
+    <string name="header_outline">आउटलाइन</string>
+    <string name="header_transparency">पारदर्शिता</string>
+    <string name="header_padding">पैडिंग</string>
+    <string name="header_reorder">पुनर्क्रमित करें</string>
+    <string name="header_advanced">उन्नत</string>
+    <string name="header_permissions">अनुमतियां</string>
+    <string name="header_about">के बारे में</string>
     <string name="section_time">समय</string>
     <string name="section_time_format">समय प्रारूप</string>
     <string name="section_time_clock_app">घड़ी ऐप</string>
@@ -38,6 +54,20 @@
     <string name="row_dynamic_colors">डायनामिक रंग</string>
     <string name="row_enable_keep_alive">सक्रिय रखें सक्षम करें</string>
     <string name="row_show_day_abbr">दिन का संक्षिप्त नाम दिखाएं</string>
+    <string name="row_theme_mode">थीम मोड</string>
+    <string name="row_update_interval">अपडेट अंतराल (मिनट)</string>
+    <string name="row_bg_opacity">पृष्ठभूमि अपारदर्शिता</string>
+    <string name="row_widget_padding">विजेट पैडिंग</string>
+    <string name="row_battery_optimization">बैटरी ऑप्टिमाइज़ेशन अनदेखा करें</string>
+    <string name="btn_update_widget">अपडेट करें</string>
+    <string name="note_update_interval">नोट: कीप अलाइव सक्षम होने पर अपडेट अंतराल की आवश्यकता नहीं है।</string>
+    <string name="note_battery_optimization">नोट: डिवाइस रीस्टार्ट के बाद सुचारू काम के लिए बैटरी ऑप्टिमाइज़ेशन बंद रखने की सलाह दी जाती है।</string>
+    <string name="preset_minimal">न्यूनतम</string>
+    <string name="preset_neon">नियॉन</string>
+    <string name="preset_cockpit">कॉकपिट</string>
+    <string name="preset_sunset">सूर्यास्त</string>
+    <string name="preset_monochrome">मोनोक्रोम</string>
+    <string name="preset_snowfall">हिमपात</string>
     <string name="section_changelog">नोट और बदलाव</string>
     <string name="changelog_version">संस्करण %s</string>
     <string name="changelog_note">Lwidget बिना किसी बैकग्राउंड सर्विस के काम करता है। अपडेट जारी रखने के लिए बैटरी ऑप्टिमाइज़ेशन बंद करें या कीप अलाइव सक्षम करें।</string>

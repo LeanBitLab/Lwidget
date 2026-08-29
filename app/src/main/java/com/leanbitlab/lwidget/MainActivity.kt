@@ -171,7 +171,7 @@ class MainActivity : AppCompatActivity() {
         updateLivePreview()
         
         // Advanced Section
-        bindSlider(R.id.row_update_interval, "Update Interval (m)", "update_interval", 15f, 1f, 60f, "m")
+        bindSlider(R.id.row_update_interval, getString(R.string.row_update_interval), "update_interval", 15f, 1f, 60f, "m")
         
         // Setup Changelog
         val versionName = try {
@@ -927,9 +927,9 @@ class MainActivity : AppCompatActivity() {
         
         // System sections
         bindCategoryFoldable(R.id.header_language, R.id.content_language, getString(R.string.section_app_language), R.drawable.ic_world, "section_language_expanded")
-        bindCategoryFoldable(R.id.header_advanced, R.id.content_advanced, "Advanced", 0, "section_advanced_expanded")
-        bindCategoryFoldable(R.id.header_permissions, R.id.content_permissions, "Permissions", 0, "section_permissions_expanded")
-        bindCategoryFoldable(R.id.header_about, R.id.content_about, "About", 0, "section_about_expanded")
+        bindCategoryFoldable(R.id.header_advanced, R.id.content_advanced, getString(R.string.header_advanced), 0, "section_advanced_expanded")
+        bindCategoryFoldable(R.id.header_permissions, R.id.content_permissions, getString(R.string.header_permissions), 0, "section_permissions_expanded")
+        bindCategoryFoldable(R.id.header_about, R.id.content_about, getString(R.string.header_about), 0, "section_about_expanded")
     }
 
     private fun getInstalledClockApps(): Pair<List<String>, List<String>> {
@@ -1047,7 +1047,7 @@ class MainActivity : AppCompatActivity() {
             sizeRowId = R.id.row_battery_size, prefSizeKey = "size_battery", defSize = 32f, minSize = 10f, maxSize = 74f,
             isContent = true
         ).also { it.tag = "battery" }
-        bindToggle(R.id.row_battery_bold, "Bold Text", "bold_battery", true)
+        bindToggle(R.id.row_battery_bold, getString(R.string.row_bold_text), "bold_battery", true)
     }
     private fun setupTempSection() {
         // Temp
@@ -1060,7 +1060,7 @@ class MainActivity : AppCompatActivity() {
             selectorRowId = R.id.row_temp_unit, selectorOptions = tempUnitOptions, prefSelectorKey = "temp_unit_idx", defSelectorIdx = 0,
             isContent = true
         ).also { it.tag = "temp" }
-        bindToggle(R.id.row_temp_bold, "Bold Text", "bold_temp", false)
+        bindToggle(R.id.row_temp_bold, getString(R.string.row_bold_text), "bold_temp", false)
     }
     private fun setupWeatherSection() {
         // Weather
@@ -1071,7 +1071,7 @@ class MainActivity : AppCompatActivity() {
             sizeRowId = R.id.row_weather_size, prefSizeKey = "size_weather", defSize = 18f, minSize = 10f, maxSize = 74f,
             isContent = true
         ).also { it.tag = "weather_condition" }
-        bindToggle(R.id.row_weather_bold, "Bold Text", "bold_weather", false)
+        bindToggle(R.id.row_weather_bold, getString(R.string.row_bold_text), "bold_weather", false)
 
         // Override weather listener for Breezy Weather check
         weatherSwitch.setOnCheckedChangeListener { _, isChecked ->
@@ -1128,7 +1128,7 @@ class MainActivity : AppCompatActivity() {
             sizeRowId = R.id.row_data_size, prefSizeKey = "size_data", defSize = 14f, minSize = 10f, maxSize = 74f,
             isContent = true
         ).also { it.tag = "data" }
-        bindToggle(R.id.row_data_bold, "Bold Text", "bold_data_usage", false)
+        bindToggle(R.id.row_data_bold, getString(R.string.row_bold_text), "bold_data_usage", false)
 
         dataSwitch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
@@ -1165,7 +1165,7 @@ class MainActivity : AppCompatActivity() {
             sizeRowId = R.id.row_ram_size, prefSizeKey = "size_ram", defSize = 14f, minSize = 10f, maxSize = 74f,
             isContent = true
         ).also { it.tag = "ram" }
-        bindToggle(R.id.row_ram_bold, "Bold Text", "bold_ram", false)
+        bindToggle(R.id.row_ram_bold, getString(R.string.row_bold_text), "bold_ram", false)
     }
 
     private fun setupStorageSection() {
@@ -1177,7 +1177,7 @@ class MainActivity : AppCompatActivity() {
             sizeRowId = R.id.row_storage_size, prefSizeKey = "size_storage", defSize = 14f, minSize = 10f, maxSize = 74f,
             isContent = true
         ).also { it.tag = "storage" }
-        bindToggle(R.id.row_storage_bold, "Bold Text", "bold_storage", false)
+        bindToggle(R.id.row_storage_bold, getString(R.string.row_bold_text), "bold_storage", false)
     }
     private fun setupStepsSection() {
         // Steps
@@ -1188,7 +1188,7 @@ class MainActivity : AppCompatActivity() {
             sizeRowId = R.id.row_steps_size, prefSizeKey = "size_steps", defSize = 14f, minSize = 10f, maxSize = 74f,
             isContent = true
         ).also { it.tag = "steps" }
-        bindToggle(R.id.row_steps_bold, "Bold Text", "bold_steps", false)
+        bindToggle(R.id.row_steps_bold, getString(R.string.row_bold_text), "bold_steps", false)
 
         stepsSwitch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
@@ -1243,7 +1243,7 @@ class MainActivity : AppCompatActivity() {
             sizeRowId = R.id.row_screen_time_size, prefSizeKey = "size_screen_time", defSize = 14f, minSize = 10f, maxSize = 74f,
             isContent = true
         ).also { it.tag = "screen_time" }
-        bindToggle(R.id.row_screen_time_bold, "Bold Text", "bold_screen_time", false)
+        bindToggle(R.id.row_screen_time_bold, getString(R.string.row_bold_text), "bold_screen_time", false)
 
         screenTimeSwitch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
@@ -1273,7 +1273,7 @@ class MainActivity : AppCompatActivity() {
     }
     private fun setupKeepAliveSection() {
         // Keep Alive (now inside Advanced section, not folded)
-        bindToggle(R.id.row_keep_alive_toggle, "Enable Keep Alive", "keep_alive", false) { isChecked ->
+        bindToggle(R.id.row_keep_alive_toggle, getString(R.string.row_enable_keep_alive), "keep_alive", false) { isChecked ->
             if (isChecked) {
                 val neededPermissions = mutableListOf<String>()
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q &&
@@ -1310,7 +1310,7 @@ class MainActivity : AppCompatActivity() {
     private fun setupBatteryOptimizationSection() {
         val row = findViewById<View>(R.id.row_battery_optimization_toggle)
         val tvTitle = row.findViewById<TextView>(R.id.row_label)
-        tvTitle.text = "Disable Battery Optimization"
+        tvTitle.text = getString(R.string.row_battery_optimization)
         updateBatteryOptimizationSwitch()
     }
     private fun updateBatteryOptimizationSwitch() {
@@ -1369,7 +1369,7 @@ class MainActivity : AppCompatActivity() {
         )
 
         // Show day abbreviation in events (from issue #71)
-        bindToggle(R.id.row_events_day_abbr, "Show day abbreviation", "show_day_abbr_in_events", true)
+        bindToggle(R.id.row_events_day_abbr, getString(R.string.row_show_day_abbr), "show_day_abbr_in_events", true)
 
         // Tasks
         val tasksSwitch = bindFoldedSection(
@@ -1476,21 +1476,21 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Appearance Subsections (nested cards)
-        bindNestedCard(R.id.header_appearance_presets, "PRESETS", R.id.content_appearance_presets, "section_appearance_presets_expanded", R.id.header_chevron_appearance_presets)
+        bindNestedCard(R.id.header_appearance_presets, getString(R.string.header_presets), R.id.content_appearance_presets, "section_appearance_presets_expanded", R.id.header_chevron_appearance_presets)
         setupPresetsSection()
-        bindNestedCard(R.id.header_appearance_outline, "OUTLINE", R.id.content_appearance_outline, "section_appearance_outline_expanded", R.id.header_chevron_appearance_outline)
-        bindNestedCard(R.id.header_appearance_colors, "COLORS", R.id.content_appearance_colors, "section_appearance_colors_expanded", R.id.header_chevron_appearance_colors)
-        bindNestedCard(R.id.header_appearance_theme, "THEME", R.id.content_appearance_theme, "section_appearance_theme_expanded", R.id.header_chevron_appearance_theme)
-        bindNestedCard(R.id.header_appearance_font, "FONT", R.id.content_appearance_font, "section_appearance_font_expanded", R.id.header_chevron_appearance_font)
-        bindNestedCard(R.id.header_appearance_transparency, "TRANSPARENCY", R.id.content_appearance_transparency, "section_appearance_transparency_expanded", R.id.header_chevron_appearance_transparency)
-        bindNestedCard(R.id.header_appearance_padding, "PADDING", R.id.content_appearance_padding, "section_appearance_padding_expanded", R.id.header_chevron_appearance_padding)
+        bindNestedCard(R.id.header_appearance_outline, getString(R.string.header_outline), R.id.content_appearance_outline, "section_appearance_outline_expanded", R.id.header_chevron_appearance_outline)
+        bindNestedCard(R.id.header_appearance_colors, getString(R.string.header_colors), R.id.content_appearance_colors, "section_appearance_colors_expanded", R.id.header_chevron_appearance_colors)
+        bindNestedCard(R.id.header_appearance_theme, getString(R.string.header_theme), R.id.content_appearance_theme, "section_appearance_theme_expanded", R.id.header_chevron_appearance_theme)
+        bindNestedCard(R.id.header_appearance_font, getString(R.string.header_font), R.id.content_appearance_font, "section_appearance_font_expanded", R.id.header_chevron_appearance_font)
+        bindNestedCard(R.id.header_appearance_transparency, getString(R.string.header_transparency), R.id.content_appearance_transparency, "section_appearance_transparency_expanded", R.id.header_chevron_appearance_transparency)
+        bindNestedCard(R.id.header_appearance_padding, getString(R.string.header_padding), R.id.content_appearance_padding, "section_appearance_padding_expanded", R.id.header_chevron_appearance_padding)
 
         // Reorder section
-        bindNestedCard(R.id.header_appearance_reorder, "REORDER", R.id.content_appearance_reorder, "section_appearance_reorder_expanded", R.id.header_chevron_appearance_reorder)
+        bindNestedCard(R.id.header_appearance_reorder, getString(R.string.header_reorder), R.id.content_appearance_reorder, "section_appearance_reorder_expanded", R.id.header_chevron_appearance_reorder)
         bindReorderSection()
 
         // Outline toggle
-        bindToggle(R.id.row_outline_toggle, "Show Outline", "show_outline", false) { isChecked ->
+        bindToggle(R.id.row_outline_toggle, getString(R.string.row_show_outline), "show_outline", false) { isChecked ->
             updateWidget()
         }
 
@@ -1498,7 +1498,7 @@ class MainActivity : AppCompatActivity() {
         val rowDynamicColors = findViewById<View>(R.id.row_dynamic_colors_toggle)
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
             rowDynamicColors.visibility = View.VISIBLE
-            bindToggle(R.id.row_dynamic_colors_toggle, "Dynamic Colors", "use_dynamic_colors", true) { isChecked ->
+            bindToggle(R.id.row_dynamic_colors_toggle, getString(R.string.row_dynamic_colors), "use_dynamic_colors", true) { isChecked ->
                 updateColorVisibility(isChecked)
                 if (isChecked) {
                     prefs.edit()
@@ -1516,17 +1516,17 @@ class MainActivity : AppCompatActivity() {
 
         // Theme selector (Auto / Light / Dark)
         bindSelector(
-            R.id.row_theme_mode, "Theme Mode", "theme_mode",
-            listOf("Auto (Follow System)", "Light", "Dark"), 0
+            R.id.row_theme_mode, getString(R.string.row_theme_mode), "theme_mode",
+            listOf(getString(R.string.theme_auto), getString(R.string.theme_light), getString(R.string.theme_dark)), 0
         ) { idx ->
             applyTheme()
         }
 
         // BG Transparency
-        bindSlider(R.id.row_bg_transparency, "Background Opacity", "bg_opacity", 85f, 0f, 100f)
+        bindSlider(R.id.row_bg_transparency, getString(R.string.row_bg_opacity), "bg_opacity", 85f, 0f, 100f)
 
         // Widget Padding
-        bindSlider(R.id.row_widget_padding, "Widget Padding", "widget_padding", 24f, 0f, 48f, suffix = "dp")
+        bindSlider(R.id.row_widget_padding, getString(R.string.row_widget_padding), "widget_padding", 24f, 0f, 48f, suffix = "dp")
 
         // Background Color
         val bgSliderRow = findViewById<View>(R.id.row_bg_color_custom)
@@ -1637,7 +1637,7 @@ class MainActivity : AppCompatActivity() {
 
         val presets = listOf(
             // Minimal: just time+date, white text, fully transparent, thin font
-            Preset("minimal", "Minimal", mapOf(
+            Preset("minimal", getString(R.string.preset_minimal), mapOf(
                 "show_outline" to false, "bg_opacity" to 0f,
                 "font_style" to 9, // Thin
                 "use_dynamic_colors" to false,
@@ -1647,7 +1647,7 @@ class MainActivity : AppCompatActivity() {
                 "bold_battery" to false, "bold_temp" to false
             )),
             // Neon: cyan time, magenta date, dark bg, bold condensed font
-            Preset("neon", "Neon", mapOf(
+            Preset("neon", getString(R.string.preset_neon), mapOf(
                 "bold_battery" to true, "bold_temp" to true,
                 "show_outline" to true, "bg_opacity" to 95f,
                 "font_style" to 4, // Condensed
@@ -1659,7 +1659,7 @@ class MainActivity : AppCompatActivity() {
                 "bg_color_idx" to 2, "bg_color_r" to 10, "bg_color_g" to 10, "bg_color_b" to 20
             )),
             // Cockpit: green on dark, monospace, info-heavy, terminal look
-            Preset("cockpit", "Cockpit", mapOf(
+            Preset("cockpit", getString(R.string.preset_cockpit), mapOf(
                 "bold_battery" to false, "bold_temp" to false,
                 "bold_storage" to false, "bold_ram" to false, "bold_data_usage" to false,
                 "show_outline" to true, "bg_opacity" to 90f,
@@ -1672,7 +1672,7 @@ class MainActivity : AppCompatActivity() {
                 "bg_color_idx" to 2, "bg_color_r" to 5, "bg_color_g" to 15, "bg_color_b" to 5
             )),
             // Sunset: warm oranges/gold, serif font, elegant minimal
-            Preset("sunset", "Sunset", mapOf(
+            Preset("sunset", getString(R.string.preset_sunset), mapOf(
                 "bold_battery" to true,
                 "show_outline" to false, "bg_opacity" to 70f,
                 "font_style" to 1, // Serif
@@ -1683,7 +1683,7 @@ class MainActivity : AppCompatActivity() {
                 "bg_color_idx" to 2, "bg_color_r" to 30, "bg_color_g" to 15, "bg_color_b" to 8
             )),
             // Monochrome: white outline, all white text, medium font, classic layout
-            Preset("monochrome", "Monochrome", mapOf(
+            Preset("monochrome", getString(R.string.preset_monochrome), mapOf(
                 "bold_battery" to false,
                 "show_outline" to true, "bg_opacity" to 50f,
                 "font_style" to 7, // Medium
@@ -1695,7 +1695,7 @@ class MainActivity : AppCompatActivity() {
                 "bg_color_idx" to 2, "bg_color_r" to 25, "bg_color_g" to 25, "bg_color_b" to 25
             )),
             // Snowfall: icy blues, light font, airy feel
-            Preset("snowfall", "Snowfall", mapOf(
+            Preset("snowfall", getString(R.string.preset_snowfall), mapOf(
                 "bold_temp" to false,
                 "show_outline" to false, "bg_opacity" to 60f,
                 "font_style" to 6, // Light

@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Lwidget</string>
+    <string name="category_appearance">Внешний вид</string>
+    <string name="category_content">Содержимое</string>
+    <string name="category_stats">Статистика</string>
+    <string name="category_agenda">Расписание</string>
+    <string name="category_system">Система</string>
+    <string name="header_presets">ПРЕСЕТЫ</string>
+    <string name="header_theme">ТЕМА</string>
+    <string name="header_font">ШРИФТ</string>
+    <string name="header_colors">ЦВЕТА</string>
+    <string name="header_outline">РАМКА</string>
+    <string name="header_transparency">ПРОЗРАЧНОСТЬ</string>
+    <string name="header_padding">ОТСТУПЫ</string>
+    <string name="header_reorder">ПОРЯДОК</string>
+    <string name="header_advanced">Расширенные</string>
+    <string name="header_permissions">Разрешения</string>
+    <string name="header_about">О приложении</string>
     <string name="section_time">Время</string>
     <string name="section_time_format">Формат времени</string>
     <string name="section_time_clock_app">Приложение часов</string>
@@ -38,6 +54,20 @@
     <string name="row_dynamic_colors">Динамические цвета</string>
     <string name="row_enable_keep_alive">Включить фоновую работу</string>
     <string name="row_show_day_abbr">Показывать сокращение дня</string>
+    <string name="row_theme_mode">Режим темы</string>
+    <string name="row_update_interval">Интервал обновления (мин)</string>
+    <string name="row_bg_opacity">Непрозрачность фона</string>
+    <string name="row_widget_padding">Отступы виджета</string>
+    <string name="row_battery_optimization">Игнорировать оптимизацию батареи</string>
+    <string name="btn_update_widget">Обновить</string>
+    <string name="note_update_interval">Примечание: Интервал обновления игнорируется при включенной фоновой работе.</string>
+    <string name="note_battery_optimization">Примечание: Настоятельно рекомендуется отключить оптимизацию батареи для стабильного обновления виджета.</string>
+    <string name="preset_minimal">Минимал</string>
+    <string name="preset_neon">Неон</string>
+    <string name="preset_cockpit">Кокпит</string>
+    <string name="preset_sunset">Закат</string>
+    <string name="preset_monochrome">Монохром</string>
+    <string name="preset_snowfall">Снегопад</string>
     <string name="section_changelog">Примечания и список изменений</string>
     <string name="changelog_version">Версия %s</string>
     <string name="changelog_note">Lwidget работает без фоновых служб. Для надежного обновления отключите оптимизацию батареи для приложения.</string>

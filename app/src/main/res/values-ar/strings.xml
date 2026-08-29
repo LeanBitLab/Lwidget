@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Lwidget</string>
+    <string name="category_appearance">المظهر</string>
+    <string name="category_content">المحتوى</string>
+    <string name="category_stats">الإحصائيات</string>
+    <string name="category_agenda">جدول الأعمال</string>
+    <string name="category_system">النظام</string>
+    <string name="header_presets">الإعدادات المسبقة</string>
+    <string name="header_theme">السمة</string>
+    <string name="header_font">الخط</string>
+    <string name="header_colors">الألوان</string>
+    <string name="header_outline">الإطار</string>
+    <string name="header_transparency">الشفافية</string>
+    <string name="header_padding">الهوامش</string>
+    <string name="header_reorder">إعادة الترتيب</string>
+    <string name="header_advanced">متقدم</string>
+    <string name="header_permissions">الأذونات</string>
+    <string name="header_about">حول التطبيق</string>
     <string name="section_time">الوقت</string>
     <string name="section_time_format">تنسيق الوقت</string>
     <string name="section_time_clock_app">تطبيق الساعة</string>
@@ -38,6 +54,20 @@
     <string name="row_dynamic_colors">ألوان ديناميكية</string>
     <string name="row_enable_keep_alive">تفعيل الإبقاء قيد التشغيل</string>
     <string name="row_show_day_abbr">إظهار اختصار اليوم</string>
+    <string name="row_theme_mode">وضع المظهر</string>
+    <string name="row_update_interval">فاصل التحديث (بالدقائق)</string>
+    <string name="row_bg_opacity">عتامة الخلفية</string>
+    <string name="row_widget_padding">هوامش الودجت</string>
+    <string name="row_battery_optimization">تجاهل تحسين البطارية</string>
+    <string name="btn_update_widget">تحديث الودجت</string>
+    <string name="note_update_interval">ملاحظة: فاصل التحديث غير ضروري عند تفعيل الإبقاء قيد التشغيل.</string>
+    <string name="note_battery_optimization">ملاحظة: يُنصح بشدة بتعطيل تحسين البطارية لضمان عمل الودجت بدقة بعد إعادة تشغيل الجهاز.</string>
+    <string name="preset_minimal">بسيط</string>
+    <string name="preset_neon">نيون</string>
+    <string name="preset_cockpit">قمرة القيادة</string>
+    <string name="preset_sunset">غروب</string>
+    <string name="preset_monochrome">أحادي اللون</string>
+    <string name="preset_snowfall">تساقط الثلج</string>
     <string name="section_changelog">الملاحظات وسجل التغييرات</string>
     <string name="changelog_version">الإصدار %s</string>
     <string name="changelog_note">يعمل Lwidget بدون خدمات خلفية. لضمان استمرار التحديث، يرجى تعطيل تحسين البطارية أو تفعيل ميزة الإبقاء قيد التشغيل.</string>

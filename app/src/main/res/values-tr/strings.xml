@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Lwidget</string>
+    <string name="category_appearance">Görünüm</string>
+    <string name="category_content">İçerik</string>
+    <string name="category_stats">İstatistikler</string>
+    <string name="category_agenda">Ajanda</string>
+    <string name="category_system">Sistem</string>
+    <string name="header_presets">ÖN AYARLAR</string>
+    <string name="header_theme">TEMA</string>
+    <string name="header_font">YAZI TİPİ</string>
+    <string name="header_colors">RENKLER</string>
+    <string name="header_outline">KENARLIK</string>
+    <string name="header_transparency">SAYDAMLIK</string>
+    <string name="header_padding">DOLGU</string>
+    <string name="header_reorder">SIRALAMA</string>
+    <string name="header_advanced">Gelişmiş</string>
+    <string name="header_permissions">İzinler</string>
+    <string name="header_about">Hakkında</string>
     <string name="section_time">Saat</string>
     <string name="section_time_format">Saat Formatı</string>
     <string name="section_time_clock_app">Saat Uygulaması</string>
@@ -38,6 +54,20 @@
     <string name="row_dynamic_colors">Dinamik Renkler</string>
     <string name="row_enable_keep_alive">Arka Planda Tutmayı Etkinleştir</string>
     <string name="row_show_day_abbr">Gün kısaltmasını göster</string>
+    <string name="row_theme_mode">Tema Modu</string>
+    <string name="row_update_interval">Güncelleme Aralığı (dk)</string>
+    <string name="row_bg_opacity">Arka Plan Saydamlığı</string>
+    <string name="row_widget_padding">Araç Takımı Dolgusu</string>
+    <string name="row_battery_optimization">Pil Optimizasyonunu Yoksay</string>
+    <string name="btn_update_widget">Güncelle</string>
+    <string name="note_update_interval">Not: Arka Planda Tut açıkken güncelleme aralığı dikkate alınmaz.</string>
+    <string name="note_battery_optimization">Not: Cihaz yeniden başlatıldığında araç takımının sorunsuz güncellenmesi için pil optimizasyonunu kapatmanız önemle tavsiye edilir.</string>
+    <string name="preset_minimal">Minimal</string>
+    <string name="preset_neon">Neon</string>
+    <string name="preset_cockpit">Kokpit</string>
+    <string name="preset_sunset">Gün Batımı</string>
+    <string name="preset_monochrome">Monokrom</string>
+    <string name="preset_snowfall">Kar Yağışı</string>
     <string name="section_changelog">Not ve Değişiklik Günlüğü</string>
     <string name="changelog_version">Sürüm %s</string>
     <string name="changelog_note">Lwidget herhangi bir arka plan servisi olmadan çalışır. Ancak bazı cihazlar pil tasarrufu için uygulamayı sonlandırabilir ve araç takımı güncellemelerini durdurabilir. Bunu düzeltmek için:\n\n• Cihaz ayarlarından Lwidget için pil optimizasyonunu kapatın.\n• Veya araç takımını güvenilir şekilde güncel tutan Arka Planda Tut özelliğini etkinleştirin.\n• Ya da günlük adımlarınızı sayan Adımsayar\'ı etkinleştirin.</string>

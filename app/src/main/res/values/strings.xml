@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Lwidget</string>
+    <string name="category_appearance">Appearance</string>
+    <string name="category_content">Content</string>
+    <string name="category_stats">Stats</string>
+    <string name="category_agenda">Agenda</string>
+    <string name="category_system">System</string>
+    <string name="header_presets">PRESETS</string>
+    <string name="header_theme">THEME</string>
+    <string name="header_font">FONT</string>
+    <string name="header_colors">COLORS</string>
+    <string name="header_outline">OUTLINE</string>
+    <string name="header_transparency">TRANSPARENCY</string>
+    <string name="header_padding">PADDING</string>
+    <string name="header_reorder">REORDER</string>
+    <string name="header_advanced">Advanced</string>
+    <string name="header_permissions">Permissions</string>
+    <string name="header_about">About</string>
     <string name="section_time">Time</string>
     <string name="section_time_format">Time Format</string>
     <string name="section_time_clock_app">Clock App</string>
@@ -38,6 +54,20 @@
     <string name="row_dynamic_colors">Dynamic Colors</string>
     <string name="row_enable_keep_alive">Enable Keep Alive</string>
     <string name="row_show_day_abbr">Show day abbreviation</string>
+    <string name="row_theme_mode">Theme Mode</string>
+    <string name="row_update_interval">Update Interval (m)</string>
+    <string name="row_bg_opacity">Background Opacity</string>
+    <string name="row_widget_padding">Widget Padding</string>
+    <string name="row_battery_optimization">Ignore Battery Optimization</string>
+    <string name="btn_update_widget">Update</string>
+    <string name="note_update_interval">Note: Update interval is irrelevant when Keep Alive is toggled on.</string>
+    <string name="note_battery_optimization">Note: Highly recommended to disable battery optimization so the widget updates and touch actions work reliably after device restart.</string>
+    <string name="preset_minimal">Minimal</string>
+    <string name="preset_neon">Neon</string>
+    <string name="preset_cockpit">Cockpit</string>
+    <string name="preset_sunset">Sunset</string>
+    <string name="preset_monochrome">Monochrome</string>
+    <string name="preset_snowfall">Snowfall</string>
     <string name="section_changelog">Note &amp; Changelog</string>
     <string name="changelog_version">Version %s</string>
     <string name="changelog_note">Lwidget works without any background service. However, some devices may kill the app to save battery, which can stop widget updates. To fix this:\n\n• Mark Lwidget as non-battery-optimized in your device settings.\n• Or, enable Keep Alive — a lightweight background service that keeps the widget updating reliably.\n• Or, enable the Step Counter — it uses the same service and also counts your daily steps.</string>

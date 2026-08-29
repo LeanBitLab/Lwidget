@@ -89,18 +89,30 @@
             android:paddingBottom="80dp">
 
             <!-- WIDGET PREVIEW CONTAINER -->
-            <FrameLayout
-                android:id="@+id/preview_container"
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_preview"
+                style="@style/Widget.Material3.CardView.Filled"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:clipChildren="false"/>
+                app:cardCornerRadius="24dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="?attr/colorOutlineVariant"
+                app:cardBackgroundColor="?attr/colorSurfaceContainer">
+
+                <FrameLayout
+                    android:id="@+id/preview_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:clipChildren="false"/>
+            </com.google.android.material.card.MaterialCardView>
 
             <!-- CATEGORY: APPEARANCE -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Appearance"
+                android:text="@string/category_appearance"
                 android:textColor="?attr/colorPrimary"
                 android:textStyle="bold"
                 android:textSize="14sp"
@@ -170,7 +182,7 @@
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
-                                        android:text="PRESETS"
+                                        android:text="@string/header_presets"
                                         android:textColor="?attr/colorOnSurfaceVariant"
                                         android:textSize="13sp"
                                         android:textStyle="bold"
@@ -247,7 +259,7 @@
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
-                                        android:text="OUTLINE"
+                                        android:text="@string/header_outline"
                                         android:textColor="?attr/colorOnSurfaceVariant"
                                         android:textSize="13sp"
                                         android:textStyle="bold"
@@ -314,7 +326,7 @@
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
-                                        android:text="COLORS"
+                                        android:text="@string/header_colors"
                                         android:textColor="?attr/colorOnSurfaceVariant"
                                         android:textSize="13sp"
                                         android:textStyle="bold"
@@ -431,7 +443,7 @@
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
-                                        android:text="THEME"
+                                        android:text="@string/header_theme"
                                         android:textColor="?attr/colorOnSurfaceVariant"
                                         android:textSize="13sp"
                                         android:textStyle="bold"
@@ -498,7 +510,7 @@
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
-                                        android:text="FONT"
+                                        android:text="@string/header_font"
                                         android:textColor="?attr/colorOnSurfaceVariant"
                                         android:textSize="13sp"
                                         android:textStyle="bold"
@@ -565,7 +577,7 @@
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
-                                        android:text="TRANSPARENCY"
+                                        android:text="@string/header_transparency"
                                         android:textColor="?attr/colorOnSurfaceVariant"
                                         android:textSize="13sp"
                                         android:textStyle="bold"
@@ -632,7 +644,7 @@
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
-                                        android:text="PADDING"
+                                        android:text="@string/header_padding"
                                         android:textColor="?attr/colorOnSurfaceVariant"
                                         android:textSize="13sp"
                                         android:textStyle="bold"
@@ -712,7 +724,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Reorder"
+                            android:text="@string/header_reorder"
                             android:textColor="?attr/colorOnSurface"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -749,7 +761,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Content"
+                android:text="@string/category_content"
                 android:textColor="?attr/colorPrimary"
                 android:textStyle="bold"
                 android:textSize="14sp"
@@ -949,7 +961,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Stats"
+                android:text="@string/category_stats"
                 android:textColor="?attr/colorPrimary"
                 android:textStyle="bold"
                 android:textSize="14sp"
@@ -1342,7 +1354,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Agenda"
+                android:text="@string/category_agenda"
                 android:textColor="?attr/colorPrimary"
                 android:textStyle="bold"
                 android:textSize="14sp"
@@ -1446,7 +1458,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="System"
+                android:text="@string/category_system"
                 android:textColor="?attr/colorPrimary"
                 android:textStyle="bold"
                 android:textSize="14sp"
@@ -1529,7 +1541,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Note: Update interval is irrelevant when Keep Alive is toggled on."
+                            android:text="@string/note_update_interval"
                             android:textSize="12sp"
                             android:textColor="?attr/colorOnSurfaceVariant"
                             android:paddingStart="16dp"
@@ -1549,7 +1561,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Note: Highly recommended to disable battery optimization so the widget updates and touch actions work reliably after device restart."
+                            android:text="@string/note_battery_optimization"
                             android:textSize="12sp"
                             android:textColor="?attr/colorOnSurfaceVariant"
                             android:paddingStart="16dp"
@@ -1736,7 +1748,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="24dp"
-        android:text="Update"
+        android:text="@string/btn_update_widget"
         app:icon="@android:drawable/ic_popup_sync"
         app:iconTint="?attr/colorOnPrimaryContainer"
         android:backgroundTint="?attr/colorPrimaryContainer"

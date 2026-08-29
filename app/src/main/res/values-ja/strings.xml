@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Lwidget</string>
+    <string name="category_appearance">外観</string>
+    <string name="category_content">コンテンツ</string>
+    <string name="category_stats">ステータス</string>
+    <string name="category_agenda">予定とタスク</string>
+    <string name="category_system">システム</string>
+    <string name="header_presets">プリセット</string>
+    <string name="header_theme">テーマ</string>
+    <string name="header_font">フォント</string>
+    <string name="header_colors">カラー</string>
+    <string name="header_outline">枠線</string>
+    <string name="header_transparency">透明度</string>
+    <string name="header_padding">余白</string>
+    <string name="header_reorder">並べ替え</string>
+    <string name="header_advanced">詳細設定</string>
+    <string name="header_permissions">権限</string>
+    <string name="header_about">アプリについて</string>
     <string name="section_time">時刻</string>
     <string name="section_time_format">時刻形式</string>
     <string name="section_time_clock_app">時計アプリ</string>
@@ -38,6 +54,20 @@
     <string name="row_dynamic_colors">ダイナミックカラー</string>
     <string name="row_enable_keep_alive">バックグラウンド維持を有効化</string>
     <string name="row_show_day_abbr">曜日の略称を表示</string>
+    <string name="row_theme_mode">テーマモード</string>
+    <string name="row_update_interval">更新間隔 (分)</string>
+    <string name="row_bg_opacity">背景の不透明度</string>
+    <string name="row_widget_padding">ウィジェットの余白</string>
+    <string name="row_battery_optimization">バッテリー最適化を無視</string>
+    <string name="btn_update_widget">更新</string>
+    <string name="note_update_interval">注意：バックグラウンド維持がオンの場合、更新間隔は無視されます。</string>
+    <string name="note_battery_optimization">注意：再起動後もウィジェットを安定して動作させるため、バッテリー最適化を解除することを強く推奨します。</string>
+    <string name="preset_minimal">ミニマル</string>
+    <string name="preset_neon">ネオン</string>
+    <string name="preset_cockpit">コックピット</string>
+    <string name="preset_sunset">サンセット</string>
+    <string name="preset_monochrome">モノクローム</string>
+    <string name="preset_snowfall">スノーフォール</string>
     <string name="section_changelog">注意と更新履歴</string>
     <string name="changelog_version">バージョン %s</string>
     <string name="changelog_note">Lwidgetはバックグラウンドサービスなしで動作します。更新を安定させるには、端末のバッテリー最適化を解除するか、バックグラウンド維持を有効にしてください。</string>

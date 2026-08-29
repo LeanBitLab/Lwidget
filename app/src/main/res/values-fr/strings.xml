@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Lwidget</string>
+    <string name="category_appearance">Apparence</string>
+    <string name="category_content">Contenu</string>
+    <string name="category_stats">Statistiques</string>
+    <string name="category_agenda">Agenda</string>
+    <string name="category_system">Système</string>
+    <string name="header_presets">PRÉRÉGLAGES</string>
+    <string name="header_theme">THÈME</string>
+    <string name="header_font">POLICE</string>
+    <string name="header_colors">COULEURS</string>
+    <string name="header_outline">BORDURE</string>
+    <string name="header_transparency">TRANSPARENCE</string>
+    <string name="header_padding">MARGES</string>
+    <string name="header_reorder">RÉORDONNER</string>
+    <string name="header_advanced">Avancé</string>
+    <string name="header_permissions">Autorisations</string>
+    <string name="header_about">À propos</string>
     <string name="section_time">Heure</string>
     <string name="section_time_format">Format de l\'heure</string>
     <string name="section_time_clock_app">Application Horloge</string>
@@ -38,6 +54,20 @@
     <string name="row_dynamic_colors">Couleurs dynamiques</string>
     <string name="row_enable_keep_alive">Activer le maintien actif</string>
     <string name="row_show_day_abbr">Afficher l\'abréviation du jour</string>
+    <string name="row_theme_mode">Mode de thème</string>
+    <string name="row_update_interval">Intervalle de mise à jour (m)</string>
+    <string name="row_bg_opacity">Opacité de l\'arrière-plan</string>
+    <string name="row_widget_padding">Marges du widget</string>
+    <string name="row_battery_optimization">Ignorer l\'optimisation de batterie</string>
+    <string name="btn_update_widget">Mettre à jour</string>
+    <string name="note_update_interval">Note : L\'intervalle de mise à jour est ignoré lorsque Maintien actif est activé.</string>
+    <string name="note_battery_optimization">Note : Il est fortement recommandé de désactiver l\'optimisation de batterie pour assurer le bon fonctionnement du widget.</string>
+    <string name="preset_minimal">Minimal</string>
+    <string name="preset_neon">Néon</string>
+    <string name="preset_cockpit">Cockpit</string>
+    <string name="preset_sunset">Coucher de soleil</string>
+    <string name="preset_monochrome">Monochrome</string>
+    <string name="preset_snowfall">Chute de neige</string>
     <string name="section_changelog">Notes et changements</string>
     <string name="changelog_version">Version %s</string>
     <string name="changelog_note">Lwidget fonctionne sans service en arrière-plan. Cependant, désactivez l\'optimisation de batterie pour garantir des mises à jour fiables.</string>
