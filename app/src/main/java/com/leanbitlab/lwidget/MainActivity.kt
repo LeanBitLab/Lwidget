@@ -923,8 +923,10 @@ class MainActivity : AppCompatActivity() {
         setupBatteryOptimizationSection()
         setupEventsAndTasksSections()
         setupThemeSection(colorOptions)
+        setupLanguageSection()
         
         // System sections
+        bindCategoryFoldable(R.id.header_language, R.id.content_language, getString(R.string.section_app_language), R.drawable.ic_world, "section_language_expanded")
         bindCategoryFoldable(R.id.header_advanced, R.id.content_advanced, "Advanced", 0, "section_advanced_expanded")
         bindCategoryFoldable(R.id.header_permissions, R.id.content_permissions, "Permissions", 0, "section_permissions_expanded")
         bindCategoryFoldable(R.id.header_about, R.id.content_about, "About", 0, "section_about_expanded")
@@ -1582,6 +1584,48 @@ class MainActivity : AppCompatActivity() {
         ), 0)
 
         updateToggleAvailability()
+    }
+
+    private data class LanguageOption(val code: String, val displayName: String)
+
+    private fun setupLanguageSection() {
+        val languages = listOf(
+            LanguageOption("", getString(R.string.lang_system_default)),
+            LanguageOption("en", "English"),
+            LanguageOption("es", "Español (Spanish)"),
+            LanguageOption("zh", "简体中文 (Chinese)"),
+            LanguageOption("hi", "हिन्दी (Hindi)"),
+            LanguageOption("ar", "العربية (Arabic)"),
+            LanguageOption("fr", "Français (French)"),
+            LanguageOption("pt", "Português (Portuguese)"),
+            LanguageOption("ru", "Русский (Russian)"),
+            LanguageOption("de", "Deutsch (German)"),
+            LanguageOption("ja", "日本語 (Japanese)"),
+            LanguageOption("tr", "Türkçe (Turkish)")
+        )
+        val languageLabels = languages.map { it.displayName }
+        val currentLocales = androidx.appcompat.app.AppCompatDelegate.getApplicationLocales()
+        val currentTag = if (currentLocales.isEmpty) "" else currentLocales.get(0)?.language ?: ""
+        val currentIdx = languages.indexOfFirst { it.code.equals(currentTag, ignoreCase = true) }.coerceAtLeast(0)
+
+        val row = findViewById<View>(R.id.row_app_language) ?: return
+        val tvTitle = row.findViewById<TextView>(R.id.row_label)
+        val autoCompleteTextView = row.findViewById<AutoCompleteTextView>(R.id.row_value)
+
+        tvTitle.text = getString(R.string.section_app_language)
+        val adapter = android.widget.ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, languageLabels)
+        autoCompleteTextView.setAdapter(adapter)
+        autoCompleteTextView.setText(languageLabels[currentIdx], false)
+
+        autoCompleteTextView.setOnItemClickListener { _, _, position, _ ->
+            val selected = languages.getOrElse(position) { languages[0] }
+            val localeList = if (selected.code.isEmpty()) {
+                androidx.core.os.LocaleListCompat.getEmptyLocaleList()
+            } else {
+                androidx.core.os.LocaleListCompat.forLanguageTags(selected.code)
+            }
+            androidx.appcompat.app.AppCompatDelegate.setApplicationLocales(localeList)
+        }
     }
 
     private fun setupPresetsSection() {

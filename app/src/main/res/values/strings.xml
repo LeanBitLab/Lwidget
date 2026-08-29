@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Lwidget</string>
-    
-    <!-- Widget Sections -->
     <string name="section_time">Time</string>
     <string name="section_time_format">Time Format</string>
     <string name="section_time_clock_app">Clock App</string>
@@ -22,8 +20,7 @@
     <string name="section_keep_alive">Keep Alive</string>
     <string name="section_screen_time">Screen Time</string>
     <string name="section_outline">Outline</string>
-    <string name="section_theme">Follow System Theme</string>
-    <!-- <string name="section_transparent">Transparent Background</string> REMOVED -->
+    <string name="section_theme">Theme</string>
     <string name="section_bg_transparency">Transparency</string>
     <string name="section_text_color_primary">Text Color</string>
     <string name="section_text_color_secondary">Text Color 2</string>
@@ -31,38 +28,32 @@
     <string name="section_outline_color">Outline Color</string>
     <string name="section_font">Font Style</string>
     <string name="section_bg_color">Background Color</string>
-
-    <!-- Changelog / About -->
-    <string name="section_changelog">Note \u0026 Changelog</string>
+    <string name="section_app_language">App Language</string>
+    <string name="lang_system_default">System Default</string>
+    <string name="theme_auto">Auto (Follow System)</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="row_bold_text">Bold Text</string>
+    <string name="row_show_outline">Show Outline</string>
+    <string name="row_dynamic_colors">Dynamic Colors</string>
+    <string name="row_enable_keep_alive">Enable Keep Alive</string>
+    <string name="row_show_day_abbr">Show day abbreviation</string>
+    <string name="section_changelog">Note &amp; Changelog</string>
     <string name="changelog_version">Version %s</string>
     <string name="changelog_note">Lwidget works without any background service. However, some devices may kill the app to save battery, which can stop widget updates. To fix this:\n\n• Mark Lwidget as non-battery-optimized in your device settings.\n• Or, enable Keep Alive — a lightweight background service that keeps the widget updating reliably.\n• Or, enable the Step Counter — it uses the same service and also counts your daily steps.</string>
     <string name="changelog_content">What\'s New in v2.0:\n• Added Reorder — you can now sort widget items exactly how you want\n• Uniform Customization — consistent design language across all settings\n• Settings Page Improvements — cleaner layout and better navigation\n• Performance optimizations and bug fixes</string>
     <string name="changelog_testing_notice">If you enjoy Lwidget, please leave a rating on Google Play — it helps others discover the app.</string>
     <string name="github_source_code">Source Code (GitHub)</string>
     <string name="privacy_policy">Privacy Policy</string>
-
-    <!-- Permissions & Errors -->
     <string name="perm_usage_access_title">Please grant Usage Access for Lwidget</string>
-
     <string name="error_max_subset_items">Max 6 of Battery, Weather, Temp, Data, Storage, RAM allowed.</string>
     <string name="no_perm">No Perm</string>
     <string name="error">Err</string>
-    
-    <!-- Formats/Options -->
     <string name="format_12h">12 Hour</string>
     <string name="format_24h">24 Hour</string>
-    
     <string name="date_format_full">Full</string>
     <string name="date_format_short">Short</string>
     <string name="date_format_numeric">Numeric</string>
-
-    
-
-    
-    <!-- Timezones -->
-
-
-    <!-- Fonts -->
     <string name="font_default">Default</string>
     <string name="font_serif">Serif</string>
     <string name="font_monospace">Monospace</string>
@@ -74,12 +65,9 @@
     <string name="font_black">Black</string>
     <string name="font_thin">Thin</string>
     <string name="font_smallcaps">Small Caps</string>
-
     <string name="color_default">Default</string>
     <string name="color_system_accent">System Accent</string>
     <string name="color_custom">Custom</string>
-
-    <!-- Setup / Onboarding -->
     <string name="setup_welcome_title">Welcome to Lwidget</string>
     <string name="setup_welcome_desc">A customizable widget for your home screen. Let\'s get everything set up so it works perfectly.</string>
     <string name="setup_keep_alive_title">Keep Alive</string>
