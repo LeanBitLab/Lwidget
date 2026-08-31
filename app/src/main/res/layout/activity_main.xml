@@ -89,13 +89,42 @@
             android:paddingBottom="80dp">
 
             <!-- WIDGET PREVIEW CONTAINER -->
-            <FrameLayout
-                android:id="@+id/preview_container"
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_preview"
+                style="@style/Widget.Material3.CardView.Filled"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:clipChildren="false"
-                android:clipToPadding="false"/>
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="?attr/colorOutlineVariant"
+                android:clipChildren="true"
+                android:clipToPadding="true">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <!-- Wallpaper / Backdrop View -->
+                    <ImageView
+                        android:id="@+id/preview_wallpaper"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/bg_preview_wallpaper"
+                        android:importantForAccessibility="no" />
+
+                    <!-- Live RemoteViews Preview Container -->
+                    <FrameLayout
+                        android:id="@+id/preview_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp"
+                        android:clipChildren="false"
+                        android:clipToPadding="false" />
+                </FrameLayout>
+            </com.google.android.material.card.MaterialCardView>
 
             <!-- CATEGORY: APPEARANCE -->
             <TextView

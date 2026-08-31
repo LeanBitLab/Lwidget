@@ -29,6 +29,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import android.widget.AutoCompleteTextView
+import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
@@ -168,6 +169,7 @@ class MainActivity : AppCompatActivity() {
 
         checkAllPermissions()
         setupSections()
+        setupPreviewWallpaper()
         updateLivePreview()
         
         // Advanced Section
@@ -228,6 +230,19 @@ class MainActivity : AppCompatActivity() {
             expandedHeader.scaleX = scale
             expandedHeader.scaleY = scale
         })
+    }
+
+    private fun setupPreviewWallpaper() {
+        val wallpaperView = findViewById<ImageView>(R.id.preview_wallpaper) ?: return
+        try {
+            val wallpaperManager = android.app.WallpaperManager.getInstance(this)
+            val wallpaperDrawable = wallpaperManager.drawable
+            if (wallpaperDrawable != null) {
+                wallpaperView.setImageDrawable(wallpaperDrawable)
+            }
+        } catch (e: Exception) {
+            // Keep default fallback drawable
+        }
     }
 
     private fun updateLivePreview() {
@@ -377,6 +392,7 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         // Re-check permissions when returning (especially for Data Usage settings)
         checkAllPermissions()
+        setupPreviewWallpaper()
         // Force a full widget update every time the app is opened
         updateWidget()
         // Update battery optimization switch state
