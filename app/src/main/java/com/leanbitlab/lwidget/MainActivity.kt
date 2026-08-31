@@ -59,6 +59,7 @@ data class ReorderItem(
 // Adapter for reorder RecyclerView
 class ReorderAdapter(
     private val items: MutableList<ReorderItem>,
+    private val onItemToggled: (ReorderItem, Boolean) -> Unit,
     private val onOrderChanged: () -> Unit
 ) : RecyclerView.Adapter<ReorderAdapter.ViewHolder>() {
 
@@ -77,7 +78,15 @@ class ReorderAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
         holder.name.text = item.label
+        holder.enabled.setOnCheckedChangeListener(null)
         holder.enabled.isChecked = item.enabled
+        holder.enabled.setOnCheckedChangeListener { _, isChecked ->
+            item.enabled = isChecked
+            onItemToggled(item, isChecked)
+        }
+        holder.view.setOnClickListener {
+            holder.enabled.toggle()
+        }
     }
 
     override fun getItemCount() = items.size
@@ -572,6 +581,7 @@ class MainActivity : AppCompatActivity() {
         val toggleCard = toggleRow.findViewById<com.google.android.material.card.MaterialCardView>(R.id.toggle_row_card)
         toggleLabel.text = "Enable"
 
+        toggleSwitch.tag = prefShowKey
         if (isContent) contentSwitches.add(toggleSwitch)
 
         val isShown = prefs.getBoolean(prefShowKey, defShow)
@@ -851,12 +861,22 @@ class MainActivity : AppCompatActivity() {
         }
 
         val recyclerView = findViewById<RecyclerView>(R.id.reorder_recycler)
-        val adapter = ReorderAdapter(items) {
-            // Save order on every move
-            val orderStr = items.joinToString(",") { it.key }
-            prefs.edit().putString("widget_right_column_order", orderStr).apply()
-            updateWidget()
-        }
+        val adapter = ReorderAdapter(
+            items,
+            onItemToggled = { item, isChecked ->
+                prefs.edit().putBoolean(item.key, isChecked).apply()
+                contentSwitches.find { it.tag == item.key }?.isChecked = isChecked
+                updateWidget()
+                updateLivePreview()
+                updateToggleAvailability()
+            },
+            onOrderChanged = {
+                val orderStr = items.joinToString(",") { it.key }
+                prefs.edit().putString("widget_right_column_order", orderStr).apply()
+                updateWidget()
+                updateLivePreview()
+            }
+        )
         recyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         recyclerView.adapter = adapter
         
@@ -1775,6 +1795,7 @@ class MainActivity : AppCompatActivity() {
         val switch = row.findViewById<SwitchMaterial>(R.id.row_switch)
 
         tvTitle.text = title
+        switch.tag = prefShowKey
         if (isContent) contentSwitches.add(switch)
 
         val isShown = prefs.getBoolean(prefShowKey, defShow)
