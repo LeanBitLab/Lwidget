@@ -5,17 +5,17 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:paddingStart="16dp"
+    android:paddingStart="12dp"
     android:paddingEnd="16dp"
-    android:paddingTop="14dp"
-    android:paddingBottom="14dp"
-    android:background="?attr/selectableItemBackground">
+    android:paddingTop="12dp"
+    android:paddingBottom="12dp">
 
     <ImageView
         android:id="@+id/reorder_handle"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginEnd="16dp"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:padding="6dp"
+        android:layout_marginEnd="10dp"
         android:src="@drawable/ic_reorder"
         android:contentDescription="Drag to reorder"
         app:tint="?attr/colorPrimary"/>

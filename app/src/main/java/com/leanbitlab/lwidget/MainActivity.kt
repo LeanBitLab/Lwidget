@@ -60,8 +60,7 @@ data class ReorderItem(
 // Adapter for reorder RecyclerView
 class ReorderAdapter(
     private val items: MutableList<ReorderItem>,
-    private val onStartDrag: (RecyclerView.ViewHolder) -> Unit,
-    private val onOrderChanged: () -> Unit
+    private val onStartDrag: (RecyclerView.ViewHolder) -> Unit
 ) : RecyclerView.Adapter<ReorderAdapter.ViewHolder>() {
 
     class ViewHolder(val view: android.view.View) : RecyclerView.ViewHolder(view) {
@@ -87,8 +86,9 @@ class ReorderAdapter(
             holder.status?.visibility = android.view.View.VISIBLE
         }
 
-        holder.handle.setOnTouchListener { _, event ->
+        holder.handle.setOnTouchListener { v, event ->
             if (event.actionMasked == MotionEvent.ACTION_DOWN) {
+                v.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
                 onStartDrag(holder)
             }
             false
@@ -98,10 +98,16 @@ class ReorderAdapter(
     override fun getItemCount() = items.size
 
     fun moveItem(from: Int, to: Int) {
-        val moved = items.removeAt(from)
-        items.add(to, moved)
+        if (from < to) {
+            for (i in from until to) {
+                java.util.Collections.swap(items, i, i + 1)
+            }
+        } else {
+            for (i in from downTo to + 1) {
+                java.util.Collections.swap(items, i, i - 1)
+            }
+        }
         notifyItemMoved(from, to)
-        onOrderChanged()
     }
 }
 
@@ -875,16 +881,13 @@ class MainActivity : AppCompatActivity() {
 
         val recyclerView = findViewById<RecyclerView>(R.id.reorder_recycler)
         var itemTouchHelper: ItemTouchHelper? = null
+        var orderHasChanged = false
+
         val adapter = ReorderAdapter(
             items,
             onStartDrag = { viewHolder ->
+                recyclerView.parent.requestDisallowInterceptTouchEvent(true)
                 itemTouchHelper?.startDrag(viewHolder)
-            },
-            onOrderChanged = {
-                val orderStr = items.joinToString(",") { it.key }
-                prefs.edit().putString("widget_right_column_order", orderStr).apply()
-                updateWidget()
-                updateLivePreview()
             }
         )
         recyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
@@ -900,6 +903,8 @@ class MainActivity : AppCompatActivity() {
                 val toPos = target.adapterPosition
                 if (fromPos != RecyclerView.NO_POSITION && toPos != RecyclerView.NO_POSITION && fromPos != toPos) {
                     adapter.moveItem(fromPos, toPos)
+                    orderHasChanged = true
+                    rv.performHapticFeedback(android.view.HapticFeedbackConstants.CLOCK_TICK)
                 }
                 return true
             }
@@ -909,15 +914,31 @@ class MainActivity : AppCompatActivity() {
             override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
                 super.onSelectedChanged(viewHolder, actionState)
                 if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
-                    viewHolder?.itemView?.alpha = 0.7f
+                    recyclerView.parent.requestDisallowInterceptTouchEvent(true)
+                    viewHolder?.itemView?.apply {
+                        setBackgroundResource(R.drawable.bg_reorder_item_dragging)
+                        animate().scaleX(1.02f).scaleY(1.02f).translationZ(8f).setDuration(120).start()
+                    }
                 }
             }
 
             override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
                 super.clearView(recyclerView, viewHolder)
-                val pos = viewHolder.adapterPosition
-                if (pos != RecyclerView.NO_POSITION && pos < items.size) {
-                    viewHolder.itemView.alpha = if (items[pos].enabled) 1.0f else 0.4f
+                recyclerView.parent.requestDisallowInterceptTouchEvent(false)
+                viewHolder.itemView.apply {
+                    background = null
+                    animate().scaleX(1.0f).scaleY(1.0f).translationZ(0f).setDuration(120).start()
+                    val pos = viewHolder.adapterPosition
+                    if (pos != RecyclerView.NO_POSITION && pos < items.size) {
+                        alpha = if (items[pos].enabled) 1.0f else 0.4f
+                    }
+                }
+                if (orderHasChanged) {
+                    orderHasChanged = false
+                    val orderStr = items.joinToString(",") { it.key }
+                    prefs.edit().putString("widget_right_column_order", orderStr).apply()
+                    updateWidget()
+                    updateLivePreview()
                 }
             }
         }
