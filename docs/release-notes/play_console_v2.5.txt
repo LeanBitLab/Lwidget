@@ -1,0 +1,98 @@
+<en-US>
+• Modern Material 3 UI with refreshed vector iconography
+• Smooth 120fps drag-and-drop widget item reordering
+• Compact 2x2 and square widget resizing support
+• Pixel-perfect concentric widget outline alignment
+• In-app language selector supporting 10 global languages
+• Performance improvements, bug fixes & Android 16 readiness
+</en-US>
+
+<ar>
+• واجهة Material 3 عصرية مع أيقونات متجهة محدثة
+• إعادة ترتيب عناصر الويدجت بالسحب والإفلات بسلاسة 120 إطارًا/ث
+• دعم تغيير حجم الويدجت إلى مربعات مدمجة 2x2
+• محاذاة دقيقة ومثالية لإطار الويدجت وحوافه المنحنية
+• ميزة تغيير لغة التطبيق لـ 10 لغات عالمية
+• تحسينات في الأداء والتوافق مع أندرويد 16
+</ar>
+
+<de-DE>
+• Modernes Material 3 Design mit neuen Vektor-Icons
+• Flüssiges 120fps Drag-and-Drop zur Widget-Sortierung
+• Unterstützung für kompakte 2x2 und quadratische Widget-Größen
+• Präzise ausgerichtete Umrandung und abgerundete Ecken
+• Sprachauswahl in der App für 10 Sprachen
+• Leistungsverbesserungen und Android 16 Unterstützung
+</de-DE>
+
+<es-ES>
+• Interfaz moderna Material 3 con iconos vectoriales renovados
+• Reordenación fluida a 120 fps mediante arrastrar y soltar
+• Soporte para redimensionar el widget a tamaños cuadrados 2x2
+• Alineación precisa del contorno y curvatura de bordes
+• Selector de idioma integrado con 10 idiomas
+• Mejoras de rendimiento, corrección de errores y soporte para Android 16
+</es-ES>
+
+<fr-FR>
+• Interface Material 3 moderne avec icônes vectorielles renouvelées
+• Réorganisation fluide à 120 fps par glisser-déposer
+• Prise en charge du redimensionnement du widget en format carré 2x2
+• Alignement précis du contour et des coins arrondis
+• Sélecteur de langue dans l'application (10 langues)
+• Améliorations des performances et compatibilité Android 16
+</fr-FR>
+
+<hi-IN>
+• नया Material 3 डिज़ाइन और ताज़ा वेक्टर आइकन
+• 120fps स्मूथ ड्रैग-एंड-ड्रॉप विजेट रीऑर्डरिंग
+• 2x2 और चौकोर विजेट रीसाइज़िंग सपोर्ट
+• विजेट आउटलाइन और किनारों का सटीक अलाइनमेंट
+• 10 प्रमुख भाषाओं के लिए इन-ऐप भाषा चयनकर्ता
+• बेहतर परफॉरमेंस, बग फिक्स और Android 16 सपोर्ट
+</hi-IN>
+
+<ja-JP>
+• 新しいMaterial 3 UIと刷新されたベクターアイコン
+• 120fpsの滑らかなドラッグ＆ドロップ並べ替え
+• 2x2のコンパクト・正方形ウィジェットのリサイズ対応
+• ウィジェット外枠と角の曲率を正確に調整
+• 10言語に対応したアプリ内言語切り替え機能
+• パフォーマンス向上とAndroid 16への最適化
+</ja-JP>
+
+<pt-BR>
+• Interface moderna Material 3 com ícones vetoriais renovados
+• Reordenação suave a 120 fps por arrastar e soltar
+• Suporte para redimensionar o widget em formato quadrado 2x2
+• Alinhamento perfeito do contorno e bordas arredondadas
+• Seletor de idioma no app com suporte a 10 idiomas
+• Melhorias de desempenho e compatibilidade com Android 16
+</pt-BR>
+
+<ru-RU>
+• Современный интерфейс Material 3 и обновленные векторные иконки
+• Плавная сортировка элементов виджета перетаскиванием (120 кадров/с)
+• Поддержка изменения размера до квадратного 2x2
+• Идеальное выравнивание контура и закруглений виджета
+• Встроенный выбор из 10 языков интерфейса
+• Повышение производительности и поддержка Android 16
+</ru-RU>
+
+<tr-TR>
+• Yenilenmiş vektör simgeleriyle modern Material 3 arayüzü
+• 120 fps akıcı sürükle-bırak widget sıralama
+• 2x2 ve kare widget boyutlandırma desteği
+• Kusursuz hizalanmış widget kenarlık ve köşe hatları
+• 10 dili destekleyen uygulama içi dil seçici
+• Performans iyileştirmeleri, hata düzeltmeleri ve Android 16 uyumluluğu
+</tr-TR>
+
+<zh-CN>
+• 全新 Material 3 界面与精美矢量图标
+• 120fps 流畅拖拽微件重新排序
+• 支持调整为 2x2 紧凑方形小部件
+• 像素级对齐的微件外边框与圆角曲线
+• 内置支持 10 种语言的应用内语言切换
+• 性能提升、问题修复与 Android 16 兼容支持
+</zh-CN>
