@@ -46,6 +46,8 @@ import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.slider.Slider
 import com.google.android.material.switchmaterial.SwitchMaterial
+import com.google.android.material.tabs.TabLayout
+import androidx.core.widget.NestedScrollView
 
 // Data class for reorderable items
 data class ReorderItem(
@@ -170,6 +172,7 @@ class MainActivity : AppCompatActivity() {
         checkAllPermissions()
         setupSections()
         setupPreviewWallpaper()
+        setupTabLayout()
         updateLivePreview()
         
         // Advanced Section
@@ -243,6 +246,41 @@ class MainActivity : AppCompatActivity() {
         } catch (e: Exception) {
             // Keep default fallback drawable
         }
+    }
+
+    private fun setupTabLayout() {
+        val tabLayout = findViewById<TabLayout>(R.id.tab_layout) ?: return
+        val containerStyle = findViewById<View>(R.id.container_tab_style)
+        val containerContent = findViewById<View>(R.id.container_tab_content)
+        val containerLayout = findViewById<View>(R.id.container_tab_layout)
+        val containerSystem = findViewById<View>(R.id.container_tab_system)
+
+        val tabContainers = listOf(containerStyle, containerContent, containerLayout, containerSystem)
+
+        tabLayout.removeAllTabs()
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.category_appearance).setIcon(R.drawable.ic_palette))
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.category_content).setIcon(R.drawable.ic_tasks))
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.header_reorder).setIcon(R.drawable.ic_outline))
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.category_system).setIcon(R.drawable.ic_battery))
+
+        val savedTab = prefs.getInt("selected_settings_tab", 0).coerceIn(0, 3)
+        tabLayout.getTabAt(savedTab)?.select()
+        tabContainers.forEachIndexed { index, container ->
+            container?.visibility = if (index == savedTab) View.VISIBLE else View.GONE
+        }
+
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                prefs.edit().putInt("selected_settings_tab", tab.position).apply()
+                tabContainers.forEachIndexed { index, container ->
+                    container?.visibility = if (index == tab.position) View.VISIBLE else View.GONE
+                }
+                findViewById<NestedScrollView>(R.id.nested_scroll_view)?.scrollTo(0, 0)
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab) {}
+            override fun onTabReselected(tab: TabLayout.Tab) {}
+        })
     }
 
     private fun updateLivePreview() {
