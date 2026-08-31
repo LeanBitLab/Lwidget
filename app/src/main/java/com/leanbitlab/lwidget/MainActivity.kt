@@ -88,25 +88,21 @@ class ReorderAdapter(
 
         holder.handle.setOnTouchListener { v, event ->
             if (event.actionMasked == MotionEvent.ACTION_DOWN) {
-                v.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY)
+                v.performHapticFeedback(android.view.HapticFeedbackConstants.CONTEXT_CLICK)
                 onStartDrag(holder)
+                true
+            } else {
+                false
             }
-            false
         }
     }
 
     override fun getItemCount() = items.size
 
     fun moveItem(from: Int, to: Int) {
-        if (from < to) {
-            for (i in from until to) {
-                java.util.Collections.swap(items, i, i + 1)
-            }
-        } else {
-            for (i in from downTo to + 1) {
-                java.util.Collections.swap(items, i, i - 1)
-            }
-        }
+        if (from == to) return
+        val item = items.removeAt(from)
+        items.add(to, item)
         notifyItemMoved(from, to)
     }
 }
@@ -886,17 +882,18 @@ class MainActivity : AppCompatActivity() {
         val adapter = ReorderAdapter(
             items,
             onStartDrag = { viewHolder ->
-                recyclerView.parent.requestDisallowInterceptTouchEvent(true)
                 itemTouchHelper?.startDrag(viewHolder)
             }
         )
         recyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         recyclerView.adapter = adapter
+        (recyclerView.itemAnimator as? androidx.recyclerview.widget.SimpleItemAnimator)?.supportsChangeAnimations = false
 
         val callback = object : androidx.recyclerview.widget.ItemTouchHelper.SimpleCallback(
             androidx.recyclerview.widget.ItemTouchHelper.UP or androidx.recyclerview.widget.ItemTouchHelper.DOWN, 0
         ) {
-            override fun isLongPressDragEnabled(): Boolean = true
+            override fun isLongPressDragEnabled(): Boolean = false
+            override fun isItemViewSwipeEnabled(): Boolean = false
 
             override fun onMove(rv: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
                 val fromPos = viewHolder.adapterPosition
@@ -914,24 +911,26 @@ class MainActivity : AppCompatActivity() {
             override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
                 super.onSelectedChanged(viewHolder, actionState)
                 if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
-                    recyclerView.parent.requestDisallowInterceptTouchEvent(true)
-                    viewHolder?.itemView?.apply {
-                        setBackgroundResource(R.drawable.bg_reorder_item_dragging)
-                        animate().scaleX(1.02f).scaleY(1.02f).translationZ(8f).setDuration(120).start()
+                    viewHolder?.itemView?.translationZ = 24f
+                    var parent = recyclerView.parent
+                    while (parent != null) {
+                        parent.requestDisallowInterceptTouchEvent(true)
+                        parent = parent.parent
                     }
                 }
             }
 
             override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
                 super.clearView(recyclerView, viewHolder)
-                recyclerView.parent.requestDisallowInterceptTouchEvent(false)
-                viewHolder.itemView.apply {
-                    background = null
-                    animate().scaleX(1.0f).scaleY(1.0f).translationZ(0f).setDuration(120).start()
-                    val pos = viewHolder.adapterPosition
-                    if (pos != RecyclerView.NO_POSITION && pos < items.size) {
-                        alpha = if (items[pos].enabled) 1.0f else 0.4f
-                    }
+                viewHolder.itemView.translationZ = 0f
+                var parent = recyclerView.parent
+                while (parent != null) {
+                    parent.requestDisallowInterceptTouchEvent(false)
+                    parent = parent.parent
+                }
+                val pos = viewHolder.adapterPosition
+                if (pos != RecyclerView.NO_POSITION && pos < items.size) {
+                    viewHolder.itemView.alpha = if (items[pos].enabled) 1.0f else 0.4f
                 }
                 if (orderHasChanged) {
                     orderHasChanged = false
@@ -940,6 +939,19 @@ class MainActivity : AppCompatActivity() {
                     updateWidget()
                     updateLivePreview()
                 }
+            }
+
+            override fun interpolateOutOfBoundsScroll(
+                recyclerView: RecyclerView,
+                viewSize: Int,
+                viewSizeOutOfBounds: Int,
+                totalSize: Int,
+                msSinceStartScroll: Long
+            ): Int {
+                val standardSpeed = super.interpolateOutOfBoundsScroll(
+                    recyclerView, viewSize, viewSizeOutOfBounds, totalSize, msSinceStartScroll
+                )
+                return if (standardSpeed != 0) standardSpeed / 2 else 0
             }
         }
         itemTouchHelper = ItemTouchHelper(callback).also {
