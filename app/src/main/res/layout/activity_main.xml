@@ -135,6 +135,7 @@
                 android:layout_height="56dp"
                 android:background="@drawable/bg_tab_container"
                 app:tabIndicator="@drawable/bg_tab_indicator"
+                app:tabIndicatorFullWidth="true"
                 app:tabIndicatorGravity="stretch"
                 app:tabIndicatorAnimationMode="elastic"
                 app:tabIndicatorColor="@android:color/transparent"
