@@ -260,8 +260,8 @@ class MainActivity : AppCompatActivity() {
         tabLayout.removeAllTabs()
         tabLayout.addTab(tabLayout.newTab().setText(R.string.category_appearance).setIcon(R.drawable.ic_palette))
         tabLayout.addTab(tabLayout.newTab().setText(R.string.category_content).setIcon(R.drawable.ic_tasks))
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.header_reorder).setIcon(R.drawable.ic_outline))
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.category_system).setIcon(R.drawable.ic_battery))
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.header_reorder).setIcon(R.drawable.ic_reorder))
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.category_system).setIcon(R.drawable.ic_tune))
 
         val savedTab = prefs.getInt("selected_settings_tab", 0).coerceIn(0, 3)
         tabLayout.getTabAt(savedTab)?.select()
@@ -981,9 +981,9 @@ class MainActivity : AppCompatActivity() {
         
         // System sections
         bindCategoryFoldable(R.id.header_language, R.id.content_language, getString(R.string.section_app_language), R.drawable.ic_world, "section_language_expanded")
-        bindCategoryFoldable(R.id.header_advanced, R.id.content_advanced, getString(R.string.header_advanced), 0, "section_advanced_expanded")
-        bindCategoryFoldable(R.id.header_permissions, R.id.content_permissions, getString(R.string.header_permissions), 0, "section_permissions_expanded")
-        bindCategoryFoldable(R.id.header_about, R.id.content_about, getString(R.string.header_about), 0, "section_about_expanded")
+        bindCategoryFoldable(R.id.header_advanced, R.id.content_advanced, getString(R.string.header_advanced), R.drawable.ic_tune, "section_advanced_expanded")
+        bindCategoryFoldable(R.id.header_permissions, R.id.content_permissions, getString(R.string.header_permissions), R.drawable.ic_shield, "section_permissions_expanded")
+        bindCategoryFoldable(R.id.header_about, R.id.content_about, getString(R.string.header_about), R.drawable.ic_info, "section_about_expanded")
     }
 
     private fun getInstalledClockApps(): Pair<List<String>, List<String>> {
@@ -1496,38 +1496,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
     private fun setupThemeSection(colorOptions: List<String>) {
-        // ===== THEME =====
-        // Use bindFoldedSection for the main card (top-level accordion), not bindNestedCard
-        accordionViews["section_appearance_expanded"] = findViewById(R.id.content_appearance)
-        accordionHeaders["section_appearance_expanded"] = findViewById(R.id.header_appearance)
-        // Set title and icon
-        val appearanceHeader = findViewById<View>(R.id.header_appearance)
-        appearanceHeader.findViewById<TextView>(R.id.header_title).text = "Theme"
-        val appearanceHeaderIcon = appearanceHeader.findViewById<android.widget.ImageView>(R.id.header_icon)
-        appearanceHeaderIcon.setImageResource(R.drawable.ic_palette)
-        appearanceHeaderIcon.visibility = View.VISIBLE
-
-        val appearanceContent = findViewById<View>(R.id.content_appearance)
-        val appearanceChevron = findViewById<View>(R.id.header_appearance).findViewById<android.widget.ImageView>(R.id.header_chevron)
-        val appearanceIsExpanded = prefs.getBoolean("section_appearance_expanded", false)
-        appearanceContent.visibility = if (appearanceIsExpanded) View.VISIBLE else View.GONE
-        appearanceChevron.rotation = if (appearanceIsExpanded) 180f else 0f
-
-        findViewById<View>(R.id.header_appearance).setOnClickListener {
-            val nowExpanded = appearanceContent.visibility != View.VISIBLE
-            if (nowExpanded) {
-                collapseAllExcept("section_appearance_expanded")
-                appearanceContent.visibility = View.VISIBLE
-                prefs.edit().putBoolean("section_appearance_expanded", true).apply()
-            } else {
-                appearanceContent.visibility = View.GONE
-                prefs.edit().putBoolean("section_appearance_expanded", false).apply()
-            }
-            android.animation.ObjectAnimator.ofFloat(appearanceChevron, "rotation", if (nowExpanded) 180f else 0f).apply {
-                duration = 300
-                start()
-            }
-        }
+        // Appearance Sections
 
         // Appearance Subsections (nested cards)
         bindNestedCard(R.id.header_appearance_presets, getString(R.string.header_presets), R.id.content_appearance_presets, "section_appearance_presets_expanded", R.id.header_chevron_appearance_presets)
