@@ -22,6 +22,7 @@ import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.os.Build
+import android.os.Bundle
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -57,6 +58,23 @@ class AwidgetProvider : AppWidgetProvider() {
                 for (appWidgetId in appWidgetIds) {
                     updateAppWidget(context, appWidgetManager, appWidgetId, UpdateMode.FULL)
                 }
+            } finally {
+                pendingResult.finish()
+            }
+        }
+    }
+
+    override fun onAppWidgetOptionsChanged(
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        appWidgetId: Int,
+        newOptions: Bundle
+    ) {
+        super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
+        val pendingResult = goAsync()
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                updateAppWidget(context, appWidgetManager, appWidgetId, UpdateMode.FULL)
             } finally {
                 pendingResult.finish()
             }
