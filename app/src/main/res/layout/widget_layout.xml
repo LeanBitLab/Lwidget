@@ -64,7 +64,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center_vertical"
         android:visibility="gone"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true">
@@ -107,7 +106,7 @@
         android:visibility="gone"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="2dp"/>
+        />
     <TextView
         android:id="@+id/text_storage"
         android:layout_width="wrap_content"
@@ -118,7 +117,7 @@
         android:visibility="gone"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="2dp"/>
+        />
     <TextView
         android:id="@+id/text_ram"
         android:layout_width="wrap_content"
@@ -129,7 +128,7 @@
         android:visibility="gone"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="2dp"/>
+        />
 
     <!-- Steps (Below Storage) -->
     <LinearLayout
@@ -137,11 +136,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center_vertical"
         android:visibility="gone"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="2dp">
+        >
         <TextView
             android:id="@+id/text_steps"
             android:layout_width="wrap_content"
@@ -164,11 +162,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center_vertical"
         android:visibility="gone"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="2dp">
+        >
         <TextView
             android:id="@+id/text_screen_time"
             android:layout_width="wrap_content"

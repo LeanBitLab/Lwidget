@@ -817,15 +817,19 @@ class AwidgetProvider : AppWidgetProvider() {
             var isFirstVisible = true
             for (entry in rightStack) {
                 if (entry.isVisible) {
-                    val intrinsicGap = entry.size * 0.18f
-                    val topPaddingDp = maxOf(0f, currentTextY - intrinsicGap)
+                    val itemHeight = when {
+                        entry.size >= 40f -> entry.size * 1.15f
+                        entry.size >= 18f -> entry.size * 1.25f
+                        else -> entry.size * 1.32f
+                    }
+                    val intrinsicTopTrim = if (isFirstVisible) entry.size * 0.15f else 0f
+                    val topPaddingDp = maxOf(0f, currentTextY - intrinsicTopTrim)
                     if (isFirstVisible) {
                         isFirstVisible = false
                     }
                     val topPaddingPx = (topPaddingDp * rightDp).toInt()
                     views.setViewPadding(entry.viewId, 0, topPaddingPx, 0, 0)
-                    // Advance Y by text size + fixed gap of 3dp to maintain uniform margin
-                    currentTextY += entry.size + 3f
+                    currentTextY += itemHeight + 3f
                 }
             }
 
