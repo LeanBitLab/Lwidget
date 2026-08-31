@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Lwidget</string>
-    <string name="category_appearance">Aparência</string>
+    <string name="category_appearance">Estilo</string>
     <string name="category_content">Conteúdo</string>
+    <string name="official_website">Site oficial</string>
+    <string name="status_disabled">Desativado</string>
+    <string name="hint_reorder_drag">Arraste os itens para reorganizar a coluna direita. Itens esmaecidos estão desativados.</string>
     <string name="category_stats">Estatísticas</string>
     <string name="category_agenda">Agenda</string>
     <string name="category_system">Sistema</string>

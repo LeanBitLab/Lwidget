@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Lwidget</string>
-    <string name="category_appearance">Görünüm</string>
+    <string name="category_appearance">Stil</string>
     <string name="category_content">İçerik</string>
+    <string name="official_website">Resmi Web Sitesi</string>
+    <string name="status_disabled">Kapalı</string>
+    <string name="hint_reorder_drag">Sağ sütun sırasını yeniden düzenlemek için öğeleri sürükleyin. Soluk öğeler İçerik\'te kapalıdır.</string>
     <string name="category_stats">İstatistikler</string>
     <string name="category_agenda">Ajanda</string>
     <string name="category_system">Sistem</string>

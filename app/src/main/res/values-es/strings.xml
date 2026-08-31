@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Lwidget</string>
-    <string name="category_appearance">Apariencia</string>
+    <string name="category_appearance">Estilo</string>
     <string name="category_content">Contenido</string>
+    <string name="official_website">Sitio web oficial</string>
+    <string name="status_disabled">Desactivado</string>
+    <string name="hint_reorder_drag">Arrastra los elementos para cambiar el orden de la columna derecha. Los elementos atenuados están desactivados.</string>
     <string name="category_stats">Estadísticas</string>
     <string name="category_agenda">Agenda</string>
     <string name="category_system">Sistema</string>

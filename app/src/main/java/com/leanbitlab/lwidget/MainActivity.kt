@@ -59,14 +59,13 @@ data class ReorderItem(
 // Adapter for reorder RecyclerView
 class ReorderAdapter(
     private val items: MutableList<ReorderItem>,
-    private val onItemToggled: (ReorderItem, Boolean) -> Unit,
     private val onOrderChanged: () -> Unit
 ) : RecyclerView.Adapter<ReorderAdapter.ViewHolder>() {
 
     class ViewHolder(val view: android.view.View) : RecyclerView.ViewHolder(view) {
         val handle: android.widget.ImageView = view.findViewById(R.id.reorder_handle)
         val name: TextView = view.findViewById(R.id.reorder_item_name)
-        val enabled: SwitchMaterial = view.findViewById(R.id.reorder_item_enabled)
+        val status: TextView? = view.findViewById(R.id.reorder_item_status)
     }
 
     override fun onCreateViewHolder(parent: android.view.ViewGroup, viewType: Int): ViewHolder {
@@ -78,14 +77,12 @@ class ReorderAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
         holder.name.text = item.label
-        holder.enabled.setOnCheckedChangeListener(null)
-        holder.enabled.isChecked = item.enabled
-        holder.enabled.setOnCheckedChangeListener { _, isChecked ->
-            item.enabled = isChecked
-            onItemToggled(item, isChecked)
-        }
-        holder.view.setOnClickListener {
-            holder.enabled.toggle()
+        if (item.enabled) {
+            holder.view.alpha = 1.0f
+            holder.status?.visibility = android.view.View.GONE
+        } else {
+            holder.view.alpha = 0.4f
+            holder.status?.visibility = android.view.View.VISIBLE
         }
     }
 
@@ -196,6 +193,10 @@ class MainActivity : AppCompatActivity() {
         val tvVersion = findViewById<TextView>(R.id.tv_changelog_version)
         tvVersion.text = getString(R.string.changelog_version, versionName)
 
+        findViewById<View>(R.id.tv_website_link)?.setOnClickListener {
+            CustomTabsIntent.Builder().build().launchUrl(this@MainActivity, android.net.Uri.parse("https://leanbitlab.github.io/LeanBitLab/"))
+        }
+
         findViewById<View>(R.id.tv_github_link).setOnClickListener {
             CustomTabsIntent.Builder().build().launchUrl(this@MainActivity, android.net.Uri.parse("https://github.com/LeanBitLab/Lwidget"))
         }
@@ -283,6 +284,9 @@ class MainActivity : AppCompatActivity() {
                 prefs.edit().putInt("selected_settings_tab", tab.position).apply()
                 tabContainers.forEachIndexed { index, container ->
                     container?.visibility = if (index == tab.position) View.VISIBLE else View.GONE
+                }
+                if (tab.position == 2) {
+                    bindReorderSection()
                 }
                 findViewById<NestedScrollView>(R.id.nested_scroll_view)?.scrollTo(0, 0)
             }
@@ -861,30 +865,14 @@ class MainActivity : AppCompatActivity() {
         }
 
         val recyclerView = findViewById<RecyclerView>(R.id.reorder_recycler)
-        val adapter = ReorderAdapter(
-            items,
-            onItemToggled = { item, isChecked ->
-                prefs.edit().putBoolean(item.key, isChecked).apply()
-                contentSwitches.find { it.tag == item.key }?.isChecked = isChecked
-                updateWidget()
-                updateLivePreview()
-                updateToggleAvailability()
-            },
-            onOrderChanged = {
-                val orderStr = items.joinToString(",") { it.key }
-                prefs.edit().putString("widget_right_column_order", orderStr).apply()
-                updateWidget()
-                updateLivePreview()
-            }
-        )
+        val adapter = ReorderAdapter(items) {
+            val orderStr = items.joinToString(",") { it.key }
+            prefs.edit().putString("widget_right_column_order", orderStr).apply()
+            updateWidget()
+            updateLivePreview()
+        }
         recyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         recyclerView.adapter = adapter
-        
-        // Intercept touch events so parent NestedScrollView doesn't steal them
-        recyclerView.setOnTouchListener { v, event ->
-            v.parent.requestDisallowInterceptTouchEvent(true)
-            false
-        }
 
 
         val callback = object : androidx.recyclerview.widget.ItemTouchHelper.SimpleCallback(
@@ -1529,7 +1517,6 @@ class MainActivity : AppCompatActivity() {
         bindNestedCard(R.id.header_appearance_padding, getString(R.string.header_padding), R.id.content_appearance_padding, "section_appearance_padding_expanded", R.id.header_chevron_appearance_padding)
 
         // Reorder section
-        bindNestedCard(R.id.header_appearance_reorder, getString(R.string.header_reorder), R.id.content_appearance_reorder, "section_appearance_reorder_expanded", R.id.header_chevron_appearance_reorder)
         bindReorderSection()
 
         // Outline toggle

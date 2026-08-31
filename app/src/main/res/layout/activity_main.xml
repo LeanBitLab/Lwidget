@@ -119,18 +119,33 @@
             </com.google.android.material.card.MaterialCardView>
         </FrameLayout>
 
-        <!-- MATERIAL 3 TABS -->
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tab_layout"
+        <!-- MATERIAL 3 PILL TABS -->
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/colorSurface"
-            app:tabIndicatorFullWidth="false"
-            app:tabIndicatorColor="?attr/colorPrimary"
-            app:tabSelectedTextColor="?attr/colorPrimary"
-            app:tabTextColor="?attr/colorOnSurfaceVariant"
-            app:tabMode="fixed"
-            app:tabGravity="fill"/>
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="8dp"
+            android:background="?attr/colorSurface">
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tab_layout"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:background="@drawable/bg_tab_container"
+                app:tabIndicator="@drawable/bg_tab_indicator"
+                app:tabIndicatorGravity="stretch"
+                app:tabIndicatorAnimationMode="elastic"
+                app:tabIndicatorColor="@android:color/transparent"
+                app:tabSelectedTextColor="?attr/colorOnPrimaryContainer"
+                app:tabTextColor="?attr/colorOnSurfaceVariant"
+                app:tabIconTint="@color/selector_tab_icon"
+                app:tabRippleColor="@null"
+                app:tabMode="fixed"
+                app:tabGravity="fill"
+                app:tabInlineLabel="true" />
+        </FrameLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -1460,71 +1475,30 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
+                    app:cardCornerRadius="16dp"
                     app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:padding="12dp">
 
-                        <LinearLayout
-                            android:id="@+id/header_appearance_reorder"
+                        <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical"
-                            android:paddingStart="16dp"
-                            android:paddingEnd="16dp"
-                            android:paddingTop="14dp"
-                            android:paddingBottom="14dp"
-                            android:background="?attr/selectableItemBackground"
-                            android:clickable="true"
-                            android:focusable="true">
+                            android:text="@string/hint_reorder_drag"
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:textSize="13sp"
+                            android:paddingStart="4dp"
+                            android:paddingEnd="4dp"
+                            android:paddingTop="4dp"
+                            android:paddingBottom="8dp" />
 
-                            <ImageView
-                                android:id="@+id/header_icon_appearance_reorder"
-                                android:layout_width="24dp"
-                                android:layout_height="24dp"
-                                android:layout_marginEnd="12dp"
-                                android:src="@drawable/ic_reorder"
-                                android:contentDescription="Icon"
-                                app:tint="?attr/colorPrimary"/>
-
-                            <TextView
-                                android:id="@+id/header_title_appearance_reorder"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="@string/header_reorder"
-                                android:textColor="?attr/colorOnSurface"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-
-                            <ImageView
-                                android:id="@+id/header_chevron_appearance_reorder"
-                                android:layout_width="24dp"
-                                android:layout_height="24dp"
-                                android:src="@drawable/ic_chevron_down"
-                                android:rotation="0"
-                                app:tint="?attr/colorOnSurfaceVariant"
-                                android:contentDescription="Expand/collapse"/>
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/content_appearance_reorder"
+                        <include layout="@layout/settings_reorder_section"
+                            android:id="@+id/row_reorder_section"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:visibility="gone"
-                            android:paddingStart="8dp"
-                            android:paddingEnd="8dp"
-                            android:paddingBottom="8dp">
-
-                            <include layout="@layout/settings_reorder_section"
-                                android:id="@+id/row_reorder_section"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"/>
-                        </LinearLayout>
+                            android:layout_height="wrap_content"/>
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
@@ -1795,6 +1769,18 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="16dp"/>
+
+                        <TextView
+                            android:id="@+id/tv_website_link"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/official_website"
+                            android:textAppearance="?attr/textAppearanceBodyMedium"
+                            android:textColor="?attr/colorPrimary"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="16dp"
+                            android:autoLink="web"
+                            android:linksClickable="true"/>
 
                         <TextView
                             android:id="@+id/tv_github_link"

@@ -5,22 +5,20 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:paddingStart="12dp"
-    android:paddingEnd="12dp"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp"
-    android:background="?attr/selectableItemBackground"
-    android:clickable="true"
-    android:focusable="true">
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:paddingTop="14dp"
+    android:paddingBottom="14dp"
+    android:background="?attr/selectableItemBackground">
 
     <ImageView
         android:id="@+id/reorder_handle"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_marginEnd="12dp"
+        android:layout_marginEnd="16dp"
         android:src="@drawable/ic_reorder"
         android:contentDescription="Drag to reorder"
-        app:tint="?attr/colorOnSurfaceVariant"/>
+        app:tint="?attr/colorPrimary"/>
 
     <TextView
         android:id="@+id/reorder_item_name"
@@ -29,11 +27,15 @@
         android:layout_weight="1"
         android:text="Item"
         android:textColor="?attr/colorOnSurface"
-        android:textSize="15sp" />
+        android:textSize="15sp"
+        android:textStyle="bold" />
 
-    <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/reorder_item_enabled"
+    <TextView
+        android:id="@+id/reorder_item_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:useMaterialThemeColors="true" />
+        android:text="@string/status_disabled"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        android:textSize="12sp"
+        android:visibility="gone" />
 </LinearLayout>

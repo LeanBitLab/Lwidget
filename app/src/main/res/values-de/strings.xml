@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Lwidget</string>
-    <string name="category_appearance">Erscheinungsbild</string>
+    <string name="category_appearance">Stil</string>
     <string name="category_content">Inhalt</string>
+    <string name="official_website">Offizielle Website</string>
+    <string name="status_disabled">Aus</string>
+    <string name="hint_reorder_drag">Ziehe Elemente, um die Reihenfolge der rechten Spalte zu ändern. Abgedunkelte Elemente sind im Inhalt deaktiviert.</string>
     <string name="category_stats">Statistiken</string>
     <string name="category_agenda">Agenda</string>
     <string name="category_system">System</string>

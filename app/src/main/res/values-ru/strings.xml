@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Lwidget</string>
-    <string name="category_appearance">Внешний вид</string>
+    <string name="category_appearance">Стиль</string>
     <string name="category_content">Содержимое</string>
+    <string name="official_website">Официальный сайт</string>
+    <string name="status_disabled">Выкл</string>
+    <string name="hint_reorder_drag">Перетащите элементы, чтобы изменить порядок правой колонки. Затемненные элементы выключены.</string>
     <string name="category_stats">Статистика</string>
     <string name="category_agenda">Расписание</string>
     <string name="category_system">Система</string>
