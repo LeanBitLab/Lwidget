@@ -18,4 +18,9 @@
         <item name="android:includeFontPadding">false</item>
     </style>
 
+    <style name="Widget.Lwidget.TabTextAppearance" parent="TextAppearance.Material3.LabelSmall">
+        <item name="android:textSize">11sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="textAllCaps">false</item>
+    </style>
 </resources>

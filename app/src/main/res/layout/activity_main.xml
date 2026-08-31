@@ -132,7 +132,7 @@
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
-                android:layout_height="44dp"
+                android:layout_height="56dp"
                 android:background="@drawable/bg_tab_container"
                 app:tabIndicator="@drawable/bg_tab_indicator"
                 app:tabIndicatorGravity="stretch"
@@ -141,10 +141,11 @@
                 app:tabSelectedTextColor="?attr/colorOnPrimaryContainer"
                 app:tabTextColor="?attr/colorOnSurfaceVariant"
                 app:tabIconTint="@color/selector_tab_icon"
+                app:tabTextAppearance="@style/Widget.Lwidget.TabTextAppearance"
                 app:tabRippleColor="@null"
                 app:tabMode="fixed"
                 app:tabGravity="fill"
-                app:tabInlineLabel="true" />
+                app:tabInlineLabel="false" />
         </FrameLayout>
 
     </com.google.android.material.appbar.AppBarLayout>

@@ -47,6 +47,7 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import com.google.android.material.slider.Slider
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.tabs.TabLayout
+import android.view.MotionEvent
 import androidx.core.widget.NestedScrollView
 
 // Data class for reorderable items
@@ -59,6 +60,7 @@ data class ReorderItem(
 // Adapter for reorder RecyclerView
 class ReorderAdapter(
     private val items: MutableList<ReorderItem>,
+    private val onStartDrag: (RecyclerView.ViewHolder) -> Unit,
     private val onOrderChanged: () -> Unit
 ) : RecyclerView.Adapter<ReorderAdapter.ViewHolder>() {
 
@@ -83,6 +85,13 @@ class ReorderAdapter(
         } else {
             holder.view.alpha = 0.4f
             holder.status?.visibility = android.view.View.VISIBLE
+        }
+
+        holder.handle.setOnTouchListener { _, event ->
+            if (event.actionMasked == MotionEvent.ACTION_DOWN) {
+                onStartDrag(holder)
+            }
+            false
         }
     }
 
@@ -865,26 +874,56 @@ class MainActivity : AppCompatActivity() {
         }
 
         val recyclerView = findViewById<RecyclerView>(R.id.reorder_recycler)
-        val adapter = ReorderAdapter(items) {
-            val orderStr = items.joinToString(",") { it.key }
-            prefs.edit().putString("widget_right_column_order", orderStr).apply()
-            updateWidget()
-            updateLivePreview()
-        }
+        var itemTouchHelper: ItemTouchHelper? = null
+        val adapter = ReorderAdapter(
+            items,
+            onStartDrag = { viewHolder ->
+                itemTouchHelper?.startDrag(viewHolder)
+            },
+            onOrderChanged = {
+                val orderStr = items.joinToString(",") { it.key }
+                prefs.edit().putString("widget_right_column_order", orderStr).apply()
+                updateWidget()
+                updateLivePreview()
+            }
+        )
         recyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         recyclerView.adapter = adapter
-
 
         val callback = object : androidx.recyclerview.widget.ItemTouchHelper.SimpleCallback(
             androidx.recyclerview.widget.ItemTouchHelper.UP or androidx.recyclerview.widget.ItemTouchHelper.DOWN, 0
         ) {
+            override fun isLongPressDragEnabled(): Boolean = true
+
             override fun onMove(rv: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
-                adapter.moveItem(viewHolder.adapterPosition, target.adapterPosition)
+                val fromPos = viewHolder.adapterPosition
+                val toPos = target.adapterPosition
+                if (fromPos != RecyclerView.NO_POSITION && toPos != RecyclerView.NO_POSITION && fromPos != toPos) {
+                    adapter.moveItem(fromPos, toPos)
+                }
                 return true
             }
+
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {}
+
+            override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
+                super.onSelectedChanged(viewHolder, actionState)
+                if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
+                    viewHolder?.itemView?.alpha = 0.7f
+                }
+            }
+
+            override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
+                super.clearView(recyclerView, viewHolder)
+                val pos = viewHolder.adapterPosition
+                if (pos != RecyclerView.NO_POSITION && pos < items.size) {
+                    viewHolder.itemView.alpha = if (items[pos].enabled) 1.0f else 0.4f
+                }
+            }
         }
-        ItemTouchHelper(callback).attachToRecyclerView(recyclerView)
+        itemTouchHelper = ItemTouchHelper(callback).also {
+            it.attachToRecyclerView(recyclerView)
+        }
     }
 
     private fun bindNestedCard(
