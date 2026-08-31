@@ -504,7 +504,7 @@ class AwidgetProvider : AppWidgetProvider() {
                 if (isFahrenheit) {
                     tempVal = (tempVal * 9f / 5f) + 32f
                 }
-                if (showSteps) loadStepCount(context, tickViews, prefs)
+                if (showSteps) loadStepCount(tickViews, prefs)
                 if (showBattery) tickViews.setTextViewText(R.id.text_battery, batterySpannable)
                 if (showTemp) {
                     val tempStr = String.format("%.1f", tempVal)
@@ -518,7 +518,7 @@ class AwidgetProvider : AppWidgetProvider() {
                     tickViews.setTextViewText(R.id.text_temp, tempSpan)
                 }
                 if (showData) updateDataUsage(context, tickViews, prefs)
-                if (showStorage) updateStorageStats(context, tickViews, prefs)
+                if (showStorage) updateStorageStats(tickViews, prefs)
                 if (showRam) updateRamStats(context, tickViews, prefs)
                 return tickViews
             } else if (mode == UpdateMode.CALENDAR_ONLY) {
@@ -734,7 +734,7 @@ class AwidgetProvider : AppWidgetProvider() {
             if (showStorage) {
                 views.setTextViewTextSize(R.id.text_storage, android.util.TypedValue.COMPLEX_UNIT_SP, sizeStorage)
                 views.setTextColor(R.id.text_storage, secondaryColor)
-                updateStorageStats(context, views, prefs)
+                updateStorageStats(views, prefs)
             }
 
             // --- RAM ---
@@ -751,7 +751,7 @@ class AwidgetProvider : AppWidgetProvider() {
                 views.setTextViewTextSize(R.id.text_steps, android.util.TypedValue.COMPLEX_UNIT_SP, sizeSteps)
                 views.setTextColor(R.id.text_steps, secondaryColor)
                 views.setInt(R.id.icon_steps, "setColorFilter", secondaryColor)
-                loadStepCount(context, views, prefs)
+                loadStepCount(views, prefs)
             }
             
             // --- Screen Time ---
@@ -1371,7 +1371,7 @@ class AwidgetProvider : AppWidgetProvider() {
             }
         }
 
-        private fun updateStorageStats(context: Context, views: RemoteViews, prefs: android.content.SharedPreferences) {
+        private fun updateStorageStats(views: RemoteViews, prefs: android.content.SharedPreferences) {
              try {
                  val path = android.os.Environment.getDataDirectory()
                  val stat = android.os.StatFs(path.path)
@@ -1417,7 +1417,7 @@ class AwidgetProvider : AppWidgetProvider() {
              }
         }
 
-        private fun loadStepCount(context: Context, views: RemoteViews, prefs: android.content.SharedPreferences) {
+        private fun loadStepCount(views: RemoteViews, prefs: android.content.SharedPreferences) {
             try {
                 val totalSteps = prefs.getFloat("last_total_steps", 0f)
                 val baselineSteps = prefs.getFloat("step_baseline", 0f)

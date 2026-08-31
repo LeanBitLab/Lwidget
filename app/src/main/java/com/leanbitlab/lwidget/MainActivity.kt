@@ -26,6 +26,7 @@ import android.content.Intent
 import androidx.browser.customtabs.CustomTabsIntent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import java.util.Locale
 import android.os.Bundle
 import android.view.View
 import android.widget.AutoCompleteTextView
@@ -866,7 +867,7 @@ class MainActivity : AppCompatActivity() {
             keys.forEach { key ->
                 val item = defaultOrder.find { it.key == key }
                 if (item != null) list.add(item)
-                else list.add(ReorderItem(key, key.replace("show_", "").replace("_", " ").capitalize(), prefs.getBoolean(key, false)))
+                else list.add(ReorderItem(key, key.replace("show_", "").replace("_", " ").replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }, prefs.getBoolean(key, false)))
             }
             // Add any new items not in saved order
             defaultOrder.forEach { default ->
@@ -1592,7 +1593,7 @@ class MainActivity : AppCompatActivity() {
         bindReorderSection()
 
         // Outline toggle
-        bindToggle(R.id.row_outline_toggle, getString(R.string.row_show_outline), "show_outline", false) { isChecked ->
+        bindToggle(R.id.row_outline_toggle, getString(R.string.row_show_outline), "show_outline", false) { _ ->
             updateWidget()
         }
 
@@ -1620,7 +1621,7 @@ class MainActivity : AppCompatActivity() {
         bindSelector(
             R.id.row_theme_mode, getString(R.string.row_theme_mode), "theme_mode",
             listOf(getString(R.string.theme_auto), getString(R.string.theme_light), getString(R.string.theme_dark)), 0
-        ) { idx ->
+        ) { _ ->
             applyTheme()
         }
 
@@ -2006,7 +2007,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun applyTheme() {
-        val useSystemTheme = prefs.getBoolean("use_system_theme", false)
         updateWidget()
     }
 
