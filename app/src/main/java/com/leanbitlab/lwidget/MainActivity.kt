@@ -1065,6 +1065,7 @@ class MainActivity : AppCompatActivity() {
         bindCategoryFoldable(R.id.header_advanced, R.id.content_advanced, getString(R.string.header_advanced), R.drawable.ic_tune, "section_advanced_expanded")
         bindCategoryFoldable(R.id.header_permissions, R.id.content_permissions, getString(R.string.header_permissions), R.drawable.ic_shield, "section_permissions_expanded")
         bindCategoryFoldable(R.id.header_about, R.id.content_about, getString(R.string.header_about), R.drawable.ic_info, "section_about_expanded")
+        bindNestedCard(R.id.header_changelog, "", R.id.content_changelog, "section_changelog_expanded", R.id.chevron_changelog)
     }
 
     private fun getInstalledClockApps(): Pair<List<String>, List<String>> {

@@ -73,8 +73,9 @@
     <string name="preset_snowfall">Snowfall</string>
     <string name="section_changelog">Note &amp; Changelog</string>
     <string name="changelog_version">Version %s</string>
+    <string name="changelog_title">What\'s New in v2.5</string>
+    <string name="changelog_content">• Modern Material 3 UI with refreshed vector iconography\n• Smooth 120fps drag-and-drop widget reordering\n• Compact and square 2x2 widget resizing support\n• Pixel-perfect concentric widget outline alignment\n• Bug fixes and typographical line-height spacing improvements</string>
     <string name="changelog_note">Lwidget works without any background service. However, some devices may kill the app to save battery, which can stop widget updates. To fix this:\n\n• Mark Lwidget as non-battery-optimized in your device settings.\n• Or, enable Keep Alive — a lightweight background service that keeps the widget updating reliably.\n• Or, enable the Step Counter — it uses the same service and also counts your daily steps.</string>
-    <string name="changelog_content">What\'s New in v2.0:\n• Added Reorder — you can now sort widget items exactly how you want\n• Uniform Customization — consistent design language across all settings\n• Settings Page Improvements — cleaner layout and better navigation\n• Performance optimizations and bug fixes</string>
     <string name="changelog_testing_notice">If you enjoy Lwidget, please leave a rating on Google Play — it helps others discover the app.</string>
     <string name="github_source_code">Source Code (GitHub)</string>
     <string name="privacy_policy">Privacy Policy</string>
