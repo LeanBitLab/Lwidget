@@ -1814,17 +1814,56 @@ class MainActivity : AppCompatActivity() {
         chipGroup.removeAllViews()
         val activePreset = prefs.getString("active_preset", null)
 
+        val primaryContainer = com.google.android.material.color.MaterialColors.getColor(
+            chipGroup, com.google.android.material.R.attr.colorPrimaryContainer
+        )
+        val surfaceContainer = com.google.android.material.color.MaterialColors.getColor(
+            chipGroup, com.google.android.material.R.attr.colorSurfaceContainerHighest
+        )
+        val onPrimaryContainer = com.google.android.material.color.MaterialColors.getColor(
+            chipGroup, com.google.android.material.R.attr.colorOnPrimaryContainer
+        )
+        val onSurfaceVariant = com.google.android.material.color.MaterialColors.getColor(
+            chipGroup, com.google.android.material.R.attr.colorOnSurfaceVariant
+        )
+
+        val chipBgStateList = android.content.res.ColorStateList(
+            arrayOf(
+                intArrayOf(android.R.attr.state_checked),
+                intArrayOf(-android.R.attr.state_checked)
+            ),
+            intArrayOf(
+                primaryContainer,
+                surfaceContainer
+            )
+        )
+
+        val chipTextStateList = android.content.res.ColorStateList(
+            arrayOf(
+                intArrayOf(android.R.attr.state_checked),
+                intArrayOf(-android.R.attr.state_checked)
+            ),
+            intArrayOf(
+                onPrimaryContainer,
+                onSurfaceVariant
+            )
+        )
+
+        val density = resources.displayMetrics.density
+
         for (preset in presets) {
             val chip = com.google.android.material.chip.Chip(this).apply {
                 text = preset.label
                 isCheckable = true
                 isChecked = (preset.key == activePreset)
-                chipBackgroundColor = android.content.res.ColorStateList.valueOf(
-                    com.google.android.material.color.MaterialColors.getColor(this, com.google.android.material.R.attr.colorSurfaceContainerHighest)
-                )
-                setTextColor(com.google.android.material.color.MaterialColors.getColor(this, com.google.android.material.R.attr.colorOnSurface))
-                checkedIcon = androidx.core.content.ContextCompat.getDrawable(context, android.R.drawable.checkbox_on_background)
-                isCheckedIconVisible = true
+                isCheckedIconVisible = false
+                shapeAppearanceModel = shapeAppearanceModel.toBuilder().setAllCornerSizes(14f * density).build()
+                chipBackgroundColor = chipBgStateList
+                setTextColor(chipTextStateList)
+                chipStrokeWidth = 0f
+                setEnsureMinTouchTargetSize(false)
+                textSize = 13f
+                typeface = android.graphics.Typeface.DEFAULT_BOLD
                 setOnClickListener {
                     val editor = prefs.edit()
                     for ((k, v) in preset.prefs) {
