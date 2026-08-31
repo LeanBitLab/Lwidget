@@ -980,7 +980,7 @@ class MainActivity : AppCompatActivity() {
         setupLanguageSection()
         
         // System sections
-        bindCategoryFoldable(R.id.header_language, R.id.content_language, getString(R.string.section_app_language), R.drawable.ic_world, "section_language_expanded")
+        bindCategoryFoldable(R.id.header_language, R.id.content_language, getString(R.string.section_app_language), R.drawable.ic_language, "section_language_expanded")
         bindCategoryFoldable(R.id.header_advanced, R.id.content_advanced, getString(R.string.header_advanced), R.drawable.ic_tune, "section_advanced_expanded")
         bindCategoryFoldable(R.id.header_permissions, R.id.content_permissions, getString(R.string.header_permissions), R.drawable.ic_shield, "section_permissions_expanded")
         bindCategoryFoldable(R.id.header_about, R.id.content_about, getString(R.string.header_about), R.drawable.ic_info, "section_about_expanded")
