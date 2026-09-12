@@ -42,6 +42,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
@@ -943,7 +944,62 @@ class AwidgetProvider : AppWidgetProvider() {
         }
 
 
-        data class EventInfo(val id: Long, val title: String, val begin: Long, val isLocal: Boolean, val isAllDay: Boolean = false)
+        data class EventInfo(val id: Long, val title: String, val begin: Long, val end: Long, val isLocal: Boolean, val isAllDay: Boolean = false)
+
+        internal fun isEventRelevant(event: EventInfo, now: Long, today: LocalDate): Boolean {
+            return if (event.isAllDay) {
+                val eventDate = Instant.ofEpochMilli(event.begin).atZone(ZoneOffset.UTC).toLocalDate()
+                val eventEndDate = Instant.ofEpochMilli(event.end).atZone(ZoneOffset.UTC).toLocalDate()
+                !eventDate.isBefore(today) || eventEndDate.isAfter(today)
+            } else {
+                event.end >= now
+            }
+        }
+
+        internal fun formatEventTimeText(
+            event: EventInfo,
+            today: LocalDate = LocalDate.now(),
+            showDayAbbr: Boolean = true
+        ): String {
+            val tomorrow = today.plusDays(1)
+            val oneWeekLater = today.plusWeeks(1)
+
+            val timeFormatter = getFormatter("h:mm")
+            val dayTimeFormatter = getFormatter("EEE h:mm")
+            val longDateFormatter = getFormatter("d MMM")
+            val allDayNearFormatter = getFormatter("d/EEE")
+
+            return if (event.isAllDay) {
+                val eventDate = Instant.ofEpochMilli(event.begin).atZone(ZoneOffset.UTC).toLocalDate()
+                val eventEndDate = Instant.ofEpochMilli(event.end).atZone(ZoneOffset.UTC).toLocalDate()
+                val eventTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(event.begin), ZoneOffset.UTC)
+                val isOngoingToday = eventDate.isEqual(today) || (eventDate.isBefore(today) && eventEndDate.isAfter(today))
+
+                if (isOngoingToday) {
+                    "Today"
+                } else if (eventDate.isEqual(tomorrow)) {
+                    "Tomorrow"
+                } else if (eventDate.isAfter(today) && eventDate.isBefore(oneWeekLater)) {
+                    if (showDayAbbr) eventTime.format(allDayNearFormatter)
+                    else eventTime.format(getFormatter("d"))
+                } else {
+                    eventTime.format(longDateFormatter)
+                }
+            } else {
+                val eventTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(event.begin), ZoneId.systemDefault())
+                val eventDate = eventTime.toLocalDate()
+                if (eventDate.isEqual(today)) {
+                    "Today ${eventTime.format(timeFormatter)}"
+                } else if (eventDate.isEqual(tomorrow)) {
+                    "Tomorrow ${eventTime.format(timeFormatter)}"
+                } else if (eventDate.isBefore(oneWeekLater)) {
+                    if (showDayAbbr) "${eventTime.format(dayTimeFormatter)}"
+                    else eventTime.format(timeFormatter)
+                } else {
+                    "${eventTime.format(longDateFormatter)} ${eventTime.format(timeFormatter)}"
+                }
+            }
+        }
 
         private fun fetchCalendarEvents(context: Context): List<EventInfo> {
             val syncedCalendarIds = mutableSetOf<Long>()
@@ -984,21 +1040,25 @@ class AwidgetProvider : AppWidgetProvider() {
                 android.provider.CalendarContract.Instances.EVENT_ID,
                 android.provider.CalendarContract.Events.TITLE,
                 android.provider.CalendarContract.Instances.BEGIN,
+                android.provider.CalendarContract.Instances.END,
                 android.provider.CalendarContract.Instances.CALENDAR_ID,
                 android.provider.CalendarContract.Instances.ALL_DAY
             )
 
             val now = System.currentTimeMillis()
+            val today = LocalDate.now()
+            val todayUtcStart = today.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli()
+            val queryStart = minOf(now, todayUtcStart)
             val endQuery = now + android.text.format.DateUtils.DAY_IN_MILLIS * 30 
 
             val uri = android.provider.CalendarContract.Instances.CONTENT_URI.buildUpon()
-                .appendPath(now.toString())
+                .appendPath(queryStart.toString())
                 .appendPath(endQuery.toString())
                 .build()
 
             val idList = visibleCalendarIds.joinToString(",")
             val selection = "${android.provider.CalendarContract.Instances.END} >= ? AND ${android.provider.CalendarContract.Instances.CALENDAR_ID} IN ($idList)"
-            val selectionArgs = arrayOf(now.toString())
+            val selectionArgs = arrayOf(queryStart.toString())
             val sortOrder = "${android.provider.CalendarContract.Instances.BEGIN} ASC"
 
             val events = mutableListOf<EventInfo>()
@@ -1007,6 +1067,7 @@ class AwidgetProvider : AppWidgetProvider() {
                 val eventIdIdx = cursor.getColumnIndex(android.provider.CalendarContract.Instances.EVENT_ID)
                 val titleIdx = cursor.getColumnIndex(android.provider.CalendarContract.Events.TITLE)
                 val beginIdx = cursor.getColumnIndex(android.provider.CalendarContract.Instances.BEGIN)
+                val endIdx = cursor.getColumnIndex(android.provider.CalendarContract.Instances.END)
                 val calIdIdx = cursor.getColumnIndex(android.provider.CalendarContract.Instances.CALENDAR_ID)
                 val allDayIdx = cursor.getColumnIndex(android.provider.CalendarContract.Instances.ALL_DAY)
 
@@ -1014,10 +1075,16 @@ class AwidgetProvider : AppWidgetProvider() {
                     val eventId = cursor.getLong(eventIdIdx)
                     val title = cursor.getString(titleIdx) ?: "No Title"
                     val begin = cursor.getLong(beginIdx)
+                    val end = cursor.getLong(endIdx)
                     val calId = cursor.getLong(calIdIdx)
                     val isLocal = !syncedCalendarIds.contains(calId)
                     val isAllDay = allDayIdx >= 0 && cursor.getInt(allDayIdx) == 1
-                    events.add(EventInfo(eventId, title, begin, isLocal, isAllDay))
+                    val eventInfo = EventInfo(eventId, title, begin, end, isLocal, isAllDay)
+
+                    if (!isEventRelevant(eventInfo, now, today)) {
+                        continue
+                    }
+                    events.add(eventInfo)
                 }
             }
             return events
@@ -1025,11 +1092,6 @@ class AwidgetProvider : AppWidgetProvider() {
 
         private fun bindCalendarEvents(context: Context, views: RemoteViews, events: List<EventInfo>, textSizeSp: Float, primaryColor: Int, secondaryColor: Int, eventViews: List<Int>, prefs: SharedPreferences) {
             val showDayAbbr = prefs.getBoolean("show_day_abbr_in_events", true)
-
-            val timeFormatter = getFormatter("h:mm")
-            val dayTimeFormatter = getFormatter("EEE h:mm")
-            val longDateFormatter = getFormatter("d MMM")
-            val allDayNearFormatter = getFormatter("d/EEE")
 
             if (events.isEmpty()) {
                 views.setTextViewText(eventViews[0], "No events today")
@@ -1046,37 +1108,11 @@ class AwidgetProvider : AppWidgetProvider() {
                 return
             }
 
+            val today = LocalDate.now()
             for (i in eventViews.indices) {
                 if (i < events.size) {
                     val event = events[i]
-                    val eventTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(event.begin), ZoneId.systemDefault())
-                    val today = LocalDate.now()
-                    val tomorrow = today.plusDays(1)
-                    val oneWeekLater = today.plusWeeks(1)
-                    
-                    val timeText = if (event.isAllDay) {
-                        if (eventTime.toLocalDate().isEqual(today)) {
-                            "Today"
-                        } else if (eventTime.toLocalDate().isEqual(tomorrow)) {
-                            "Tomorrow"
-                        } else if (eventTime.toLocalDate().isBefore(oneWeekLater)) {
-                            if (showDayAbbr) eventTime.format(allDayNearFormatter)
-                            else eventTime.format(getFormatter("d"))
-                        } else {
-                            eventTime.format(longDateFormatter)
-                        }
-                    } else {
-                        if (eventTime.toLocalDate().isEqual(today)) {
-                            "Today ${eventTime.format(timeFormatter)}"
-                        } else if (eventTime.toLocalDate().isEqual(tomorrow)) {
-                            "Tomorrow ${eventTime.format(timeFormatter)}"
-                        } else if (eventTime.toLocalDate().isBefore(oneWeekLater)) {
-                            if (showDayAbbr) "${eventTime.format(dayTimeFormatter)}"
-                            else eventTime.format(timeFormatter)
-                        } else {
-                            "${eventTime.format(longDateFormatter)} ${eventTime.format(timeFormatter)}"
-                        }
-                    }
+                    val timeText = formatEventTimeText(event, today, showDayAbbr)
                     
                     val fullText = "• $timeText  ${event.title}"
                     val spannable = SpannableString(fullText)
