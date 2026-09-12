@@ -265,8 +265,10 @@ class AwidgetProvider : AppWidgetProvider() {
             }
             val sizeEvents = prefs.getFloat("size_events", 14f)
 
-            // Fetch Breezy Weather Data
-            val bweather = com.leanbitlab.lwidget.weather.BreezyWeatherFetcher.fetchLocalWeather(context)
+            // Fetch Breezy Weather Data only if weather condition is enabled
+            val bweather = if (showWeatherCondition) {
+                com.leanbitlab.lwidget.weather.BreezyWeatherFetcher.fetchLocalWeather(context)
+            } else null
             val showWeatherIconOnly = prefs.getBoolean("show_weather_icon_only", false) 
             
             android.util.Log.d(TAG, "UpdateMode FULL | Condition: $showWeatherCondition | IconOnly: $showWeatherIconOnly | WeatherData: ${bweather?.currentCondition}")
@@ -1453,12 +1455,25 @@ class AwidgetProvider : AppWidgetProvider() {
              }
         }
 
+        internal fun calculateDailySteps(
+            totalSteps: Float,
+            baselineSteps: Float,
+            savedDate: String,
+            today: String = LocalDate.now().toString()
+        ): Int {
+            if (savedDate.isNotEmpty() && savedDate != today) {
+                return 0
+            }
+            return (totalSteps - baselineSteps).toInt().coerceAtLeast(0)
+        }
+
         private fun loadStepCount(views: RemoteViews, prefs: android.content.SharedPreferences) {
             try {
                 val totalSteps = prefs.getFloat("last_total_steps", 0f)
                 val baselineSteps = prefs.getFloat("step_baseline", 0f)
+                val savedDate = prefs.getString("step_date", "") ?: ""
 
-                val dailySteps = (totalSteps - baselineSteps).toInt().coerceAtLeast(0)
+                val dailySteps = calculateDailySteps(totalSteps, baselineSteps, savedDate)
                 val span = android.text.SpannableString("$dailySteps")
                 
                 if (prefs.getBoolean("bold_steps", false)) {

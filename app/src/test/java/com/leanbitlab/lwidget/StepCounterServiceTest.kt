@@ -154,4 +154,50 @@ class StepCounterServiceTest {
         assertEquals(200f, prefs.getFloat("step_baseline", 0f), 0.001f)
         assertFalse(prefs.getBoolean("was_called", true))
     }
+
+    @Test
+    fun testCalculateDailySteps_midnightResetBeforeSensorFires() {
+        // Yesterday's date
+        val yesterday = LocalDate.now().minusDays(1).toString()
+        val today = LocalDate.now().toString()
+
+        // Yesterday total was 1000, baseline was 200 (800 steps taken yesterday)
+        val dailySteps = AwidgetProvider.Companion.calculateDailySteps(
+            totalSteps = 1000f,
+            baselineSteps = 200f,
+            savedDate = yesterday,
+            today = today
+        )
+
+        // At midnight on the new day before sensor has fired, daily steps must be 0
+        assertEquals(0, dailySteps)
+    }
+
+    @Test
+    fun testCalculateDailySteps_normalDayCounting() {
+        val today = LocalDate.now().toString()
+
+        val dailySteps = AwidgetProvider.Companion.calculateDailySteps(
+            totalSteps = 1500f,
+            baselineSteps = 1000f,
+            savedDate = today,
+            today = today
+        )
+
+        assertEquals(500, dailySteps)
+    }
+
+    @Test
+    fun testCalculateDailySteps_emptySavedDate() {
+        val today = LocalDate.now().toString()
+
+        val dailySteps = AwidgetProvider.Companion.calculateDailySteps(
+            totalSteps = 100f,
+            baselineSteps = 100f,
+            savedDate = "",
+            today = today
+        )
+
+        assertEquals(0, dailySteps)
+    }
 }
