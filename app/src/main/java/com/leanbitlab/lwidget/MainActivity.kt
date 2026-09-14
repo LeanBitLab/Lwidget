@@ -113,6 +113,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var prefs: SharedPreferences
     private val contentSwitches = mutableListOf<SwitchMaterial>()
     private var clockAppPackages = listOf("default")
+    private var calendarAppPackages = listOf("default")
     private var currentWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
 
     override fun onNewIntent(intent: Intent) {
@@ -191,6 +192,7 @@ class MainActivity : AppCompatActivity() {
         setupSections()
         setupPreviewWallpaper()
         setupTabLayout()
+        setupContentSearch()
         updateLivePreview()
         
         // Advanced Section
@@ -1494,14 +1496,77 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+    private fun getInstalledCalendarApps(): Pair<List<String>, List<String>> {
+        val labels = mutableListOf("Default")
+        val packages = mutableListOf("default")
+
+        val knownPackages = listOf(
+            "org.fossify.calendar",
+            "com.simplemobiletools.calendar",
+            "com.google.android.calendar",
+            "com.android.calendar",
+            "com.samsung.android.calendar",
+            "com.bbk.calendar",
+            "com.miui.calendar",
+            "com.huawei.calendar"
+        )
+
+        val pm = packageManager
+        val calIntent = Intent(Intent.ACTION_VIEW).apply {
+            data = android.net.Uri.parse("content://com.android.calendar/time")
+        }
+        val resolveInfos = pm.queryIntentActivities(calIntent, PackageManager.MATCH_DEFAULT_ONLY)
+
+        val foundPackages = mutableSetOf<String>()
+        for (info in resolveInfos) {
+            val pkg = info.activityInfo.packageName
+            foundPackages.add(pkg)
+        }
+
+        for (pkg in knownPackages) {
+            if (isAppInstalled(pkg)) {
+                foundPackages.add(pkg)
+            }
+        }
+
+        for (pkg in foundPackages) {
+            try {
+                val appInfo = pm.getApplicationInfo(pkg, 0)
+                val label = pm.getApplicationLabel(appInfo).toString()
+                labels.add(label)
+                packages.add(pkg)
+            } catch (e: Exception) {
+                // ignore
+            }
+        }
+
+        return Pair(labels, packages)
+    }
+
     private fun setupEventsAndTasksSections() {
+        val (calLabels, calPackages) = getInstalledCalendarApps()
+        calendarAppPackages = calPackages
+
+        val calAppRow = findViewById<View>(R.id.row_events_calendar_app)
+
         // Events
         val eventsSwitch = bindFoldedSection(
             R.id.header_events, R.drawable.ic_events, getString(R.string.section_events),
             R.id.content_events, R.id.row_events_toggle,
             "show_events", false,
             sizeRowId = R.id.row_events_size, prefSizeKey = "size_events", defSize = 14f, minSize = 10f, maxSize = 18f,
-            isContent = true
+            isContent = true,
+            onChanged = { isShown ->
+                calAppRow?.visibility = if (isShown) View.VISIBLE else View.GONE
+            }
+        )
+
+        bindSelector(
+            R.id.row_events_calendar_app,
+            getString(R.string.section_events_calendar_app),
+            "calendar_app_package",
+            calLabels,
+            0
         )
 
         // Show day abbreviation in events (from issue #71)
@@ -1962,12 +2027,13 @@ class MainActivity : AppCompatActivity() {
                 prefs.edit().putString(prefKey, selected).apply()
                 updateWidget()
             }
-        } else if (prefKey == "clock_app_package") {
+        } else if (prefKey == "clock_app_package" || prefKey == "calendar_app_package") {
+            val appPackages = if (prefKey == "clock_app_package") clockAppPackages else calendarAppPackages
             val currentVal = prefs.getString(prefKey, "default") ?: "default"
-            val currentIdx = clockAppPackages.indexOf(currentVal).coerceAtLeast(0)
+            val currentIdx = appPackages.indexOf(currentVal).coerceAtLeast(0)
             autoCompleteTextView.setText(options.getOrElse(currentIdx) { options[0] }, false)
             autoCompleteTextView.setOnItemClickListener { _, _, position, _ ->
-                val selected = clockAppPackages.getOrElse(position) { "default" }
+                val selected = appPackages.getOrElse(position) { "default" }
                 prefs.edit().putString(prefKey, selected).apply()
                 updateWidget()
                 onSelectionChanged?.invoke(position)
@@ -2127,5 +2193,42 @@ class MainActivity : AppCompatActivity() {
             putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
         }
         sendBroadcast(intent)
+    }
+
+    private fun setupContentSearch() {
+        val searchInput = findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.search_content_input) ?: return
+        val cardMap = mapOf(
+            R.id.card_time to listOf("time", "clock"),
+            R.id.card_next_alarm to listOf("alarm", "next alarm"),
+            R.id.card_world_clock to listOf("world clock", "timezone", "time zone"),
+            R.id.card_date to listOf("date", "calendar"),
+            R.id.card_battery to listOf("battery"),
+            R.id.card_temp to listOf("temperature", "temp"),
+            R.id.card_weather to listOf("weather", "forecast", "breezy"),
+            R.id.card_data to listOf("data", "data usage", "cellular"),
+            R.id.card_storage to listOf("storage", "internal storage", "disk"),
+            R.id.card_ram to listOf("ram", "memory"),
+            R.id.card_steps to listOf("steps", "step counter", "activity", "fitness"),
+            R.id.card_screen_time to listOf("screen time", "usage"),
+            R.id.card_events to listOf("events", "calendar", "agenda"),
+            R.id.card_tasks to listOf("tasks", "tasks.org", "todo")
+        )
+
+        searchInput.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: android.text.Editable?) {
+                val query = s?.toString()?.trim()?.lowercase() ?: ""
+                for ((cardId, keywords) in cardMap) {
+                    val card = findViewById<View>(cardId) ?: continue
+                    if (query.isEmpty()) {
+                        card.visibility = View.VISIBLE
+                    } else {
+                        val matches = keywords.any { it.contains(query) }
+                        card.visibility = if (matches) View.VISIBLE else View.GONE
+                    }
+                }
+            }
+        })
     }
 }

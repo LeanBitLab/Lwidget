@@ -1,0 +1,24 @@
+Lwidget is a modern, ultra-lightweight, open-source Android widget built with Kotlin and Material 3 design principles. It provides essential information on your home screen at a glance while adhering to your device's dynamic theme.
+
+★ Key Features:
+• Material You: Full Android dynamic color support with seamless light and dark mode adaptation.
+• Time & Date: Clear, customizable display with 12h/24h formats and customizable date formats.
+• Battery & Temperature: Real-time battery percentage and device temperature status.
+• Step Counter: Optional daily step counter with a lightweight foreground service.
+• Calendar Events: Upcoming agenda at a glance with timezone-aware all-day event handling.
+• Tasks Integration: Seamless integration with Tasks.org.
+• Weather: Current conditions and weekly forecast warnings via Breezy Weather integration.
+• World Clock: Track time in another timezone.
+• Next Alarm: Display your upcoming scheduled alarm.
+• Daily Data Usage: Monitor your cellular data consumption directly on your home screen.
+• Screen Time: Track your daily device usage with zero wake locks.
+• System Stats: Monitor internal storage and RAM availability.
+• Drag-and-Drop Reordering: Rearrange right-side widget statistics in any order.
+• Typography: 11 distinct font styles (Default, Serif, Monospace, Cursive, Condensed, Light, Medium, Black, Thin, Small Caps).
+• Outline & Transparency: Fine-tune widget opacity, custom colors, and accent outlines.
+• Custom App Launchers: Choose your preferred Clock and Calendar apps to launch when tapping time and date.
+
+★ 100% Privacy Focused:
+• No internet permission required: Lwidget is strictly offline and cannot connect to any remote server.
+• Zero analytics, zero trackers, zero advertisements.
+• GPLv3 Free and Open Source Software (FOSS).

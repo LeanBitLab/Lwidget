@@ -783,6 +783,32 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="4dp"/>
 
+            <!-- SEARCH / FILTER CONTENT -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/search_content_layout"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="12dp"
+                app:boxCornerRadiusTopStart="24dp"
+                app:boxCornerRadiusTopEnd="24dp"
+                app:boxCornerRadiusBottomStart="24dp"
+                app:boxCornerRadiusBottomEnd="24dp"
+                app:startIconDrawable="@drawable/ic_search"
+                app:endIconMode="clear_text"
+                android:hint="@string/search_settings_hint">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/search_content_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:imeOptions="actionDone"
+                    android:maxLines="1"
+                    android:textSize="14sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
             <!-- FEATURE: Time -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_time"
@@ -1417,6 +1443,11 @@
 
                         <include layout="@layout/settings_toggle_row"
                             android:id="@+id/row_events_day_abbr"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                        <include layout="@layout/settings_selector_row"
+                            android:id="@+id/row_events_calendar_app"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"/>
                     </LinearLayout>

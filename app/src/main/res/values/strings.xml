@@ -30,6 +30,8 @@
     <string name="section_temp">Temperature</string>
     <string name="section_data_usage">Data Usage</string>
     <string name="section_events">Events</string>
+    <string name="section_events_calendar_app">Calendar App</string>
+    <string name="search_settings_hint">Search settings…</string>
     <string name="section_next_alarm">Next Alarm</string>
     <string name="section_world_clock">World Clock</string>
     <string name="section_storage">Storage</string>
