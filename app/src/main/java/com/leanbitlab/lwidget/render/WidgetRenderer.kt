@@ -127,8 +127,8 @@ object WidgetRenderer {
         val sizeWorldClock = prefs.getFloat("size_world_clock", 18f)
         val worldClockZoneStr = prefs.getString("world_clock_zone_str", "UTC") ?: "UTC"
 
-        val showNextAlarm = prefs.getBoolean("show_next_alarm", false)
-        val sizeNextAlarm = prefs.getFloat("size_next_alarm", 16f)
+        val showNextAlarm = prefs.getBoolean("show_next_alarm", true)
+        val sizeNextAlarm = prefs.getFloat("size_next_alarm", 14f)
 
         val showStorage = prefs.getBoolean("show_storage", false)
         val sizeStorage = prefs.getFloat("size_storage", 14f)
@@ -155,9 +155,9 @@ object WidgetRenderer {
         }
         val sizeTasks = prefs.getFloat("size_tasks", 14f)
 
-        val fontStyle = prefs.getInt("font_style_idx", 0)
+        val fontStyle = prefs.getInt("font_style", 0)
         val bgColorIdx = prefs.getInt("bg_color_idx", 0)
-        val bgOpacity = prefs.getInt("bg_opacity", 0)
+        val bgOpacity = prefs.getFloat("bg_opacity", 85f)
         val textColorPrimaryIdx = prefs.getInt("text_color_primary_idx", 0)
         val textColorSecondaryIdx = prefs.getInt("text_color_secondary_idx", 0)
 
