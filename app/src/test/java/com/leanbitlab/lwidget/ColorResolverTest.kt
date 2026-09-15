@@ -14,7 +14,7 @@ class ColorResolverTest {
     @Test
     fun testResolveColor_DynamicOn_Primary_Light_SdkS() {
         val mockContext = mock<Context> {
-            on { getColor(android.R.color.system_accent1_800) } doReturn 0x112233
+            on { getColor(android.R.color.system_accent1_900) } doReturn 0x112233
         }
         val mockPrefs = mock<SharedPreferences>()
 
@@ -54,7 +54,7 @@ class ColorResolverTest {
     @Test
     fun testResolveColor_DynamicOn_Secondary_Light_SdkS() {
         val mockContext = mock<Context> {
-            on { getColor(android.R.color.system_neutral2_600) } doReturn 0x334455
+            on { getColor(android.R.color.system_neutral1_800) } doReturn 0x334455
         }
         val mockPrefs = mock<SharedPreferences>()
 

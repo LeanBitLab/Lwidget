@@ -1,0 +1,7 @@
+<en-US>
+• Unified global settings search bar positioned above preview
+• High-contrast category selector tabs and adaptive preview wallpaper
+• Calendar app picker & smart in-widget permission prompts
+• Modularized widget architecture and stripped dead background workers
+• Accurate all-day calendar timezone handling and step count tracking
+</en-US>

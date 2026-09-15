@@ -1,0 +1,6 @@
+• Unified global settings search bar positioned above preview
+• High-contrast category selector tabs and adaptive preview wallpaper
+• Calendar app picker (Issue #55) & smart in-widget permission prompts
+• Modularized architecture (Calendar, Tasks, System Stats, Renderer)
+• Midnight step count and all-day calendar timezone fixes
+• Removed dead background workers for battery and memory efficiency
