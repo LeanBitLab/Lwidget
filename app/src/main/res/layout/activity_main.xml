@@ -169,6 +169,32 @@
             android:clipToPadding="false"
             android:paddingBottom="80dp">
 
+            <!-- GLOBAL SETTINGS SEARCH -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/search_settings_layout"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="12dp"
+                app:boxCornerRadiusTopStart="24dp"
+                app:boxCornerRadiusTopEnd="24dp"
+                app:boxCornerRadiusBottomStart="24dp"
+                app:boxCornerRadiusBottomEnd="24dp"
+                app:startIconDrawable="@drawable/ic_search"
+                app:endIconMode="clear_text"
+                android:hint="@string/search_settings_hint">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/search_settings_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:imeOptions="actionDone"
+                    android:maxLines="1"
+                    android:textSize="14sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
             <!-- TAB 1: STYLE -->
             <LinearLayout
                 android:id="@+id/container_tab_style"
@@ -773,6 +799,7 @@
 
             <!-- CATEGORY: CONTENT -->
             <TextView
+                android:id="@+id/label_category_content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/category_content"
@@ -783,31 +810,6 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="4dp"/>
 
-            <!-- SEARCH / FILTER CONTENT -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/search_content_layout"
-                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="12dp"
-                app:boxCornerRadiusTopStart="24dp"
-                app:boxCornerRadiusTopEnd="24dp"
-                app:boxCornerRadiusBottomStart="24dp"
-                app:boxCornerRadiusBottomEnd="24dp"
-                app:startIconDrawable="@drawable/ic_search"
-                app:endIconMode="clear_text"
-                android:hint="@string/search_settings_hint">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/search_content_input"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:imeOptions="actionDone"
-                    android:maxLines="1"
-                    android:textSize="14sp" />
-            </com.google.android.material.textfield.TextInputLayout>
 
             <!-- FEATURE: Time -->
             <com.google.android.material.card.MaterialCardView
@@ -999,6 +1001,7 @@
 
             <!-- CATEGORY: STATS -->
             <TextView
+                android:id="@+id/label_category_stats"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/category_stats"
