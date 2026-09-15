@@ -73,6 +73,40 @@
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
+        <!-- GLOBAL SETTINGS SEARCH (Above Preview) -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:background="?attr/colorSurface">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/search_settings_layout"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:boxCornerRadiusTopStart="24dp"
+                app:boxCornerRadiusTopEnd="24dp"
+                app:boxCornerRadiusBottomStart="24dp"
+                app:boxCornerRadiusBottomEnd="24dp"
+                app:startIconDrawable="@drawable/ic_search"
+                app:endIconMode="clear_text"
+                android:hint="@string/search_settings_hint">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/search_settings_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:imeOptions="actionDone"
+                    android:maxLines="1"
+                    android:textSize="14sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </FrameLayout>
+
         <!-- PINNED WIDGET PREVIEW CONTAINER -->
         <FrameLayout
             android:layout_width="match_parent"
@@ -139,7 +173,7 @@
                 app:tabIndicatorGravity="stretch"
                 app:tabIndicatorAnimationMode="elastic"
                 app:tabIndicatorColor="@android:color/transparent"
-                app:tabSelectedTextColor="?attr/colorOnPrimaryContainer"
+                app:tabSelectedTextColor="?attr/colorOnPrimary"
                 app:tabTextColor="?attr/colorOnSurfaceVariant"
                 app:tabIconTint="@color/selector_tab_icon"
                 app:tabTextAppearance="@style/Widget.Lwidget.TabTextAppearance"
@@ -169,31 +203,7 @@
             android:clipToPadding="false"
             android:paddingBottom="80dp">
 
-            <!-- GLOBAL SETTINGS SEARCH -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/search_settings_layout"
-                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="12dp"
-                app:boxCornerRadiusTopStart="24dp"
-                app:boxCornerRadiusTopEnd="24dp"
-                app:boxCornerRadiusBottomStart="24dp"
-                app:boxCornerRadiusBottomEnd="24dp"
-                app:startIconDrawable="@drawable/ic_search"
-                app:endIconMode="clear_text"
-                android:hint="@string/search_settings_hint">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/search_settings_input"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:imeOptions="actionDone"
-                    android:maxLines="1"
-                    android:textSize="14sp" />
-            </com.google.android.material.textfield.TextInputLayout>
 
             <!-- TAB 1: STYLE -->
             <LinearLayout
