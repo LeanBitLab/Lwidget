@@ -5,3 +5,83 @@
 • Modularized widget architecture and stripped dead background workers
 • Accurate all-day calendar timezone handling and step count tracking
 </en-US>
+
+<ar>
+• شريط بحث شامل وموحد للإعدادات أعلى معاينة الويدجت
+• تبويبات فئات عالية التباين وخلفية معاينة متكيفة
+• اختيار تطبيق التقويم وطلب الأذونات الذكي داخل الويدجت
+• بنية برمجية معيارية وحذف مهام الخلفية غير المستخدمة
+• دقة في التعامل مع المنطقة الزمنية للتقويم وتتبع الخطوات
+</ar>
+
+<de-DE>
+• Einheitliche globale Einstellungssuche über der Vorschau
+• Kontraststarke Kategorie-Tabs und adaptive Vorschau-Hintergründe
+• Kalender-App-Auswahl und smarte Berechtigungsabfragen im Widget
+• Modularisierte Widget-Architektur und Entfernung ungenutzter Hintergrund-Dienste
+• Präzise Zeitzonen-Berechnung für ganztägige Termine und Schrittzählung
+</de-DE>
+
+<es-ES>
+• Barra de búsqueda global unificada sobre la vista previa
+• Pestañas de categorías de alto contraste y fondo de vista previa adaptable
+• Selector de app de calendario y solicitudes inteligentes de permisos
+• Arquitectura modularizada y eliminación de tareas en segundo plano obsoletas
+• Cálculo preciso de zonas horarias en el calendario y recuento de pasos
+</es-ES>
+
+<fr-FR>
+• Barre de recherche globale unifiée au-dessus de l'aperçu
+• Onglets de catégories à contraste élevé et fond d'aperçu adaptatif
+• Sélecteur d'application de calendrier et invites d'autorisations intelligentes
+• Architecture modularisée et suppression des tâches d'arrière-plan inutilisées
+• Gestion précise des fuseaux horaires pour le calendrier et suivi des pas
+</fr-FR>
+
+<hi-IN>
+• प्रिव्यू के ऊपर एकीकृत ग्लोबल सेटिंग्स सर्च बार
+• हाई-कंट्रास्ट श्रेणी टैब और अनुकूलनीय प्रिव्यू वॉलपेपर
+• कैलेंडर ऐप चयनकर्ता और विजेट में स्मार्ट अनुमति संकेत
+• मॉड्यूलर आर्किटेक्चर और अनावश्यक बैकग्राउंड टास्क हटाए गए
+• सटीक पूरे दिन के कैलेंडर टाइमज़ोन और स्टेप काउंट ट्रैकिंग
+</hi-IN>
+
+<ja-JP>
+• プレビュー上部に統一された全体設定検索バーを追加
+• ハイコントラストなカテゴリタブと適応型プレビュー壁紙
+• カレンダーアプリ選択機能とウィジェット内のスマート権限リクエスト
+• モジュール化されたアーキテクチャと不要なバックグラウンドタスクの削除
+• 終日イベントのタイムゾーン処理と歩数カウントの精度向上
+</ja-JP>
+
+<pt-BR>
+• Barra de pesquisa global unificada posicionada acima da pré-visualização
+• Abas de categorias de alto contraste e papel de parede de pré-visualização adaptativo
+• Seletor de app de calendário e solicitações inteligentes de permissão no widget
+• Arquitetura modularizada e remoção de tarefas em segundo plano obsoletas
+• Tratamento preciso de fusos horários no calendário e contagem de passos
+</pt-BR>
+
+<ru-RU>
+• Единая строка глобального поиска настроек над окном предпросмотра
+• Контрастные вкладки категорий и адаптивный фон предпросмотра
+• Выбор приложения календаря и умные запросы разрешений в виджете
+• Модульная архитектура и удаление неиспользуемых фоновых служб
+• Точная обработка часовых поясов для событий на весь день и подсчет шагов
+</ru-RU>
+
+<tr-TR>
+• Önizlemenin üstünde yer alan birleşik genel ayarlar arama çubuğu
+• Yüksek kontrastlı kategori sekmeleri ve uyarlanabilir önizleme duvar kağıdı
+• Takvim uygulaması seçici ve widget içi akıllı izin istemleri
+• Modüler mimari ve kullanılmayan arka plan görevlerinin kaldırılması
+• Tam günlük takvim saat dilimi işlemleri ve adım sayacı iyileştirmeleri
+</tr-TR>
+
+<zh-CN>
+• 位于预览上方的全局统一设置搜索栏
+• 高对比度分类标签与自适应预览壁纸
+• 日历应用选择器与小部件内智能权限提示
+• 模块化小部件架构并移除冗余后台任务
+• 精准的全天日历时区处理与计步追踪
+</zh-CN>
