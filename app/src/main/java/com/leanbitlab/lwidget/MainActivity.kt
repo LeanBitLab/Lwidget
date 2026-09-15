@@ -266,10 +266,52 @@ class MainActivity : AppCompatActivity() {
             val wallpaperDrawable = wallpaperManager.drawable
             if (wallpaperDrawable != null) {
                 wallpaperView.setImageDrawable(wallpaperDrawable)
+                return
             }
         } catch (e: Exception) {
-            // Keep default fallback drawable
+            // Fallback to themed gradient
         }
+
+        val isSystemInNightMode = (resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES
+        val themeMode = prefs.getInt("theme_mode", if (prefs.getBoolean("use_system_theme", true)) 0 else 2)
+        val useLightTheme = when (themeMode) {
+            0 -> !isSystemInNightMode
+            1 -> true
+            2 -> false
+            else -> !isSystemInNightMode
+        }
+
+        val useDynamicColors = prefs.getBoolean("use_dynamic_colors", true)
+        val bgColorIdx = prefs.getInt("bg_color_idx", 0)
+        val bgOpacity = prefs.getFloat("bg_opacity", 85f)
+        val textPrimaryIdx = prefs.getInt("text_color_primary_idx", 0)
+
+        val isWidgetDark = if (useDynamicColors) {
+            !useLightTheme
+        } else {
+            val bgDark = when (bgColorIdx) {
+                0 -> !useLightTheme
+                1 -> false
+                2 -> {
+                    val r = prefs.getInt("bg_color_r", 255)
+                    val g = prefs.getInt("bg_color_g", 255)
+                    val b = prefs.getInt("bg_color_b", 255)
+                    (0.299 * r + 0.587 * g + 0.114 * b) < 128
+                }
+                else -> !useLightTheme
+            }
+            if (bgOpacity < 20f && textPrimaryIdx == 2) {
+                val tr = prefs.getInt("text_color_primary_r", 255)
+                val tg = prefs.getInt("text_color_primary_g", 255)
+                val tb = prefs.getInt("text_color_primary_b", 255)
+                val textIsWhite = (0.299 * tr + 0.587 * tg + 0.114 * tb) > 180
+                textIsWhite || bgDark
+            } else {
+                bgDark
+            }
+        }
+
+        wallpaperView.setImageResource(if (isWidgetDark) R.drawable.bg_preview_wallpaper_dark else R.drawable.bg_preview_wallpaper_light)
     }
 
     private fun setupTabLayout() {
@@ -2169,6 +2211,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateWidget() {
+        setupPreviewWallpaper()
         updateLivePreview()
         // Animation: Subtle Outline Shine
         val fab = findViewById<ExtendedFloatingActionButton>(R.id.fab_update)

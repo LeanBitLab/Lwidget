@@ -19,10 +19,10 @@ object ColorResolver {
          if (useDynamicColors && sdkInt >= Build.VERSION_CODES.S) {
              return if (isPrimary) {
                  // High contrast accent for time & battery
-                 context.getColor(if (isLight) android.R.color.system_accent1_800 else android.R.color.system_accent1_50)
+                 context.getColor(if (isLight) android.R.color.system_accent1_900 else android.R.color.system_accent1_50)
              } else {
-                 // Muted neutral for secondary items (temp, data, storage, steps)
-                 context.getColor(if (isLight) android.R.color.system_neutral2_600 else android.R.color.system_neutral2_300)
+                 // High contrast neutral for secondary items (temp, data, storage, steps)
+                 context.getColor(if (isLight) android.R.color.system_neutral1_800 else android.R.color.system_neutral2_300)
              }
          }
          return when (idx) {

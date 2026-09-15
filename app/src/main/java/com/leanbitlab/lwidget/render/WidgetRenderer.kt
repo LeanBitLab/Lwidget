@@ -257,7 +257,7 @@ object WidgetRenderer {
 
         val dateColorIdx = prefs.getInt("date_color_idx", 0)
         val dateColor = if (useDynamicColors && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            context.getColor(if (useLightTheme) android.R.color.system_accent2_700 else android.R.color.system_accent2_100)
+            context.getColor(if (useLightTheme) android.R.color.system_accent1_800 else android.R.color.system_accent2_100)
         } else {
             when (dateColorIdx) {
                 2 -> Color.rgb(prefs.getInt("date_color_r", 255), prefs.getInt("date_color_g", 255), prefs.getInt("date_color_b", 255))
@@ -267,7 +267,7 @@ object WidgetRenderer {
         }
 
         val alarmColor = if (useDynamicColors && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            context.getColor(if (useLightTheme) android.R.color.system_accent3_700 else android.R.color.system_accent3_100)
+            context.getColor(if (useLightTheme) android.R.color.system_accent3_800 else android.R.color.system_accent3_100)
         } else {
             if (useLightTheme) context.getColor(R.color.widget_alarm_light) else context.getColor(R.color.widget_alarm_dark)
         }

@@ -8,6 +8,10 @@
         android:id="@+id/widget_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_alignTop="@id/inner_container"
+        android:layout_alignBottom="@id/inner_container"
+        android:layout_alignStart="@id/inner_container"
+        android:layout_alignEnd="@id/inner_container"
         android:src="@drawable/widget_bg_fill"
         android:importantForAccessibility="no" />
 
@@ -15,6 +19,10 @@
         android:id="@+id/widget_outline"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_alignTop="@id/inner_container"
+        android:layout_alignBottom="@id/inner_container"
+        android:layout_alignStart="@id/inner_container"
+        android:layout_alignEnd="@id/inner_container"
         android:src="@drawable/widget_bg_outline"
         android:visibility="visible"
         android:importantForAccessibility="no" />
