@@ -20,7 +20,7 @@
             android:layout_height="20dp"
             android:layout_marginEnd="8dp"
             android:src="@android:drawable/ic_menu_search"
-            android:contentDescription="Search"
+            android:importantForAccessibility="no"
             app:tint="?attr/colorOnSurfaceVariant"/>
 
         <com.google.android.material.textfield.TextInputLayout
