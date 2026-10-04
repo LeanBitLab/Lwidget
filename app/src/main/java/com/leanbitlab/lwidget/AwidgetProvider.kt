@@ -169,6 +169,7 @@ class AwidgetProvider : AppWidgetProvider() {
 
         private const val TAG = "WidgetLife"
 
+        const val ACTION_NOOP = "com.leanbitlab.lwidget.ACTION_NOOP"
         const val ACTION_BATTERY_UPDATE = SystemStatsFetcher.ACTION_BATTERY_UPDATE
         const val PERMISSION_READ_TASKS_ORG = TasksFetcher.PERMISSION_READ_TASKS_ORG
         const val PERMISSION_READ_TASKS_ASTRID = TasksFetcher.PERMISSION_READ_TASKS_ASTRID
