@@ -1,0 +1,3 @@
+## 2024-03-24 - Throttling High-Frequency Broadcasts
+**Learning:** Binding a high-frequency hardware sensor (like `Sensor.TYPE_STEP_COUNTER`) directly to an IPC call (`sendBroadcast` to `AppWidgetProvider`) and disk writes (`SharedPreferences.Editor.apply()`) causes severe CPU and battery drain. AppWidgets are not meant to be animated or updated continuously (e.g. 2-3 times a second when walking).
+**Action:** When updating widgets from sensor events or continuous callbacks, always implement a throttle (e.g., 10 seconds) using `System.currentTimeMillis()` to rate-limit IPC broadcasts and expensive object allocations like `java.time.LocalDate.now()`.

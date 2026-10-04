@@ -58,6 +58,7 @@ class StepCounterServiceTest {
         // Hardware rebooted, now sensor says 50 steps
         startService()
         val event = createMockSensorEvent(50f)
+        Thread.sleep(10_001)
         service.onSensorChanged(event)
 
         // New baseline should be: 50 - (1000 - 200) = 50 - 800 = -750
@@ -83,6 +84,7 @@ class StepCounterServiceTest {
         assertEquals(50f, prefs.getFloat("last_total_steps", 0f), 0.001f)
 
         // Steps increase from 50 to 150
+        Thread.sleep(10_001)
         service.onSensorChanged(createMockSensorEvent(150f))
 
         // Expected: baseline remains -750, last_total_steps = 150
@@ -90,6 +92,7 @@ class StepCounterServiceTest {
         assertEquals(150f, prefs.getFloat("last_total_steps", 0f), 0.001f)
 
         // Second reboot, sensor goes from 150 -> 20
+        Thread.sleep(10_001)
         service.onSensorChanged(createMockSensorEvent(20f))
 
         // Expected: baseline = 20 - (150 - (-750)) = 20 - 900 = -880
@@ -109,6 +112,7 @@ class StepCounterServiceTest {
 
         startService()
         val event = createMockSensorEvent(600f)
+        Thread.sleep(10_001)
         service.onSensorChanged(event)
 
         // Expected: Should update date to today and set baseline to current total
@@ -129,6 +133,7 @@ class StepCounterServiceTest {
         // Step increases to 1050
         startService()
         val event = createMockSensorEvent(1050f)
+        Thread.sleep(10_001)
         service.onSensorChanged(event)
 
         // Baseline shouldn't change

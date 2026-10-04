@@ -27,6 +27,10 @@ class StepCounterService : Service(), SensorEventListener {
     private var baselineSteps: Float = 0f
     private var stepDate: String = ""
 
+    // ⚡ Bolt: Throttling state to prevent excessive widget updates
+    private var lastUpdateMs: Long = 0
+    private val UPDATE_THROTTLE_MS = 10_000L // 10 seconds
+
     private val updateReceiver = object : android.content.BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             val action = intent.action
@@ -129,13 +133,25 @@ class StepCounterService : Service(), SensorEventListener {
         
         val totalSteps = event.values[0]
 
+        // ⚡ Bolt: Ensure we don't drop important state updates during throttling
+        val isHardwareReboot = totalSteps < lastTotalSteps
+
         // Hardware rebooted and reset the total steps to 0
-        if (totalSteps < lastTotalSteps) {
+        if (isHardwareReboot) {
             baselineSteps = totalSteps - (lastTotalSteps - baselineSteps)
             prefs.edit().putFloat("step_baseline", baselineSteps).apply()
         }
         
         lastTotalSteps = totalSteps
+
+        // ⚡ Bolt: Throttle expensive SharedPreferences writes, allocations, and IPC
+        // Always allow if it was a hardware reboot to ensure disk state is saved
+        val now = System.currentTimeMillis()
+        if (!isHardwareReboot && (now - lastUpdateMs < UPDATE_THROTTLE_MS)) {
+            return
+        }
+        lastUpdateMs = now
+
         prefs.edit().putFloat("last_total_steps", totalSteps).apply()
 
         // Daily reset logic
