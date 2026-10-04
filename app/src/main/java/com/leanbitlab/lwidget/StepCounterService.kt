@@ -27,6 +27,9 @@ class StepCounterService : Service(), SensorEventListener {
     private var baselineSteps: Float = 0f
     private var stepDate: String = ""
 
+    private var cachedToday: String = ""
+    private var lastDateCheckTime: Long = 0L
+
     private val updateReceiver = object : android.content.BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             val action = intent.action
@@ -129,25 +132,40 @@ class StepCounterService : Service(), SensorEventListener {
         
         val totalSteps = event.values[0]
 
+        // Optimize: Cache LocalDate.now().toString() updating at most once every 60 seconds
+        val nowMillis = android.os.SystemClock.elapsedRealtime()
+        if (nowMillis - lastDateCheckTime > 60000 || cachedToday.isEmpty()) {
+            cachedToday = java.time.LocalDate.now().toString()
+            lastDateCheckTime = nowMillis
+        }
+        val today = cachedToday
+
+        var baselineChanged = false
         // Hardware rebooted and reset the total steps to 0
         if (totalSteps < lastTotalSteps) {
             baselineSteps = totalSteps - (lastTotalSteps - baselineSteps)
-            prefs.edit().putFloat("step_baseline", baselineSteps).apply()
+            baselineChanged = true
         }
         
         lastTotalSteps = totalSteps
-        prefs.edit().putFloat("last_total_steps", totalSteps).apply()
 
         // Daily reset logic
-        val today = java.time.LocalDate.now().toString()
-
         if (stepDate != today) {
             stepDate = today
             baselineSteps = totalSteps
+            // Consolidate SharedPreferences apply() updates
             prefs.edit()
+                .putFloat("last_total_steps", totalSteps)
                 .putString("step_date", today)
-                .putFloat("step_baseline", totalSteps)
+                .putFloat("step_baseline", baselineSteps)
                 .apply()
+        } else {
+            // Consolidate SharedPreferences apply() updates
+            val editor = prefs.edit().putFloat("last_total_steps", totalSteps)
+            if (baselineChanged) {
+                editor.putFloat("step_baseline", baselineSteps)
+            }
+            editor.apply()
         }
         
         // Notify widget provider to update

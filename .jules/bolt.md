@@ -1,0 +1,3 @@
+## $(date +%Y-%m-%d) - Optimize High-Frequency Sensor Callback SharedPreferences Commits
+**Learning:** In Android `SensorEventListener` callbacks (like `StepCounterService`), naive repeated calls to `SharedPreferences.Editor.apply()` and `java.time.LocalDate.now().toString()` can cause unnecessary object allocations and minor lock contentions, especially when processing rapid hardware sensor events.
+**Action:** Consolidate `SharedPreferences` writes into a single `.apply()` execution at the end of the callback and cache expensive String operations (like current date strings) using `android.os.SystemClock.elapsedRealtime()` for TTL checks instead of calculating them dynamically on every sensor tick.
