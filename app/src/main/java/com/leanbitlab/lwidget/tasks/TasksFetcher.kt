@@ -112,12 +112,12 @@ object TasksFetcher {
             return
         }
 
+        val accentColor = context.getColor(R.color.widget_outline)
         for (i in tasks.indices) {
             val task = tasks[i]
             val dueSuffix = formatDueSuffix(task.dueMillis)
             val fullText = "• ${task.title}$dueSuffix"
             val spannable = SpannableString(fullText)
-            val accentColor = context.getColor(R.color.widget_outline)
             spannable.setSpan(ForegroundColorSpan(accentColor), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 
             views.setTextViewText(eventViews[i], spannable)
