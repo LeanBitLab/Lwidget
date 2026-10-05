@@ -1,0 +1,4 @@
+## 2024-10-24 - Secure PendingIntent with Dummy Action
+**Vulnerability:** Found `PendingIntent.getActivity` being called with an empty, implicit `Intent()` as a fallback for an empty events list in `CalendarFetcher.kt`.
+**Learning:** Using an empty `Intent` inside a `PendingIntent` (even with `FLAG_IMMUTABLE`) is considered a bad practice by most security scanners and can lead to unintended component resolution or `ActivityNotFoundException` crashes if hijacked or triggered improperly.
+**Prevention:** To create a secure "no-op" click action in Android widgets, use `PendingIntent.getBroadcast` with an explicit `Intent` targeting a specific component (e.g., `AwidgetProvider::class.java`) and assign it a dummy action string (e.g., `ACTION_NOOP`) that the receiver is programmed to ignore safely.

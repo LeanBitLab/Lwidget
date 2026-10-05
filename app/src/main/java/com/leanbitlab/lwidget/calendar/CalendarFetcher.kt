@@ -8,6 +8,8 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.widget.RemoteViews
+import com.leanbitlab.lwidget.AwidgetProvider
+
 import com.leanbitlab.lwidget.MainActivity
 import com.leanbitlab.lwidget.R
 import java.time.Instant
@@ -205,7 +207,8 @@ object CalendarFetcher {
             views.setTextViewTextSize(eventViews[0], android.util.TypedValue.COMPLEX_UNIT_SP, textSizeSp)
             views.setViewVisibility(eventViews[0], android.view.View.VISIBLE)
 
-            val emptyIntent = PendingIntent.getActivity(context, 0, Intent(), PendingIntent.FLAG_IMMUTABLE)
+            val dummyIntent = Intent(context, AwidgetProvider::class.java).apply { action = "ACTION_NOOP" }
+            val emptyIntent = PendingIntent.getBroadcast(context, 0, dummyIntent, PendingIntent.FLAG_IMMUTABLE)
             views.setOnClickPendingIntent(eventViews[0], emptyIntent)
 
             for (i in 1 until eventViews.size) {
