@@ -247,7 +247,7 @@
                                 android:layout_height="24dp"
                                 android:layout_marginEnd="12dp"
                                 android:src="@drawable/ic_presets"
-                                android:contentDescription="Icon"
+                                android:importantForAccessibility="no"
                                 app:tint="?attr/colorPrimary"/>
 
                             <TextView
@@ -267,7 +267,7 @@
                                 android:src="@drawable/ic_chevron_down"
                                 android:rotation="0"
                                 app:tint="?attr/colorOnSurfaceVariant"
-                                android:contentDescription="Expand/collapse"/>
+                                android:importantForAccessibility="no"/>
                         </LinearLayout>
 
                         <LinearLayout
@@ -332,7 +332,7 @@
                                 android:layout_height="24dp"
                                 android:layout_marginEnd="12dp"
                                 android:src="@drawable/ic_outline"
-                                android:contentDescription="Icon"
+                                android:importantForAccessibility="no"
                                 app:tint="?attr/colorPrimary"/>
 
                             <TextView
@@ -352,7 +352,7 @@
                                 android:src="@drawable/ic_chevron_down"
                                 android:rotation="0"
                                 app:tint="?attr/colorOnSurfaceVariant"
-                                android:contentDescription="Expand/collapse"/>
+                                android:importantForAccessibility="no"/>
                         </LinearLayout>
 
                         <LinearLayout
@@ -407,7 +407,7 @@
                                 android:layout_height="24dp"
                                 android:layout_marginEnd="12dp"
                                 android:src="@drawable/ic_palette"
-                                android:contentDescription="Icon"
+                                android:importantForAccessibility="no"
                                 app:tint="?attr/colorPrimary"/>
 
                             <TextView
@@ -427,7 +427,7 @@
                                 android:src="@drawable/ic_chevron_down"
                                 android:rotation="0"
                                 app:tint="?attr/colorOnSurfaceVariant"
-                                android:contentDescription="Expand/collapse"/>
+                                android:importantForAccessibility="no"/>
                         </LinearLayout>
 
                         <LinearLayout
@@ -532,7 +532,7 @@
                                 android:layout_height="24dp"
                                 android:layout_marginEnd="12dp"
                                 android:src="@drawable/ic_sun"
-                                android:contentDescription="Icon"
+                                android:importantForAccessibility="no"
                                 app:tint="?attr/colorPrimary"/>
 
                             <TextView
@@ -552,7 +552,7 @@
                                 android:src="@drawable/ic_chevron_down"
                                 android:rotation="0"
                                 app:tint="?attr/colorOnSurfaceVariant"
-                                android:contentDescription="Expand/collapse"/>
+                                android:importantForAccessibility="no"/>
                         </LinearLayout>
 
                         <LinearLayout
@@ -607,7 +607,7 @@
                                 android:layout_height="24dp"
                                 android:layout_marginEnd="12dp"
                                 android:src="@drawable/ic_text_format"
-                                android:contentDescription="Icon"
+                                android:importantForAccessibility="no"
                                 app:tint="?attr/colorPrimary"/>
 
                             <TextView
@@ -627,7 +627,7 @@
                                 android:src="@drawable/ic_chevron_down"
                                 android:rotation="0"
                                 app:tint="?attr/colorOnSurfaceVariant"
-                                android:contentDescription="Expand/collapse"/>
+                                android:importantForAccessibility="no"/>
                         </LinearLayout>
 
                         <LinearLayout
@@ -682,7 +682,7 @@
                                 android:layout_height="24dp"
                                 android:layout_marginEnd="12dp"
                                 android:src="@drawable/ic_transparency"
-                                android:contentDescription="Icon"
+                                android:importantForAccessibility="no"
                                 app:tint="?attr/colorPrimary"/>
 
                             <TextView
@@ -702,7 +702,7 @@
                                 android:src="@drawable/ic_chevron_down"
                                 android:rotation="0"
                                 app:tint="?attr/colorOnSurfaceVariant"
-                                android:contentDescription="Expand/collapse"/>
+                                android:importantForAccessibility="no"/>
                         </LinearLayout>
 
                         <LinearLayout
@@ -757,7 +757,7 @@
                                 android:layout_height="24dp"
                                 android:layout_marginEnd="12dp"
                                 android:src="@drawable/ic_padding"
-                                android:contentDescription="Icon"
+                                android:importantForAccessibility="no"
                                 app:tint="?attr/colorPrimary"/>
 
                             <TextView
@@ -777,7 +777,7 @@
                                 android:src="@drawable/ic_chevron_down"
                                 android:rotation="0"
                                 app:tint="?attr/colorOnSurfaceVariant"
-                                android:contentDescription="Expand/collapse"/>
+                                android:importantForAccessibility="no"/>
                         </LinearLayout>
 
                         <LinearLayout
