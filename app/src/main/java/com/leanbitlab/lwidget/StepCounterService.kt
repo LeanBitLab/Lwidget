@@ -14,6 +14,9 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Build
 import android.os.IBinder
+import android.os.SystemClock
+import android.os.Handler
+import android.os.Looper
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 
@@ -26,6 +29,14 @@ class StepCounterService : Service(), SensorEventListener {
     private var lastTotalSteps: Float = 0f
     private var baselineSteps: Float = 0f
     private var stepDate: String = ""
+
+    // Bolt: Debounce state
+    private var pendingTotalSteps: Float = -1f
+    private val handler = Handler(Looper.getMainLooper())
+    private var lastProcessedTime: Long = 0L
+    private val processStepsRunnable = Runnable {
+        processPendingSteps()
+    }
 
     private val updateReceiver = object : android.content.BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -127,7 +138,28 @@ class StepCounterService : Service(), SensorEventListener {
     override fun onSensorChanged(event: SensorEvent?) {
         if (event == null) return
         
-        val totalSteps = event.values[0]
+        pendingTotalSteps = event.values[0]
+
+        val now = SystemClock.elapsedRealtime()
+
+        // If it's been more than 10 seconds since last process, process immediately
+        if (now - lastProcessedTime >= 10000L) {
+            handler.removeCallbacks(processStepsRunnable)
+            processPendingSteps()
+        } else {
+            // Otherwise, schedule to process at the end of the 10s window (debounce)
+            // Remove existing pending runnable to push it back
+            handler.removeCallbacks(processStepsRunnable)
+            val delay = 10000L - (now - lastProcessedTime)
+            handler.postDelayed(processStepsRunnable, delay)
+        }
+    }
+
+    private fun processPendingSteps() {
+        if (pendingTotalSteps < 0f) return
+
+        val totalSteps = pendingTotalSteps
+        lastProcessedTime = SystemClock.elapsedRealtime()
 
         // Hardware rebooted and reset the total steps to 0
         if (totalSteps < lastTotalSteps) {
