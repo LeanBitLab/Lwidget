@@ -137,7 +137,7 @@ class SetupActivity : AppCompatActivity() {
 
         // Weather (Breezy Weather provider)
         findViewById<MaterialButton>(R.id.btn_grant_weather).setOnClickListener {
-            if (packageManager.getLaunchIntentForPackage("org.breezyweather") != null) {
+            if (IntentCache.getLaunchIntentForPackage(this, "org.breezyweather") != null) {
                 requestPermissionLauncher.launch(arrayOf("org.breezyweather.READ_PROVIDER"))
             } else {
                 com.google.android.material.snackbar.Snackbar.make(

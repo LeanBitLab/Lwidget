@@ -7,6 +7,7 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.widget.RemoteViews
+import com.leanbitlab.lwidget.IntentCache
 import com.leanbitlab.lwidget.MainActivity
 import com.leanbitlab.lwidget.R
 import com.leanbitlab.lwidget.calendar.CalendarFetcher
@@ -112,6 +113,8 @@ object TasksFetcher {
             return
         }
 
+        val taskIntent = IntentCache.getLaunchIntentForPackage(context, "org.tasks")
+
         for (i in tasks.indices) {
             val task = tasks[i]
             val dueSuffix = formatDueSuffix(task.dueMillis)
@@ -125,7 +128,6 @@ object TasksFetcher {
             views.setTextViewTextSize(eventViews[i], android.util.TypedValue.COMPLEX_UNIT_SP, textSizeSp)
             views.setViewVisibility(eventViews[i], android.view.View.VISIBLE)
 
-            val taskIntent = context.packageManager.getLaunchIntentForPackage("org.tasks")
             if (taskIntent != null) {
                 val taskPendingIntent = PendingIntent.getActivity(context, 1000 + i, taskIntent, PendingIntent.FLAG_IMMUTABLE)
                 views.setOnClickPendingIntent(eventViews[i], taskPendingIntent)

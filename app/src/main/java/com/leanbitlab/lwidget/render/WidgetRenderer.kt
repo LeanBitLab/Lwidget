@@ -13,6 +13,7 @@ import android.view.View
 import android.widget.RemoteViews
 import com.leanbitlab.lwidget.AwidgetProvider
 import com.leanbitlab.lwidget.ColorResolver
+import com.leanbitlab.lwidget.IntentCache
 import com.leanbitlab.lwidget.FallbackPreferences
 import com.leanbitlab.lwidget.MainActivity
 import com.leanbitlab.lwidget.R
@@ -26,29 +27,6 @@ object WidgetRenderer {
 
     private const val TAG = "WidgetRenderer"
 
-    private data class CacheEntry(val intent: Intent, val timestamp: Long)
-    private val intentCache = ConcurrentHashMap<String, CacheEntry>()
-    private const val CACHE_TTL_MS = 60000L // 60 seconds TTL
-
-    fun getBestIntent(context: Context, packages: List<String>, fallback: Intent): Intent {
-        val cacheKey = packages.joinToString(",") + "|" + fallback.action
-        val cached = intentCache[cacheKey]
-        val now = SystemClock.elapsedRealtime()
-        if (cached != null && (now - cached.timestamp < CACHE_TTL_MS)) {
-            return Intent(cached.intent)
-        }
-
-        val pm = context.packageManager
-        for (pkg in packages) {
-            val intent = pm.getLaunchIntentForPackage(pkg)
-            if (intent != null) {
-                intentCache[cacheKey] = CacheEntry(Intent(intent), now)
-                return intent
-            }
-        }
-        intentCache[cacheKey] = CacheEntry(Intent(fallback), now)
-        return fallback
-    }
 
     private fun getLayout(fontIdx: Int): Int {
         return when (fontIdx) {
@@ -405,7 +383,7 @@ object WidgetRenderer {
                 views.setTextColor(R.id.text_weather_condition, secondaryColor)
             }
 
-            val launchIntent = context.packageManager.getLaunchIntentForPackage("org.breezyweather")
+            val launchIntent = IntentCache.getLaunchIntentForPackage(context, "org.breezyweather")
             if (launchIntent != null) {
                 val pendingIntent = PendingIntent.getActivity(context, 0, launchIntent, PendingIntent.FLAG_IMMUTABLE)
                 views.setOnClickPendingIntent(R.id.layout_weather_condition, pendingIntent)
@@ -539,11 +517,11 @@ object WidgetRenderer {
         // Clock Click Action
         val selectedClockPkg = prefs.getString("clock_app_package", "default") ?: "default"
         val alarmIntent = if (selectedClockPkg != "default") {
-            context.packageManager.getLaunchIntentForPackage(selectedClockPkg)
-                ?: getBestIntent(context, listOf("com.android.deskclock", "com.google.android.deskclock", "com.simplemobiletools.clock", "org.fossify.clock"), Intent(android.provider.AlarmClock.ACTION_SHOW_ALARMS))
+            IntentCache.getLaunchIntentForPackage(context, selectedClockPkg)
+                ?: IntentCache.getBestIntent(context, listOf("com.android.deskclock", "com.google.android.deskclock", "com.simplemobiletools.clock", "org.fossify.clock"), Intent(android.provider.AlarmClock.ACTION_SHOW_ALARMS))
         } else {
             val clockPackages = listOf("com.android.deskclock", "com.google.android.deskclock", "com.simplemobiletools.clock", "org.fossify.clock")
-            getBestIntent(context, clockPackages, Intent(android.provider.AlarmClock.ACTION_SHOW_ALARMS))
+            IntentCache.getBestIntent(context, clockPackages, Intent(android.provider.AlarmClock.ACTION_SHOW_ALARMS))
         }
         val alarmPendingIntent = PendingIntent.getActivity(context, 0, alarmIntent, PendingIntent.FLAG_IMMUTABLE)
         views.setOnClickPendingIntent(R.id.clock_time, alarmPendingIntent)
@@ -556,10 +534,10 @@ object WidgetRenderer {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }
         val calendarIntent = if (selectedCalPkg != "default") {
-            context.packageManager.getLaunchIntentForPackage(selectedCalPkg)
-                ?: getBestIntent(context, calendarPackages, baseCalIntent)
+            IntentCache.getLaunchIntentForPackage(context, selectedCalPkg)
+                ?: IntentCache.getBestIntent(context, calendarPackages, baseCalIntent)
         } else {
-            getBestIntent(context, calendarPackages, baseCalIntent)
+            IntentCache.getBestIntent(context, calendarPackages, baseCalIntent)
         }
         val calendarPendingIntent = PendingIntent.getActivity(context, 1, calendarIntent, PendingIntent.FLAG_IMMUTABLE)
         views.setOnClickPendingIntent(R.id.clock_date, calendarPendingIntent)
@@ -601,7 +579,7 @@ object WidgetRenderer {
         val refreshPendingIntent = PendingIntent.getBroadcast(context, 10, refreshIntent, PendingIntent.FLAG_IMMUTABLE)
 
         if (showTasks) {
-            val tasksIntent = context.packageManager.getLaunchIntentForPackage("org.tasks")
+            val tasksIntent = IntentCache.getLaunchIntentForPackage(context, "org.tasks")
             if (tasksIntent != null) {
                 val tasksPendingIntent = PendingIntent.getActivity(context, 11, tasksIntent, PendingIntent.FLAG_IMMUTABLE)
                 views.setOnClickPendingIntent(R.id.events_container, tasksPendingIntent)
