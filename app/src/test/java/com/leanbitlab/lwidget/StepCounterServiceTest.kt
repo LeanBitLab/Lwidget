@@ -33,6 +33,12 @@ class StepCounterServiceTest {
         service = Robolectric.buildService(StepCounterService::class.java).create().get()
     }
 
+    private fun flushPendingSteps() {
+        val method = StepCounterService::class.java.getDeclaredMethod("processPendingSteps")
+        method.isAccessible = true
+        method.invoke(service)
+    }
+
     private fun createMockSensorEvent(steps: Float): SensorEvent {
         val constructor = SensorEvent::class.java.declaredConstructors.first { it.parameterCount == 1 }
         constructor.isAccessible = true
@@ -59,6 +65,7 @@ class StepCounterServiceTest {
         startService()
         val event = createMockSensorEvent(50f)
         service.onSensorChanged(event)
+        flushPendingSteps()
 
         // New baseline should be: 50 - (1000 - 200) = 50 - 800 = -750
         assertEquals(-750f, prefs.getFloat("step_baseline", 0f), 0.001f)
@@ -77,6 +84,7 @@ class StepCounterServiceTest {
         // First reboot, sensor goes from 1000 -> 50
         startService()
         service.onSensorChanged(createMockSensorEvent(50f))
+        flushPendingSteps()
 
         // Expected: baseline = 50 - (1000 - 200) = -750
         assertEquals(-750f, prefs.getFloat("step_baseline", 0f), 0.001f)
@@ -84,6 +92,7 @@ class StepCounterServiceTest {
 
         // Steps increase from 50 to 150
         service.onSensorChanged(createMockSensorEvent(150f))
+        flushPendingSteps()
 
         // Expected: baseline remains -750, last_total_steps = 150
         assertEquals(-750f, prefs.getFloat("step_baseline", 0f), 0.001f)
@@ -91,6 +100,7 @@ class StepCounterServiceTest {
 
         // Second reboot, sensor goes from 150 -> 20
         service.onSensorChanged(createMockSensorEvent(20f))
+        flushPendingSteps()
 
         // Expected: baseline = 20 - (150 - (-750)) = 20 - 900 = -880
         assertEquals(-880f, prefs.getFloat("step_baseline", 0f), 0.001f)
@@ -110,6 +120,7 @@ class StepCounterServiceTest {
         startService()
         val event = createMockSensorEvent(600f)
         service.onSensorChanged(event)
+        flushPendingSteps()
 
         // Expected: Should update date to today and set baseline to current total
         assertEquals(LocalDate.now().toString(), prefs.getString("step_date", ""))
@@ -130,6 +141,7 @@ class StepCounterServiceTest {
         startService()
         val event = createMockSensorEvent(1050f)
         service.onSensorChanged(event)
+        flushPendingSteps()
 
         // Baseline shouldn't change
         assertEquals(200f, prefs.getFloat("step_baseline", 0f), 0.001f)
@@ -148,6 +160,7 @@ class StepCounterServiceTest {
 
         startService()
         service.onSensorChanged(null)
+        flushPendingSteps()
 
         // Ensure nothing was updated or changed
         assertEquals(1000f, prefs.getFloat("last_total_steps", 0f), 0.001f)

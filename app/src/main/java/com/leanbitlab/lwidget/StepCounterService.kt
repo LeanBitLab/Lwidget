@@ -124,10 +124,35 @@ class StepCounterService : Service(), SensorEventListener {
         super.onDestroy()
     }
 
+    private var pendingTotalSteps: Float? = null
+    private val handler = android.os.Handler(android.os.Looper.getMainLooper())
+    private var lastUpdateRealtime: Long = 0
+    private val debounceDelay = 1000L // 1 second
+
+    private val processRunnable = Runnable {
+        processPendingSteps()
+    }
+
     override fun onSensorChanged(event: SensorEvent?) {
         if (event == null) return
         
         val totalSteps = event.values[0]
+        pendingTotalSteps = totalSteps
+
+        val now = android.os.SystemClock.elapsedRealtime()
+        if (now - lastUpdateRealtime > debounceDelay) {
+            handler.removeCallbacks(processRunnable)
+            processPendingSteps()
+        } else {
+            handler.removeCallbacks(processRunnable)
+            handler.postDelayed(processRunnable, debounceDelay)
+        }
+    }
+
+    private fun processPendingSteps() {
+        val totalSteps = pendingTotalSteps ?: return
+        pendingTotalSteps = null
+        lastUpdateRealtime = android.os.SystemClock.elapsedRealtime()
 
         // Hardware rebooted and reset the total steps to 0
         if (totalSteps < lastTotalSteps) {
