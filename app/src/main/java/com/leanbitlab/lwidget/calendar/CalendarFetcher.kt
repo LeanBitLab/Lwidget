@@ -205,7 +205,14 @@ object CalendarFetcher {
             views.setTextViewTextSize(eventViews[0], android.util.TypedValue.COMPLEX_UNIT_SP, textSizeSp)
             views.setViewVisibility(eventViews[0], android.view.View.VISIBLE)
 
-            val emptyIntent = PendingIntent.getActivity(context, 0, Intent(), PendingIntent.FLAG_IMMUTABLE)
+            val emptyIntent = PendingIntent.getBroadcast(
+                context,
+                0,
+                Intent(context, com.leanbitlab.lwidget.AwidgetProvider::class.java).apply {
+                    action = com.leanbitlab.lwidget.AwidgetProvider.ACTION_NOOP
+                },
+                PendingIntent.FLAG_IMMUTABLE
+            )
             views.setOnClickPendingIntent(eventViews[0], emptyIntent)
 
             for (i in 1 until eventViews.size) {
