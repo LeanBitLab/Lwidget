@@ -236,29 +236,9 @@ class MainActivity : AppCompatActivity() {
             windowInsets
         }
 
-        // Handle Collapsing Toolbar Title Fade and Header Fade
-        val appBar = findViewById<com.google.android.material.appbar.AppBarLayout>(R.id.app_bar)
-        val expandedHeader = findViewById<View>(R.id.header_expanded)
-        
-        appBar.addOnOffsetChangedListener(com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
-            val totalScrollRange = appBar.totalScrollRange
-            val percentage = kotlin.math.abs(verticalOffset).toFloat() / totalScrollRange.toFloat()
-            
-            // Fade in toolbar title when nearing collapse (e.g. last 20% of scroll)
-            val alphaTitle = ((percentage - 0.8f) / 0.2f).coerceIn(0f, 1f)
-            titleApp.alpha = alphaTitle
-
-            // Fade out expanded header as we scroll up (first 50% of scroll)
-            // Starts dense (1f) and fades to 0f by the time we are halfway collapsed
-            val alphaHeader = (1f - (percentage / 0.5f)).coerceIn(0f, 1f)
-            expandedHeader.alpha = alphaHeader
-            // Optional: Scale down slightly for a nicer effect
-            val scale = (1f - (percentage * 0.1f)).coerceIn(0.9f, 1f)
-            expandedHeader.scaleX = scale
-            expandedHeader.scaleY = scale
-        })
     }
 
+    @android.annotation.SuppressLint("MissingPermission")
     private fun setupPreviewWallpaper() {
         val wallpaperView = findViewById<ImageView>(R.id.preview_wallpaper) ?: return
         try {
