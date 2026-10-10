@@ -49,7 +49,7 @@
                     android:layout_height="120dp"
                     android:src="@mipmap/ic_launcher"
                     android:layout_marginBottom="32dp"
-                    android:contentDescription="App Icon"/>
+                    android:importantForAccessibility="no"/>
 
                 <TextView
                     android:id="@+id/tv_setup_welcome_title"
