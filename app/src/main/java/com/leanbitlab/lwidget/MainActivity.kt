@@ -1269,7 +1269,7 @@ class MainActivity : AppCompatActivity() {
                     ).setAction("Install") {
                         try {
                             CustomTabsIntent.Builder().build().launchUrl(this@MainActivity, android.net.Uri.parse("https://github.com/breezy-weather/breezy-weather/releases"))
-                        } catch (e: Exception) {}
+                        } catch (e: Exception) { android.util.Log.e("MainActivity", "Exception caught", e) }
                     }.show()
                     return@setOnCheckedChangeListener
                 }
@@ -1325,7 +1325,7 @@ class MainActivity : AppCompatActivity() {
                             getString(R.string.perm_usage_access_title),
                             com.google.android.material.snackbar.Snackbar.LENGTH_LONG
                         ).show()
-                    } catch (e: Exception) {}
+                    } catch (e: Exception) { android.util.Log.e("MainActivity", "Exception caught", e) }
                     return@setOnCheckedChangeListener
                 }
                 if (!checkLimit()) {

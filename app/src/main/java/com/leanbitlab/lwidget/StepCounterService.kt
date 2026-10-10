@@ -26,6 +26,7 @@ class StepCounterService : Service(), SensorEventListener {
     private var lastTotalSteps: Float = 0f
     private var baselineSteps: Float = 0f
     private var stepDate: String = ""
+    private var isReceiverRegistered = false
 
     private val updateReceiver = object : android.content.BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -98,8 +99,10 @@ class StepCounterService : Service(), SensorEventListener {
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             registerReceiver(updateReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
+            isReceiverRegistered = true
         } else {
             registerReceiver(updateReceiver, filter)
+            isReceiverRegistered = true
         }
     }
 
@@ -113,10 +116,13 @@ class StepCounterService : Service(), SensorEventListener {
     }
 
     override fun onDestroy() {
-        try {
-            unregisterReceiver(updateReceiver)
-        } catch (e: Exception) {
-            // Receiver might not have been registered if initialization stopped early
+        if (isReceiverRegistered) {
+            try {
+                unregisterReceiver(updateReceiver)
+                isReceiverRegistered = false
+            } catch (e: Exception) {
+                android.util.Log.e("LWidget", "Error unregistering receiver", e)
+            }
         }
         if (::sensorManager.isInitialized) {
             sensorManager.unregisterListener(this)

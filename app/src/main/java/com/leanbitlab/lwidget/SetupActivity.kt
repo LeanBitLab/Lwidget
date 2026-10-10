@@ -126,13 +126,13 @@ class SetupActivity : AppCompatActivity() {
         findViewById<MaterialButton>(R.id.btn_grant_data_usage).setOnClickListener {
             try {
                 startActivity(Intent(android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS))
-            } catch (e: Exception) {}
+            } catch (e: Exception) { android.util.Log.e("SetupActivity", "Exception caught", e) }
         }
 
         findViewById<MaterialButton>(R.id.btn_grant_screen_time).setOnClickListener {
             try {
                 startActivity(Intent(android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS))
-            } catch (e: Exception) {}
+            } catch (e: Exception) { android.util.Log.e("SetupActivity", "Exception caught", e) }
         }
 
         // Weather (Breezy Weather provider)
