@@ -28,14 +28,48 @@ class StepCounterService : Service(), SensorEventListener {
     private var stepDate: String = ""
     private var isReceiverRegistered = false
 
+    private var lastBroadcastSteps: Float = 0f
+    private var lastBroadcastTimeMs: Long = 0L
+    private var hasPendingUpdate: Boolean = false
+    private var lastBatteryPct: Int = -1
+    private var lastBatteryTemp: Int = -1
+    private val mainHandler = android.os.Handler(android.os.Looper.getMainLooper())
+    private val flushRunnable = Runnable {
+        flushStepUpdate()
+    }
+
     private val updateReceiver = object : android.content.BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            val action = intent.action
-            if (action == Intent.ACTION_BATTERY_CHANGED || action == Intent.ACTION_TIME_TICK) {
-                val updateIntent = Intent(context, AwidgetProvider::class.java).apply {
-                    this.action = AwidgetProvider.ACTION_BATTERY_UPDATE
+            when (intent.action) {
+                Intent.ACTION_BATTERY_CHANGED -> {
+                    val level = intent.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, -1)
+                    val scale = intent.getIntExtra(android.os.BatteryManager.EXTRA_SCALE, 100)
+                    val pct = if (scale > 0) (level * 100 / scale.toFloat()).toInt() else -1
+                    val temp = intent.getIntExtra(android.os.BatteryManager.EXTRA_TEMPERATURE, -1)
+                    val tempTenths = if (temp != -1) temp / 10 else -1
+
+                    // Only broadcast if battery percentage or integer temperature actually changed
+                    if (pct != lastBatteryPct || tempTenths != lastBatteryTemp) {
+                        lastBatteryPct = pct
+                        lastBatteryTemp = tempTenths
+                        val updateIntent = Intent(context, AwidgetProvider::class.java).apply {
+                            this.action = AwidgetProvider.ACTION_BATTERY_UPDATE
+                        }
+                        context.sendBroadcast(updateIntent)
+                    }
                 }
-                context.sendBroadcast(updateIntent)
+                Intent.ACTION_TIME_TICK -> {
+                    val updateIntent = Intent(context, AwidgetProvider::class.java).apply {
+                        this.action = AwidgetProvider.ACTION_BATTERY_UPDATE
+                    }
+                    context.sendBroadcast(updateIntent)
+                }
+                Intent.ACTION_SCREEN_ON -> {
+                    // Instantly sync step count when user turns on the screen
+                    if (hasPendingUpdate || lastBroadcastSteps != lastTotalSteps) {
+                        flushStepUpdate()
+                    }
+                }
             }
         }
     }
@@ -96,6 +130,7 @@ class StepCounterService : Service(), SensorEventListener {
             addAction(Intent.ACTION_BATTERY_CHANGED)
             addAction(Intent.ACTION_TIME_TICK)
             addAction(Intent.ACTION_CONFIGURATION_CHANGED)
+            addAction(Intent.ACTION_SCREEN_ON)
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             registerReceiver(updateReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
@@ -116,6 +151,10 @@ class StepCounterService : Service(), SensorEventListener {
     }
 
     override fun onDestroy() {
+        mainHandler.removeCallbacks(flushRunnable)
+        if (hasPendingUpdate || lastBroadcastSteps != lastTotalSteps) {
+            flushStepUpdate()
+        }
         if (isReceiverRegistered) {
             try {
                 unregisterReceiver(updateReceiver)
@@ -130,13 +169,26 @@ class StepCounterService : Service(), SensorEventListener {
         super.onDestroy()
     }
 
+    private fun flushStepUpdate() {
+        mainHandler.removeCallbacks(flushRunnable)
+        hasPendingUpdate = false
+        lastBroadcastSteps = lastTotalSteps
+        lastBroadcastTimeMs = android.os.SystemClock.elapsedRealtime()
+
+        val updateIntent = Intent(this, AwidgetProvider::class.java).apply {
+            action = ACTION_STEP_UPDATE
+        }
+        sendBroadcast(updateIntent)
+    }
+
     override fun onSensorChanged(event: SensorEvent?) {
         if (event == null) return
         
         val totalSteps = event.values[0]
 
         // Hardware rebooted and reset the total steps to 0
-        if (totalSteps < lastTotalSteps) {
+        val isHardwareReboot = totalSteps < lastTotalSteps
+        if (isHardwareReboot) {
             baselineSteps = totalSteps - (lastTotalSteps - baselineSteps)
             prefs.edit().putFloat("step_baseline", baselineSteps).apply()
         }
@@ -146,8 +198,8 @@ class StepCounterService : Service(), SensorEventListener {
 
         // Daily reset logic
         val today = java.time.LocalDate.now().toString()
-
-        if (stepDate != today) {
+        val isNewDay = stepDate != today
+        if (isNewDay) {
             stepDate = today
             baselineSteps = totalSteps
             prefs.edit()
@@ -155,12 +207,37 @@ class StepCounterService : Service(), SensorEventListener {
                 .putFloat("step_baseline", totalSteps)
                 .apply()
         }
-        
-        // Notify widget provider to update
-        val updateIntent = Intent(this, AwidgetProvider::class.java).apply {
-            action = ACTION_STEP_UPDATE
+
+        hasPendingUpdate = true
+
+        // If daily reset or reboot happened, notify widget immediately
+        if (isHardwareReboot || isNewDay) {
+            flushStepUpdate()
+            return
         }
-        sendBroadcast(updateIntent)
+
+        // Screen-off check (Pocket mode): do not wake up system/widget if screen is off
+        val powerManager = getSystemService(Context.POWER_SERVICE) as? android.os.PowerManager
+        val isInteractive = powerManager?.isInteractive != false
+        if (!isInteractive) {
+            // Keep pending update; will flush immediately on ACTION_SCREEN_ON
+            return
+        }
+
+        // Screen is on: throttle to at most once per 10 seconds or 15 steps
+        val now = android.os.SystemClock.elapsedRealtime()
+        val timeSinceLast = now - lastBroadcastTimeMs
+        val stepsSinceLast = totalSteps - lastBroadcastSteps
+        val THROTTLE_MS = 10_000L
+        val STEP_THRESHOLD = 15f
+
+        if (timeSinceLast >= THROTTLE_MS || stepsSinceLast >= STEP_THRESHOLD) {
+            flushStepUpdate()
+        } else {
+            // Guarantee trailing edge update so steps are never lost when user stops walking
+            mainHandler.removeCallbacks(flushRunnable)
+            mainHandler.postDelayed(flushRunnable, THROTTLE_MS - timeSinceLast)
+        }
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {

@@ -113,6 +113,7 @@ object TasksFetcher {
         }
 
         val accentColor = context.getColor(R.color.widget_outline)
+        val taskIntent = com.leanbitlab.lwidget.render.WidgetRenderer.getLaunchIntent(context, "org.tasks")
         for (i in tasks.indices) {
             val task = tasks[i]
             val dueSuffix = formatDueSuffix(task.dueMillis)
@@ -125,7 +126,6 @@ object TasksFetcher {
             views.setTextViewTextSize(eventViews[i], android.util.TypedValue.COMPLEX_UNIT_SP, textSizeSp)
             views.setViewVisibility(eventViews[i], android.view.View.VISIBLE)
 
-            val taskIntent = context.packageManager.getLaunchIntentForPackage("org.tasks")
             if (taskIntent != null) {
                 val taskPendingIntent = PendingIntent.getActivity(context, 1000 + i, taskIntent, PendingIntent.FLAG_IMMUTABLE)
                 views.setOnClickPendingIntent(eventViews[i], taskPendingIntent)

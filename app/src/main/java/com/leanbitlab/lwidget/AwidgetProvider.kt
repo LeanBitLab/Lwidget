@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 enum class UpdateMode {
-    FULL, TICK, CALENDAR_ONLY, TASKS_ONLY, ALARM_ONLY
+    FULL, TICK, CALENDAR_ONLY, TASKS_ONLY, ALARM_ONLY, STEPS_ONLY
 }
 
 class AwidgetProvider : AppWidgetProvider() {
@@ -101,7 +101,7 @@ class AwidgetProvider : AppWidgetProvider() {
                             appWidgetIds.forEach { updateAppWidget(context, appWidgetManager, it, UpdateMode.TICK) }
                         }
                         StepCounterService.ACTION_STEP_UPDATE -> {
-                            appWidgetIds.forEach { updateAppWidget(context, appWidgetManager, it, UpdateMode.TICK) }
+                            appWidgetIds.forEach { updateAppWidget(context, appWidgetManager, it, UpdateMode.STEPS_ONLY) }
                         }
                         AlarmManager.ACTION_NEXT_ALARM_CLOCK_CHANGED -> {
                             appWidgetIds.forEach { updateAppWidget(context, appWidgetManager, it, UpdateMode.ALARM_ONLY) }
