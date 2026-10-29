@@ -116,12 +116,19 @@ class StepCounterService : Service(), SensorEventListener {
         fun startServiceIfEnabled(context: Context) {
             if (!isStepOrKeepAliveEnabled(context)) return
 
+            val showSteps = isStepsVisibleAnywhere(context)
             val hasActivityPerm = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACTIVITY_RECOGNITION) == android.content.pm.PackageManager.PERMISSION_GRANTED
             } else {
                 true
             }
-            if (!hasActivityPerm) return
+
+            // If only steps are enabled and activity permission is missing, do not start
+            if (showSteps && !hasActivityPerm) {
+                val globalPrefs = context.getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
+                val keepAlive = globalPrefs.getBoolean("keep_alive", false)
+                if (!keepAlive) return
+            }
 
             try {
                 val serviceIntent = Intent(context, StepCounterService::class.java)
@@ -242,6 +249,14 @@ class StepCounterService : Service(), SensorEventListener {
             action = ACTION_STEP_UPDATE
         }
         sendBroadcast(updateIntent)
+
+        // Update notification with live step count if steps are shown
+        try {
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager
+            notificationManager?.notify(NOTIFICATION_ID, createNotification())
+        } catch (e: Exception) {
+            android.util.Log.w("StepCounterService", "Could not update notification", e)
+        }
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
@@ -313,22 +328,39 @@ class StepCounterService : Service(), SensorEventListener {
 
     private fun createNotification(): Notification {
         val settingsIntent = Intent(this, MainActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(this, 0, settingsIntent, PendingIntent.FLAG_IMMUTABLE)
+        val pendingIntent = PendingIntent.getActivity(
+            this,
+            0,
+            settingsIntent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
 
         val showSteps = isStepsVisibleAnywhere(this)
         
         val title = if (showSteps) "Lwidget Step Counter" else "Lwidget Keep Alive"
-        val text = if (showSteps) "Counting steps in the background" else "Keeping widget updated"
+        val text = if (showSteps) {
+            val stepsToday = (lastTotalSteps - baselineSteps).toInt().coerceAtLeast(0)
+            if (stepsToday > 0) {
+                val formatted = java.text.NumberFormat.getIntegerInstance().format(stepsToday)
+                "$formatted steps today"
+            } else {
+                "Counting steps in the background"
+            }
+        } else {
+            "Keeping widget updated"
+        }
+
+        val iconRes = if (showSteps) R.drawable.ic_steps else R.drawable.ic_shield
 
         val builder = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle(title)
             .setContentText(text)
-            .setSmallIcon(R.drawable.ic_steps) 
+            .setSmallIcon(iconRes) 
             .setContentIntent(pendingIntent)
             .setOngoing(true)
-            
-        // Use a less intrusive priority
-        builder.setPriority(NotificationCompat.PRIORITY_MIN)
+            .setPriority(NotificationCompat.PRIORITY_MIN)
+            .setCategory(NotificationCompat.CATEGORY_SERVICE)
+            .setSilent(true)
             
         return builder.build()
     }

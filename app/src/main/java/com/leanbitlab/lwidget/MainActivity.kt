@@ -400,9 +400,6 @@ class MainActivity : AppCompatActivity() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q && ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED) {
             stepMissing = true
         }
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU && ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-            stepMissing = true
-        }
         if (prefs.getBoolean("show_steps", false) && stepMissing) {
              prefs.edit().putBoolean("show_steps", false).apply()
              findViewById<View>(R.id.row_steps_toggle).findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.row_switch).isChecked = false
@@ -524,6 +521,22 @@ class MainActivity : AppCompatActivity() {
              // Task permission result - trigger update
              if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                  updateWidget()
+             }
+        } else if (requestCode == 102) {
+             // Step Counter permission result
+             val hasActivityPerm = android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.Q ||
+                 ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED
+             if (hasActivityPerm) {
+                 prefs.edit().putBoolean("show_steps", true).apply()
+                 val globalPrefs = getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
+                 globalPrefs.edit().putBoolean("show_steps", true).apply()
+                 val stepsToggle = findViewById<View>(R.id.row_steps_toggle)
+                 stepsToggle?.findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.row_switch)?.isChecked = true
+                 findViewById<View>(R.id.row_steps_size)?.visibility = View.VISIBLE
+                 findViewById<View>(R.id.row_steps_bold)?.visibility = View.VISIBLE
+                 StepCounterService.startServiceIfEnabled(this)
+                 updateWidget()
+                 updateToggleAvailability()
              }
         } else if (requestCode == 103) {
              // Breezy Weather permission result
@@ -1391,20 +1404,17 @@ class MainActivity : AppCompatActivity() {
 
         stepsSwitch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-                    val neededPermissions = mutableListOf<String>()
-                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED) {
-                        neededPermissions.add(Manifest.permission.ACTIVITY_RECOGNITION)
-                    }
+                val hasActivityPerm = android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.Q ||
+                    ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED
+                if (!hasActivityPerm) {
+                    val neededPermissions = mutableListOf(Manifest.permission.ACTIVITY_RECOGNITION)
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU &&
                         ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
                         neededPermissions.add(Manifest.permission.POST_NOTIFICATIONS)
                     }
-                    if (neededPermissions.isNotEmpty()) {
-                        ActivityCompat.requestPermissions(this, neededPermissions.toTypedArray(), 102)
-                        stepsSwitch.isChecked = false
-                        return@setOnCheckedChangeListener
-                    }
+                    ActivityCompat.requestPermissions(this, neededPermissions.toTypedArray(), 102)
+                    stepsSwitch.isChecked = false
+                    return@setOnCheckedChangeListener
                 }
                 if (!checkLimit()) {
                     stepsSwitch.isChecked = false
@@ -1485,35 +1495,22 @@ class MainActivity : AppCompatActivity() {
     private fun setupKeepAliveSection() {
         // Keep Alive (now inside Advanced section, not folded)
         bindToggle(R.id.row_keep_alive_toggle, getString(R.string.row_enable_keep_alive), "keep_alive", false) { isChecked ->
+            prefs.edit().putBoolean("keep_alive", isChecked).apply()
+            getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
+                .edit().putBoolean("keep_alive", isChecked).apply()
+
             if (isChecked) {
-                val neededPermissions = mutableListOf<String>()
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q &&
-                    ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED) {
-                    neededPermissions.add(Manifest.permission.ACTIVITY_RECOGNITION)
-                }
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU &&
                     ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                    neededPermissions.add(Manifest.permission.POST_NOTIFICATIONS)
+                    ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 105)
                 }
-                if (neededPermissions.isNotEmpty()) {
-                    val switch = findViewById<View>(R.id.row_keep_alive_toggle).findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.row_switch)
-                    switch.isChecked = false
-                    ActivityCompat.requestPermissions(this, neededPermissions.toTypedArray(), 105)
-                    return@bindToggle
+                StepCounterService.startServiceIfEnabled(this)
+            } else {
+                if (!StepCounterService.isStepOrKeepAliveEnabled(this)) {
+                    stopService(Intent(this, StepCounterService::class.java))
+                } else {
+                    StepCounterService.startServiceIfEnabled(this)
                 }
-            }
-            prefs.edit().putBoolean("keep_alive", isChecked).apply()
-            val serviceIntent = Intent(this, StepCounterService::class.java)
-            val hasActivityPerm = android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.Q ||
-                ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED
-            if (isChecked && hasActivityPerm) {
-                try {
-                    ContextCompat.startForegroundService(this, serviceIntent)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            } else if (!isChecked && !StepCounterService.isStepOrKeepAliveEnabled(this)) {
-                stopService(serviceIntent)
             }
         }
     }

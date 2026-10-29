@@ -238,4 +238,53 @@ class StepCounterServiceTest {
         org.junit.Assert.assertTrue(StepCounterService.isStepOrKeepAliveEnabled(context))
         org.junit.Assert.assertTrue(StepCounterService.isStepsVisibleAnywhere(context))
     }
+
+    @Test
+    fun testHelper_isStepOrKeepAliveEnabled_keepAliveOnly() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        assertFalse(StepCounterService.isStepOrKeepAliveEnabled(context))
+
+        prefs.edit().putBoolean("keep_alive", true).apply()
+        org.junit.Assert.assertTrue(StepCounterService.isStepOrKeepAliveEnabled(context))
+        assertFalse(StepCounterService.isStepsVisibleAnywhere(context))
+    }
+
+    @Test
+    fun testNotification_liveStepCountFormat() {
+        prefs.edit()
+            .putBoolean("show_steps", true)
+            .putFloat("last_total_steps", 5432f)
+            .putFloat("step_baseline", 1000f)
+            .putString("step_date", LocalDate.now().toString())
+            .apply()
+
+        startService()
+        val shadowNotificationManager = org.robolectric.Shadows.shadowOf(
+            ApplicationProvider.getApplicationContext<Context>().getSystemService(Context.NOTIFICATION_SERVICE) as android.app.NotificationManager
+        )
+        val notification = shadowNotificationManager.getNotification(StepCounterService.NOTIFICATION_ID)
+        org.junit.Assert.assertNotNull(notification)
+        val shadowNotification = org.robolectric.Shadows.shadowOf(notification)
+        assertEquals("Lwidget Step Counter", shadowNotification.contentTitle)
+        val expectedFormatted = "${java.text.NumberFormat.getIntegerInstance().format(4432)} steps today"
+        assertEquals(expectedFormatted, shadowNotification.contentText)
+    }
+
+    @Test
+    fun testNotification_keepAliveFormat() {
+        prefs.edit()
+            .putBoolean("keep_alive", true)
+            .putBoolean("show_steps", false)
+            .apply()
+
+        startService()
+        val shadowNotificationManager = org.robolectric.Shadows.shadowOf(
+            ApplicationProvider.getApplicationContext<Context>().getSystemService(Context.NOTIFICATION_SERVICE) as android.app.NotificationManager
+        )
+        val notification = shadowNotificationManager.getNotification(StepCounterService.NOTIFICATION_ID)
+        org.junit.Assert.assertNotNull(notification)
+        val shadowNotification = org.robolectric.Shadows.shadowOf(notification)
+        assertEquals("Lwidget Keep Alive", shadowNotification.contentTitle)
+        assertEquals("Keeping widget updated", shadowNotification.contentText)
+    }
 }
