@@ -111,4 +111,7 @@
     <string name="btn_skip">Überspringen</string>
     <string name="btn_finish">Fertigstellen</string>
     <string name="btn_grant">Erteilen</string>
+    <string name="section_events_calendar_app">Kalender-App</string>
+    <string name="search_settings_hint">Einstellungen durchsuchen…</string>
+    <string name="changelog_title">Was gibt\'s Neues in v2.6</string>
 </resources>

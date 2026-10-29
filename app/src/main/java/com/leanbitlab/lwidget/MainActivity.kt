@@ -241,6 +241,15 @@ class MainActivity : AppCompatActivity() {
             windowInsets
         }
 
+        val nestedScrollView = findViewById<NestedScrollView>(R.id.nested_scroll_view)
+        nestedScrollView?.setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
+            if (scrollY > oldScrollY + 12 && fab.isExtended) {
+                fab.shrink()
+            } else if (scrollY < oldScrollY - 12 && !fab.isExtended) {
+                fab.extend()
+            }
+        }
+
     }
 
     @android.annotation.SuppressLint("MissingPermission")
@@ -2249,6 +2258,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupGlobalSettingsSearch() {
         val searchInput = findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.search_settings_input) ?: return
+        val headerNormal = findViewById<View>(R.id.header_normal)
+        val headerSearch = findViewById<View>(R.id.header_search_mode)
+        val btnSearchToggle = findViewById<View>(R.id.btn_search_toggle)
+        val btnSearchClose = findViewById<View>(R.id.btn_search_close)
+        val btnSearchClear = findViewById<View>(R.id.btn_search_clear)
+        val appBar = findViewById<AppBarLayout>(R.id.app_bar)
+
         val tabContainers = listOf(
             findViewById<View>(R.id.container_tab_style),
             findViewById<View>(R.id.container_tab_content),
@@ -2257,9 +2273,42 @@ class MainActivity : AppCompatActivity() {
         )
         val tabLayout = findViewById<com.google.android.material.tabs.TabLayout>(R.id.tab_layout)
 
+        fun closeSearch() {
+            searchInput.setText("")
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? android.view.inputmethod.InputMethodManager
+            imm?.hideSoftInputFromWindow(searchInput.windowToken, 0)
+            searchInput.clearFocus()
+            headerSearch?.visibility = View.GONE
+            headerNormal?.visibility = View.VISIBLE
+        }
+
+        fun openSearch() {
+            headerNormal?.visibility = View.GONE
+            headerSearch?.visibility = View.VISIBLE
+            appBar?.setExpanded(true, true)
+            searchInput.requestFocus()
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? android.view.inputmethod.InputMethodManager
+            imm?.showSoftInput(searchInput, android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT)
+        }
+
+        btnSearchToggle?.setOnClickListener { openSearch() }
+        btnSearchClose?.setOnClickListener { closeSearch() }
+        btnSearchClear?.setOnClickListener { searchInput.setText("") }
+
+        onBackPressedDispatcher.addCallback(this, object : androidx.activity.OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (headerSearch?.visibility == View.VISIBLE) {
+                    closeSearch()
+                } else {
+                    isEnabled = false
+                    onBackPressedDispatcher.onBackPressed()
+                }
+            }
+        })
+
         searchInput.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
-                findViewById<AppBarLayout>(R.id.app_bar)?.setExpanded(true, true)
+                appBar?.setExpanded(true, true)
             }
         }
 
@@ -2311,6 +2360,7 @@ class MainActivity : AppCompatActivity() {
             override fun afterTextChanged(s: android.text.Editable?) {
                 val query = s?.toString()?.trim()?.lowercase() ?: ""
                 val isSearching = query.isNotEmpty()
+                btnSearchClear?.visibility = if (isSearching) View.VISIBLE else View.GONE
 
                 if (isSearching) {
                     // Make all tab containers visible so search shows matches across all categories

@@ -111,4 +111,7 @@
     <string name="btn_skip">Atla</string>
     <string name="btn_finish">Tamamla</string>
     <string name="btn_grant">İzin Ver</string>
+    <string name="section_events_calendar_app">Takvim Uygulaması</string>
+    <string name="search_settings_hint">Ayarları ara…</string>
+    <string name="changelog_title">v2.6\'daki Yenilikler</string>
 </resources>

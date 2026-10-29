@@ -8,85 +8,118 @@
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#00000000"
+        android:background="?attr/colorSurface"
         android:fitsSystemWindows="true"
         app:elevation="0dp"
-        app:liftOnScroll="true"
-        app:liftOnScrollTargetViewId="@id/nested_scroll_view">
+        app:liftOnScroll="false">
 
-        <!-- SCROLLABLE HEADER SECTION (Auto-hides on scroll down) -->
-        <LinearLayout
-            android:id="@+id/header_scrollable_container"
+        <!-- SCROLLABLE TOP BAR (Auto-hides on scroll down, enters on scroll up) -->
+        <FrameLayout
+            android:id="@+id/top_bar_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_scrollFlags="scroll">
+            android:minHeight="56dp"
+            android:background="?attr/colorSurface"
+            app:layout_scrollFlags="scroll|enterAlways">
 
+            <!-- NORMAL MODE: Title, Widget Selector, and Search Toggle Icon -->
             <LinearLayout
-                android:id="@+id/header_expanded"
+                android:id="@+id/header_normal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingStart="24dp"
-                android:paddingTop="32dp"
-                android:paddingEnd="24dp"
-                android:paddingBottom="16dp">
+                android:layout_height="56dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingStart="20dp"
+                android:paddingEnd="12dp">
 
-                <TextView
-                    android:id="@+id/title_app"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Lwidget"
-                    android:textColor="?attr/colorPrimary"
-                    android:textSize="40sp"
-                    android:textStyle="bold"
-                    android:fontFamily="monospace"/>
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center_vertical">
 
-                <TextView
-                    android:id="@+id/subtitle_app"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="LeanBitLab"
-                    android:textColor="?attr/colorOnSurfaceVariant"
-                    android:textSize="16sp"
-                    android:layout_marginTop="4dp"/>
+                    <TextView
+                        android:id="@+id/title_app"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Lwidget"
+                        android:textColor="?attr/colorPrimary"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:fontFamily="monospace"
+                        android:letterSpacing="0.04" />
+
+                    <TextView
+                        android:id="@+id/subtitle_app"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Default Settings ▾"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        android:textSize="12sp"
+                        android:fontFamily="sans-serif-medium"
+                        android:paddingTop="1dp"
+                        android:paddingBottom="1dp" />
+                </LinearLayout>
+
+                <ImageButton
+                    android:id="@+id/btn_search_toggle"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/search_settings_hint"
+                    android:src="@drawable/ic_search"
+                    app:tint="?attr/colorOnSurfaceVariant" />
             </LinearLayout>
 
-        <!-- GLOBAL SETTINGS SEARCH (Above Preview) -->
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:paddingTop="4dp"
-            android:paddingBottom="4dp"
-            android:background="?attr/colorSurface">
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/search_settings_layout"
-                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            <!-- SEARCH MODE: Back, Query Field, Clear -->
+            <LinearLayout
+                android:id="@+id/header_search_mode"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:boxCornerRadiusTopStart="24dp"
-                app:boxCornerRadiusTopEnd="24dp"
-                app:boxCornerRadiusBottomStart="24dp"
-                app:boxCornerRadiusBottomEnd="24dp"
-                app:startIconDrawable="@drawable/ic_search"
-                app:endIconMode="clear_text"
-                android:hint="@string/search_settings_hint">
+                android:layout_height="56dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:visibility="gone">
+
+                <ImageButton
+                    android:id="@+id/btn_search_close"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Close search"
+                    android:src="@drawable/ic_arrow_back"
+                    app:tint="?attr/colorOnSurface" />
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/search_settings_input"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:hint="@string/search_settings_hint"
+                    android:imeOptions="actionSearch"
                     android:inputType="text"
-                    android:imeOptions="actionDone"
                     android:maxLines="1"
-                    android:textSize="14sp" />
-            </com.google.android.material.textfield.TextInputLayout>
-        </FrameLayout>
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textColorHint="?attr/colorOnSurfaceVariant"
+                    android:textSize="15sp" />
 
-        </LinearLayout>
+                <ImageButton
+                    android:id="@+id/btn_search_clear"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Clear search"
+                    android:src="@drawable/ic_close"
+                    android:visibility="gone"
+                    app:tint="?attr/colorOnSurfaceVariant" />
+            </LinearLayout>
+
+        </FrameLayout>
 
         <!-- PERSISTENT WIDGET PREVIEW CONTAINER (Pinned above tabs) -->
         <FrameLayout

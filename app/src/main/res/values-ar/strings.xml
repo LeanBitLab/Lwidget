@@ -108,4 +108,10 @@
     <string name="btn_skip">تخطي</string>
     <string name="btn_finish">إنهاء</string>
     <string name="btn_grant">منح الإذن</string>
+    <string name="official_website">الموقع الرسمي</string>
+    <string name="status_disabled">معطل</string>
+    <string name="hint_reorder_drag">اسحب العناصر لإعادة ترتيب العمود الأيمن. العناصر الباهتة معطلة في المحتوى.</string>
+    <string name="section_events_calendar_app">تطبيق التقويم</string>
+    <string name="search_settings_hint">البحث في الإعدادات…</string>
+    <string name="changelog_title">ما الجديد في v2.6</string>
 </resources>

@@ -111,4 +111,7 @@
     <string name="btn_skip">Pular</string>
     <string name="btn_finish">Concluir</string>
     <string name="btn_grant">Conceder</string>
+    <string name="section_events_calendar_app">Aplicativo de calendário</string>
+    <string name="search_settings_hint">Pesquisar configurações…</string>
+    <string name="changelog_title">Novidades da v2.6</string>
 </resources>

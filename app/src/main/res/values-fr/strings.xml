@@ -111,4 +111,7 @@
     <string name="btn_skip">Passer</string>
     <string name="btn_finish">Terminer</string>
     <string name="btn_grant">Autoriser</string>
+    <string name="section_events_calendar_app">Application Calendrier</string>
+    <string name="search_settings_hint">Rechercher dans les paramètres…</string>
+    <string name="changelog_title">Nouveautés de la v2.6</string>
 </resources>

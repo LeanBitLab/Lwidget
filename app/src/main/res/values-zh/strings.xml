@@ -108,4 +108,10 @@
     <string name="btn_skip">跳过</string>
     <string name="btn_finish">完成</string>
     <string name="btn_grant">授权</string>
+    <string name="official_website">官方网站</string>
+    <string name="status_disabled">关闭</string>
+    <string name="hint_reorder_drag">拖拽以调整右侧列的顺序。暗淡的项目当前处于关闭状态。</string>
+    <string name="section_events_calendar_app">日历应用</string>
+    <string name="search_settings_hint">搜索设置…</string>
+    <string name="changelog_title">v2.6 新特性</string>
 </resources>

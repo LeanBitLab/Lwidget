@@ -111,4 +111,7 @@
     <string name="btn_skip">Пропустить</string>
     <string name="btn_finish">Готово</string>
     <string name="btn_grant">Разрешить</string>
+    <string name="section_events_calendar_app">Приложение Календарь</string>
+    <string name="search_settings_hint">Поиск настроек…</string>
+    <string name="changelog_title">Что нового в v2.6</string>
 </resources>
