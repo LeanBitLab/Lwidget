@@ -86,14 +86,17 @@
             </com.google.android.material.textfield.TextInputLayout>
         </FrameLayout>
 
-        <!-- PINNED WIDGET PREVIEW CONTAINER -->
+        </LinearLayout>
+
+        <!-- PERSISTENT WIDGET PREVIEW CONTAINER (Pinned above tabs) -->
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:paddingTop="2dp"
-            android:paddingBottom="6dp">
+            android:paddingBottom="4dp"
+            android:background="?attr/colorSurface">
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_preview"
@@ -131,8 +134,6 @@
                 </FrameLayout>
             </com.google.android.material.card.MaterialCardView>
         </FrameLayout>
-
-        </LinearLayout>
 
         <!-- MATERIAL 3 PILL TABS (Pinned at top) -->
         <FrameLayout
