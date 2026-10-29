@@ -50,6 +50,10 @@ import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.tabs.TabLayout
 import android.view.MotionEvent
 import androidx.core.widget.NestedScrollView
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
+import androidx.transition.AutoTransition
+import androidx.transition.TransitionManager
+import com.google.android.material.appbar.AppBarLayout
 
 // Data class for reorderable items
 data class ReorderItem(
@@ -189,6 +193,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         checkAllPermissions()
+        StepCounterService.startServiceIfEnabled(this)
         setupSections()
         setupPreviewWallpaper()
         setupTabLayout()
@@ -483,6 +488,7 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         // Re-check permissions when returning (especially for Data Usage settings)
         checkAllPermissions()
+        StepCounterService.startServiceIfEnabled(this)
         setupPreviewWallpaper()
         // Force a full widget update every time the app is opened
         updateWidget()
@@ -519,46 +525,60 @@ class MainActivity : AppCompatActivity() {
 
     // ===== FOLDED SECTION HELPERS =====
 
-    // Top-level accordion: feature cards (Time, Battery, Appearance, etc.)
     private val accordionViews = mutableMapOf<String, View>()
     private val accordionHeaders = mutableMapOf<String, View>()
-    // Nested sections: own accordion among themselves
     private val nestedViews = mutableMapOf<String, View>()
     private val nestedHeaders = mutableMapOf<String, View>()
 
-    private fun collapseAllExcept(exceptKey: String) {
-        accordionViews.forEach { (key, view) ->
-            if (key != exceptKey && view.visibility == View.VISIBLE) {
-                // Extract section name from key like "section_world_clock_expanded"
-                val sectionName = key.replace("section_", "").replace("_expanded", "")
-                collapseSectionNestedContent(sectionName)
-                view.visibility = View.GONE
-                prefs.edit().putBoolean(key, false).apply()
-                accordionHeaders[key]?.let { resetChevron(it) }
-            }
-        }
-        dismissKeyboard()
-    }
+    private fun toggleSectionExpansion(
+        header: View,
+        content: View,
+        chevron: ImageView,
+        prefKey: String,
+        sectionKey: String? = null
+    ) {
+        val nestedScrollView = findViewById<NestedScrollView>(R.id.nested_scroll_view)
+        val nowExpanded = content.visibility != View.VISIBLE
 
-    private fun collapseNestedExcept(exceptKey: String) {
-        nestedViews.forEach { (key, view) ->
-            if (key != exceptKey && view.visibility == View.VISIBLE) {
-                view.visibility = View.GONE
-                prefs.edit().putBoolean(key, false).apply()
-                nestedHeaders[key]?.let { resetChevron(it) }
-            }
+        if (!nowExpanded && sectionKey != null) {
+            collapseSectionNestedContent(sectionKey)
         }
-    }
 
-    private fun resetChevron(header: View) {
-        val chevron = header.findViewById<android.widget.ImageView>(R.id.header_chevron)
-            ?: header.findViewById<android.widget.ImageView>(R.id.header_chevron_appearance_presets)
-            ?: header.findViewById<android.widget.ImageView>(R.id.header_chevron_appearance_outline)
-            ?: header.findViewById<android.widget.ImageView>(R.id.header_chevron_appearance_colors)
-            ?: header.findViewById<android.widget.ImageView>(R.id.header_chevron_appearance_theme)
-            ?: header.findViewById<android.widget.ImageView>(R.id.header_chevron_appearance_font)
-            ?: header.findViewById<android.widget.ImageView>(R.id.header_chevron_appearance_transparency)
-        chevron?.rotation = 0f
+        val parentViewGroup = (header.parent as? ViewGroup) ?: (nestedScrollView as? ViewGroup)
+        if (parentViewGroup != null) {
+            TransitionManager.beginDelayedTransition(
+                parentViewGroup,
+                AutoTransition().apply {
+                    duration = 220L
+                    interpolator = FastOutSlowInInterpolator()
+                }
+            )
+        }
+
+        content.visibility = if (nowExpanded) View.VISIBLE else View.GONE
+        prefs.edit().putBoolean(prefKey, nowExpanded).apply()
+
+        chevron.animate()
+            .rotation(if (nowExpanded) 180f else 0f)
+            .setDuration(220L)
+            .setInterpolator(FastOutSlowInInterpolator())
+            .start()
+
+        if (nowExpanded && nestedScrollView != null) {
+            header.postDelayed({
+                if (!isDestroyed && !isFinishing) {
+                    val rect = android.graphics.Rect()
+                    header.getDrawingRect(rect)
+                    nestedScrollView.offsetDescendantRectToMyCoords(header, rect)
+                    val scrollY = nestedScrollView.scrollY
+                    val viewportHeight = nestedScrollView.height
+                    val headerTop = rect.top
+                    if (headerTop < scrollY || headerTop > scrollY + (viewportHeight * 0.65f)) {
+                        nestedScrollView.smoothScrollTo(0, headerTop.coerceAtLeast(0))
+                    }
+                }
+            }, 100L)
+        }
     }
 
     private fun bindFoldedSection(
@@ -570,14 +590,15 @@ class MainActivity : AppCompatActivity() {
         defSize: Float = 14f, minSize: Float = 10f, maxSize: Float = 72f,
         selectorRowId: Int? = null, selectorOptions: List<String>? = null,
         prefSelectorKey: String? = null, defSelectorIdx: Int = 0,
+        boldRowId: Int? = null,
         isContent: Boolean = false,
         subSettingsContainerId: Int? = null,
         validateToggle: ((Boolean) -> Boolean)? = null,
         onChanged: ((Boolean) -> Unit)? = null
     ): SwitchMaterial {
         val header = findViewById<View>(headerId)
-        val chevron = header.findViewById<android.widget.ImageView>(R.id.header_chevron)
-        val headerIcon = header.findViewById<android.widget.ImageView>(R.id.header_icon)
+        val chevron = header.findViewById<ImageView>(R.id.header_chevron)
+        val headerIcon = header.findViewById<ImageView>(R.id.header_icon)
         val headerTitle = header.findViewById<TextView>(R.id.header_title)
         val content = findViewById<View>(contentId)
 
@@ -599,30 +620,16 @@ class MainActivity : AppCompatActivity() {
         content.visibility = if (isExpandedFromPrefs) View.VISIBLE else View.GONE
         chevron.rotation = if (isExpandedFromPrefs) 180f else 0f
 
-        // Header click: expand this one and collapse all others
+        // Header click: smooth expand/collapse with auto-scroll
         header.setOnClickListener {
-            val nowExpanded = content.visibility != View.VISIBLE
-            if (nowExpanded) {
-                collapseAllExcept(expandedPrefKey)
-                content.visibility = View.VISIBLE
-                prefs.edit().putBoolean(expandedPrefKey, true).apply()
-            } else {
-                // Collapsing - dismiss keyboard and close nested subsections
-                collapseSectionNestedContent(sectionKey)
-                content.visibility = View.GONE
-                prefs.edit().putBoolean(expandedPrefKey, false).apply()
-            }
-            android.animation.ObjectAnimator.ofFloat(chevron, "rotation", if (nowExpanded) 180f else 0f).apply {
-                duration = 300
-                start()
-            }
+            toggleSectionExpansion(header, content, chevron, expandedPrefKey, sectionKey)
         }
 
         // Toggle row
         val toggleRow = findViewById<View>(toggleRowId)
         val toggleSwitch = toggleRow.findViewById<SwitchMaterial>(R.id.row_switch)
         val toggleLabel = toggleRow.findViewById<TextView>(R.id.row_label)
-        val toggleCard = toggleRow.findViewById<com.google.android.material.card.MaterialCardView>(R.id.toggle_row_card)
+        val toggleCard = toggleRow.findViewById<MaterialCardView>(R.id.toggle_row_card)
         toggleLabel.text = "Enable"
 
         toggleSwitch.tag = prefShowKey
@@ -636,17 +643,19 @@ class MainActivity : AppCompatActivity() {
         subSettings?.alpha = if (isShown) 1.0f else 0.4f
         updateToggleCardStyle(toggleCard, isShown)
 
-        // Size row visibility
+        // Child rows visibility
         val sizeRow = sizeRowId?.let { findViewById<View>(it) }
         sizeRow?.visibility = if (isShown) View.VISIBLE else View.GONE
 
-        // Selector row visibility
         val selectorRow = selectorRowId?.let { findViewById<View>(it) }
         selectorRow?.visibility = if (isShown) View.VISIBLE else View.GONE
 
+        val boldRow = boldRowId?.let { findViewById<View>(it) }
+        boldRow?.visibility = if (isShown) View.VISIBLE else View.GONE
+
         onChanged?.invoke(isShown)
 
-        // Internal listener - ALWAYS handles visibility
+        // Internal listener - handles visibility with animation
         toggleSwitch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked && !checkLimit()) {
                 toggleSwitch.isChecked = false
@@ -659,8 +668,20 @@ class MainActivity : AppCompatActivity() {
             prefs.edit().putBoolean(prefShowKey, isChecked).apply()
             subSettings?.alpha = if (isChecked) 1.0f else 0.4f
             updateToggleCardStyle(toggleCard, isChecked)
+
+            val parentViewGroup = (toggleRow.parent as? ViewGroup)
+            if (parentViewGroup != null) {
+                TransitionManager.beginDelayedTransition(
+                    parentViewGroup,
+                    AutoTransition().apply {
+                        duration = 180L
+                    }
+                )
+            }
+
             sizeRow?.visibility = if (isChecked) View.VISIBLE else View.GONE
             selectorRow?.visibility = if (isChecked) View.VISIBLE else View.GONE
+            boldRow?.visibility = if (isChecked) View.VISIBLE else View.GONE
             onChanged?.invoke(isChecked)
             updateWidget()
             if (isContent) updateToggleAvailability()
@@ -731,7 +752,7 @@ class MainActivity : AppCompatActivity() {
         return toggleSwitch
     }
 
-    private fun updateToggleCardStyle(card: com.google.android.material.card.MaterialCardView?, enabled: Boolean) {
+    private fun updateToggleCardStyle(card: MaterialCardView?, enabled: Boolean) {
         if (card == null) return
         if (enabled) {
             card.setCardBackgroundColor(android.graphics.Color.TRANSPARENT)
@@ -750,11 +771,24 @@ class MainActivity : AppCompatActivity() {
     }
 
     // Helper for callers who override the toggle listener to update row visibility
-    private fun updateFeatureRowVisibility(switch: SwitchMaterial, isChecked: Boolean, sizeRowId: Int? = null) {
+    private fun updateFeatureRowVisibility(switch: SwitchMaterial, isChecked: Boolean, vararg rowIds: Int) {
         val toggleRow = switch.parent as? View
-        val toggleCard = toggleRow?.findViewById<com.google.android.material.card.MaterialCardView>(R.id.toggle_row_card)
+        val toggleCard = toggleRow?.findViewById<MaterialCardView>(R.id.toggle_row_card)
         updateToggleCardStyle(toggleCard, isChecked)
-        sizeRowId?.let { findViewById<View>(it)?.visibility = if (isChecked) View.VISIBLE else View.GONE }
+
+        val parentViewGroup = (toggleRow?.parent as? ViewGroup)
+        if (parentViewGroup != null) {
+            TransitionManager.beginDelayedTransition(
+                parentViewGroup,
+                AutoTransition().apply {
+                    duration = 180L
+                }
+            )
+        }
+
+        rowIds.forEach { id ->
+            findViewById<View>(id)?.visibility = if (isChecked) View.VISIBLE else View.GONE
+        }
     }
 
     private fun bindTimezoneSearch(
@@ -994,11 +1028,10 @@ class MainActivity : AppCompatActivity() {
     ) {
         val header = findViewById<View>(headerId)
         val content = findViewById<View>(contentId)
-        val chevronView = header.findViewById<android.widget.ImageView>(
+        val chevronView = header.findViewById<ImageView>(
             chevronViewId ?: R.id.header_chevron
         )
 
-        // Standalone toggle - no accordion, each section independent
         nestedViews[sectionKey] = content
         nestedHeaders[sectionKey] = header
 
@@ -1007,23 +1040,9 @@ class MainActivity : AppCompatActivity() {
         chevronView.rotation = if (isExpanded) 180f else 0f
 
         header.setOnClickListener {
-            val nowExpanded = content.visibility != View.VISIBLE
-            if (nowExpanded) {
-                collapseNestedExcept(sectionKey)
-                content.visibility = View.VISIBLE
-                prefs.edit().putBoolean(sectionKey, true).apply()
-            } else {
-                content.visibility = View.GONE
-                prefs.edit().putBoolean(sectionKey, false).apply()
-            }
-            android.animation.ObjectAnimator.ofFloat(chevronView, "rotation", if (nowExpanded) 180f else 0f).apply {
-                duration = 300
-                start()
-            }
+            toggleSectionExpansion(header, content, chevronView, sectionKey)
         }
-
     }
-
 
     private fun bindCategoryFoldable(headerId: Int, contentId: Int, title: String, iconResId: Int, prefKey: String) {
         accordionViews[prefKey] = findViewById(contentId)
@@ -1031,7 +1050,7 @@ class MainActivity : AppCompatActivity() {
         
         val header = findViewById<View>(headerId)
         header.findViewById<TextView>(R.id.header_title).text = title
-        val headerIcon = header.findViewById<android.widget.ImageView>(R.id.header_icon)
+        val headerIcon = header.findViewById<ImageView>(R.id.header_icon)
         if (iconResId != 0) {
             headerIcon.setImageResource(iconResId)
             headerIcon.visibility = View.VISIBLE
@@ -1040,25 +1059,13 @@ class MainActivity : AppCompatActivity() {
         }
         
         val content = findViewById<View>(contentId)
-        val chevron = header.findViewById<android.widget.ImageView>(R.id.header_chevron)
+        val chevron = header.findViewById<ImageView>(R.id.header_chevron)
         val isExpanded = prefs.getBoolean(prefKey, false)
         content.visibility = if (isExpanded) View.VISIBLE else View.GONE
         chevron.rotation = if (isExpanded) 180f else 0f
         
         header.setOnClickListener {
-            val nowExpanded = content.visibility != View.VISIBLE
-            if (nowExpanded) {
-                collapseAllExcept(prefKey)
-                content.visibility = View.VISIBLE
-                prefs.edit().putBoolean(prefKey, true).apply()
-            } else {
-                content.visibility = View.GONE
-                prefs.edit().putBoolean(prefKey, false).apply()
-            }
-            android.animation.ObjectAnimator.ofFloat(chevron, "rotation", if (nowExpanded) 180f else 0f).apply {
-                duration = 300
-                start()
-            }
+            toggleSectionExpansion(header, content, chevron, prefKey)
         }
     }
 
@@ -1209,6 +1216,7 @@ class MainActivity : AppCompatActivity() {
             R.id.content_battery, R.id.row_battery_toggle,
             "show_battery", true,
             sizeRowId = R.id.row_battery_size, prefSizeKey = "size_battery", defSize = 32f, minSize = 10f, maxSize = 74f,
+            boldRowId = R.id.row_battery_bold,
             isContent = true
         ).also { it.tag = "battery" }
         bindToggle(R.id.row_battery_bold, getString(R.string.row_bold_text), "bold_battery", true)
@@ -1222,6 +1230,7 @@ class MainActivity : AppCompatActivity() {
             "show_temp", false,
             sizeRowId = R.id.row_temp_size, prefSizeKey = "size_temp", defSize = 18f, minSize = 10f, maxSize = 74f,
             selectorRowId = R.id.row_temp_unit, selectorOptions = tempUnitOptions, prefSelectorKey = "temp_unit_idx", defSelectorIdx = 0,
+            boldRowId = R.id.row_temp_bold,
             isContent = true
         ).also { it.tag = "temp" }
         bindToggle(R.id.row_temp_bold, getString(R.string.row_bold_text), "bold_temp", false)
@@ -1233,6 +1242,7 @@ class MainActivity : AppCompatActivity() {
             R.id.content_weather, R.id.row_weather_toggle,
             "show_weather_condition", false,
             sizeRowId = R.id.row_weather_size, prefSizeKey = "size_weather", defSize = 18f, minSize = 10f, maxSize = 74f,
+            boldRowId = R.id.row_weather_bold,
             isContent = true
         ).also { it.tag = "weather_condition" }
         bindToggle(R.id.row_weather_bold, getString(R.string.row_bold_text), "bold_weather", false)
@@ -1271,7 +1281,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             prefs.edit().putBoolean("show_weather_condition", isChecked).apply()
-            updateFeatureRowVisibility(weatherSwitch, isChecked, R.id.row_weather_size)
+            updateFeatureRowVisibility(weatherSwitch, isChecked, R.id.row_weather_size, R.id.row_weather_bold)
             updateWidget()
             updateToggleAvailability()
             if (isChecked) {
@@ -1290,6 +1300,7 @@ class MainActivity : AppCompatActivity() {
             R.id.content_data, R.id.row_data_toggle,
             "show_data_usage", false,
             sizeRowId = R.id.row_data_size, prefSizeKey = "size_data", defSize = 14f, minSize = 10f, maxSize = 74f,
+            boldRowId = R.id.row_data_bold,
             isContent = true
         ).also { it.tag = "data" }
         bindToggle(R.id.row_data_bold, getString(R.string.row_bold_text), "bold_data_usage", false)
@@ -1314,7 +1325,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             prefs.edit().putBoolean("show_data_usage", isChecked).apply()
-            updateFeatureRowVisibility(dataSwitch, isChecked, R.id.row_data_size)
+            updateFeatureRowVisibility(dataSwitch, isChecked, R.id.row_data_size, R.id.row_data_bold)
             updateWidget()
             updateToggleAvailability()
             checkAllPermissions()
@@ -1327,6 +1338,7 @@ class MainActivity : AppCompatActivity() {
             R.id.content_ram, R.id.row_ram_toggle,
             "show_ram", false,
             sizeRowId = R.id.row_ram_size, prefSizeKey = "size_ram", defSize = 14f, minSize = 10f, maxSize = 74f,
+            boldRowId = R.id.row_ram_bold,
             isContent = true
         ).also { it.tag = "ram" }
         bindToggle(R.id.row_ram_bold, getString(R.string.row_bold_text), "bold_ram", false)
@@ -1339,6 +1351,7 @@ class MainActivity : AppCompatActivity() {
             R.id.content_storage, R.id.row_storage_toggle,
             "show_storage", false,
             sizeRowId = R.id.row_storage_size, prefSizeKey = "size_storage", defSize = 14f, minSize = 10f, maxSize = 74f,
+            boldRowId = R.id.row_storage_bold,
             isContent = true
         ).also { it.tag = "storage" }
         bindToggle(R.id.row_storage_bold, getString(R.string.row_bold_text), "bold_storage", false)
@@ -1350,6 +1363,7 @@ class MainActivity : AppCompatActivity() {
             R.id.content_steps, R.id.row_steps_toggle,
             "show_steps", false,
             sizeRowId = R.id.row_steps_size, prefSizeKey = "size_steps", defSize = 14f, minSize = 10f, maxSize = 74f,
+            boldRowId = R.id.row_steps_bold,
             isContent = true
         ).also { it.tag = "steps" }
         bindToggle(R.id.row_steps_bold, getString(R.string.row_bold_text), "bold_steps", false)
@@ -1377,22 +1391,33 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             prefs.edit().putBoolean("show_steps", isChecked).apply()
+            val globalPrefs = getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
+            if (isChecked) {
+                globalPrefs.edit().putBoolean("show_steps", true).apply()
+            }
             val keepAlive = prefs.getBoolean("keep_alive", false)
             val serviceIntent = Intent(this, StepCounterService::class.java)
             if (isChecked) {
                 val hasPermission = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
                     ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED
                 } else { true }
-                if (hasPermission) { startForegroundService(serviceIntent) }
-                else {
+                if (hasPermission) {
+                    try {
+                        ContextCompat.startForegroundService(this, serviceIntent)
+                    } catch (e: Exception) {
+                        Log.e("MainActivity", "Failed to start StepCounterService", e)
+                    }
+                } else {
                     prefs.edit().putBoolean("show_steps", false).apply()
                     updateWidget()
                     updateToggleAvailability()
                     checkAllPermissions()
                     return@setOnCheckedChangeListener
                 }
-            } else if (!keepAlive) { stopService(serviceIntent) }
-            updateFeatureRowVisibility(stepsSwitch, isChecked, R.id.row_steps_size)
+            } else if (!keepAlive && !StepCounterService.isStepOrKeepAliveEnabled(this)) {
+                stopService(serviceIntent)
+            }
+            updateFeatureRowVisibility(stepsSwitch, isChecked, R.id.row_steps_size, R.id.row_steps_bold)
             updateWidget()
             updateToggleAvailability()
             checkAllPermissions()
@@ -1405,6 +1430,7 @@ class MainActivity : AppCompatActivity() {
             R.id.content_screen_time, R.id.row_screen_time_toggle,
             "show_screen_time", false,
             sizeRowId = R.id.row_screen_time_size, prefSizeKey = "size_screen_time", defSize = 14f, minSize = 10f, maxSize = 74f,
+            boldRowId = R.id.row_screen_time_bold,
             isContent = true
         ).also { it.tag = "screen_time" }
         bindToggle(R.id.row_screen_time_bold, getString(R.string.row_bold_text), "bold_screen_time", false)
@@ -1429,7 +1455,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             prefs.edit().putBoolean("show_screen_time", isChecked).apply()
-            updateFeatureRowVisibility(screenTimeSwitch, isChecked, R.id.row_screen_time_size)
+            updateFeatureRowVisibility(screenTimeSwitch, isChecked, R.id.row_screen_time_size, R.id.row_screen_time_bold)
             updateWidget()
             updateToggleAvailability()
             checkAllPermissions()
@@ -1456,17 +1482,16 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             prefs.edit().putBoolean("keep_alive", isChecked).apply()
-            val showSteps = prefs.getBoolean("show_steps", false)
             val serviceIntent = Intent(this, StepCounterService::class.java)
             val hasActivityPerm = android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.Q ||
                 ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED
-            if ((isChecked || showSteps) && hasActivityPerm) {
+            if (isChecked && hasActivityPerm) {
                 try {
                     ContextCompat.startForegroundService(this, serviceIntent)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
-            } else {
+            } else if (!isChecked && !StepCounterService.isStepOrKeepAliveEnabled(this)) {
                 stopService(serviceIntent)
             }
         }
@@ -1618,14 +1643,15 @@ class MainActivity : AppCompatActivity() {
                 if (checkLimit()) {
                     tasksSwitch.isChecked = false
                     prefs.edit().putBoolean("show_events", true).putBoolean("show_tasks", false).apply()
-                    updateFeatureRowVisibility(eventsSwitch, true, R.id.row_events_size)
+                    updateFeatureRowVisibility(eventsSwitch, true, R.id.row_events_size, R.id.row_events_day_abbr, R.id.row_events_calendar_app)
+                    updateFeatureRowVisibility(tasksSwitch, false, R.id.row_tasks_size)
                     updateWidget()
                     updateToggleAvailability()
                     checkAllPermissions()
                 } else { eventsSwitch.isChecked = false }
             } else {
                 prefs.edit().putBoolean("show_events", false).apply()
-                updateFeatureRowVisibility(eventsSwitch, false, R.id.row_events_size)
+                updateFeatureRowVisibility(eventsSwitch, false, R.id.row_events_size, R.id.row_events_day_abbr, R.id.row_events_calendar_app)
                 updateWidget()
                 updateToggleAvailability()
                 checkAllPermissions()
@@ -1655,6 +1681,7 @@ class MainActivity : AppCompatActivity() {
                     eventsSwitch.isChecked = false
                     prefs.edit().putBoolean("show_tasks", true).putBoolean("show_events", false).apply()
                     updateFeatureRowVisibility(tasksSwitch, true, R.id.row_tasks_size)
+                    updateFeatureRowVisibility(eventsSwitch, false, R.id.row_events_size, R.id.row_events_day_abbr, R.id.row_events_calendar_app)
                     updateWidget()
                     updateToggleAvailability()
                     checkAllPermissions()
@@ -2143,15 +2170,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkLimit(): Boolean {
-        // Global limit removed per user request
-
-        // Subset Limit: Battery, Weather, Temp, Data, Storage (Max 5 allowed now to fit stack)
+        // Subset Limit: items in the right-side widget column
         val subsetCount = contentSwitches.count { 
-            it.isChecked && (it.tag == "battery" || it.tag == "weather_condition" || it.tag == "temp" || it.tag == "data" || it.tag == "storage" || it.tag == "ram")
+            it.isChecked && (it.tag in listOf("battery", "weather_condition", "temp", "data", "storage", "ram", "steps", "screen_time"))
         }
         
-        if (subsetCount > 6) {
-             com.google.android.material.snackbar.Snackbar.make(
+        if (subsetCount > 8) {
+            com.google.android.material.snackbar.Snackbar.make(
                 findViewById(R.id.fab_update), 
                 getString(R.string.error_max_subset_items), 
                 com.google.android.material.snackbar.Snackbar.LENGTH_SHORT
@@ -2231,6 +2256,12 @@ class MainActivity : AppCompatActivity() {
             findViewById<View>(R.id.container_tab_system)
         )
         val tabLayout = findViewById<com.google.android.material.tabs.TabLayout>(R.id.tab_layout)
+
+        searchInput.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                findViewById<AppBarLayout>(R.id.app_bar)?.setExpanded(true, true)
+            }
+        }
 
         val cardMap = mapOf(
             // Style Tab

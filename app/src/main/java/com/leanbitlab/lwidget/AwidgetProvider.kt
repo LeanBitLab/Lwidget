@@ -29,6 +29,7 @@ class AwidgetProvider : AppWidgetProvider() {
     private val receiverScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
+        StepCounterService.startServiceIfEnabled(context)
         val pendingResult = goAsync()
         receiverScope.launch {
             try {
@@ -50,6 +51,7 @@ class AwidgetProvider : AppWidgetProvider() {
         newOptions: Bundle
     ) {
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
+        StepCounterService.startServiceIfEnabled(context)
         val pendingResult = goAsync()
         receiverScope.launch {
             try {
@@ -65,11 +67,21 @@ class AwidgetProvider : AppWidgetProvider() {
     override fun onEnabled(context: Context) {
         super.onEnabled(context)
         scheduleWork(context)
+        StepCounterService.startServiceIfEnabled(context)
     }
 
     override fun onDisabled(context: Context) {
         super.onDisabled(context)
         cancelWork(context)
+        val prefs = context.getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
+        val keepAlive = prefs.getBoolean("keep_alive", false)
+        if (!keepAlive) {
+            try {
+                context.stopService(Intent(context, StepCounterService::class.java))
+            } catch (e: Exception) {
+                Log.e(TAG, "Error stopping StepCounterService onDisabled", e)
+            }
+        }
     }
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -79,9 +91,20 @@ class AwidgetProvider : AppWidgetProvider() {
         val thisAppWidget = ComponentName(context, AwidgetProvider::class.java)
         val appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidget)
 
-        if (intent.action in listOf(
-                Intent.ACTION_BOOT_COMPLETED,
-                Intent.ACTION_MY_PACKAGE_REPLACED,
+        val isBootOrReplaced = intent.action in listOf(
+            Intent.ACTION_BOOT_COMPLETED,
+            Intent.ACTION_LOCKED_BOOT_COMPLETED,
+            Intent.ACTION_MY_PACKAGE_REPLACED,
+            "android.intent.action.QUICKBOOT_POWERON",
+            "com.htc.intent.action.QUICKBOOT_POWERON"
+        )
+
+        // Ensure service is launched immediately while boot FGS exemption is active
+        if (isBootOrReplaced) {
+            StepCounterService.startServiceIfEnabled(context)
+        }
+
+        if (isBootOrReplaced || intent.action in listOf(
                 Intent.ACTION_CONFIGURATION_CHANGED,
                 ACTION_BATTERY_UPDATE,
                 StepCounterService.ACTION_STEP_UPDATE,
@@ -92,21 +115,21 @@ class AwidgetProvider : AppWidgetProvider() {
             val pendingResult = goAsync()
             receiverScope.launch {
                 try {
-                    when (intent.action) {
-                        Intent.ACTION_BOOT_COMPLETED, Intent.ACTION_MY_PACKAGE_REPLACED, Intent.ACTION_CONFIGURATION_CHANGED -> {
+                    when {
+                        isBootOrReplaced || intent.action == Intent.ACTION_CONFIGURATION_CHANGED -> {
                             scheduleWork(context)
                             appWidgetIds.forEach { updateAppWidget(context, appWidgetManager, it, UpdateMode.FULL) }
                         }
-                        ACTION_BATTERY_UPDATE -> {
+                        intent.action == ACTION_BATTERY_UPDATE -> {
                             appWidgetIds.forEach { updateAppWidget(context, appWidgetManager, it, UpdateMode.TICK) }
                         }
-                        StepCounterService.ACTION_STEP_UPDATE -> {
+                        intent.action == StepCounterService.ACTION_STEP_UPDATE -> {
                             appWidgetIds.forEach { updateAppWidget(context, appWidgetManager, it, UpdateMode.STEPS_ONLY) }
                         }
-                        AlarmManager.ACTION_NEXT_ALARM_CLOCK_CHANGED -> {
+                        intent.action == AlarmManager.ACTION_NEXT_ALARM_CLOCK_CHANGED -> {
                             appWidgetIds.forEach { updateAppWidget(context, appWidgetManager, it, UpdateMode.ALARM_ONLY) }
                         }
-                        Intent.ACTION_PROVIDER_CHANGED -> {
+                        intent.action == Intent.ACTION_PROVIDER_CHANGED -> {
                             val uri = intent.data
                             if (uri != null && uri.authority == "org.tasks") {
                                 appWidgetIds.forEach { updateAppWidget(context, appWidgetManager, it, UpdateMode.TASKS_ONLY) }
@@ -114,7 +137,7 @@ class AwidgetProvider : AppWidgetProvider() {
                                 appWidgetIds.forEach { updateAppWidget(context, appWidgetManager, it, UpdateMode.CALENDAR_ONLY) }
                             }
                         }
-                        "nodomain.freeyourgadget.gadgetbridge.ACTION_GENERIC_WEATHER" -> {
+                        intent.action == "nodomain.freeyourgadget.gadgetbridge.ACTION_GENERIC_WEATHER" -> {
                             appWidgetIds.forEach { updateAppWidget(context, appWidgetManager, it, UpdateMode.FULL) }
                         }
                     }

@@ -234,19 +234,7 @@ class SetupActivity : AppCompatActivity() {
     private fun finishSetup() {
         prefs.edit().putBoolean("is_first_launch", false).apply()
 
-        val keepAlive = prefs.getBoolean("keep_alive", false)
-        val showSteps = prefs.getBoolean("show_steps", false)
-        val hasActivityPerm = Build.VERSION.SDK_INT < Build.VERSION_CODES.Q ||
-            ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED
-
-        if ((keepAlive || showSteps) && hasActivityPerm) {
-            val serviceIntent = Intent(this, StepCounterService::class.java)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                startForegroundService(serviceIntent)
-            } else {
-                startService(serviceIntent)
-            }
-        }
+        StepCounterService.startServiceIfEnabled(this)
 
         startActivity(Intent(this, MainActivity::class.java))
         finish()

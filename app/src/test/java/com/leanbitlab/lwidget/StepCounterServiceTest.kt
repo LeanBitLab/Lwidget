@@ -200,4 +200,42 @@ class StepCounterServiceTest {
 
         assertEquals(0, dailySteps)
     }
+
+    @Test
+    fun testOnSensorChanged_rebootAcrossMidnight() {
+        // Phone turned off yesterday with 3000 steps
+        val yesterday = LocalDate.now().minusDays(1).toString()
+        prefs.edit()
+            .putString("step_date", yesterday)
+            .putFloat("last_total_steps", 3000f)
+            .putFloat("step_baseline", 500f)
+            .apply()
+
+        // Turn on phone today after reboot, sensor reports 15 steps
+        startService()
+        val event = createMockSensorEvent(15f)
+        service.onSensorChanged(event)
+
+        // Must update date to today and initialize baseline to 15
+        assertEquals(LocalDate.now().toString(), prefs.getString("step_date", ""))
+        assertEquals(15f, prefs.getFloat("step_baseline", 0f), 0.001f)
+        assertEquals(15f, prefs.getFloat("last_total_steps", 0f), 0.001f)
+
+        val dailySteps = AwidgetProvider.Companion.calculateDailySteps(
+            totalSteps = 15f,
+            baselineSteps = prefs.getFloat("step_baseline", 0f),
+            savedDate = prefs.getString("step_date", "") ?: ""
+        )
+        assertEquals(0, dailySteps)
+    }
+
+    @Test
+    fun testHelper_isStepOrKeepAliveEnabled() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        assertFalse(StepCounterService.isStepOrKeepAliveEnabled(context))
+
+        prefs.edit().putBoolean("show_steps", true).apply()
+        org.junit.Assert.assertTrue(StepCounterService.isStepOrKeepAliveEnabled(context))
+        org.junit.Assert.assertTrue(StepCounterService.isStepsVisibleAnywhere(context))
+    }
 }

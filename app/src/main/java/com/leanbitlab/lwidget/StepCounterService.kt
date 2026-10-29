@@ -5,6 +5,8 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -78,6 +80,56 @@ class StepCounterService : Service(), SensorEventListener {
         const val CHANNEL_ID = "StepCounterChannel"
         const val NOTIFICATION_ID = 42100
         const val ACTION_STEP_UPDATE = "com.leanbitlab.lwidget.ACTION_STEP_UPDATE"
+
+        fun isStepOrKeepAliveEnabled(context: Context): Boolean {
+            val globalPrefs = context.getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
+            if (globalPrefs.getBoolean("show_steps", false) || globalPrefs.getBoolean("keep_alive", false)) {
+                return true
+            }
+            val appWidgetManager = AppWidgetManager.getInstance(context)
+            val ids = appWidgetManager.getAppWidgetIds(ComponentName(context, AwidgetProvider::class.java))
+            for (id in ids) {
+                val wPrefs = context.getSharedPreferences("com.leanbitlab.lwidget.PREFS_$id", Context.MODE_PRIVATE)
+                if (wPrefs.getBoolean("show_steps", false) || wPrefs.getBoolean("keep_alive", false)) {
+                    return true
+                }
+            }
+            return false
+        }
+
+        fun isStepsVisibleAnywhere(context: Context): Boolean {
+            val globalPrefs = context.getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
+            if (globalPrefs.getBoolean("show_steps", false)) {
+                return true
+            }
+            val appWidgetManager = AppWidgetManager.getInstance(context)
+            val ids = appWidgetManager.getAppWidgetIds(ComponentName(context, AwidgetProvider::class.java))
+            for (id in ids) {
+                val wPrefs = context.getSharedPreferences("com.leanbitlab.lwidget.PREFS_$id", Context.MODE_PRIVATE)
+                if (wPrefs.getBoolean("show_steps", false)) {
+                    return true
+                }
+            }
+            return false
+        }
+
+        fun startServiceIfEnabled(context: Context) {
+            if (!isStepOrKeepAliveEnabled(context)) return
+
+            val hasActivityPerm = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACTIVITY_RECOGNITION) == android.content.pm.PackageManager.PERMISSION_GRANTED
+            } else {
+                true
+            }
+            if (!hasActivityPerm) return
+
+            try {
+                val serviceIntent = Intent(context, StepCounterService::class.java)
+                ContextCompat.startForegroundService(context, serviceIntent)
+            } catch (e: Exception) {
+                android.util.Log.e("StepCounterService", "Failed to start StepCounterService", e)
+            }
+        }
     }
 
     override fun onCreate() {
@@ -102,24 +154,27 @@ class StepCounterService : Service(), SensorEventListener {
             return
         }
         
-        val showSteps = prefs.getBoolean("show_steps", false)
-        val keepAlive = prefs.getBoolean("keep_alive", false)
+        val showSteps = isStepsVisibleAnywhere(this)
+        val isNeeded = isStepOrKeepAliveEnabled(this)
         
         // If steps is explicitly enabled, require ACTIVITY_RECOGNITION
-        if (showSteps && ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACTIVITY_RECOGNITION) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
-            // If keep_alive is also on, continue without steps; otherwise stop
+        val hasActivityPerm = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACTIVITY_RECOGNITION) == android.content.pm.PackageManager.PERMISSION_GRANTED
+        if (showSteps && !hasActivityPerm) {
+            val keepAlive = prefs.getBoolean("keep_alive", false)
             if (!keepAlive) {
                 stopSelf()
                 return
             }
+        }
+        if (!isNeeded) {
+            stopSelf()
+            return
         }
 
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
         
         // Always register the step sensor if available and permission is granted
-        // (even in keep-alive-only mode, counting in background doesn't hurt)
-        val hasActivityPerm = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACTIVITY_RECOGNITION) == android.content.pm.PackageManager.PERMISSION_GRANTED
         if (hasActivityPerm) {
             stepSensor?.let {
                 sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL)
@@ -142,7 +197,15 @@ class StepCounterService : Service(), SensorEventListener {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        // Sticky so it restarts if killed
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                startForeground(NOTIFICATION_ID, createNotification(), android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_HEALTH)
+            } else {
+                startForeground(NOTIFICATION_ID, createNotification())
+            }
+        } catch (e: Exception) {
+            android.util.Log.e("StepCounterService", "Cannot start foreground in onStartCommand", e)
+        }
         return START_STICKY
     }
 
@@ -186,26 +249,30 @@ class StepCounterService : Service(), SensorEventListener {
         
         val totalSteps = event.values[0]
 
-        // Hardware rebooted and reset the total steps to 0
-        val isHardwareReboot = totalSteps < lastTotalSteps
-        if (isHardwareReboot) {
-            baselineSteps = totalSteps - (lastTotalSteps - baselineSteps)
-            prefs.edit().putFloat("step_baseline", baselineSteps).apply()
-        }
-        
-        lastTotalSteps = totalSteps
-        prefs.edit().putFloat("last_total_steps", totalSteps).apply()
-
-        // Daily reset logic
+        // Daily reset and reboot handling
         val today = java.time.LocalDate.now().toString()
         val isNewDay = stepDate != today
+        var isHardwareReboot = false
+
         if (isNewDay) {
             stepDate = today
             baselineSteps = totalSteps
+            lastTotalSteps = totalSteps
             prefs.edit()
                 .putString("step_date", today)
                 .putFloat("step_baseline", totalSteps)
+                .putFloat("last_total_steps", totalSteps)
                 .apply()
+        } else {
+            // Hardware rebooted and reset the total steps counter
+            isHardwareReboot = totalSteps < lastTotalSteps
+            if (isHardwareReboot) {
+                val stepsWalkedTodayBeforeReboot = (lastTotalSteps - baselineSteps).coerceAtLeast(0f)
+                baselineSteps = totalSteps - stepsWalkedTodayBeforeReboot
+                prefs.edit().putFloat("step_baseline", baselineSteps).apply()
+            }
+            lastTotalSteps = totalSteps
+            prefs.edit().putFloat("last_total_steps", totalSteps).apply()
         }
 
         hasPendingUpdate = true
@@ -248,7 +315,7 @@ class StepCounterService : Service(), SensorEventListener {
         val settingsIntent = Intent(this, MainActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(this, 0, settingsIntent, PendingIntent.FLAG_IMMUTABLE)
 
-        val showSteps = prefs.getBoolean("show_steps", false)
+        val showSteps = isStepsVisibleAnywhere(this)
         
         val title = if (showSteps) "Lwidget Step Counter" else "Lwidget Keep Alive"
         val text = if (showSteps) "Counting steps in the background" else "Keeping widget updated"
