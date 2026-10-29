@@ -113,5 +113,5 @@
     <string name="btn_grant">Conceder</string>
     <string name="section_events_calendar_app">Aplicación de calendario</string>
     <string name="search_settings_hint">Buscar ajustes…</string>
-    <string name="changelog_title">Novedades de la versión 2.6</string>
+    <string name="changelog_title">Novedades de la versión 2.7</string>
 </resources>

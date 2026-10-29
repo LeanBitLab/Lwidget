@@ -113,5 +113,5 @@
     <string name="hint_reorder_drag">दाएं कॉलम का क्रम बदलने के लिए आइटम खींचें। धुंधले आइटम बंद हैं।</string>
     <string name="section_events_calendar_app">कैलेंडर ऐप</string>
     <string name="search_settings_hint">सेटिंग्स खोजें…</string>
-    <string name="changelog_title">v2.6 में नया क्या है</string>
+    <string name="changelog_title">v2.7 में नया क्या है</string>
 </resources>

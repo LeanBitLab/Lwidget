@@ -1,0 +1,5 @@
+• Slim auto-hiding top header and in-place expandable search
+• Pedometer reboot stability and live daily step count notification
+• Battery optimizations with pocket mode and throttled updates
+• Ambient text shadows and refined inline charging glyph across all fonts
+• Modernized Material 3 icon system and 100% complete translations

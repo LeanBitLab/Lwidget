@@ -1,0 +1,87 @@
+<en-US>
+• Slim auto-hiding top header and in-place expandable search
+• Pedometer reboot stability and live daily step count notification
+• Battery optimizations with pocket mode and throttled updates
+• Ambient text shadows and refined inline charging glyph across all fonts
+• Modernized Material 3 icon system and 100% complete translations
+</en-US>
+
+<ar>
+• شريط علوي نحيف يختفي تلقائياً عند التمرير مع بحث مدمج قابل للتوسيع
+• استقرار عداد الخطوات بعد إعادة تشغيل الجهاز وإشعار مباشر بعدد الخطوات
+• تحسينات استهلاك البطارية مع وضع الجيب وتقليل تكرار التحديثات
+• ظلال نص محيطية ورمز شحن مدمج أنيق لجميع أنماط الخطوط
+• تحديث شامل لجميع الأيقونات وفق معايير Material 3 واكتمال الترجمات
+</ar>
+
+<de-DE>
+• Schlanke, automatisch ausblendende Kopfzeile mit erweiterbarer Suche
+• Stabiler Schrittzähler nach Geräteneustarts und Live-Schritt-Benachrichtigung
+• Batterie-Optimierungen mit Taschenmodus und gedrosselten Updates
+• Dezente Textschatten und integrierte Ladeanzeige für alle Schriftstile
+• Modernisiertes Material-3-Iconsystem und 100% vollständige Übersetzungen
+</de-DE>
+
+<es-ES>
+• Barra superior compacta con auto-ocultación al deslizar y búsqueda expandible
+• Estabilidad del podómetro tras reiniciar y notificación con pasos en vivo
+• Optimización de batería con modo bolsillo y actualizaciones reguladas
+• Sombras de texto ambientales y glifo de carga integrado en todas las fuentes
+• Sistema de iconos Material 3 modernizado y traducciones al 100% completas
+</es-ES>
+
+<fr-FR>
+• Barre supérieure épurée qui se masque au défilement avec recherche extensible
+• Podomètre stable après redémarrage et notification des pas en direct
+• Optimisation de batterie avec mode poche et mises à jour cadencées
+• Ombres de texte ambiantes et indicateur de charge intégré sur toutes les polices
+• Système d'icônes modernisé en Material 3 et traductions complètes à 100%
+</fr-FR>
+
+<hi-IN>
+• स्क्रॉल पर ऑटो-हाइड होने वाला स्लिम हेडर और एक्सपैंडेबल सर्च
+• डिवाइस रीस्टार्ट के बाद पेडोमीटर स्थिरता और लाइव स्टेप काउंट नोटिफिकेशन
+• पॉकेट मोड और थ्रॉटल्ड अपडेट्स के साथ बैटरी दक्षता में सुधार
+• सभी फ़ॉन्ट्स पर एंबियंट टेक्स्ट शैडो और नया इनलाइन चार्जिंग ग्लिफ़
+• आधुनिक Material 3 आइकन सिस्टम और 100% पूर्ण बहुभाषी अनुवाद
+</hi-IN>
+
+<ja-JP>
+• スクロール時に自動で隠れるスリムな上部バーと展開式検索機能
+• 端末再起動後の歩数計の安定性向上とリアルタイム歩数通知
+• ポケットモードと更新頻度制御によるバッテリー消費の大幅削減
+• すべてのフォントスタイルに環境テキスト影とインライン充電表示を追加
+• Material 3準拠の洗練されたアイコンと全言語の完全翻訳
+</ja-JP>
+
+<pt-BR>
+• Cabeçalho compacto que oculta na rolagem com busca expansível no topo
+• Estabilidade do pedômetro após reiniciar e notificação de passos em tempo real
+• Otimizações de bateria com modo de bolso e atualizações controladas
+• Sombras de texto ambientais e glifo de recarga integrado em todas as fontes
+• Sistema de ícones modernizado em Material 3 e traduções 100% completas
+</pt-BR>
+
+<ru-RU>
+• Компактная автоскрываемая верхняя панель с раскрывающимся поиском
+• Стабильная работа шагомера после перезагрузки и живые уведомления о шагах
+• Оптимизация батареи с режимом кармана и ограничением частых обновлений
+• Мягкие тени текста и значок зарядки для всех стилей шрифтов
+• Обновленный набор иконок в стиле Material 3 и 100% полный перевод
+</ru-RU>
+
+<tr-TR>
+• Kaydırırken otomatik gizlenen ince üst başlık ve genişletilebilir arama
+• Yeniden başlatma sonrası kararlı adım sayar ve anlık adım bildirimi
+• Cep modu ve sınırlandırılmış güncellemelerle pil tasarrufu optimizasyonları
+• Tüm yazı tipleri için ortam metin gölgeleri ve satır içi şarj simgesi
+• Modernize edilmiş Material 3 simge seti ve %100 eksiksiz çeviriler
+</tr-TR>
+
+<zh-CN>
+• 页面滚动时自动隐藏的轻量化顶栏与展开式搜索
+• 解决设备重启后的计步重置问题并支持实时步数常驻通知
+• 口袋省电模式与智能节流更新带来的电池优化
+• 为所有字体风格添加自然文字阴影与行内充电指示图标
+• 全面换新 Material 3 矢量图标体系并补全所有语言翻译
+</zh-CN>

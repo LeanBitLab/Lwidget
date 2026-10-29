@@ -113,5 +113,5 @@
     <string name="hint_reorder_drag">ドラッグして右列の並び順を変更します。薄暗い項目は無効です。</string>
     <string name="section_events_calendar_app">カレンダーアプリ</string>
     <string name="search_settings_hint">設定を検索…</string>
-    <string name="changelog_title">v2.6 の新機能</string>
+    <string name="changelog_title">v2.7 の新機能</string>
 </resources>
