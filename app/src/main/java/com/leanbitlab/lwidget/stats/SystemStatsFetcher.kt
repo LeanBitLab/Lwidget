@@ -71,8 +71,20 @@ object SystemStatsFetcher {
         val scale = batteryStatus?.getIntExtra(BatteryManager.EXTRA_SCALE, -1) ?: 100
         val batteryPct = (level * 100 / scale.toFloat()).toInt()
 
+        val status = batteryStatus?.getIntExtra(BatteryManager.EXTRA_STATUS, -1) ?: -1
+        val isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING || status == BatteryManager.BATTERY_STATUS_FULL
+
         if (showBattery) {
-            val batterySpannable = SpannableString("${batteryPct}%")
+            val batteryText = if (isCharging) "⚡${batteryPct}%" else "${batteryPct}%"
+            val batterySpannable = SpannableString(batteryText)
+            if (isCharging) {
+                batterySpannable.setSpan(
+                    RelativeSizeSpan(0.8f),
+                    0,
+                    1,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
             batterySpannable.setSpan(
                 RelativeSizeSpan(0.5f),
                 batterySpannable.length - 1,

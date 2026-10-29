@@ -52,7 +52,11 @@
         android:textSize="48sp"
         android:textColor="#FFFFFF"
         android:textStyle="bold"
-        android:includeFontPadding="false"/>
+        android:includeFontPadding="false"
+        android:shadowColor="#A0000000"
+        android:shadowRadius="5"
+        android:shadowDx="1"
+        android:shadowDy="1"/>
     </LinearLayout>
 
     <!-- Battery (Top Right) -->
@@ -66,7 +70,11 @@
         android:textSize="48sp"
         android:includeFontPadding="false"
         android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"/>
+        android:layout_alignParentEnd="true"
+        android:shadowColor="#A0000000"
+        android:shadowRadius="5"
+        android:shadowDx="1"
+        android:shadowDy="1"/>
 
     <!-- Weather Condition (Below Battery) -->
     <LinearLayout
@@ -84,7 +92,11 @@
             android:text=""
             android:textColor="#CCFFFFFF"
             android:textSize="18sp"
-            android:includeFontPadding="false" />
+            android:includeFontPadding="false"
+        android:shadowColor="#A0000000"
+        android:shadowRadius="5"
+        android:shadowDx="1"
+        android:shadowDy="1"/>
         <ImageView
             android:id="@+id/icon_weather"
             android:layout_width="16dp"
@@ -104,7 +116,11 @@
         android:textColor="#CCFFFFFF"
         android:textSize="18sp"
         android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"/>
+        android:layout_alignParentEnd="true"
+        android:shadowColor="#A0000000"
+        android:shadowRadius="5"
+        android:shadowDx="1"
+        android:shadowDy="1"/>
 
     <!-- Data Usage (Below Temp) -->
     <TextView
@@ -117,7 +133,10 @@
         android:visibility="gone"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        />
+        android:shadowColor="#A0000000"
+        android:shadowRadius="5"
+        android:shadowDx="1"
+        android:shadowDy="1"/>
     <TextView
         android:id="@+id/text_storage"
         android:layout_width="wrap_content"
@@ -128,7 +147,10 @@
         android:visibility="gone"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        />
+        android:shadowColor="#A0000000"
+        android:shadowRadius="5"
+        android:shadowDx="1"
+        android:shadowDy="1"/>
     <TextView
         android:id="@+id/text_ram"
         android:layout_width="wrap_content"
@@ -139,7 +161,10 @@
         android:visibility="gone"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        />
+        android:shadowColor="#A0000000"
+        android:shadowRadius="5"
+        android:shadowDx="1"
+        android:shadowDy="1"/>
 
     <!-- Steps (Below Storage) -->
     <LinearLayout
@@ -158,7 +183,11 @@
             android:text="0"
             android:textColor="#CCFFFFFF"
             android:textSize="14sp"
-            android:includeFontPadding="false"/>
+            android:includeFontPadding="false"
+        android:shadowColor="#A0000000"
+        android:shadowRadius="5"
+        android:shadowDx="1"
+        android:shadowDy="1"/>
         <ImageView
             android:id="@+id/icon_steps"
             android:layout_width="14dp"
@@ -184,7 +213,11 @@
             android:text="0h 0m"
             android:textColor="#CCFFFFFF"
             android:textSize="14sp"
-            android:includeFontPadding="false"/>
+            android:includeFontPadding="false"
+        android:shadowColor="#A0000000"
+        android:shadowRadius="5"
+        android:shadowDx="1"
+        android:shadowDy="1"/>
         <ImageView
             android:id="@+id/icon_screen_time"
             android:layout_width="14dp"
@@ -213,7 +246,10 @@
         android:format24Hour="EEEE, MMMM dd"
         android:textSize="18sp"
         android:textColor="#CCFFFFFF"
-        />
+        android:shadowColor="#A0000000"
+        android:shadowRadius="5"
+        android:shadowDx="1"
+        android:shadowDy="1"/>
 
         <LinearLayout
             android:id="@+id/layout_world_clock"
@@ -237,7 +273,11 @@
                 android:text=""
                 android:textColor="#CCFFFFFF"
                 android:textSize="14sp"
-                android:includeFontPadding="false"/>
+                android:includeFontPadding="false"
+        android:shadowColor="#A0000000"
+        android:shadowRadius="5"
+        android:shadowDx="1"
+        android:shadowDy="1"/>
         </LinearLayout>
 
         <LinearLayout
@@ -252,11 +292,15 @@
                 android:id="@+id/text_alarm_divider"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="|"
+                android:text="•"
                 android:textColor="#CCFFFFFF"
                 android:textSize="14sp"
                 android:includeFontPadding="false"
-                android:layout_marginEnd="6dp" />
+                android:layout_marginEnd="6dp"
+        android:shadowColor="#A0000000"
+        android:shadowRadius="5"
+        android:shadowDx="1"
+        android:shadowDy="1"/>
             <ImageView
                 android:id="@+id/icon_next_alarm"
                 android:layout_width="14dp"
@@ -271,7 +315,11 @@
                 android:text=""
                 android:textColor="#CCFFFFFF"
                 android:textSize="14sp"
-                android:includeFontPadding="false" />
+                android:includeFontPadding="false"
+        android:shadowColor="#A0000000"
+        android:shadowRadius="5"
+        android:shadowDx="1"
+        android:shadowDy="1"/>
         </LinearLayout>
     </LinearLayout>
 
