@@ -231,17 +231,29 @@ class MainActivity : AppCompatActivity() {
             updateLivePreview()
         }
 
-        // Apply navigation bar insets to FAB so it doesn't overlap gesture nav
-        ViewCompat.setOnApplyWindowInsetsListener(fab) { view, windowInsets ->
-            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
-            view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                bottomMargin = insets.bottom + (24 * resources.displayMetrics.density).toInt()
-                rightMargin = insets.right + (24 * resources.displayMetrics.density).toInt()
+        val rootLayout = findViewById<androidx.coordinatorlayout.widget.CoordinatorLayout>(R.id.coordinator_layout)
+
+        // Unified WindowInsets handler: maintains solid status bar background and clips scrolling content cleanly
+        ViewCompat.setOnApplyWindowInsetsListener(rootLayout) { _, windowInsets ->
+            val statusBars = windowInsets.getInsets(WindowInsetsCompat.Type.statusBars())
+            val navBars = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars())
+
+            rootLayout.setPadding(0, statusBars.top, 0, 0)
+            fab.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                bottomMargin = navBars.bottom + (24 * resources.displayMetrics.density).toInt()
+                rightMargin = navBars.right + (24 * resources.displayMetrics.density).toInt()
             }
             windowInsets
         }
 
         val nestedScrollView = findViewById<NestedScrollView>(R.id.nested_scroll_view)
+        val scrollContent = findViewById<View>(R.id.nested_scroll_content)
+        nestedScrollView?.post {
+            val topBarHeight = findViewById<View>(R.id.top_bar_container)?.height ?: 0
+            val targetMinHeight = nestedScrollView.height + topBarHeight
+            scrollContent?.minimumHeight = targetMinHeight
+        }
+
         nestedScrollView?.setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
             if (scrollY > oldScrollY + 12 && fab.isExtended) {
                 fab.shrink()

@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/coordinator_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface"
+    android:clipToPadding="true">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorSurface"
-        android:fitsSystemWindows="true"
         app:elevation="0dp"
         app:liftOnScroll="false">
 
@@ -20,7 +22,7 @@
             android:layout_height="wrap_content"
             android:minHeight="56dp"
             android:background="?attr/colorSurface"
-            app:layout_scrollFlags="scroll|enterAlways">
+            app:layout_scrollFlags="scroll|enterAlways|snap">
 
             <!-- NORMAL MODE: Title, Widget Selector, and Search Toggle Icon -->
             <LinearLayout
@@ -214,6 +216,7 @@
         android:paddingTop="8dp">
 
         <LinearLayout
+            android:id="@+id/nested_scroll_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
