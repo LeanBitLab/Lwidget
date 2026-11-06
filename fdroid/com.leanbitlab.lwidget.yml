@@ -14,16 +14,6 @@ Repo: https://github.com/LeanBitLab/Lwidget.git
 Binaries: https://github.com/LeanBitLab/Lwidget/releases/download/v%v/app-release.apk
 
 Builds:
-  - versionName: '2.8'
-    versionCode: 23
-    commit: 83c2de587d22bdfaac051e7b5b60f73d406ac332
-    subdir: app
-    gradle:
-      - yes
-    prebuild:
-      - echo "org.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=1024m" >> ../gradle.properties
-      - sed -i -e '/lint {/a abortOnError = false; checkReleaseBuilds = false' build.gradle.kts
-
   - versionName: '2.9'
     versionCode: 24
     commit: f181010821465e7d8e7c51392c76552d38d6a2e2
