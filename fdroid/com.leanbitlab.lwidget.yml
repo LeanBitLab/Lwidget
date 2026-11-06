@@ -1,0 +1,39 @@
+Categories:
+  - System
+  - Theming
+License: GPL-3.0-or-later
+AuthorName: LeanBitLab
+SourceCode: https://github.com/LeanBitLab/Lwidget
+IssueTracker: https://github.com/LeanBitLab/Lwidget/issues
+Changelog: https://github.com/LeanBitLab/Lwidget/releases
+
+AutoName: Lwidget
+Summary: Ultra-lightweight, battery-friendly, privacy-first Material You widget
+Description: |-
+  Ultra-lightweight, battery-friendly, privacy-first Material You home screen widget.
+
+  Features:
+  * Time and Date display with custom font styles and formats
+  * Calendar events integration (synced and local device calendars)
+  * Tasks.org integration for active and overdue tasks
+  * Local weather integration via Breezy Weather
+  * Real-time battery level, temperature, and charging status
+  * Built-in hardware pedometer step counter
+  * Device storage and RAM monitors
+  * Next alarm and world clock
+
+RepoType: git
+Repo: https://github.com/LeanBitLab/Lwidget.git
+
+Builds:
+  - versionName: '2.7'
+    versionCode: 22
+    commit: v2.7
+    subdir: app
+    gradle:
+      - yes
+
+AutoUpdateMode: Version
+UpdateCheckMode: Tags
+CurrentVersion: '2.7'
+CurrentVersionCode: 22
