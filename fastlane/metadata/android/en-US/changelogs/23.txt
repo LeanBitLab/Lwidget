@@ -1,0 +1,5 @@
+• Support 24-hour time format for calendar events
+• World clock 12h/24h format fix with native battery-free auto-ticking
+• Live periodic screen time refresh during routine widget updates
+• Battery and performance optimizations for system stats and receivers
+• Official F-Droid metadata recipe and reproducible build readiness

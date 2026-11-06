@@ -1,0 +1,87 @@
+<en-US>
+• Support 24-hour time format for calendar events
+• World clock 12h/24h format fix with native battery-free auto-ticking
+• Live periodic screen time refresh during routine widget updates
+• Battery and performance optimizations for system stats and receivers
+• Official F-Droid metadata recipe and reproducible build readiness
+</en-US>
+
+<ar>
+• دعم تنسيق 24 ساعة لأحداث التقويم
+• إصلاح تنسيق 12/24 ساعة للساعة العالمية مع تحديث تلقائي أصلي وموفر للطاقة
+• تحديث دوري فوري لوقت الشاشة أثناء تحديثات القطعة الروتينية
+• تحسينات الأداء والبطارية لإحصائيات النظام ومستقبلات البث
+• وصفة بيانات تعريف F-Droid الرسمية وجاهزية البناء القابل لإعادة الإنتاج
+</ar>
+
+<de-DE>
+• Unterstützung des 24-Stunden-Formats für Kalenderereignisse
+• Fehlerbehebung für das 12h/24h-Format der Weltuhr mit nativem, akkuschonendem Takt
+• Periodische Aktualisierung der Bildschirmzeit bei Routine-Widget-Updates
+• Akku- und Leistungsoptimierungen für Systemstatistiken und Broadcast-Empfänger
+• Offizielle F-Droid-Metadaten und Vorbereitung für reproduzierbare Builds
+</de-DE>
+
+<es-ES>
+• Compatibilidad con el formato de 24 horas para eventos del calendario
+• Corrección del formato 12h/24h del reloj mundial con actualización nativa sin consumo extra
+• Actualización periódica en vivo del tiempo de pantalla en el widget
+• Optimizaciones de batería y rendimiento para estadísticas del sistema y receptores
+• Receta oficial de metadatos de F-Droid y preparación para compilaciones reproducibles
+</es-ES>
+
+<fr-FR>
+• Prise en charge du format 24 heures pour les événements du calendrier
+• Correction du format 12h/24h de l'horloge mondiale avec mise à jour native économe en batterie
+• Actualisation périodique du temps d'écran lors des mises à jour du widget
+• Optimisations de la batterie et des performances pour les statistiques système
+• Fiche de métadonnées F-Droid officielle et préparation des builds reproductibles
+</fr-FR>
+
+<hi-IN>
+• कैलेंडर इवेंट्स के लिए 24-घंटे समय प्रारूप का समर्थन
+• विश्व घड़ी 12h/24h प्रारूप सुधार और बैटरी-कुशल स्वचालित टिकिंग
+• विजेट के नियमित अपडेट के दौरान स्क्रीन टाइम का लाइव आवधिक रिफ्रेश
+• सिस्टम सांख्यिकी और रिसीवर के लिए बैटरी और प्रदर्शन अनुकूलन
+• आधिकारिक F-Droid मेटाडेटा रेसिपी और पुनरुत्पादक बिल्ड तैयारी
+</hi-IN>
+
+<ja-JP>
+• カレンダーイベントの24時間制表示に対応
+• 世界時計の12時間/24時間表示修正とバッテリー消費ゼロの自動分刻み更新
+• 定期ウィジェット更新時のスクリーンタイム自動リフレッシュ
+• システム統計とブロードキャスト受信のバッテリー・パフォーマンス最適化
+• 公式F-Droidメタデータレシピ追加と再現可能なビルド対応
+</ja-JP>
+
+<pt-BR>
+• Suporte ao formato de 24 horas para eventos do calendário
+• Correção do formato 12h/24h do relógio mundial com atualização nativa sem gasto de bateria
+• Atualização periódica do tempo de tela durante as atualizações de rotina do widget
+• Otimizações de bateria e desempenho para estatísticas do sistema e receptores
+• Receita oficial de metadatos do F-Droid e preparação para builds reproduzíveis
+</pt-BR>
+
+<ru-RU>
+• Поддержка 24-часового формата времени для событий календаря
+• Исправление формата 12/24 ч для мирового времени с нативным энергоэффективным обновлением
+• Периодическое обновление времени экрана при штатных обновлениях виджета
+• Оптимизация расхода батареи и производительности системной статистики
+• Официальный рецепт метаданных для F-Droid и готовность к воспроизводимой сборке
+</ru-RU>
+
+<tr-TR>
+• Takvim etkinlikleri için 24 saatlik zaman biçimi desteği
+• Pil tasarruflu yerel dakika güncellemesiyle dünya saati 12s/24s biçim düzeltmesi
+• Rutin widget güncellemeleri sırasında ekran süresinin canlı periyodik yenilenmesi
+• Sistem istatistikleri ve alıcılar için pil ve performans optimizasyonları
+• Resmi F-Droid meta veri tarifi ve tekrarlanabilir derleme hazırlığı
+</tr-TR>
+
+<zh-CN>
+• 日历日程支持 24 小时制时间格式
+• 修复世界时钟 12/24 小时格式并支持原生零功耗分秒走时
+• 小部件常规刷新时实时更新屏幕使用时间
+• 系统状态与广播接收器的电池与性能优化
+• 添加官方 F-Droid 元数据配方并完善可重现构建
+</zh-CN>
