@@ -1,0 +1,5 @@
+• Strip proprietary dependency metadata for 100% reproducible FOSS builds
+• Enhanced ProGuard and R8 rules preserving widget components and serialization
+• Performance and IPC optimizations for weather deserialization and task queries
+• Configured 4GB build heap and optimized lint rules for CI and F-Droid pipelines
+• Updated store graphics and screenshots in fastlane metadata

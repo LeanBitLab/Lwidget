@@ -74,7 +74,7 @@
     <string name="section_changelog">Notes et changements</string>
     <string name="changelog_version">Version %s</string>
     <string name="changelog_note">Lwidget fonctionne sans service en arrière-plan. Cependant, désactivez l\'optimisation de batterie pour garantir des mises à jour fiables.</string>
-    <string name="changelog_content">Nouveautés de la v2.0 :\n• Réorganisation des éléments du widget\n• Personnalisation uniforme\n• Améliorations des paramètres\n• Optimisations et corrections</string>
+    <string name="changelog_content">Nouveautés de la v2.9 :\n• Conformité aux builds reproductibles F-Droid (suppression des métadonnées de dépendances propriétaires)\n• Règles ProGuard et R8 améliorées pour les composants du widget et la sérialisation\n• Optimisations des performances pour la météo et les requêtes de tâches\n• Mise à jour des graphismes et captures de l\'application sur les stores\n• Améliorations de configuration et de stabilité de build</string>
     <string name="changelog_testing_notice">Si vous aimez Lwidget, laissez un avis sur Google Play.</string>
     <string name="github_source_code">Code source (GitHub)</string>
     <string name="privacy_policy">Politique de confidentialité</string>
@@ -113,5 +113,5 @@
     <string name="btn_grant">Autoriser</string>
     <string name="section_events_calendar_app">Application Calendrier</string>
     <string name="search_settings_hint">Rechercher dans les paramètres…</string>
-    <string name="changelog_title">Nouveautés de la v2.8</string>
+    <string name="changelog_title">Nouveautés de la v2.9</string>
 </resources>

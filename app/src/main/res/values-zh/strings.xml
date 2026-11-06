@@ -71,7 +71,7 @@
     <string name="section_changelog">说明与更新日志</string>
     <string name="changelog_version">版本 %s</string>
     <string name="changelog_note">Lwidget 无需后台服务即可运行。但某些设备可能会杀后台以省电，导致小部件停止更新：\n\n• 请在系统设置中将 Lwidget 设为不受电池优化限制。\n• 或开启“后台保活”。\n• 或开启“计步器”。</string>
-    <string name="changelog_content">v2.0 新特性：\n• 支持自定义排序小部件元素\n• 统一设置界面设计\n• 设置页面布局优化\n• 性能优化与问题修复</string>
+    <string name="changelog_content">v2.9 新特性：\n• 符合 F-Droid 可重现构建标准（剥离专有依赖项元数据）\n• 增强小部件组件与数据序列化的 ProGuard / R8 混淆优化规则\n• 优化天气数据反序列化与待办事项查询性能\n• 更新 fastlane 应用商店屏幕截图与展示图\n• 改进构建配置与整体运行稳定性</string>
     <string name="changelog_testing_notice">如果您喜欢 Lwidget，请在 Google Play 上给予好评支持！</string>
     <string name="github_source_code">源代码 (GitHub)</string>
     <string name="privacy_policy">隐私政策</string>
@@ -113,5 +113,5 @@
     <string name="hint_reorder_drag">拖拽以调整右侧列的顺序。暗淡的项目当前处于关闭状态。</string>
     <string name="section_events_calendar_app">日历应用</string>
     <string name="search_settings_hint">搜索设置…</string>
-    <string name="changelog_title">v2.8 新特性</string>
+    <string name="changelog_title">v2.9 新特性</string>
 </resources>

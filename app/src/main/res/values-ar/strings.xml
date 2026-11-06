@@ -71,7 +71,7 @@
     <string name="section_changelog">الملاحظات وسجل التغييرات</string>
     <string name="changelog_version">الإصدار %s</string>
     <string name="changelog_note">يعمل Lwidget بدون خدمات خلفية. لضمان استمرار التحديث، يرجى تعطيل تحسين البطارية أو تفعيل ميزة الإبقاء قيد التشغيل.</string>
-    <string name="changelog_content">الجديد في v2.0:\n• إمكانية إعادة ترتيب العناصر\n• واجهة مخصصة وموحدة\n• تحسينات في صفحة الإعدادات\n• تحسين الأداء وإصلاح الأخطاء</string>
+    <string name="changelog_content">الجديد في v2.9:\n• التوافق مع بناء F-Droid القابل لإعادة الإنتاج (إزالة بيانات التبعيات الخاصة)\n• تحسين قواعد ProGuard و R8 لمكونات القطعة والتسلسل\n• تحسينات الأداء لإلغاء تسلسل الطقس واستعلامات المهام\n• تحديث رسومات المتجر في fastlane و Google Play\n• تحسينات استقرار التكوين والبناء</string>
     <string name="changelog_testing_notice">إذا أعجبك Lwidget، يرجى تقييمنا على Google Play.</string>
     <string name="github_source_code">المصدر (GitHub)</string>
     <string name="privacy_policy">سياسة الخصوصية</string>
@@ -113,5 +113,5 @@
     <string name="hint_reorder_drag">اسحب العناصر لإعادة ترتيب العمود الأيمن. العناصر الباهتة معطلة في المحتوى.</string>
     <string name="section_events_calendar_app">تطبيق التقويم</string>
     <string name="search_settings_hint">البحث في الإعدادات…</string>
-    <string name="changelog_title">ما الجديد في v2.8</string>
+    <string name="changelog_title">ما الجديد في v2.9</string>
 </resources>

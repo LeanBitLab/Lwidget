@@ -15,8 +15,13 @@ android {
         applicationId = "com.leanbitlab.lwidget"
         minSdk = 26
         targetSdk = 36
-        versionCode = 23
-        versionName = "2.8"
+        versionCode = 24
+        versionName = "2.9"
+    }
+
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
     }
 
     testOptions {

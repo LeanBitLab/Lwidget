@@ -74,7 +74,7 @@
     <string name="section_changelog">Not ve Değişiklik Günlüğü</string>
     <string name="changelog_version">Sürüm %s</string>
     <string name="changelog_note">Lwidget herhangi bir arka plan servisi olmadan çalışır. Ancak bazı cihazlar pil tasarrufu için uygulamayı sonlandırabilir ve araç takımı güncellemelerini durdurabilir. Bunu düzeltmek için:\n\n• Cihaz ayarlarından Lwidget için pil optimizasyonunu kapatın.\n• Veya araç takımını güvenilir şekilde güncel tutan Arka Planda Tut özelliğini etkinleştirin.\n• Ya da günlük adımlarınızı sayan Adımsayar\'ı etkinleştirin.</string>
-    <string name="changelog_content">v2.0 Yenilikleri:\n• Yeniden Sıralama Eklendi — artık araç takımı öğelerini dilediğiniz gibi sıralayabilirsiniz\n• Tutarlı Özelleştirme — tüm ayarlarda uyumlu tasarım dili\n• Ayarlar Sayfası İyileştirmeleri — daha temiz düzen ve daha iyi gezinme\n• Performans optimizasyonları ve hata düzeltmeleri</string>
+    <string name="changelog_content">v2.9 Yenilikleri:\n• F-Droid tekrarlanabilir derleme uyumluluğu (tescilli bağımlılık meta verileri kaldırıldı)\n• Araç takımı bileşenleri ve serileştirme için gelişmiş ProGuard ve R8 kuralları\n• Hava durumu ayrıştırma ve görev sorguları için performans optimizasyonları\n• fastlane mağaza görselleri ve ekran görüntüleri güncellendi\n• Derleme yapılandırması ve kararlılık iyileştirmeleri</string>
     <string name="changelog_testing_notice">Lwidget\'ı beğendiyseniz, lütfen Google Play\'de değerlendirin — başkalarının keşfetmesine yardımcı olur.</string>
     <string name="github_source_code">Kaynak Kodu (GitHub)</string>
     <string name="privacy_policy">Gizlilik Politikası</string>
@@ -113,5 +113,5 @@
     <string name="btn_grant">İzin Ver</string>
     <string name="section_events_calendar_app">Takvim Uygulaması</string>
     <string name="search_settings_hint">Ayarları ara…</string>
-    <string name="changelog_title">v2.8\'deki Yenilikler</string>
+    <string name="changelog_title">v2.9\'daki Yenilikler</string>
 </resources>

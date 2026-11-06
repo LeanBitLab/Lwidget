@@ -71,7 +71,7 @@
     <string name="section_changelog">नोट और बदलाव</string>
     <string name="changelog_version">संस्करण %s</string>
     <string name="changelog_note">Lwidget बिना किसी बैकग्राउंड सर्विस के काम करता है। अपडेट जारी रखने के लिए बैटरी ऑप्टिमाइज़ेशन बंद करें या कीप अलाइव सक्षम करें।</string>
-    <string name="changelog_content">v2.0 में नया:\n• रीऑर्डर सपोर्ट\n• समान अनुकूलन डिजाइन\n• सेटिंग्स पेज में सुधार\n• प्रदर्शन में सुधार</string>
+    <string name="changelog_content">v2.9 में नया:\n• F-Droid पुनरुत्पादक बिल्ड अनुपालन (स्वामित्व निर्भरता मेटाडेटा हटाया गया)\n• विजेट घटकों और क्रमांकन के लिए बेहतर ProGuard और R8 नियम\n• मौसम और कार्य प्रश्नों के लिए प्रदर्शन अनुकूलन\n• फास्टलेन और Google Play स्टोर ग्राफिक्स अपडेट\n• बिल्ड स्थिरता और कॉन्फ़िगरेशन संवर्द्धन</string>
     <string name="changelog_testing_notice">यदि आपको Lwidget पसंद है, तो कृपया Google Play पर रेटिंग दें।</string>
     <string name="github_source_code">सोर्स कोड (GitHub)</string>
     <string name="privacy_policy">गोपनीयता नीति</string>
@@ -113,5 +113,5 @@
     <string name="hint_reorder_drag">दाएं कॉलम का क्रम बदलने के लिए आइटम खींचें। धुंधले आइटम बंद हैं।</string>
     <string name="section_events_calendar_app">कैलेंडर ऐप</string>
     <string name="search_settings_hint">सेटिंग्स खोजें…</string>
-    <string name="changelog_title">v2.8 में नया क्या है</string>
+    <string name="changelog_title">v2.9 में नया क्या है</string>
 </resources>

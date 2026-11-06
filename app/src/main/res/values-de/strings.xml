@@ -74,7 +74,7 @@
     <string name="section_changelog">Hinweise &amp; Änderungsprotokoll</string>
     <string name="changelog_version">Version %s</string>
     <string name="changelog_note">Lwidget funktioniert ohne Hintergrunddienst. Deaktivieren Sie die Akku-Optimierung für zuverlässige Aktualisierungen.</string>
-    <string name="changelog_content">Neu in v2.0:\n• Widget-Elemente neu anordnen\n• Einheitliches Design\n• Verbesserte Einstellungen\n• Fehlerbehebungen und Optimierungen</string>
+    <string name="changelog_content">Neu in v2.9:\n• F-Droid-Konformität für reproduzierbare Builds (proprietäre Abhängigkeitsmetadaten entfernt)\n• Erweiterte ProGuard- und R8-Regeln für Widget-Komponenten und Serialisierung\n• Leistungsoptimierungen für Wetter-Deserialisierung und Aufgabenabfragen\n• Aktualisierte Grafiken und Screenshots für Google Play und Fastlane\n• Verbesserte Build-Stabilität und Konfiguration</string>
     <string name="changelog_testing_notice">Wenn Ihnen Lwidget gefällt, bewerten Sie uns bitte im Google Play Store.</string>
     <string name="github_source_code">Quellcode (GitHub)</string>
     <string name="privacy_policy">Datenschutzerklärung</string>
@@ -113,5 +113,5 @@
     <string name="btn_grant">Erteilen</string>
     <string name="section_events_calendar_app">Kalender-App</string>
     <string name="search_settings_hint">Einstellungen durchsuchen…</string>
-    <string name="changelog_title">Was gibt\'s Neues in v2.8</string>
+    <string name="changelog_title">Was gibt\'s Neues in v2.9</string>
 </resources>

@@ -8,6 +8,11 @@ object BreezyWeatherFetcher {
     private const val PREFS_NAME = "lwidget_breezy_weather_data"
     private const val KEY_WEATHER_JSON = "weather_json"
 
+    private val json = Json {
+        ignoreUnknownKeys = true
+        coerceInputValues = true
+    }
+
     /**
      * Saves the weather JSON string received from the Breezy Weather broadcast.
      */
@@ -28,7 +33,6 @@ object BreezyWeatherFetcher {
         if (jsonString.isNullOrEmpty()) return null
         
         return try {
-            val json = Json { ignoreUnknownKeys = true }
             json.decodeFromString<BreezyGadgetbridgeData>(jsonString)
         } catch (e: Exception) {
             e.printStackTrace()

@@ -71,7 +71,7 @@
     <string name="section_changelog">注意と更新履歴</string>
     <string name="changelog_version">バージョン %s</string>
     <string name="changelog_note">Lwidgetはバックグラウンドサービスなしで動作します。更新を安定させるには、端末のバッテリー最適化を解除するか、バックグラウンド維持を有効にしてください。</string>
-    <string name="changelog_content">v2.0の新機能：\n• 項目の並べ替え機能を追加\n• 設定全体で統一感のあるデザイン\n• 設定画面のレイアウト改善\n• パフォーマンス最適化と不具合修正</string>
+    <string name="changelog_content">v2.9の新機能：\n• F-Droid再現可能ビルド対応（独自の依存関係メタデータを削除）\n• ウィジェット構成要素およびシリアライゼーション用のProGuard/R8ルール強化\n• 天気データ解析とタスク取得クエリのパフォーマンス最適化\n• fastlaneメタデータおよびストア画像の刷新\n• ビルド構成と安定性の向上</string>
     <string name="changelog_testing_notice">Lwidgetを気に入っていただけましたら、Google Playで評価をお願いします。</string>
     <string name="github_source_code">ソースコード (GitHub)</string>
     <string name="privacy_policy">プライバシーポリシー</string>
@@ -113,5 +113,5 @@
     <string name="hint_reorder_drag">ドラッグして右列の並び順を変更します。薄暗い項目は無効です。</string>
     <string name="section_events_calendar_app">カレンダーアプリ</string>
     <string name="search_settings_hint">設定を検索…</string>
-    <string name="changelog_title">v2.8 の新機能</string>
+    <string name="changelog_title">v2.9 の新機能</string>
 </resources>

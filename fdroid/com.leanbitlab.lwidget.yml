@@ -24,9 +24,19 @@ Builds:
       - echo "org.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=1024m" >> ../gradle.properties
       - sed -i -e '/lint {/a abortOnError = false; checkReleaseBuilds = false' build.gradle.kts
 
+  - versionName: '2.9'
+    versionCode: 24
+    commit: v2.9
+    subdir: app
+    gradle:
+      - yes
+    prebuild:
+      - echo "org.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=1024m" >> ../gradle.properties
+      - sed -i -e '/lint {/a abortOnError = false; checkReleaseBuilds = false' build.gradle.kts
+
 AllowedAPKSigningKeys: 9d658d45a06fa70ef2bd0ed669daa68afa8169464402bb1f280204b99c575112
 
 AutoUpdateMode: Version
 UpdateCheckMode: Tags ^v[0-9.]+$
-CurrentVersion: '2.8'
-CurrentVersionCode: 23
+CurrentVersion: '2.9'
+CurrentVersionCode: 24

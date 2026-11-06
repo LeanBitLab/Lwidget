@@ -74,7 +74,7 @@
     <string name="section_changelog">Notas y cambios</string>
     <string name="changelog_version">Versión %s</string>
     <string name="changelog_note">Lwidget funciona sin servicios en segundo plano. Para solucionarlo:\n\n• Desactiva la optimización de batería para Lwidget.\n• O activa Mantener activo.\n• O activa el Contador de pasos.</string>
-    <string name="changelog_content">Novedades en v2.0:\n• Reordenar elementos del widget a tu gusto\n• Personalización uniforme\n• Mejoras en la página de ajustes\n• Optimizaciones y correcciones</string>
+    <string name="changelog_content">Novedades en v2.9:\n• Cumplimiento de compilación reproducible de F-Droid (eliminación de metadatos de dependencias propietarios)\n• Reglas ProGuard y R8 mejoradas para componentes del widget y serialización\n• Optimizaciones de rendimiento en deserialización de clima y consultas de tareas\n• Actualización de capturas y gráficos de tienda en fastlane\n• Mejoras de estabilidad y configuración de compilación</string>
     <string name="changelog_testing_notice">Si disfrutas de Lwidget, califícanos en Google Play.</string>
     <string name="github_source_code">Código fuente (GitHub)</string>
     <string name="privacy_policy">Política de privacidad</string>
@@ -113,5 +113,5 @@
     <string name="btn_grant">Conceder</string>
     <string name="section_events_calendar_app">Aplicación de calendario</string>
     <string name="search_settings_hint">Buscar ajustes…</string>
-    <string name="changelog_title">Novedades de la versión 2.8</string>
+    <string name="changelog_title">Novedades de la versión 2.9</string>
 </resources>

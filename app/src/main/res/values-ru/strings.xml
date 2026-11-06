@@ -74,7 +74,7 @@
     <string name="section_changelog">Примечания и список изменений</string>
     <string name="changelog_version">Версия %s</string>
     <string name="changelog_note">Lwidget работает без фоновых служб. Для надежного обновления отключите оптимизацию батареи для приложения.</string>
-    <string name="changelog_content">Что нового в v2.0:\n• Изменение порядка элементов виджета\n• Единый стиль настроек\n• Улучшенная страница параметров\n• Оптимизация и исправление ошибок</string>
+    <string name="changelog_content">Что нового в v2.9:\n• Соответствие требованиям воспроизводимой сборки F-Droid (удалены проприетарные метаданные зависимостей)\n• Улучшенные правила ProGuard и R8 для компонентов виджета и сериализации\n• Оптимизация производительности десериализации погоды и запросов задач\n• Обновленные скриншоты и графика в fastlane\n• Улучшения стабильности и конфигурации сборки</string>
     <string name="changelog_testing_notice">Если вам нравится Lwidget, пожалуйста, оцените его в Google Play.</string>
     <string name="github_source_code">Исходный код (GitHub)</string>
     <string name="privacy_policy">Политика конфиденциальности</string>
@@ -113,5 +113,5 @@
     <string name="btn_grant">Разрешить</string>
     <string name="section_events_calendar_app">Приложение Календарь</string>
     <string name="search_settings_hint">Поиск настроек…</string>
-    <string name="changelog_title">Что нового в v2.8</string>
+    <string name="changelog_title">Что нового в v2.9</string>
 </resources>

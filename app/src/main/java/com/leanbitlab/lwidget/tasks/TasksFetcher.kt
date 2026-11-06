@@ -20,6 +20,8 @@ object TasksFetcher {
     const val PERMISSION_READ_TASKS_ORG = "org.tasks.permission.READ_TASKS"
     const val PERMISSION_READ_TASKS_ASTRID = "com.todoroo.astrid.READ"
 
+    private val TASK_PROJECTION = arrayOf("title", "completed", "deleted", "dueDate")
+
     data class TaskData(val title: String, val dueMillis: Long)
 
     fun fetchActiveTasks(context: Context, limit: Int): List<TaskData> {
@@ -27,7 +29,7 @@ object TasksFetcher {
         val taskUri = android.net.Uri.parse("content://org.tasks/tasks")
         val selection = "completed=0 AND deleted=0"
         try {
-            context.contentResolver.query(taskUri, null, selection, null, "dueDate ASC")?.use { cursor ->
+            context.contentResolver.query(taskUri, TASK_PROJECTION, selection, null, "dueDate ASC")?.use { cursor ->
                 val titleIdx = cursor.getColumnIndex("title")
                 val compIdx = cursor.getColumnIndex("completed")
                 val delIdx = cursor.getColumnIndex("deleted")

@@ -1,0 +1,87 @@
+<en-US>
+• Strip proprietary dependency metadata for 100% reproducible FOSS builds
+• Enhanced ProGuard and R8 rules preserving widget components and serialization
+• Performance and IPC optimizations for weather deserialization and task queries
+• Configured 4GB build heap and optimized lint rules for CI and F-Droid pipelines
+• Updated store graphics and screenshots in fastlane metadata
+</en-US>
+
+<ar>
+• إزالة بيانات التبعيات الخاصة لضمان بناء FOSS قابل لإعادة الإنتاج بنسبة 100%
+• تحسين قواعد ProGuard و R8 للحفاظ على مكونات القطعة والتسلسل
+• تحسينات الأداء والاتصال بين العمليات لإلغاء تسلسل الطقس واستعلامات المهام
+• تكوين ذاكرة البناء 4 جيجابايت وتحسين قواعد الفحص لخطوط أنابيب CI و F-Droid
+• تحديث رسومات المتجر ولقطات الشاشة في بيانات تعريف fastlane
+</ar>
+
+<de-DE>
+• Entfernung proprietärer Abhängigkeitsmetadaten für 100% reproduzierbare FOSS-Builds
+• Erweiterte ProGuard- und R8-Regeln für Widget-Komponenten und Serialisierung
+• Leistungs- und IPC-Optimierungen für Wetter-Deserialisierung und Aufgabenabfragen
+• Konfiguration von 4 GB Build-Heap und optimierte Lint-Regeln für CI- und F-Droid-Pipelines
+• Aktualisierte Grafiken und Screenshots in den fastlane-Metadaten
+</de-DE>
+
+<es-ES>
+• Eliminación de metadatos propietarios para compilaciones FOSS 100% reproducibles
+• Reglas ProGuard y R8 mejoradas para preservar componentes del widget y serialización
+• Optimizaciones de rendimiento e IPC en deserialización de clima y consultas de tareas
+• Configuración de 4 GB de memoria de compilación y reglas lint optimizadas para CI y F-Droid
+• Gráficos y capturas de tienda actualizados en metadatos de fastlane
+</es-ES>
+
+<fr-FR>
+• Suppression des métadonnées de dépendance propriétaires pour des builds FOSS 100% reproductibles
+• Règles ProGuard et R8 renforcées pour préserver les composants du widget et la sérialisation
+• Optimisations des performances et de l'IPC pour la météo et les requêtes de tâches
+• Configuration d'un tas de build de 4 Go et règles lint optimisées pour CI et F-Droid
+• Graphismes et captures d'écran mis à jour dans les métadonnées fastlane
+</fr-FR>
+
+<hi-IN>
+• 100% पुनरुत्पादक FOSS बिल्ड के लिए मालिकाना निर्भरता मेटाडेटा हटाया गया
+• विजेट घटकों और क्रमांकन को संरक्षित करने के लिए उन्नत ProGuard और R8 नियम
+• मौसम डेटा और कार्य प्रश्नों के लिए प्रदर्शन और आईपीसी अनुकूलन
+• सीआई और F-Droid पाइपलाइनों के लिए 4GB बिल्ड हीप और अनुकूलित लिंट नियम
+• फास्टलेन मेटाडेटा में अद्यतन स्टोर ग्राफिक्स और स्क्रीनशॉट
+</hi-IN>
+
+<ja-JP>
+• 100%再現可能なFOSSビルドに向け独自の依存関係メタデータを削除
+• ウィジェット構成要素とシリアライゼーションを保護するProGuard/R8ルールの強化
+• 天気データ解析とタスク取得クエリのパフォーマンスおよびIPC最適化
+• CIおよびF-Droidパイプライン向けの4GBビルドヒープ設定とLintルール最適化
+• fastlaneメタデータ内のストアグラフィックおよびスクリーンショットを更新
+</ja-JP>
+
+<pt-BR>
+• Remoção de metadados proprietários para builds FOSS 100% reproduzíveis
+• Regras ProGuard e R8 aprimoradas para preservar componentes do widget e serialização
+• Otimizações de desempenho e IPC para desserialização de clima e consultas de tarefas
+• Configuração de heap de 4 GB e regras lint otimizadas para pipelines de CI e F-Droid
+• Gráficos e capturas de tela da loja atualizados nos metadados do fastlane
+</pt-BR>
+
+<ru-RU>
+• Удаление проприетарных метаданных зависимостей для 100% воспроизводимых сборок FOSS
+• Улучшенные правила ProGuard и R8 для сохранения компонентов виджета и сериализации
+• Оптимизация производительности и IPC для десериализации погоды и запросов задач
+• Настройка 4 ГБ памяти сборки и оптимизированные правила lint для CI и F-Droid
+• Обновленные скриншоты и графика магазина в метаданных fastlane
+</ru-RU>
+
+<tr-TR>
+• %100 tekrarlanabilir FOSS derlemeleri için tescilli bağımlılık meta verileri kaldırıldı
+• Araç takımı bileşenlerini ve serileştirmeyi koruyan gelişmiş ProGuard ve R8 kuralları
+• Hava durumu ayrıştırma ve görev sorguları için performans ve IPC optimizasyonları
+• CI ve F-Droid işlem hatları için 4 GB derleme belleği ve optimize edilmiş lint kuralları
+• fastlane meta verilerinde güncellenmiş mağaza görselleri ve ekran görüntüleri
+</tr-TR>
+
+<zh-CN>
+• 剥离专有依赖项元数据以确保 100% 可重现开源构建
+• 增强保护小部件组件与数据序列化的 ProGuard / R8 优化混淆规则
+• 优化天气反序列化与任务查询性能及进程间通信
+• 为 CI 与 F-Droid 流水线配置 4GB 构建堆内存并优化 Lint 规则
+• 更新 fastlane 元数据中的应用商店图形与屏幕截图
+</zh-CN>
