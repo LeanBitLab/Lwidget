@@ -48,22 +48,46 @@ Thumbs.db
 
 # ── Project Specific ──
 pdocs/
-docs/superpowers
-.superpowers
 refactor_xml.py
 
-# ── AI / CLI Context ──
-GEMINI.md
-.geminiignore
-.gemini/
-.cline/
+# ── AI, LLM & Agent Configs ──
+AGENTS.md
 .agents/
-.antigravityignore
+.agent/
+_agents/
+_agent/
+GEMINI.md
+.gemini/
+.geminiignore
+.antigravity/
 .antigravitycli/
+.antigravityignore
+CLAUDE.md
+.claude/
+.cline/
+.clinerules
+.clinerules/
+.roo/
+.roomodes
+.cursor/
+.cursorrules
+.windsurf/
+.windsurfrules
+.codeium/
+.copilot/
+.copilot-instructions.md
+.chatgpt/
+.aider*
+.continue/
+.goose/
+.junie/
+.opencode/
+.superpowers/
+docs/superpowers/
+.pi/
 
-# ── Environment & Agent Config ──
+# ── Environment & Secrets ──
 .env
 .env.local
 .env.*.local
-.pi/
 

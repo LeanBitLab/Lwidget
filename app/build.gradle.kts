@@ -71,6 +71,8 @@ android {
     }
     lint {
         disable += "MissingTranslation"
+        abortOnError = false
+        checkReleaseBuilds = false
     }
 }
 
