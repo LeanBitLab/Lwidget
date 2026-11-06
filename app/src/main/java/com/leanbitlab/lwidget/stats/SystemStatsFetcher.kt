@@ -34,6 +34,7 @@ object SystemStatsFetcher {
 
     const val ACTION_BATTERY_UPDATE = "com.leanbitlab.lwidget.ACTION_BATTERY_UPDATE"
 
+    private val BATTERY_FILTER = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
     private var lastUsageStatsCheckTime = 0L
     private var lastUsageStatsResult = false
     private const val USAGE_STATS_CACHE_TTL = 60000L
@@ -64,9 +65,10 @@ object SystemStatsFetcher {
         showBattery: Boolean,
         showTemp: Boolean
     ) {
-        val batteryStatus: Intent? = IntentFilter(Intent.ACTION_BATTERY_CHANGED).let { ifilter ->
-            context.registerReceiver(null, ifilter)
+        if (!showBattery && !showTemp) {
+            return
         }
+        val batteryStatus: Intent? = context.registerReceiver(null, BATTERY_FILTER)
         val level = batteryStatus?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) ?: 0
         val scale = batteryStatus?.getIntExtra(BatteryManager.EXTRA_SCALE, -1) ?: 100
         val batteryPct = (level * 100 / scale.toFloat()).toInt()
@@ -305,17 +307,16 @@ object SystemStatsFetcher {
     fun loadWorldClock(views: RemoteViews, textSizeSp: Float, textColor: Int, zoneIdStr: String, is12Hour: Boolean) {
         try {
             val zoneId = ZoneId.of(zoneIdStr)
-            val zdt = ZonedDateTime.now(zoneId)
-            val pattern = if (is12Hour) "h:mm a" else "H:mm"
-            val formatter = CalendarFetcher.getFormatter(pattern)
-            val timeStr = zdt.format(formatter)
+            views.setString(R.id.text_world_clock, "setTimeZone", zoneId.id)
+            val format12 = if (is12Hour) "h:mm a" else "H:mm"
+            val format24 = "H:mm"
+            views.setCharSequence(R.id.text_world_clock, "setFormat12Hour", format12)
+            views.setCharSequence(R.id.text_world_clock, "setFormat24Hour", format24)
 
-            views.setTextViewText(R.id.text_world_clock, timeStr)
             views.setTextViewTextSize(R.id.text_world_clock, android.util.TypedValue.COMPLEX_UNIT_SP, textSizeSp)
             views.setTextColor(R.id.text_world_clock, textColor)
             views.setInt(R.id.icon_world_clock, "setColorFilter", textColor)
             views.setViewVisibility(R.id.layout_world_clock, View.VISIBLE)
-
         } catch (e: Exception) {
             views.setViewVisibility(R.id.layout_world_clock, View.GONE)
         }

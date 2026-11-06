@@ -148,6 +148,12 @@ object WidgetRenderer {
         val showRam = prefs.getBoolean("show_ram", false)
         val sizeRam = prefs.getFloat("size_ram", 14f)
 
+        var showScreenTime = prefs.getBoolean("show_screen_time", false)
+        if (showScreenTime && !SystemStatsFetcher.hasUsageStatsPermission(context)) {
+            showScreenTime = false
+        }
+        val sizeScreenTime = prefs.getFloat("size_screen_time", 14f)
+
         var showSteps = prefs.getBoolean("show_steps", false)
         if (showSteps && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val actPerm = androidx.core.content.ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACTIVITY_RECOGNITION)
@@ -184,6 +190,7 @@ object WidgetRenderer {
             val tickViews = RemoteViews(context.packageName, layoutId)
             SystemStatsFetcher.updateBatteryAndTemp(context, tickViews, prefs, showBattery, showTemp)
             if (showSteps) SystemStatsFetcher.loadStepCount(tickViews, prefs)
+            if (showScreenTime) SystemStatsFetcher.updateScreenTime(context, tickViews, prefs)
             if (showData) SystemStatsFetcher.updateDataUsage(context, tickViews, prefs)
             if (showStorage) SystemStatsFetcher.updateStorageStats(tickViews, prefs)
             if (showRam) SystemStatsFetcher.updateRamStats(context, tickViews, prefs)
@@ -310,12 +317,15 @@ object WidgetRenderer {
         views.setCharSequence(R.id.clock_time, "setFormat12Hour", timeFormat12)
         views.setCharSequence(R.id.clock_time, "setFormat24Hour", timeFormat24)
 
+        val is24Hour = timeFormatIdx == 1 || (timeFormatIdx == 0 && android.text.format.DateFormat.is24HourFormat(context))
         if (showWorldClock) {
-            SystemStatsFetcher.loadWorldClock(views, sizeWorldClock, secondaryColor, worldClockZoneStr, timeFormat12.contains("a"))
+            SystemStatsFetcher.loadWorldClock(views, sizeWorldClock, secondaryColor, worldClockZoneStr, !is24Hour)
+        } else {
+            views.setViewVisibility(R.id.layout_world_clock, View.GONE)
         }
 
         // Apply Date
-        val dateVisible = showDate || showNextAlarm
+        val dateVisible = showDate || showNextAlarm || showWorldClock
         views.setViewVisibility(R.id.date_container, if (dateVisible) View.VISIBLE else View.GONE)
         views.setViewVisibility(R.id.clock_date, if (showDate) View.VISIBLE else View.GONE)
         views.setTextViewTextSize(R.id.clock_date, android.util.TypedValue.COMPLEX_UNIT_SP, sizeDate)
@@ -463,8 +473,6 @@ object WidgetRenderer {
         }
 
         // Screen Time
-        val showScreenTime = prefs.getBoolean("show_screen_time", false)
-        val sizeScreenTime = prefs.getFloat("size_screen_time", 14f)
         views.setViewVisibility(R.id.layout_screen_time, if (showScreenTime) View.VISIBLE else View.GONE)
         if (showScreenTime) {
             views.setTextViewTextSize(R.id.text_screen_time, android.util.TypedValue.COMPLEX_UNIT_SP, sizeScreenTime)
