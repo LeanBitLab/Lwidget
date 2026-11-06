@@ -184,4 +184,83 @@ class AwidgetCalendarEventsTest {
         assertTrue("Active timed event must be relevant",
             AwidgetProvider.Companion.isEventRelevant(currentTimed, now, today))
     }
+
+    @Test
+    fun testEventTimeFormattingIn12HourAnd24HourModes() {
+        val today = LocalDate.of(2026, 9, 15) // Tuesday
+        // 19:30 local time (7:30 PM)
+        val eveningTime = today.atTime(19, 30).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+        val eveningEvent = AwidgetProvider.Companion.EventInfo(
+            id = 20L,
+            title = "Dinner",
+            begin = eveningTime,
+            end = eveningTime + 3600_000,
+            isLocal = true,
+            isAllDay = false
+        )
+
+        // 12-hour mode
+        val text12h = AwidgetProvider.Companion.formatEventTimeText(
+            event = eveningEvent,
+            today = today,
+            showDayAbbr = true,
+            is24Hour = false
+        )
+        assertEquals("Today 7:30", text12h)
+
+        // 24-hour mode
+        val text24h = AwidgetProvider.Companion.formatEventTimeText(
+            event = eveningEvent,
+            today = today,
+            showDayAbbr = true,
+            is24Hour = true
+        )
+        assertEquals("Today 19:30", text24h)
+
+        // Tomorrow in 24-hour mode
+        val tomorrow = today.minusDays(1)
+        val textTomorrow24h = AwidgetProvider.Companion.formatEventTimeText(
+            event = eveningEvent,
+            today = tomorrow,
+            showDayAbbr = true,
+            is24Hour = true
+        )
+        assertEquals("Tomorrow 19:30", textTomorrow24h)
+
+        // Near future (within 1 week) with day abbreviation in 24-hour mode
+        val threeDaysEarlier = today.minusDays(3) // Saturday
+        val textNear24h = AwidgetProvider.Companion.formatEventTimeText(
+            event = eveningEvent,
+            today = threeDaysEarlier,
+            showDayAbbr = true,
+            is24Hour = true
+        )
+        assertEquals("Tue 19:30", textNear24h)
+
+        // Midnight check (00:15)
+        val midnightTime = today.atTime(0, 15).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+        val midnightEvent = AwidgetProvider.Companion.EventInfo(
+            id = 21L,
+            title = "Midnight Call",
+            begin = midnightTime,
+            end = midnightTime + 1800_000,
+            isLocal = true,
+            isAllDay = false
+        )
+        val midnight12h = AwidgetProvider.Companion.formatEventTimeText(
+            event = midnightEvent,
+            today = today,
+            showDayAbbr = true,
+            is24Hour = false
+        )
+        assertEquals("Today 12:15", midnight12h)
+
+        val midnight24h = AwidgetProvider.Companion.formatEventTimeText(
+            event = midnightEvent,
+            today = today,
+            showDayAbbr = true,
+            is24Hour = true
+        )
+        assertEquals("Today 0:15", midnight24h)
+    }
 }

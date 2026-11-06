@@ -217,10 +217,11 @@ class AwidgetProvider : AppWidgetProvider() {
         internal fun formatEventTimeText(
             event: EventInfo,
             today: LocalDate = LocalDate.now(),
-            showDayAbbr: Boolean = true
+            showDayAbbr: Boolean = true,
+            is24Hour: Boolean = false
         ): String {
             val mapped = CalendarFetcher.EventInfo(event.id, event.title, event.begin, event.end, event.isLocal, event.isAllDay)
-            return CalendarFetcher.formatEventTimeText(mapped, today, showDayAbbr)
+            return CalendarFetcher.formatEventTimeText(mapped, today, showDayAbbr, is24Hour)
         }
 
         internal fun calculateDailySteps(

@@ -56,13 +56,17 @@ object CalendarFetcher {
     internal fun formatEventTimeText(
         event: EventInfo,
         today: LocalDate = LocalDate.now(),
-        showDayAbbr: Boolean = true
+        showDayAbbr: Boolean = true,
+        is24Hour: Boolean = false
     ): String {
         val tomorrow = today.plusDays(1)
         val oneWeekLater = today.plusWeeks(1)
 
-        val timeFormatter = getFormatter("h:mm")
-        val dayTimeFormatter = getFormatter("EEE h:mm")
+        val timePattern = if (is24Hour) "H:mm" else "h:mm"
+        val dayTimePattern = if (is24Hour) "EEE H:mm" else "EEE h:mm"
+
+        val timeFormatter = getFormatter(timePattern)
+        val dayTimeFormatter = getFormatter(dayTimePattern)
         val longDateFormatter = getFormatter("d MMM")
         val allDayNearFormatter = getFormatter("d/EEE")
 
@@ -198,6 +202,8 @@ object CalendarFetcher {
         prefs: SharedPreferences
     ) {
         val showDayAbbr = prefs.getBoolean("show_day_abbr_in_events", true)
+        val timeFormatIdx = prefs.getInt("time_format_idx", 0)
+        val is24Hour = timeFormatIdx == 1 || (timeFormatIdx == 0 && android.text.format.DateFormat.is24HourFormat(context))
 
         if (events.isEmpty()) {
             views.setTextViewText(eventViews[0], "No events today")
@@ -225,7 +231,7 @@ object CalendarFetcher {
         for (i in eventViews.indices) {
             if (i < events.size) {
                 val event = events[i]
-                val timeText = formatEventTimeText(event, today, showDayAbbr)
+                val timeText = formatEventTimeText(event, today, showDayAbbr, is24Hour)
 
                 val fullText = "• $timeText  ${event.title}"
                 val spannable = SpannableString(fullText)
