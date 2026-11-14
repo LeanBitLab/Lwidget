@@ -114,4 +114,36 @@
     <string name="section_events_calendar_app">कैलेंडर ऐप</string>
     <string name="search_settings_hint">सेटिंग्स खोजें…</string>
     <string name="changelog_title">v2.9 में नया क्या है</string>
+
+    <!-- UI strings previously hardcoded in code -->
+    <string name="dialog_weather_permission_title">अनुमति की जानकारी</string>
+    <string name="dialog_weather_permission_message">मौसम दिखाने के लिए Lwidget को Breezy Weather से डेटा पढ़ना होगा।\n\nAndroid अब \'स्थान\' की अनुमति मांगेगा। कृपया ध्यान दें: Lwidget आपके स्थान तक नहीं पहुँचता और न ही उसे इंटरनेट की अनुमति है। Android बस इसी तरह Breezy Weather की डेटा साझा करने की अनुमति को वर्गीकृत करता है।</string>
+    <string name="dialog_weather_setup_title">ज़रूरी चरण</string>
+    <string name="dialog_weather_setup_message">अगर मौसम जल्द ही आपके विजेट पर न दिखे:\n\nBreezy Weather खोलें → सेटिंग्स → बाहरी मॉड्यूल → \'Send Gadgetbridge Data\' चालू करें और \'Lwidget\' को ऑन करें।</string>
+    <string name="dialog_continue">जारी रखें</string>
+    <string name="dialog_cancel">रद्द करें</string>
+    <string name="dialog_got_it">समझ गया</string>
+    <string name="action_install">इंस्टॉल करें</string>
+    <string name="msg_breezy_required">Breezy Weather ऐप (DataBridge चालू के साथ) आवश्यक है।</string>
+    <string name="msg_breezy_required_short">Breezy Weather ऐप आवश्यक है।</string>
+    <string name="msg_tasks_required">इस सुविधा के लिए Tasks.org ऐप आवश्यक है।</string>
+    <string name="widget_default_settings">डिफ़ॉल्ट सेटिंग्स</string>
+    <string name="widget_default_settings_selector">डिफ़ॉल्ट सेटिंग्स ▾</string>
+    <string name="widget_title_numbered">Lwidget #%1$d</string>
+    <string name="widget_selector_numbered">विजेट #%1$d ▾</string>
+    <string name="widget_option_numbered">विजेट #%1$d (ID: %2$d)</string>
+    <string name="widget_picker_title">कॉन्फ़िगर करने के लिए विजेट चुनें</string>
+    <string name="perm_granted">दी गई</string>
+    <string name="label_enable">चालू करें</string>
+    <string name="label_size">आकार</string>
+    <string name="notif_title_steps">Lwidget स्टेप काउंटर</string>
+    <string name="notif_title_keepalive">Lwidget सक्रिय रखें</string>
+    <string name="notif_text_steps_today">आज %1$s कदम</string>
+    <string name="notif_text_counting">बैकग्राउंड में कदम गिने जा रहे हैं</string>
+    <string name="notif_text_keepalive">विजेट को अपडेट रखा जा रहा है</string>
+    <string name="notif_channel_name">स्टेप काउंटर सेवा</string>
+    <string name="notif_channel_desc">स्टेप काउंटर को बैकग्राउंड में चालू रखता है।</string>
+    <string name="version_unknown">अज्ञात</string>
+    <string name="a11y_move_up">ऊपर ले जाएँ</string>
+    <string name="a11y_move_down">नीचे ले जाएँ</string>
 </resources>

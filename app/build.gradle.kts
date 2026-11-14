@@ -26,6 +26,7 @@ android {
 
     testOptions {
         unitTests.isReturnDefaultValues = true
+        unitTests.isIncludeAndroidResources = true
     }
 
     signingConfigs {
@@ -76,7 +77,9 @@ android {
     }
     lint {
         disable += "MissingTranslation"
-        abortOnError = false
+        // Lint currently has 0 errors; keep it that way. Warnings stay informational.
+        // checkReleaseBuilds stays off so release/F-Droid assemble never runs lint.
+        abortOnError = true
         checkReleaseBuilds = false
     }
 }

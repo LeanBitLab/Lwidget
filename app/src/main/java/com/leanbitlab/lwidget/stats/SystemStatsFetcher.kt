@@ -113,7 +113,7 @@ object SystemStatsFetcher {
             if (isFahrenheit) {
                 tempVal = (tempVal * 9f / 5f) + 32f
             }
-            val tempStr = String.format("%.1f", tempVal)
+            val tempStr = String.format(java.util.Locale.getDefault(), "%.1f", tempVal)
             val tempText = "$tempStr$unitStr"
             val tempSpan = SpannableString(tempText)
             val cIdx = tempText.indexOf(unitStr)
@@ -201,12 +201,12 @@ object SystemStatsFetcher {
             val gb = mb / 1024f
 
             val text: CharSequence = if (gb >= 1.0f) {
-                val gbStr = String.format("%.2f", gb)
+                val gbStr = String.format(java.util.Locale.getDefault(), "%.2f", gb)
                 val span = SpannableString("$gbStr GB")
                 span.setSpan(RelativeSizeSpan(0.5f), gbStr.length, gbStr.length + 3, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 span
             } else {
-                val mbStr = String.format("%.1f", mb)
+                val mbStr = String.format(java.util.Locale.getDefault(), "%.1f", mb)
                 val span = SpannableString("$mbStr MB")
                 span.setSpan(RelativeSizeSpan(0.5f), mbStr.length, mbStr.length + 3, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 span
@@ -235,7 +235,7 @@ object SystemStatsFetcher {
 
             val gb = freeBytes / (1024f * 1024f * 1024f)
 
-            val gbStr = String.format("%.0f", gb)
+            val gbStr = String.format(java.util.Locale.getDefault(), "%.0f", gb)
             val span = SpannableString("$gbStr GB")
             span.setSpan(RelativeSizeSpan(0.5f), gbStr.length, gbStr.length + 3, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 
@@ -259,7 +259,7 @@ object SystemStatsFetcher {
 
             val percentage = if (totalBytes > 0) (freeBytes.toFloat() / totalBytes.toFloat() * 100) else 0f
 
-            val pctStr = String.format("%.0f", percentage)
+            val pctStr = String.format(java.util.Locale.getDefault(), "%.0f", percentage)
             val span = SpannableString("$pctStr%")
             span.setSpan(RelativeSizeSpan(0.5f), pctStr.length, pctStr.length + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 

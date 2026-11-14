@@ -63,7 +63,14 @@ GEMINI.md
 .antigravitycli/
 .antigravityignore
 CLAUDE.md
+CLAUDE.local.md
 .claude/
+.claudeignore
+.mcp.json
+.kilocode/
+.trae/
+.zed/
+.android/
 .cline/
 .clinerules
 .clinerules/

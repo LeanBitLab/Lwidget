@@ -114,4 +114,36 @@
     <string name="section_events_calendar_app">تطبيق التقويم</string>
     <string name="search_settings_hint">البحث في الإعدادات…</string>
     <string name="changelog_title">ما الجديد في v2.9</string>
+
+    <!-- UI strings previously hardcoded in code -->
+    <string name="dialog_weather_permission_title">توضيح الإذن</string>
+    <string name="dialog_weather_permission_message">لعرض الطقس، يحتاج Lwidget إلى قراءة البيانات من Breezy Weather.\n\nسيطلب Android الآن إذن «الموقع». يرجى الملاحظة: لا يصل Lwidget إلى موقعك ولا يملك إذنًا للوصول إلى الإنترنت. هذه ببساطة طريقة تصنيف Android لإذن مشاركة بيانات Breezy Weather.</string>
+    <string name="dialog_weather_setup_title">خطوة مهمة</string>
+    <string name="dialog_weather_setup_message">إذا لم يظهر الطقس في الودجت قريبًا:\n\nافتح Breezy Weather ← الإعدادات ← الوحدات الخارجية ← فعّل «Send Gadgetbridge Data» ثم فعّل «Lwidget».</string>
+    <string name="dialog_continue">متابعة</string>
+    <string name="dialog_cancel">إلغاء</string>
+    <string name="dialog_got_it">حسنًا</string>
+    <string name="action_install">تثبيت</string>
+    <string name="msg_breezy_required">تطبيق Breezy Weather (مع تفعيل DataBridge) مطلوب.</string>
+    <string name="msg_breezy_required_short">تطبيق Breezy Weather مطلوب.</string>
+    <string name="msg_tasks_required">تطبيق Tasks.org مطلوب لهذه الميزة.</string>
+    <string name="widget_default_settings">الإعدادات الافتراضية</string>
+    <string name="widget_default_settings_selector">الإعدادات الافتراضية ▾</string>
+    <string name="widget_title_numbered">Lwidget #%1$d</string>
+    <string name="widget_selector_numbered">الودجت #%1$d ▾</string>
+    <string name="widget_option_numbered">الودجت #%1$d (المعرّف: %2$d)</string>
+    <string name="widget_picker_title">اختر الودجت المراد إعداده</string>
+    <string name="perm_granted">تم المنح</string>
+    <string name="label_enable">تفعيل</string>
+    <string name="label_size">الحجم</string>
+    <string name="notif_title_steps">عدّاد خطوات Lwidget</string>
+    <string name="notif_title_keepalive">إبقاء Lwidget نشطًا</string>
+    <string name="notif_text_steps_today">%1$s خطوة اليوم</string>
+    <string name="notif_text_counting">جارٍ عدّ الخطوات في الخلفية</string>
+    <string name="notif_text_keepalive">الحفاظ على تحديث الودجت</string>
+    <string name="notif_channel_name">خدمة عدّاد الخطوات</string>
+    <string name="notif_channel_desc">يُبقي عدّاد الخطوات يعمل في الخلفية.</string>
+    <string name="version_unknown">غير معروف</string>
+    <string name="a11y_move_up">نقل لأعلى</string>
+    <string name="a11y_move_down">نقل لأسفل</string>
 </resources>

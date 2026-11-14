@@ -114,4 +114,36 @@
     <string name="section_events_calendar_app">日历应用</string>
     <string name="search_settings_hint">搜索设置…</string>
     <string name="changelog_title">v2.9 新特性</string>
+
+    <!-- UI strings previously hardcoded in code -->
+    <string name="dialog_weather_permission_title">权限说明</string>
+    <string name="dialog_weather_permission_message">要显示天气，Lwidget 需要读取 Breezy Weather 的数据。\n\nAndroid 接下来会请求“位置信息”权限。请注意：Lwidget 不会访问您的位置信息，也没有访问互联网的权限。这只是 Android 对 Breezy Weather 数据共享权限的分类方式。</string>
+    <string name="dialog_weather_setup_title">重要步骤</string>
+    <string name="dialog_weather_setup_message">如果天气很快没有显示在小部件上：\n\n打开 Breezy Weather → 设置 → 外部模块 → 启用“Send Gadgetbridge Data”并打开“Lwidget”。</string>
+    <string name="dialog_continue">继续</string>
+    <string name="dialog_cancel">取消</string>
+    <string name="dialog_got_it">知道了</string>
+    <string name="action_install">安装</string>
+    <string name="msg_breezy_required">需要 Breezy Weather 应用（并启用 DataBridge）。</string>
+    <string name="msg_breezy_required_short">需要 Breezy Weather 应用。</string>
+    <string name="msg_tasks_required">此功能需要 Tasks.org 应用。</string>
+    <string name="widget_default_settings">默认设置</string>
+    <string name="widget_default_settings_selector">默认设置 ▾</string>
+    <string name="widget_title_numbered">Lwidget #%1$d</string>
+    <string name="widget_selector_numbered">小部件 #%1$d ▾</string>
+    <string name="widget_option_numbered">小部件 #%1$d（ID：%2$d）</string>
+    <string name="widget_picker_title">选择要配置的小部件</string>
+    <string name="perm_granted">已授权</string>
+    <string name="label_enable">启用</string>
+    <string name="label_size">大小</string>
+    <string name="notif_title_steps">Lwidget 计步器</string>
+    <string name="notif_title_keepalive">Lwidget 后台保活</string>
+    <string name="notif_text_steps_today">今天 %1$s 步</string>
+    <string name="notif_text_counting">正在后台统计步数</string>
+    <string name="notif_text_keepalive">正在保持小部件更新</string>
+    <string name="notif_channel_name">计步服务</string>
+    <string name="notif_channel_desc">让计步器在后台持续运行。</string>
+    <string name="version_unknown">未知</string>
+    <string name="a11y_move_up">上移</string>
+    <string name="a11y_move_down">下移</string>
 </resources>

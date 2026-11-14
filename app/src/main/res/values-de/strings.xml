@@ -114,4 +114,36 @@
     <string name="section_events_calendar_app">Kalender-App</string>
     <string name="search_settings_hint">Einstellungen durchsuchen…</string>
     <string name="changelog_title">Was gibt\'s Neues in v2.9</string>
+
+    <!-- UI strings previously hardcoded in code -->
+    <string name="dialog_weather_permission_title">Berechtigung erklärt</string>
+    <string name="dialog_weather_permission_message">Um das Wetter anzuzeigen, muss Lwidget Daten von Breezy Weather lesen.\n\nAndroid fragt jetzt nach dem Zugriff auf den „Standort“. Hinweis: Lwidget greift NICHT auf Ihren Standort zu und hat auch keine Berechtigung für den Internetzugriff. So stuft Android lediglich die Berechtigung zur Datenfreigabe von Breezy Weather ein.</string>
+    <string name="dialog_weather_setup_title">Wichtiger Schritt</string>
+    <string name="dialog_weather_setup_message">Falls das Wetter bald nicht in Ihrem Widget erscheint:\n\nÖffnen Sie Breezy Weather → Einstellungen → Externe Module → Aktivieren Sie „Send Gadgetbridge Data“ und schalten Sie „Lwidget“ ein.</string>
+    <string name="dialog_continue">Weiter</string>
+    <string name="dialog_cancel">Abbrechen</string>
+    <string name="dialog_got_it">Verstanden</string>
+    <string name="action_install">Installieren</string>
+    <string name="msg_breezy_required">Die App Breezy Weather (mit aktivierter DataBridge) ist erforderlich.</string>
+    <string name="msg_breezy_required_short">Die App Breezy Weather ist erforderlich.</string>
+    <string name="msg_tasks_required">Für diese Funktion ist die App Tasks.org erforderlich.</string>
+    <string name="widget_default_settings">Standardeinstellungen</string>
+    <string name="widget_default_settings_selector">Standardeinstellungen ▾</string>
+    <string name="widget_title_numbered">Lwidget #%1$d</string>
+    <string name="widget_selector_numbered">Widget #%1$d ▾</string>
+    <string name="widget_option_numbered">Widget #%1$d (ID: %2$d)</string>
+    <string name="widget_picker_title">Widget zum Konfigurieren auswählen</string>
+    <string name="perm_granted">Erteilt</string>
+    <string name="label_enable">Aktivieren</string>
+    <string name="label_size">Größe</string>
+    <string name="notif_title_steps">Lwidget Schrittzähler</string>
+    <string name="notif_title_keepalive">Lwidget bleibt aktiv</string>
+    <string name="notif_text_steps_today">%1$s Schritte heute</string>
+    <string name="notif_text_counting">Zählt Schritte im Hintergrund</string>
+    <string name="notif_text_keepalive">Hält das Widget aktuell</string>
+    <string name="notif_channel_name">Schrittzähler-Dienst</string>
+    <string name="notif_channel_desc">Hält den Schrittzähler im Hintergrund aktiv.</string>
+    <string name="version_unknown">Unbekannt</string>
+    <string name="a11y_move_up">Nach oben</string>
+    <string name="a11y_move_down">Nach unten</string>
 </resources>

@@ -132,7 +132,7 @@ class SetupActivity : AppCompatActivity() {
             } else {
                 com.google.android.material.snackbar.Snackbar.make(
                     findViewById(R.id.setup_view_flipper),
-                    "Breezy Weather app is required.",
+                    getString(R.string.msg_breezy_required_short),
                     com.google.android.material.snackbar.Snackbar.LENGTH_LONG
                 ).show()
             }
@@ -166,7 +166,7 @@ class SetupActivity : AppCompatActivity() {
         val btnWeather = findViewById<MaterialButton>(R.id.btn_grant_weather)
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
-            btnCalendar.text = "Granted"
+            btnCalendar.setText(R.string.perm_granted)
             btnCalendar.isEnabled = false
             prefs.edit().putBoolean("show_events", true).apply()
         }
@@ -174,35 +174,35 @@ class SetupActivity : AppCompatActivity() {
         val hasTasksPerm = ContextCompat.checkSelfPermission(this, "org.tasks.permission.READ_TASKS") == PackageManager.PERMISSION_GRANTED ||
                            ContextCompat.checkSelfPermission(this, "com.todoroo.astrid.READ") == PackageManager.PERMISSION_GRANTED
         if (hasTasksPerm) {
-            btnTasks.text = "Granted"
+            btnTasks.setText(R.string.perm_granted)
             btnTasks.isEnabled = false
             prefs.edit().putBoolean("show_tasks", true).apply()
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED) {
-                btnSteps.text = "Granted"
+                btnSteps.setText(R.string.perm_granted)
                 btnSteps.isEnabled = false
                 prefs.edit().putBoolean("show_steps", true).apply()
             }
         } else {
-            btnSteps.text = "Granted"
+            btnSteps.setText(R.string.perm_granted)
             btnSteps.isEnabled = false
             prefs.edit().putBoolean("show_steps", true).apply()
         }
 
         if (hasUsageStatsPermission()) {
-            btnDataUsage.text = "Granted"
+            btnDataUsage.setText(R.string.perm_granted)
             btnDataUsage.isEnabled = false
             prefs.edit().putBoolean("show_data_usage", true).apply()
 
-            btnScreenTime.text = "Granted"
+            btnScreenTime.setText(R.string.perm_granted)
             btnScreenTime.isEnabled = false
             prefs.edit().putBoolean("show_screen_time", true).apply()
         }
 
         if (ContextCompat.checkSelfPermission(this, "org.breezyweather.READ_PROVIDER") == PackageManager.PERMISSION_GRANTED) {
-            btnWeather.text = "Granted"
+            btnWeather.setText(R.string.perm_granted)
             btnWeather.isEnabled = false
             prefs.edit().putBoolean("show_weather_condition", true).apply()
         }

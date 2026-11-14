@@ -114,4 +114,36 @@
     <string name="section_events_calendar_app">Application Calendrier</string>
     <string name="search_settings_hint">Rechercher dans les paramètres…</string>
     <string name="changelog_title">Nouveautés de la v2.9</string>
+
+    <!-- UI strings previously hardcoded in code -->
+    <string name="dialog_weather_permission_title">Précision sur l\'autorisation</string>
+    <string name="dialog_weather_permission_message">Pour afficher la météo, Lwidget doit lire les données de Breezy Weather.\n\nAndroid va maintenant demander l\'accès à la « Position ». Remarque : Lwidget n\'accède PAS à votre position et n\'a pas non plus l\'autorisation d\'accéder à Internet. C\'est simplement la façon dont Android classe l\'autorisation de partage de données de Breezy Weather.</string>
+    <string name="dialog_weather_setup_title">Étape importante</string>
+    <string name="dialog_weather_setup_message">Si la météo n\'apparaît pas bientôt sur votre widget :\n\nOuvrez Breezy Weather → Paramètres → Modules externes → Activez « Send Gadgetbridge Data » et activez « Lwidget ».</string>
+    <string name="dialog_continue">Continuer</string>
+    <string name="dialog_cancel">Annuler</string>
+    <string name="dialog_got_it">Compris</string>
+    <string name="action_install">Installer</string>
+    <string name="msg_breezy_required">L\'application Breezy Weather (avec DataBridge activé) est requise.</string>
+    <string name="msg_breezy_required_short">L\'application Breezy Weather est requise.</string>
+    <string name="msg_tasks_required">L\'application Tasks.org est requise pour cette fonctionnalité.</string>
+    <string name="widget_default_settings">Paramètres par défaut</string>
+    <string name="widget_default_settings_selector">Paramètres par défaut ▾</string>
+    <string name="widget_title_numbered">Lwidget #%1$d</string>
+    <string name="widget_selector_numbered">Widget #%1$d ▾</string>
+    <string name="widget_option_numbered">Widget #%1$d (ID : %2$d)</string>
+    <string name="widget_picker_title">Sélectionnez le widget à configurer</string>
+    <string name="perm_granted">Accordé</string>
+    <string name="label_enable">Activer</string>
+    <string name="label_size">Taille</string>
+    <string name="notif_title_steps">Compteur de pas Lwidget</string>
+    <string name="notif_title_keepalive">Lwidget maintien actif</string>
+    <string name="notif_text_steps_today">%1$s pas aujourd\'hui</string>
+    <string name="notif_text_counting">Comptage des pas en arrière-plan</string>
+    <string name="notif_text_keepalive">Maintien du widget à jour</string>
+    <string name="notif_channel_name">Service du compteur de pas</string>
+    <string name="notif_channel_desc">Maintient le compteur de pas actif en arrière-plan.</string>
+    <string name="version_unknown">Inconnue</string>
+    <string name="a11y_move_up">Monter</string>
+    <string name="a11y_move_down">Descendre</string>
 </resources>
