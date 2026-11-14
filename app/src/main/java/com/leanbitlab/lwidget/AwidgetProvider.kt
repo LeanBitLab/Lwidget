@@ -14,11 +14,14 @@ import com.leanbitlab.lwidget.calendar.CalendarFetcher
 import com.leanbitlab.lwidget.render.WidgetRenderer
 import com.leanbitlab.lwidget.stats.SystemStatsFetcher
 import com.leanbitlab.lwidget.tasks.TasksFetcher
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
 import java.time.LocalDate
+import java.util.concurrent.atomic.AtomicBoolean
 
 enum class UpdateMode {
     FULL, TICK, CALENDAR_ONLY, TASKS_ONLY, ALARM_ONLY, STEPS_ONLY
@@ -30,17 +33,38 @@ class AwidgetProvider : AppWidgetProvider() {
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
         StepCounterService.startServiceIfEnabled(context)
-        val pendingResult = goAsync()
-        receiverScope.launch {
-            try {
-                for (appWidgetId in appWidgetIds) {
-                    updateAppWidget(context, appWidgetManager, appWidgetId, UpdateMode.FULL)
-                }
-            } catch (e: Throwable) {
-                Log.e(TAG, "Error during onUpdate", e)
-            } finally {
-                pendingResult.finish()
+        runAsync("onUpdate") {
+            for (appWidgetId in appWidgetIds) {
+                updateAppWidget(context, appWidgetManager, appWidgetId, UpdateMode.FULL)
             }
+        }
+    }
+
+    /**
+     * Runs [block] off the main thread while holding the broadcast open via goAsync().
+     * The broadcast is always released within [ASYNC_BUDGET_MS], even if a data source hangs,
+     * so a slow calendar/tasks provider can never push the receiver past the system limit.
+     */
+    private fun runAsync(tag: String, block: suspend () -> Unit) {
+        val pendingResult = goAsync()
+        val finished = AtomicBoolean(false)
+        fun finishOnce() {
+            if (finished.compareAndSet(false, true)) pendingResult.finish()
+        }
+        receiverScope.launch {
+            val work = launch {
+                try {
+                    block()
+                } catch (e: CancellationException) {
+                    throw e
+                } catch (e: Throwable) {
+                    Log.e(TAG, "Error during $tag", e)
+                }
+            }
+            if (withTimeoutOrNull(ASYNC_BUDGET_MS) { work.join() } == null) {
+                Log.w(TAG, "$tag exceeded ${ASYNC_BUDGET_MS}ms; releasing broadcast")
+            }
+            finishOnce()
         }
     }
 
@@ -52,15 +76,8 @@ class AwidgetProvider : AppWidgetProvider() {
     ) {
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
         StepCounterService.startServiceIfEnabled(context)
-        val pendingResult = goAsync()
-        receiverScope.launch {
-            try {
-                updateAppWidget(context, appWidgetManager, appWidgetId, UpdateMode.FULL)
-            } catch (e: Throwable) {
-                Log.e(TAG, "Error during onAppWidgetOptionsChanged", e)
-            } finally {
-                pendingResult.finish()
-            }
+        runAsync("onAppWidgetOptionsChanged") {
+            updateAppWidget(context, appWidgetManager, appWidgetId, UpdateMode.FULL)
         }
     }
 
@@ -112,39 +129,32 @@ class AwidgetProvider : AppWidgetProvider() {
                 AlarmManager.ACTION_NEXT_ALARM_CLOCK_CHANGED,
                 "nodomain.freeyourgadget.gadgetbridge.ACTION_GENERIC_WEATHER"
             )) {
-            val pendingResult = goAsync()
-            receiverScope.launch {
-                try {
-                    when {
-                        isBootOrReplaced || intent.action == Intent.ACTION_CONFIGURATION_CHANGED -> {
-                            scheduleWork(context)
-                            appWidgetIds.forEach { updateAppWidget(context, appWidgetManager, it, UpdateMode.FULL) }
-                        }
-                        intent.action == ACTION_BATTERY_UPDATE -> {
-                            appWidgetIds.forEach { updateAppWidget(context, appWidgetManager, it, UpdateMode.TICK) }
-                        }
-                        intent.action == StepCounterService.ACTION_STEP_UPDATE -> {
-                            appWidgetIds.forEach { updateAppWidget(context, appWidgetManager, it, UpdateMode.STEPS_ONLY) }
-                        }
-                        intent.action == AlarmManager.ACTION_NEXT_ALARM_CLOCK_CHANGED -> {
-                            appWidgetIds.forEach { updateAppWidget(context, appWidgetManager, it, UpdateMode.ALARM_ONLY) }
-                        }
-                        intent.action == Intent.ACTION_PROVIDER_CHANGED -> {
-                            val uri = intent.data
-                            if (uri != null && uri.authority == "org.tasks") {
-                                appWidgetIds.forEach { updateAppWidget(context, appWidgetManager, it, UpdateMode.TASKS_ONLY) }
-                            } else {
-                                appWidgetIds.forEach { updateAppWidget(context, appWidgetManager, it, UpdateMode.CALENDAR_ONLY) }
-                            }
-                        }
-                        intent.action == "nodomain.freeyourgadget.gadgetbridge.ACTION_GENERIC_WEATHER" -> {
-                            appWidgetIds.forEach { updateAppWidget(context, appWidgetManager, it, UpdateMode.FULL) }
+            runAsync("broadcast ${intent.action}") {
+                when {
+                    isBootOrReplaced || intent.action == Intent.ACTION_CONFIGURATION_CHANGED -> {
+                        scheduleWork(context)
+                        appWidgetIds.forEach { updateAppWidget(context, appWidgetManager, it, UpdateMode.FULL) }
+                    }
+                    intent.action == ACTION_BATTERY_UPDATE -> {
+                        appWidgetIds.forEach { updateAppWidget(context, appWidgetManager, it, UpdateMode.TICK) }
+                    }
+                    intent.action == StepCounterService.ACTION_STEP_UPDATE -> {
+                        appWidgetIds.forEach { updateAppWidget(context, appWidgetManager, it, UpdateMode.STEPS_ONLY) }
+                    }
+                    intent.action == AlarmManager.ACTION_NEXT_ALARM_CLOCK_CHANGED -> {
+                        appWidgetIds.forEach { updateAppWidget(context, appWidgetManager, it, UpdateMode.ALARM_ONLY) }
+                    }
+                    intent.action == Intent.ACTION_PROVIDER_CHANGED -> {
+                        val uri = intent.data
+                        if (uri != null && uri.authority == "org.tasks") {
+                            appWidgetIds.forEach { updateAppWidget(context, appWidgetManager, it, UpdateMode.TASKS_ONLY) }
+                        } else {
+                            appWidgetIds.forEach { updateAppWidget(context, appWidgetManager, it, UpdateMode.CALENDAR_ONLY) }
                         }
                     }
-                } catch (e: Throwable) {
-                    Log.e(TAG, "Error handling broadcast ${intent.action}", e)
-                } finally {
-                    pendingResult.finish()
+                    intent.action == "nodomain.freeyourgadget.gadgetbridge.ACTION_GENERIC_WEATHER" -> {
+                        appWidgetIds.forEach { updateAppWidget(context, appWidgetManager, it, UpdateMode.FULL) }
+                    }
                 }
             }
         }
@@ -191,6 +201,9 @@ class AwidgetProvider : AppWidgetProvider() {
     companion object {
 
         private const val TAG = "WidgetLife"
+
+        /** goAsync() broadcasts must finish well inside the ~10s system limit. */
+        private const val ASYNC_BUDGET_MS = 8_000L
 
         const val ACTION_NOOP = "com.leanbitlab.lwidget.ACTION_NOOP"
         const val ACTION_BATTERY_UPDATE = SystemStatsFetcher.ACTION_BATTERY_UPDATE
