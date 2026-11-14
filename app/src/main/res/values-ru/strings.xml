@@ -114,4 +114,34 @@
     <string name="section_events_calendar_app">Приложение Календарь</string>
     <string name="search_settings_hint">Поиск настроек…</string>
     <string name="changelog_title">Что нового в v2.9</string>
+
+    <!-- UI strings previously hardcoded in code -->
+    <string name="dialog_weather_permission_title">Пояснение к разрешению</string>
+    <string name="dialog_weather_permission_message">Чтобы показывать погоду, Lwidget должен читать данные из Breezy Weather.\n\nСейчас Android запросит доступ к «Местоположению». Обратите внимание: Lwidget НЕ получает доступ к вашему местоположению и не имеет разрешения на доступ в интернет. Так Android просто классифицирует разрешение на обмен данными Breezy Weather.</string>
+    <string name="dialog_weather_setup_title">Важный шаг</string>
+    <string name="dialog_weather_setup_message">Если погода скоро не появится на виджете:\n\nОткройте Breezy Weather → Настройки → Внешние модули → Включите «Send Gadgetbridge Data» и включите «Lwidget».</string>
+    <string name="dialog_continue">Продолжить</string>
+    <string name="dialog_cancel">Отмена</string>
+    <string name="dialog_got_it">Понятно</string>
+    <string name="action_install">Установить</string>
+    <string name="msg_breezy_required">Требуется приложение Breezy Weather (с включённым DataBridge).</string>
+    <string name="msg_breezy_required_short">Требуется приложение Breezy Weather.</string>
+    <string name="msg_tasks_required">Для этой функции требуется приложение Tasks.org.</string>
+    <string name="widget_default_settings">Настройки по умолчанию</string>
+    <string name="widget_default_settings_selector">Настройки по умолчанию ▾</string>
+    <string name="widget_title_numbered">Lwidget #%1$d</string>
+    <string name="widget_selector_numbered">Виджет #%1$d ▾</string>
+    <string name="widget_option_numbered">Виджет #%1$d (ID: %2$d)</string>
+    <string name="widget_picker_title">Выберите виджет для настройки</string>
+    <string name="perm_granted">Предоставлено</string>
+    <string name="label_enable">Включить</string>
+    <string name="label_size">Размер</string>
+    <string name="notif_title_steps">Шагомер Lwidget</string>
+    <string name="notif_title_keepalive">Lwidget в фоне</string>
+    <string name="notif_text_steps_today">%1$s шагов сегодня</string>
+    <string name="notif_text_counting">Подсчёт шагов в фоновом режиме</string>
+    <string name="notif_text_keepalive">Поддержание актуальности виджета</string>
+    <string name="notif_channel_name">Служба шагомера</string>
+    <string name="notif_channel_desc">Поддерживает работу шагомера в фоновом режиме.</string>
+    <string name="version_unknown">Неизвестно</string>
 </resources>

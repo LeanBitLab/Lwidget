@@ -27,7 +27,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
 internal fun MainActivity.getInstalledClockApps(): Pair<List<String>, List<String>> {
-    val labels = mutableListOf("Default")
+    val labels = mutableListOf(getString(R.string.font_default))
     val packages = mutableListOf("default")
 
     val knownPackages = listOf(
@@ -183,9 +183,9 @@ internal fun MainActivity.setupWeatherSection() {
                 weatherSwitch.isChecked = false
                 com.google.android.material.snackbar.Snackbar.make(
                     findViewById(R.id.fab_update),
-                    "Breezy Weather app (with DataBridge enabled) is required.",
+                    getString(R.string.msg_breezy_required),
                     com.google.android.material.snackbar.Snackbar.LENGTH_LONG
-                ).setAction("Install") {
+                ).setAction(getString(R.string.action_install)) {
                     try {
                         CustomTabsIntent.Builder().build().launchUrl(this@setupWeatherSection, android.net.Uri.parse("https://github.com/breezy-weather/breezy-weather/releases"))
                     } catch (e: Exception) { android.util.Log.e("MainActivity", "Exception caught", e) }
@@ -195,12 +195,12 @@ internal fun MainActivity.setupWeatherSection() {
             if (ContextCompat.checkSelfPermission(this, "org.breezyweather.READ_PROVIDER") != PackageManager.PERMISSION_GRANTED) {
                 weatherSwitch.isChecked = false
                 com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
-                    .setTitle("Permission Clarification")
-                    .setMessage("To display the weather, Lwidget needs to read data from Breezy Weather.\n\nAndroid will now ask for 'Location' access. Please note: Lwidget DOES NOT access your location, nor does it have permission to access the internet. This is simply how Android categorizes Breezy Weather's data sharing permission.")
-                    .setPositiveButton("Continue") { _, _ ->
+                    .setTitle(getString(R.string.dialog_weather_permission_title))
+                    .setMessage(getString(R.string.dialog_weather_permission_message))
+                    .setPositiveButton(getString(R.string.dialog_continue)) { _, _ ->
                         ActivityCompat.requestPermissions(this, arrayOf("org.breezyweather.READ_PROVIDER"), 103)
                     }
-                    .setNegativeButton("Cancel", null)
+                    .setNegativeButton(getString(R.string.dialog_cancel), null)
                     .show()
                 return@setOnCheckedChangeListener
             }
@@ -214,11 +214,16 @@ internal fun MainActivity.setupWeatherSection() {
         updateWidget()
         updateToggleAvailability()
         if (isChecked) {
-            com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
-                .setTitle("Important Step")
-                .setMessage("If the weather doesn't show up on your widget soon:\n\nOpen Breezy Weather → Settings → External Modules → Enable 'Send Gadgetbridge Data' & toggle on 'Lwidget'.")
-                .setPositiveButton("Got it", null)
-                .show()
+            showWeatherSetupHint()
         }
     }
+}
+
+/** Reminder shown after the Breezy Weather permission is granted (shared by both entry points). */
+internal fun MainActivity.showWeatherSetupHint() {
+    com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+        .setTitle(getString(R.string.dialog_weather_setup_title))
+        .setMessage(getString(R.string.dialog_weather_setup_message))
+        .setPositiveButton(getString(R.string.dialog_got_it), null)
+        .show()
 }

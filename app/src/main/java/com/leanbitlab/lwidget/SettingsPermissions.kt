@@ -95,15 +95,15 @@ internal fun MainActivity.checkAllPermissions() {
     }
     
     // Update Permission Toggles
-    updatePermissionToggle(R.id.row_perm_calendar, "Calendar Events", !calMissing) {
+    updatePermissionToggle(R.id.row_perm_calendar, getString(R.string.section_events), !calMissing) {
         if (calMissing) ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_CALENDAR), 100)
         else openAppSettings()
     }
-    updatePermissionToggle(R.id.row_perm_tasks, "Tasks", !tasksMissing) {
+    updatePermissionToggle(R.id.row_perm_tasks, getString(R.string.section_tasks), !tasksMissing) {
         if (tasksMissing) ActivityCompat.requestPermissions(this, arrayOf(AwidgetProvider.PERMISSION_READ_TASKS_ORG), 101)
         else openAppSettings()
     }
-    updatePermissionToggle(R.id.row_perm_steps, "Step Counter", !stepMissing) {
+    updatePermissionToggle(R.id.row_perm_steps, getString(R.string.section_steps), !stepMissing) {
         if (stepMissing) {
             val neededPermissions = mutableListOf<String>()
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
@@ -115,13 +115,13 @@ internal fun MainActivity.checkAllPermissions() {
             ActivityCompat.requestPermissions(this, neededPermissions.toTypedArray(), 102)
         } else openAppSettings()
     }
-    updatePermissionToggle(R.id.row_perm_data_usage, "Data Usage", !usageMissing) {
+    updatePermissionToggle(R.id.row_perm_data_usage, getString(R.string.section_data_usage), !usageMissing) {
         try { startActivity(Intent(android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS)) } catch (e: Exception) { Log.w("MainActivity", "Failed to launch usage access settings", e) }
     }
-    updatePermissionToggle(R.id.row_perm_screen_time, "Screen Time", !usageMissing) {
+    updatePermissionToggle(R.id.row_perm_screen_time, getString(R.string.section_screen_time), !usageMissing) {
         try { startActivity(Intent(android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS)) } catch (e: Exception) { Log.w("MainActivity", "Failed to launch usage access settings", e) }
     }
-    updatePermissionToggle(R.id.row_perm_weather, "Weather", !weatherMissing) {
+    updatePermissionToggle(R.id.row_perm_weather, getString(R.string.section_weather_condition), !weatherMissing) {
         if (weatherMissing && !isAppInstalled("org.breezyweather")) {
             try {
                 startActivity(Intent(Intent.ACTION_VIEW, android.net.Uri.parse("market://details?id=org.breezyweather")))

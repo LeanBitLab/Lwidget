@@ -114,4 +114,34 @@
     <string name="section_events_calendar_app">Takvim Uygulaması</string>
     <string name="search_settings_hint">Ayarları ara…</string>
     <string name="changelog_title">v2.9\'daki Yenilikler</string>
+
+    <!-- UI strings previously hardcoded in code -->
+    <string name="dialog_weather_permission_title">İzin Açıklaması</string>
+    <string name="dialog_weather_permission_message">Hava durumunu göstermek için Lwidget\'ın Breezy Weather\'dan veri okuması gerekir.\n\nAndroid şimdi \'Konum\' erişimi isteyecek. Lütfen unutmayın: Lwidget konumunuza ERİŞMEZ ve internete erişim izni de yoktur. Android, Breezy Weather\'ın veri paylaşım iznini yalnızca bu şekilde sınıflandırır.</string>
+    <string name="dialog_weather_setup_title">Önemli Adım</string>
+    <string name="dialog_weather_setup_message">Hava durumu kısa süre içinde widget\'ınızda görünmezse:\n\nBreezy Weather → Ayarlar → Harici Modüller → \'Send Gadgetbridge Data\' seçeneğini etkinleştirin ve \'Lwidget\'ı açın.</string>
+    <string name="dialog_continue">Devam</string>
+    <string name="dialog_cancel">İptal</string>
+    <string name="dialog_got_it">Anladım</string>
+    <string name="action_install">Yükle</string>
+    <string name="msg_breezy_required">Breezy Weather uygulaması (DataBridge etkin) gereklidir.</string>
+    <string name="msg_breezy_required_short">Breezy Weather uygulaması gereklidir.</string>
+    <string name="msg_tasks_required">Bu özellik için Tasks.org uygulaması gereklidir.</string>
+    <string name="widget_default_settings">Varsayılan Ayarlar</string>
+    <string name="widget_default_settings_selector">Varsayılan Ayarlar ▾</string>
+    <string name="widget_title_numbered">Lwidget #%1$d</string>
+    <string name="widget_selector_numbered">Widget #%1$d ▾</string>
+    <string name="widget_option_numbered">Widget #%1$d (ID: %2$d)</string>
+    <string name="widget_picker_title">Yapılandırılacak widget\'ı seçin</string>
+    <string name="perm_granted">Verildi</string>
+    <string name="label_enable">Etkinleştir</string>
+    <string name="label_size">Boyut</string>
+    <string name="notif_title_steps">Lwidget Adım Sayar</string>
+    <string name="notif_title_keepalive">Lwidget Arka Planda Tut</string>
+    <string name="notif_text_steps_today">Bugün %1$s adım</string>
+    <string name="notif_text_counting">Adımlar arka planda sayılıyor</string>
+    <string name="notif_text_keepalive">Widget güncel tutuluyor</string>
+    <string name="notif_channel_name">Adım Sayar Hizmeti</string>
+    <string name="notif_channel_desc">Adım sayarın arka planda çalışmasını sağlar.</string>
+    <string name="version_unknown">Bilinmiyor</string>
 </resources>

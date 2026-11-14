@@ -103,28 +103,27 @@ class MainActivity : AppCompatActivity() {
         val subtitleApp = findViewById<TextView>(R.id.subtitle_app)
 
         if (currentWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
-            val labelText = "Widget #$currentWidgetId ▾"
-            titleApp.text = "Lwidget #$currentWidgetId"
-            subtitleApp.text = labelText
+            titleApp.text = getString(R.string.widget_title_numbered, currentWidgetId)
+            subtitleApp.text = getString(R.string.widget_selector_numbered, currentWidgetId)
         } else {
-            titleApp.text = "Lwidget"
-            subtitleApp.text = "Default Settings ▾"
+            titleApp.text = getString(R.string.app_name)
+            subtitleApp.text = getString(R.string.widget_default_settings_selector)
         }
 
         subtitleApp.setOnClickListener {
             val options = mutableListOf<String>()
             val optionIds = mutableListOf<Int>()
 
-            options.add("Default Settings")
+            options.add(getString(R.string.widget_default_settings))
             optionIds.add(AppWidgetManager.INVALID_APPWIDGET_ID)
 
             ids.forEachIndexed { index, id ->
-                options.add("Widget #${index + 1} (ID: $id)")
+                options.add(getString(R.string.widget_option_numbered, index + 1, id))
                 optionIds.add(id)
             }
 
             com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
-                .setTitle("Select Widget to Configure")
+                .setTitle(getString(R.string.widget_picker_title))
                 .setItems(options.toTypedArray()) { _, which ->
                     val selectedId = optionIds[which]
                     val newIntent = Intent(this, MainActivity::class.java).apply {
@@ -150,7 +149,7 @@ class MainActivity : AppCompatActivity() {
         val versionName = try {
             packageManager.getPackageInfo(packageName, 0).versionName
         } catch (e: Exception) {
-            "Unknown"
+            getString(R.string.version_unknown)
         }
         val tvVersion = findViewById<TextView>(R.id.tv_changelog_version)
         tvVersion.text = getString(R.string.changelog_version, versionName)
@@ -365,11 +364,7 @@ class MainActivity : AppCompatActivity() {
                  updateToggleAvailability()
 
                  // Show Gadgetbridge module prompt
-                 com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
-                     .setTitle("Important Step")
-                     .setMessage("If the weather doesn't show up on your widget soon:\n\nOpen Breezy Weather → Settings → External Modules → Enable 'Send Gadgetbridge Data' & toggle on 'Lwidget'.")
-                     .setPositiveButton("Got it", null)
-                     .show()
+                 showWeatherSetupHint()
              }
         }
     }

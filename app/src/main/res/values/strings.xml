@@ -114,4 +114,34 @@
     <string name="btn_skip">Skip</string>
     <string name="btn_finish">Finish</string>
     <string name="btn_grant">Grant</string>
+
+    <!-- UI strings previously hardcoded in code -->
+    <string name="dialog_weather_permission_title">Permission Clarification</string>
+    <string name="dialog_weather_permission_message">To display the weather, Lwidget needs to read data from Breezy Weather.\n\nAndroid will now ask for \'Location\' access. Please note: Lwidget DOES NOT access your location, nor does it have permission to access the internet. This is simply how Android categorizes Breezy Weather\'s data sharing permission.</string>
+    <string name="dialog_weather_setup_title">Important Step</string>
+    <string name="dialog_weather_setup_message">If the weather doesn\'t show up on your widget soon:\n\nOpen Breezy Weather → Settings → External Modules → Enable \'Send Gadgetbridge Data\' &amp; toggle on \'Lwidget\'.</string>
+    <string name="dialog_continue">Continue</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="dialog_got_it">Got it</string>
+    <string name="action_install">Install</string>
+    <string name="msg_breezy_required">Breezy Weather app (with DataBridge enabled) is required.</string>
+    <string name="msg_breezy_required_short">Breezy Weather app is required.</string>
+    <string name="msg_tasks_required">Tasks.org app is required for this feature.</string>
+    <string name="widget_default_settings">Default Settings</string>
+    <string name="widget_default_settings_selector">Default Settings ▾</string>
+    <string name="widget_title_numbered">Lwidget #%1$d</string>
+    <string name="widget_selector_numbered">Widget #%1$d ▾</string>
+    <string name="widget_option_numbered">Widget #%1$d (ID: %2$d)</string>
+    <string name="widget_picker_title">Select Widget to Configure</string>
+    <string name="perm_granted">Granted</string>
+    <string name="label_enable">Enable</string>
+    <string name="label_size">Size</string>
+    <string name="notif_title_steps">Lwidget Step Counter</string>
+    <string name="notif_title_keepalive">Lwidget Keep Alive</string>
+    <string name="notif_text_steps_today">%1$s steps today</string>
+    <string name="notif_text_counting">Counting steps in the background</string>
+    <string name="notif_text_keepalive">Keeping widget updated</string>
+    <string name="notif_channel_name">Step Counter Service</string>
+    <string name="notif_channel_desc">Keeps the step counter running in the background.</string>
+    <string name="version_unknown">Unknown</string>
 </resources>

@@ -133,7 +133,7 @@ internal fun MainActivity.bindFoldedSection(
     val toggleSwitch = toggleRow.findViewById<SwitchMaterial>(R.id.row_switch)
     val toggleLabel = toggleRow.findViewById<TextView>(R.id.row_label)
     val toggleCard = toggleRow.findViewById<MaterialCardView>(R.id.toggle_row_card)
-    toggleLabel.text = "Enable"
+    toggleLabel.setText(R.string.label_enable)
 
     toggleSwitch.tag = prefShowKey
     if (isContent) contentSwitches.add(toggleSwitch)
@@ -196,7 +196,7 @@ internal fun MainActivity.bindFoldedSection(
         val slider = sizeRowInner.findViewById<Slider>(R.id.row_slider)
         val valueLabel = sizeRowInner.findViewById<TextView>(R.id.row_value)
         val sizeLabel = sizeRowInner.findViewById<TextView>(R.id.row_label)
-        sizeLabel.text = "Size"
+        sizeLabel.setText(R.string.label_size)
 
         val currentSize = prefs.getFloat(prefSizeKey, defSize)
         slider.valueFrom = minSize

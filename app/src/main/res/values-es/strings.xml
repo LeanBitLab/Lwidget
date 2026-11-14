@@ -114,4 +114,34 @@
     <string name="section_events_calendar_app">Aplicación de calendario</string>
     <string name="search_settings_hint">Buscar ajustes…</string>
     <string name="changelog_title">Novedades de la versión 2.9</string>
+
+    <!-- UI strings previously hardcoded in code -->
+    <string name="dialog_weather_permission_title">Aclaración del permiso</string>
+    <string name="dialog_weather_permission_message">Para mostrar el tiempo, Lwidget necesita leer datos de Breezy Weather.\n\nAndroid pedirá ahora acceso a la «Ubicación». Importante: Lwidget NO accede a tu ubicación ni tiene permiso para acceder a internet. Así es como Android clasifica el permiso de uso compartido de datos de Breezy Weather.</string>
+    <string name="dialog_weather_setup_title">Paso importante</string>
+    <string name="dialog_weather_setup_message">Si el tiempo no aparece pronto en tu widget:\n\nAbre Breezy Weather → Ajustes → Módulos externos → Activa «Send Gadgetbridge Data» y activa «Lwidget».</string>
+    <string name="dialog_continue">Continuar</string>
+    <string name="dialog_cancel">Cancelar</string>
+    <string name="dialog_got_it">Entendido</string>
+    <string name="action_install">Instalar</string>
+    <string name="msg_breezy_required">Se requiere la app Breezy Weather (con DataBridge activado).</string>
+    <string name="msg_breezy_required_short">Se requiere la app Breezy Weather.</string>
+    <string name="msg_tasks_required">Esta función requiere la app Tasks.org.</string>
+    <string name="widget_default_settings">Ajustes predeterminados</string>
+    <string name="widget_default_settings_selector">Ajustes predeterminados ▾</string>
+    <string name="widget_title_numbered">Lwidget #%1$d</string>
+    <string name="widget_selector_numbered">Widget #%1$d ▾</string>
+    <string name="widget_option_numbered">Widget #%1$d (ID: %2$d)</string>
+    <string name="widget_picker_title">Selecciona el widget a configurar</string>
+    <string name="perm_granted">Concedido</string>
+    <string name="label_enable">Activar</string>
+    <string name="label_size">Tamaño</string>
+    <string name="notif_title_steps">Contador de pasos de Lwidget</string>
+    <string name="notif_title_keepalive">Lwidget en segundo plano</string>
+    <string name="notif_text_steps_today">%1$s pasos hoy</string>
+    <string name="notif_text_counting">Contando pasos en segundo plano</string>
+    <string name="notif_text_keepalive">Manteniendo el widget actualizado</string>
+    <string name="notif_channel_name">Servicio del contador de pasos</string>
+    <string name="notif_channel_desc">Mantiene el contador de pasos en segundo plano.</string>
+    <string name="version_unknown">Desconocida</string>
 </resources>

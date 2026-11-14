@@ -27,7 +27,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
 internal fun MainActivity.getInstalledCalendarApps(): Pair<List<String>, List<String>> {
-    val labels = mutableListOf("Default")
+    val labels = mutableListOf(getString(R.string.font_default))
     val packages = mutableListOf("default")
 
     val knownPackages = listOf(
@@ -142,9 +142,9 @@ internal fun MainActivity.setupEventsAndTasksSections() {
                 tasksSwitch.isChecked = false
                 com.google.android.material.snackbar.Snackbar.make(
                     findViewById(R.id.fab_update),
-                    "Tasks.org app is required for this feature.",
+                    getString(R.string.msg_tasks_required),
                     com.google.android.material.snackbar.Snackbar.LENGTH_LONG
-                ).setAction("Install") {
+                ).setAction(getString(R.string.action_install)) {
                     try {
                         startActivity(Intent(Intent.ACTION_VIEW, android.net.Uri.parse("market://details?id=org.tasks")))
                     } catch (e: Exception) {

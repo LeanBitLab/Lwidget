@@ -337,17 +337,17 @@ class StepCounterService : Service(), SensorEventListener {
 
         val showSteps = isStepsVisibleAnywhere(this)
         
-        val title = if (showSteps) "Lwidget Step Counter" else "Lwidget Keep Alive"
+        val title = getString(if (showSteps) R.string.notif_title_steps else R.string.notif_title_keepalive)
         val text = if (showSteps) {
             val stepsToday = (lastTotalSteps - baselineSteps).toInt().coerceAtLeast(0)
             if (stepsToday > 0) {
                 val formatted = java.text.NumberFormat.getIntegerInstance().format(stepsToday)
-                "$formatted steps today"
+                getString(R.string.notif_text_steps_today, formatted)
             } else {
-                "Counting steps in the background"
+                getString(R.string.notif_text_counting)
             }
         } else {
-            "Keeping widget updated"
+            getString(R.string.notif_text_keepalive)
         }
 
         val iconRes = if (showSteps) R.drawable.ic_steps else R.drawable.ic_shield
@@ -368,10 +368,10 @@ class StepCounterService : Service(), SensorEventListener {
     private fun createNotificationChannel() {
         val channel = NotificationChannel(
             CHANNEL_ID,
-            "Step Counter Service",
+            getString(R.string.notif_channel_name),
             NotificationManager.IMPORTANCE_MIN
         ).apply {
-            description = "Keeps the step counter running in the background."
+            description = getString(R.string.notif_channel_desc)
             setShowBadge(false)
         }
         val manager = getSystemService(NotificationManager::class.java)

@@ -114,4 +114,34 @@
     <string name="section_events_calendar_app">カレンダーアプリ</string>
     <string name="search_settings_hint">設定を検索…</string>
     <string name="changelog_title">v2.9 の新機能</string>
+
+    <!-- UI strings previously hardcoded in code -->
+    <string name="dialog_weather_permission_title">権限についての説明</string>
+    <string name="dialog_weather_permission_message">天気を表示するには、Lwidget が Breezy Weather のデータを読み取る必要があります。\n\nこれから Android が「位置情報」へのアクセスを求めます。Lwidget があなたの位置情報にアクセスすることはなく、インターネットへのアクセス権限もありません。これは Android が Breezy Weather のデータ共有権限をこのように分類しているためです。</string>
+    <string name="dialog_weather_setup_title">重要な手順</string>
+    <string name="dialog_weather_setup_message">天気がすぐにウィジェットに表示されない場合:\n\nBreezy Weather を開く → 設定 → 外部モジュール → 「Send Gadgetbridge Data」を有効にし、「Lwidget」をオンにしてください。</string>
+    <string name="dialog_continue">続ける</string>
+    <string name="dialog_cancel">キャンセル</string>
+    <string name="dialog_got_it">了解</string>
+    <string name="action_install">インストール</string>
+    <string name="msg_breezy_required">Breezy Weather アプリ（DataBridge を有効にしたもの）が必要です。</string>
+    <string name="msg_breezy_required_short">Breezy Weather アプリが必要です。</string>
+    <string name="msg_tasks_required">この機能には Tasks.org アプリが必要です。</string>
+    <string name="widget_default_settings">デフォルト設定</string>
+    <string name="widget_default_settings_selector">デフォルト設定 ▾</string>
+    <string name="widget_title_numbered">Lwidget #%1$d</string>
+    <string name="widget_selector_numbered">ウィジェット #%1$d ▾</string>
+    <string name="widget_option_numbered">ウィジェット #%1$d (ID: %2$d)</string>
+    <string name="widget_picker_title">設定するウィジェットを選択</string>
+    <string name="perm_granted">許可済み</string>
+    <string name="label_enable">有効にする</string>
+    <string name="label_size">サイズ</string>
+    <string name="notif_title_steps">Lwidget 歩数計</string>
+    <string name="notif_title_keepalive">Lwidget バックグラウンド維持</string>
+    <string name="notif_text_steps_today">今日は %1$s 歩</string>
+    <string name="notif_text_counting">バックグラウンドで歩数を計測中</string>
+    <string name="notif_text_keepalive">ウィジェットを最新の状態に保っています</string>
+    <string name="notif_channel_name">歩数計サービス</string>
+    <string name="notif_channel_desc">歩数計をバックグラウンドで動作させ続けます。</string>
+    <string name="version_unknown">不明</string>
 </resources>
