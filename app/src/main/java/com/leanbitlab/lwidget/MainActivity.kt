@@ -414,6 +414,24 @@ class MainActivity : AppCompatActivity() {
 
 
 
+    private val updateHandler = android.os.Handler(android.os.Looper.getMainLooper())
+    private val deferredUpdate = Runnable { updateWidget() }
+
+    /**
+     * Coalesces rapid updates (e.g. while dragging a slider) into one trailing updateWidget().
+     * updateWidget() rebuilds the preview, animates the FAB and re-renders the real widget, so
+     * running it on every slider tick is wasteful. Discrete actions should call updateWidget() directly.
+     */
+    internal fun scheduleWidgetUpdate(delayMs: Long = WIDGET_UPDATE_DEBOUNCE_MS) {
+        updateHandler.removeCallbacks(deferredUpdate)
+        updateHandler.postDelayed(deferredUpdate, delayMs)
+    }
+
+    override fun onDestroy() {
+        updateHandler.removeCallbacks(deferredUpdate)
+        super.onDestroy()
+    }
+
     internal fun updateWidget() {
         setupPreviewWallpaper()
         updateLivePreview()
@@ -443,3 +461,5 @@ class MainActivity : AppCompatActivity() {
     }
 
 }
+
+private const val WIDGET_UPDATE_DEBOUNCE_MS = 120L

@@ -45,7 +45,10 @@ internal fun MainActivity.bindToggle(
     switch.isChecked = isShown
     onChanged?.invoke(isShown)
 
-    switch.setOnCheckedChangeListener { _, isChecked ->
+    switch.setOnCheckedChangeListener { buttonView, isChecked ->
+        if (buttonView.isPressed) {
+            buttonView.performHapticFeedback(android.view.HapticFeedbackConstants.CLOCK_TICK)
+        }
         if (isChecked && !checkLimit()) {
             switch.isChecked = false
             return@setOnCheckedChangeListener
@@ -78,7 +81,7 @@ internal fun MainActivity.bindSlider(
         if (fromUser) {
             tvValue.text = "${value.toInt()}$suffix"
             prefs.edit().putFloat(prefKey, value).apply()
-            updateWidget()
+            scheduleWidgetUpdate()
         }
     }
 }
@@ -165,7 +168,7 @@ internal fun MainActivity.bindColorSliders(viewId: Int, prefPrefix: String): Vie
                 .putInt("${prefPrefix}_g", sliderGreen.value.toInt())
                 .putInt("${prefPrefix}_b", sliderBlue.value.toInt())
                 .apply()
-            updateWidget()
+            scheduleWidgetUpdate()
         }
     }
 

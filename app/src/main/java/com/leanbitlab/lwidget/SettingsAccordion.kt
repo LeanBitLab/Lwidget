@@ -208,7 +208,7 @@ internal fun MainActivity.bindFoldedSection(
             if (fromUser) {
                 valueLabel.text = "${value.toInt()}"
                 prefs.edit().putFloat(prefSizeKey, value).apply()
-                updateWidget()
+                scheduleWidgetUpdate()
             }
         }
     }
