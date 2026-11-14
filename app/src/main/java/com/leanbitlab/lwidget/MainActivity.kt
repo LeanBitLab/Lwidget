@@ -204,6 +204,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        constrainContentWidth()
+
     }
 
     @android.annotation.SuppressLint("MissingPermission")

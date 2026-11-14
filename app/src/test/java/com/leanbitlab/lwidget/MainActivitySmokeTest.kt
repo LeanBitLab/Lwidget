@@ -59,4 +59,13 @@ class MainActivitySmokeTest {
 
         assertTrue(!controller.get().isFinishing)
     }
+
+    @Test
+    @Config(sdk = [33], qualifiers = "w900dp-h600dp")
+    fun launchesOnWideScreen() {
+        val activity = Robolectric.buildActivity(MainActivity::class.java).setup().get()
+
+        assertTrue(!activity.isFinishing)
+        assertNotNull(activity.findViewById<View>(R.id.nested_scroll_view))
+    }
 }
