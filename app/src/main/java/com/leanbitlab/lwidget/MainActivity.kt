@@ -504,6 +504,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        // onCreate returns early (first launch -> SetupActivity); nothing is bound in that case.
+        if (!::prefs.isInitialized) return
         // Re-check permissions when returning (especially for Data Usage settings)
         checkAllPermissions()
         StepCounterService.startServiceIfEnabled(this)
