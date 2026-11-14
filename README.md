@@ -35,16 +35,16 @@ You can download the latest release from the [Play Store](https://play.google.co
 
 <table>
   <tr>
-    <td><img src="docs/images/1.png" height="400" alt="Screenshot 1"/></td>
-    <td><img src="docs/images/2.png" height="400" alt="Screenshot 2"/></td>
-    <td><img src="docs/images/3.png" height="400" alt="Screenshot 3"/></td>
-    <td><img src="docs/images/4.png" height="400" alt="Screenshot 4"/></td>
+    <td><img src="https://raw.githubusercontent.com/LeanBitLab/Lwidget/main/fastlane/metadata/android/en-US/images/phoneScreenshots/1.png" height="400" alt="Screenshot 1"/></td>
+    <td><img src="https://raw.githubusercontent.com/LeanBitLab/Lwidget/main/fastlane/metadata/android/en-US/images/phoneScreenshots/2.png" height="400" alt="Screenshot 2"/></td>
+    <td><img src="https://raw.githubusercontent.com/LeanBitLab/Lwidget/main/fastlane/metadata/android/en-US/images/phoneScreenshots/3.png" height="400" alt="Screenshot 3"/></td>
+    <td><img src="https://raw.githubusercontent.com/LeanBitLab/Lwidget/main/fastlane/metadata/android/en-US/images/phoneScreenshots/4.png" height="400" alt="Screenshot 4"/></td>
   </tr>
   <tr>
-    <td><img src="docs/images/5.png" height="400" alt="Screenshot 5"/></td>
-    <td><img src="docs/images/6.png" height="400" alt="Screenshot 6"/></td>
-    <td><img src="docs/images/7.png" height="400" alt="Screenshot 7"/></td>
-    <td><img src="docs/images/8.png" height="400" alt="Screenshot 8"/></td>
+    <td><img src="https://raw.githubusercontent.com/LeanBitLab/Lwidget/main/fastlane/metadata/android/en-US/images/phoneScreenshots/5.png" height="400" alt="Screenshot 5"/></td>
+    <td><img src="https://raw.githubusercontent.com/LeanBitLab/Lwidget/main/fastlane/metadata/android/en-US/images/phoneScreenshots/6.png" height="400" alt="Screenshot 6"/></td>
+    <td><img src="https://raw.githubusercontent.com/LeanBitLab/Lwidget/main/fastlane/metadata/android/en-US/images/phoneScreenshots/7.png" height="400" alt="Screenshot 7"/></td>
+    <td><img src="https://raw.githubusercontent.com/LeanBitLab/Lwidget/main/fastlane/metadata/android/en-US/images/phoneScreenshots/8.png" height="400" alt="Screenshot 8"/></td>
   </tr>
 </table>
 
