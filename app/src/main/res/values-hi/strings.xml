@@ -144,4 +144,6 @@
     <string name="notif_channel_name">स्टेप काउंटर सेवा</string>
     <string name="notif_channel_desc">स्टेप काउंटर को बैकग्राउंड में चालू रखता है।</string>
     <string name="version_unknown">अज्ञात</string>
+    <string name="a11y_move_up">ऊपर ले जाएँ</string>
+    <string name="a11y_move_down">नीचे ले जाएँ</string>
 </resources>

@@ -56,11 +56,19 @@ internal fun MainActivity.bindReorderSection() {
     var itemTouchHelper: ItemTouchHelper? = null
     var orderHasChanged = false
 
+    fun persistOrder() {
+        val orderStr = items.joinToString(",") { it.key }
+        prefs.edit().putString("widget_right_column_order", orderStr).apply()
+        updateWidget()
+        updateLivePreview()
+    }
+
     val adapter = ReorderAdapter(
         items,
         onStartDrag = { viewHolder ->
             itemTouchHelper?.startDrag(viewHolder)
-        }
+        },
+        onOrderChanged = { persistOrder() }
     )
     recyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
     recyclerView.adapter = adapter
@@ -111,10 +119,7 @@ internal fun MainActivity.bindReorderSection() {
             }
             if (orderHasChanged) {
                 orderHasChanged = false
-                val orderStr = items.joinToString(",") { it.key }
-                prefs.edit().putString("widget_right_column_order", orderStr).apply()
-                updateWidget()
-                updateLivePreview()
+                persistOrder()
             }
         }
 

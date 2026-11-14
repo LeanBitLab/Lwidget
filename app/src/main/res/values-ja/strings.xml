@@ -144,4 +144,6 @@
     <string name="notif_channel_name">歩数計サービス</string>
     <string name="notif_channel_desc">歩数計をバックグラウンドで動作させ続けます。</string>
     <string name="version_unknown">不明</string>
+    <string name="a11y_move_up">上へ移動</string>
+    <string name="a11y_move_down">下へ移動</string>
 </resources>

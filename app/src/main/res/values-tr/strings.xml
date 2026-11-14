@@ -144,4 +144,6 @@
     <string name="notif_channel_name">Adım Sayar Hizmeti</string>
     <string name="notif_channel_desc">Adım sayarın arka planda çalışmasını sağlar.</string>
     <string name="version_unknown">Bilinmiyor</string>
+    <string name="a11y_move_up">Yukarı taşı</string>
+    <string name="a11y_move_down">Aşağı taşı</string>
 </resources>

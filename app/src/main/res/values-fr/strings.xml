@@ -144,4 +144,6 @@
     <string name="notif_channel_name">Service du compteur de pas</string>
     <string name="notif_channel_desc">Maintient le compteur de pas actif en arrière-plan.</string>
     <string name="version_unknown">Inconnue</string>
+    <string name="a11y_move_up">Monter</string>
+    <string name="a11y_move_down">Descendre</string>
 </resources>

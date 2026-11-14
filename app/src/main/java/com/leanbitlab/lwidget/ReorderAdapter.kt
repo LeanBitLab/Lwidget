@@ -18,6 +18,11 @@
 package com.leanbitlab.lwidget
 
 import android.view.MotionEvent
+import android.view.View
+import android.os.Bundle
+import androidx.core.view.AccessibilityDelegateCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
@@ -31,7 +36,8 @@ data class ReorderItem(
 // Adapter for reorder RecyclerView
 class ReorderAdapter(
     private val items: MutableList<ReorderItem>,
-    private val onStartDrag: (RecyclerView.ViewHolder) -> Unit
+    private val onStartDrag: (RecyclerView.ViewHolder) -> Unit,
+    private val onOrderChanged: () -> Unit = {}
 ) : RecyclerView.Adapter<ReorderAdapter.ViewHolder>() {
 
     class ViewHolder(val view: android.view.View) : RecyclerView.ViewHolder(view) {
@@ -56,6 +62,37 @@ class ReorderAdapter(
             holder.view.alpha = 0.4f
             holder.status?.visibility = android.view.View.VISIBLE
         }
+
+        // Touch-drag has no keyboard/TalkBack equivalent, so expose explicit move actions.
+        ViewCompat.setAccessibilityDelegate(holder.view, object : AccessibilityDelegateCompat() {
+            override fun onInitializeAccessibilityNodeInfo(host: View, info: AccessibilityNodeInfoCompat) {
+                super.onInitializeAccessibilityNodeInfo(host, info)
+                val pos = holder.adapterPosition
+                if (pos == RecyclerView.NO_POSITION) return
+                if (pos > 0) {
+                    info.addAction(AccessibilityNodeInfoCompat.AccessibilityActionCompat(
+                        R.id.a11y_action_move_up, host.context.getString(R.string.a11y_move_up)))
+                }
+                if (pos < items.size - 1) {
+                    info.addAction(AccessibilityNodeInfoCompat.AccessibilityActionCompat(
+                        R.id.a11y_action_move_down, host.context.getString(R.string.a11y_move_down)))
+                }
+            }
+
+            override fun performAccessibilityAction(host: View, action: Int, args: Bundle?): Boolean {
+                val pos = holder.adapterPosition
+                if (pos == RecyclerView.NO_POSITION) return super.performAccessibilityAction(host, action, args)
+                val target = when (action) {
+                    R.id.a11y_action_move_up -> pos - 1
+                    R.id.a11y_action_move_down -> pos + 1
+                    else -> return super.performAccessibilityAction(host, action, args)
+                }
+                if (target !in items.indices) return false
+                moveItem(pos, target)
+                onOrderChanged()
+                return true
+            }
+        })
 
         holder.handle.setOnTouchListener { v, event ->
             if (event.actionMasked == MotionEvent.ACTION_DOWN) {

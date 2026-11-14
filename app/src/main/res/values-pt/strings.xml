@@ -144,4 +144,6 @@
     <string name="notif_channel_name">Serviço do contador de passos</string>
     <string name="notif_channel_desc">Mantém o contador de passos em execução em segundo plano.</string>
     <string name="version_unknown">Desconhecida</string>
+    <string name="a11y_move_up">Mover para cima</string>
+    <string name="a11y_move_down">Mover para baixo</string>
 </resources>

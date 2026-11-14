@@ -144,4 +144,6 @@
     <string name="notif_channel_name">计步服务</string>
     <string name="notif_channel_desc">让计步器在后台持续运行。</string>
     <string name="version_unknown">未知</string>
+    <string name="a11y_move_up">上移</string>
+    <string name="a11y_move_down">下移</string>
 </resources>

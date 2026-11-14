@@ -144,4 +144,6 @@
     <string name="notif_channel_name">Step Counter Service</string>
     <string name="notif_channel_desc">Keeps the step counter running in the background.</string>
     <string name="version_unknown">Unknown</string>
+    <string name="a11y_move_up">Move up</string>
+    <string name="a11y_move_down">Move down</string>
 </resources>

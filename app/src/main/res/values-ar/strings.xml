@@ -144,4 +144,6 @@
     <string name="notif_channel_name">خدمة عدّاد الخطوات</string>
     <string name="notif_channel_desc">يُبقي عدّاد الخطوات يعمل في الخلفية.</string>
     <string name="version_unknown">غير معروف</string>
+    <string name="a11y_move_up">نقل لأعلى</string>
+    <string name="a11y_move_down">نقل لأسفل</string>
 </resources>

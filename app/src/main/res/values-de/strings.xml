@@ -144,4 +144,6 @@
     <string name="notif_channel_name">Schrittzähler-Dienst</string>
     <string name="notif_channel_desc">Hält den Schrittzähler im Hintergrund aktiv.</string>
     <string name="version_unknown">Unbekannt</string>
+    <string name="a11y_move_up">Nach oben</string>
+    <string name="a11y_move_down">Nach unten</string>
 </resources>

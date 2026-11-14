@@ -144,4 +144,6 @@
     <string name="notif_channel_name">Служба шагомера</string>
     <string name="notif_channel_desc">Поддерживает работу шагомера в фоновом режиме.</string>
     <string name="version_unknown">Неизвестно</string>
+    <string name="a11y_move_up">Переместить вверх</string>
+    <string name="a11y_move_down">Переместить вниз</string>
 </resources>
