@@ -74,7 +74,7 @@
     <string name="section_changelog">Notas e alterações</string>
     <string name="changelog_version">Versão %s</string>
     <string name="changelog_note">Lwidget funciona sem serviços em segundo plano. Para garantir atualizações contínuas, desative a otimização de bateria.</string>
-    <string name="changelog_content">Novidades na v2.9:\n• Conformidade com builds reproduzíveis do F-Droid (remoção de metadados proprietários de dependência)\n• Regras aprimoradas de ProGuard e R8 para componentes do widget e serialização\n• Otimizações de desempenho para desserialização de clima e consultas de tarefas\n• Gráficos e capturas de tela da loja atualizados no fastlane\n• Melhorias na estabilidade e configuração de compilação</string>
+    <string name="changelog_content">Novidades na v3.0:\n• As cores do widget acompanham o papel de parede e o modo escuro (Material You)\n• Estado de carga exibido com ícone de raio Material colorido\n• Mudanças no intervalo de atualização aplicadas na hora\n• Configurações mais fluidas: controles deslizantes otimizados, háptica, layout para tablets\n• Melhor acessibilidade e interface totalmente traduzível\n• Permissão não usada removida; atualizações em segundo plano mais confiáveis</string>
     <string name="changelog_testing_notice">Se você gosta do Lwidget, deixe uma avaliação na Google Play.</string>
     <string name="github_source_code">Código-fonte (GitHub)</string>
     <string name="privacy_policy">Política de privacidade</string>
@@ -113,7 +113,7 @@
     <string name="btn_grant">Conceder</string>
     <string name="section_events_calendar_app">Aplicativo de calendário</string>
     <string name="search_settings_hint">Pesquisar configurações…</string>
-    <string name="changelog_title">Novidades da v2.9</string>
+    <string name="changelog_title">Novidades da v3.0</string>
 
     <!-- UI strings previously hardcoded in code -->
     <string name="dialog_weather_permission_title">Esclarecimento da permissão</string>

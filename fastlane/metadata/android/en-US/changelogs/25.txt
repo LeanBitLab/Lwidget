@@ -1,0 +1,6 @@
+• Widget colors follow wallpaper and dark mode changes (Material You)
+• Charging state shown with a tinted Material bolt icon
+• Update interval changes now apply immediately
+• Smoother settings: debounced sliders, switch haptics, tablet layout
+• Better accessibility and fully translatable UI
+• Removed an unused permission; more reliable background updates

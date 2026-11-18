@@ -71,7 +71,7 @@
     <string name="section_changelog">注意と更新履歴</string>
     <string name="changelog_version">バージョン %s</string>
     <string name="changelog_note">Lwidgetはバックグラウンドサービスなしで動作します。更新を安定させるには、端末のバッテリー最適化を解除するか、バックグラウンド維持を有効にしてください。</string>
-    <string name="changelog_content">v2.9の新機能：\n• F-Droid再現可能ビルド対応（独自の依存関係メタデータを削除）\n• ウィジェット構成要素およびシリアライゼーション用のProGuard/R8ルール強化\n• 天気データ解析とタスク取得クエリのパフォーマンス最適化\n• fastlaneメタデータおよびストア画像の刷新\n• ビルド構成と安定性の向上</string>
+    <string name="changelog_content">v3.0の新機能：\n• ウィジェットの色が壁紙とダークモードの変更に追従（Material You）\n• 充電状態を色付きの Material 稲妻アイコンで表示\n• 更新間隔の変更がすぐに反映\n• 設定がより快適に：スライダー最適化、スイッチの触覚フィードバック、タブレットレイアウト\n• アクセシビリティ向上と完全に翻訳可能な UI\n• 未使用の権限を削除、バックグラウンド更新の信頼性向上</string>
     <string name="changelog_testing_notice">Lwidgetを気に入っていただけましたら、Google Playで評価をお願いします。</string>
     <string name="github_source_code">ソースコード (GitHub)</string>
     <string name="privacy_policy">プライバシーポリシー</string>
@@ -113,7 +113,7 @@
     <string name="hint_reorder_drag">ドラッグして右列の並び順を変更します。薄暗い項目は無効です。</string>
     <string name="section_events_calendar_app">カレンダーアプリ</string>
     <string name="search_settings_hint">設定を検索…</string>
-    <string name="changelog_title">v2.9 の新機能</string>
+    <string name="changelog_title">v3.0 の新機能</string>
 
     <!-- UI strings previously hardcoded in code -->
     <string name="dialog_weather_permission_title">権限についての説明</string>
