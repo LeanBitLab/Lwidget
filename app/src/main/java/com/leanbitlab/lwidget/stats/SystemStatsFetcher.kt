@@ -78,7 +78,8 @@ object SystemStatsFetcher {
         val isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING || status == BatteryManager.BATTERY_STATUS_FULL
 
         if (showBattery) {
-            val batteryText = if (isCharging) "⚡${batteryPct}%" else "${batteryPct}%"
+            // Text glyph (not the emoji) so it takes the widget text color (Material You)
+            val batteryText = if (isCharging) "ϟ${batteryPct}%" else "${batteryPct}%"
             val batterySpannable = SpannableString(batteryText)
             if (isCharging) {
                 batterySpannable.setSpan(
