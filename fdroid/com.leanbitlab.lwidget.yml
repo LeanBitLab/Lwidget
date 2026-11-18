@@ -14,8 +14,8 @@ Repo: https://github.com/LeanBitLab/Lwidget.git
 Binaries: https://github.com/LeanBitLab/Lwidget/releases/download/v%v/app-release.apk
 
 Builds:
-  - versionName: '2.9'
-    versionCode: 24
+  - versionName: '3.0'
+    versionCode: 25
     commit: f181010821465e7d8e7c51392c76552d38d6a2e2
     subdir: app
     gradle:
@@ -28,5 +28,5 @@ AllowedAPKSigningKeys: 9d658d45a06fa70ef2bd0ed669daa68afa8169464402bb1f280204b99
 
 AutoUpdateMode: Version
 UpdateCheckMode: Tags ^v[0-9.]+$
-CurrentVersion: '2.9'
-CurrentVersionCode: 24
+CurrentVersion: '3.0'
+CurrentVersionCode: 25

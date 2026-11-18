@@ -1,0 +1,98 @@
+<en-US>
+• Widget colors follow wallpaper and dark mode changes (Material You)
+• Charging state shown with a tinted Material bolt icon
+• Update interval changes now apply immediately
+• Smoother settings: debounced sliders, switch haptics, tablet layout
+• Better accessibility and fully translatable UI
+• Removed an unused permission; more reliable background updates
+</en-US>
+
+<ar>
+• ألوان القطعة تتبع تغييرات الخلفية والوضع الداكن (Material You)
+• عرض حالة الشحن بأيقونة برق Material ملونة
+• تطبيق تغييرات فاصل التحديث فورًا
+• إعدادات أكثر سلاسة: منزلقات محسنة، اهتزاز للمفاتيح، تخطيط للأجهزة اللوحية
+• إمكانية وصول أفضل وواجهة قابلة للترجمة بالكامل
+• إزالة إذن غير مستخدم وتحديثات خلفية أكثر موثوقية
+</ar>
+
+<de-DE>
+• Widget-Farben folgen Hintergrund- und Dunkelmodus-Wechseln (Material You)
+• Ladezustand mit eingefärbtem Material-Blitzsymbol
+• Änderungen am Aktualisierungsintervall greifen sofort
+• Flüssigere Einstellungen: entprellte Schieberegler, Haptik, Tablet-Layout
+• Bessere Barrierefreiheit und vollständig übersetzbare Oberfläche
+• Ungenutzte Berechtigung entfernt; zuverlässigere Hintergrund-Updates
+</de-DE>
+
+<es-ES>
+• Los colores del widget siguen el fondo y el modo oscuro (Material You)
+• Estado de carga con icono de rayo Material teñido
+• Los cambios del intervalo de actualización se aplican al instante
+• Ajustes más fluidos: deslizadores optimizados, háptica, diseño para tablets
+• Mejor accesibilidad e interfaz totalmente traducible
+• Eliminado un permiso sin uso; actualizaciones en segundo plano más fiables
+</es-ES>
+
+<fr-FR>
+• Les couleurs du widget suivent le fond d'écran et le mode sombre (Material You)
+• État de charge affiché avec une icône éclair Material teintée
+• Les changements d'intervalle de mise à jour s'appliquent immédiatement
+• Réglages plus fluides : curseurs optimisés, retour haptique, mise en page tablette
+• Meilleure accessibilité et interface entièrement traduisible
+• Permission inutilisée supprimée ; mises à jour en arrière-plan plus fiables
+</fr-FR>
+
+<hi-IN>
+• विजेट रंग वॉलपेपर और डार्क मोड बदलाव का पालन करते हैं (Material You)
+• चार्जिंग स्थिति रंगीन Material बोल्ट आइकन के साथ
+• अपडेट अंतराल के बदलाव तुरंत लागू होते हैं
+• बेहतर सेटिंग्स: स्मूथ स्लाइडर, स्विच हैप्टिक्स, टैबलेट लेआउट
+• बेहतर सुलभता और पूरी तरह अनुवाद योग्य इंटरफ़ेस
+• अप्रयुक्त अनुमति हटाई गई; अधिक विश्वसनीय बैकग्राउंड अपडेट
+</hi-IN>
+
+<ja-JP>
+• ウィジェットの色が壁紙とダークモードの変更に追従（Material You）
+• 充電状態を色付きの Material 稲妻アイコンで表示
+• 更新間隔の変更がすぐに反映
+• 設定がより快適に：スライダー最適化、スイッチの触覚フィードバック、タブレットレイアウト
+• アクセシビリティ向上と完全に翻訳可能な UI
+• 未使用の権限を削除、バックグラウンド更新の信頼性向上
+</ja-JP>
+
+<pt-BR>
+• As cores do widget acompanham o papel de parede e o modo escuro (Material You)
+• Estado de carga exibido com ícone de raio Material colorido
+• Mudanças no intervalo de atualização aplicadas na hora
+• Configurações mais fluidas: controles deslizantes otimizados, háptica, layout para tablets
+• Melhor acessibilidade e interface totalmente traduzível
+• Permissão não usada removida; atualizações em segundo plano mais confiáveis
+</pt-BR>
+
+<ru-RU>
+• Цвета виджета следуют за обоями и тёмной темой (Material You)
+• Состояние зарядки показано окрашенным значком молнии Material
+• Изменение интервала обновления применяется сразу
+• Плавнее настройки: оптимизированные ползунки, вибрация переключателей, макет для планшетов
+• Улучшенная доступность и полностью переводимый интерфейс
+• Удалено неиспользуемое разрешение; надёжнее фоновые обновления
+</ru-RU>
+
+<tr-TR>
+• Widget renkleri duvar kağıdı ve karanlık mod değişikliklerini izler (Material You)
+• Şarj durumu renklendirilmiş Material şimşek simgesiyle gösterilir
+• Güncelleme aralığı değişiklikleri hemen uygulanır
+• Daha akıcı ayarlar: optimize kaydırıcılar, anahtar titreşimi, tablet düzeni
+• Daha iyi erişilebilirlik ve tamamen çevrilebilir arayüz
+• Kullanılmayan izin kaldırıldı; daha güvenilir arka plan güncellemeleri
+</tr-TR>
+
+<zh-CN>
+• 小部件颜色跟随壁纸和深色模式变化（Material You）
+• 充电状态以着色的 Material 闪电图标显示
+• 更新间隔更改立即生效
+• 设置更流畅：滑块防抖、开关触感反馈、平板布局
+• 无障碍改进，界面完全可翻译
+• 移除未使用的权限；后台更新更可靠
+</zh-CN>

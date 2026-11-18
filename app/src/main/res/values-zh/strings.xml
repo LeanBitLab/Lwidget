@@ -71,7 +71,7 @@
     <string name="section_changelog">说明与更新日志</string>
     <string name="changelog_version">版本 %s</string>
     <string name="changelog_note">Lwidget 无需后台服务即可运行。但某些设备可能会杀后台以省电，导致小部件停止更新：\n\n• 请在系统设置中将 Lwidget 设为不受电池优化限制。\n• 或开启“后台保活”。\n• 或开启“计步器”。</string>
-    <string name="changelog_content">v2.9 新特性：\n• 符合 F-Droid 可重现构建标准（剥离专有依赖项元数据）\n• 增强小部件组件与数据序列化的 ProGuard / R8 混淆优化规则\n• 优化天气数据反序列化与待办事项查询性能\n• 更新 fastlane 应用商店屏幕截图与展示图\n• 改进构建配置与整体运行稳定性</string>
+    <string name="changelog_content">v3.0 新特性：\n• 小部件颜色跟随壁纸和深色模式变化（Material You）\n• 充电状态以着色的 Material 闪电图标显示\n• 更新间隔更改立即生效\n• 设置更流畅：滑块防抖、开关触感反馈、平板布局\n• 无障碍改进，界面完全可翻译\n• 移除未使用的权限；后台更新更可靠</string>
     <string name="changelog_testing_notice">如果您喜欢 Lwidget，请在 Google Play 上给予好评支持！</string>
     <string name="github_source_code">源代码 (GitHub)</string>
     <string name="privacy_policy">隐私政策</string>
@@ -113,7 +113,7 @@
     <string name="hint_reorder_drag">拖拽以调整右侧列的顺序。暗淡的项目当前处于关闭状态。</string>
     <string name="section_events_calendar_app">日历应用</string>
     <string name="search_settings_hint">搜索设置…</string>
-    <string name="changelog_title">v2.9 新特性</string>
+    <string name="changelog_title">v3.0 新特性</string>
 
     <!-- UI strings previously hardcoded in code -->
     <string name="dialog_weather_permission_title">权限说明</string>
