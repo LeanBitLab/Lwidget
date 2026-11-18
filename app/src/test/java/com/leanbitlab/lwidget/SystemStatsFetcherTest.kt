@@ -1,5 +1,6 @@
 package com.leanbitlab.lwidget
 
+import com.leanbitlab.lwidget.render.WidgetColor
 import android.content.Context
 import android.widget.RemoteViews
 import androidx.test.core.app.ApplicationProvider
@@ -18,13 +19,13 @@ class SystemStatsFetcherTest {
         val views = RemoteViews(context.packageName, R.layout.widget_layout)
 
         // Test 12-hour mode
-        SystemStatsFetcher.loadWorldClock(views, 14f, 0xFFFFFFFF.toInt(), "UTC", is12Hour = true)
+        SystemStatsFetcher.loadWorldClock(views, 14f, WidgetColor(0xFFFFFFFF.toInt()), "UTC", is12Hour = true)
 
         // Test 24-hour mode
-        SystemStatsFetcher.loadWorldClock(views, 14f, 0xFFFFFFFF.toInt(), "America/New_York", is12Hour = false)
+        SystemStatsFetcher.loadWorldClock(views, 14f, WidgetColor(0xFFFFFFFF.toInt()), "America/New_York", is12Hour = false)
 
         // Test invalid timezone does not crash and hides view
-        SystemStatsFetcher.loadWorldClock(views, 14f, 0xFFFFFFFF.toInt(), "Invalid/Zone", is12Hour = true)
+        SystemStatsFetcher.loadWorldClock(views, 14f, WidgetColor(0xFFFFFFFF.toInt()), "Invalid/Zone", is12Hour = true)
     }
 
     @Test

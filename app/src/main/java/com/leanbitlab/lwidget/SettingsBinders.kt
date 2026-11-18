@@ -62,7 +62,8 @@ internal fun MainActivity.bindToggle(
 
 internal fun MainActivity.bindSlider(
     viewId: Int, title: String, prefKey: String, defValue: Float,
-    minValue: Float, maxValue: Float, suffix: String = "%"
+    minValue: Float, maxValue: Float, suffix: String = "%",
+    onValueChanged: ((Float) -> Unit)? = null
 ) {
     val row = findViewById<View>(viewId)
     val tvTitle = row.findViewById<TextView>(R.id.row_label)
@@ -81,6 +82,7 @@ internal fun MainActivity.bindSlider(
         if (fromUser) {
             tvValue.text = "${value.toInt()}$suffix"
             prefs.edit().putFloat(prefKey, value).apply()
+            onValueChanged?.invoke(value)
             scheduleWidgetUpdate()
         }
     }

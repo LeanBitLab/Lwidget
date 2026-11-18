@@ -4,8 +4,42 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Build
+import com.leanbitlab.lwidget.render.WidgetColor
 
 object ColorResolver {
+    /** Picks the light, dark or "follow system" (night-qualified) variant of a color role. */
+    fun themed(light: Int, dark: Int, auto: Int, isLight: Boolean, followSystem: Boolean): Int =
+        if (followSystem) auto else if (isLight) light else dark
+
+    /**
+     * Like [resolveColor], but also carries a color resource on Android 12+ for theme-dependent
+     * choices, so the launcher can follow wallpaper and dark-mode changes on its own.
+     */
+    fun resolveWidgetColor(
+        context: Context,
+        prefs: SharedPreferences,
+        useDynamicColors: Boolean,
+        idx: Int,
+        isPrimary: Boolean,
+        isLight: Boolean,
+        followSystem: Boolean,
+        sdkInt: Int = Build.VERSION.SDK_INT
+    ): WidgetColor {
+        val argb = resolveColor(context, prefs, useDynamicColors, idx, isPrimary, isLight, sdkInt)
+        if (sdkInt < Build.VERSION_CODES.S) return WidgetColor(argb)
+        val res = when {
+            useDynamicColors -> if (isPrimary) {
+                themed(R.color.widget_dyn_primary_light, R.color.widget_dyn_primary_dark, R.color.widget_dyn_primary_auto, isLight, followSystem)
+            } else {
+                themed(R.color.widget_dyn_secondary_light, R.color.widget_dyn_secondary_dark, R.color.widget_dyn_secondary_auto, isLight, followSystem)
+            }
+            idx == 0 && followSystem -> if (isPrimary) R.color.widget_text_auto else R.color.widget_text_secondary_auto
+            idx == 1 -> android.R.color.system_accent1_500
+            else -> 0
+        }
+        return WidgetColor(argb, res)
+    }
+
     fun resolveColor(
         context: Context,
         prefs: SharedPreferences,

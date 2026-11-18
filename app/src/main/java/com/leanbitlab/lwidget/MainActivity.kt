@@ -143,7 +143,11 @@ class MainActivity : AppCompatActivity() {
         updateLivePreview()
         
         // Advanced Section
-        bindSlider(R.id.row_update_interval, getString(R.string.row_update_interval), "update_interval", 15f, 1f, 60f, "m")
+        bindSlider(R.id.row_update_interval, getString(R.string.row_update_interval), "update_interval", 15f, 1f, 60f, "m") {
+            // The repeating alarm only reads the interval when scheduled, so reschedule it now
+            val ids = AppWidgetManager.getInstance(this).getAppWidgetIds(ComponentName(this, AwidgetProvider::class.java))
+            if (ids.isNotEmpty()) AwidgetProvider.scheduleWork(this)
+        }
         
         // Setup Changelog
         val versionName = try {

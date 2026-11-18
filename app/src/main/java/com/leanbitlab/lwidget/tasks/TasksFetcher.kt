@@ -1,5 +1,6 @@
 package com.leanbitlab.lwidget.tasks
 
+import com.leanbitlab.lwidget.render.WidgetColor
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -77,7 +78,7 @@ object TasksFetcher {
         }
     }
 
-    fun loadTasks(context: Context, views: RemoteViews, textSizeSp: Float, primaryColor: Int) {
+    fun loadTasks(context: Context, views: RemoteViews, textSizeSp: Float, primaryColor: WidgetColor) {
         val eventViews = listOf(
             R.id.text_event_1, R.id.text_event_2, R.id.text_event_3,
             R.id.text_event_4, R.id.text_event_5, R.id.text_event_6,
@@ -124,7 +125,7 @@ object TasksFetcher {
             spannable.setSpan(ForegroundColorSpan(accentColor), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 
             views.setTextViewText(eventViews[i], spannable)
-            views.setTextColor(eventViews[i], primaryColor)
+            primaryColor.applyTextColor(views, eventViews[i])
             views.setTextViewTextSize(eventViews[i], android.util.TypedValue.COMPLEX_UNIT_SP, textSizeSp)
             views.setViewVisibility(eventViews[i], android.view.View.VISIBLE)
 
