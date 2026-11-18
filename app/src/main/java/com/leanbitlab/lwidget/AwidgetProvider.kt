@@ -160,30 +160,6 @@ class AwidgetProvider : AppWidgetProvider() {
         }
     }
 
-    private fun scheduleWork(context: Context) {
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val intent = Intent(context, AwidgetProvider::class.java).apply {
-            action = ACTION_BATTERY_UPDATE
-        }
-        val pendingIntent = PendingIntent.getBroadcast(
-            context,
-            500,
-            intent,
-            PendingIntent.FLAG_IMMUTABLE
-        )
-
-        val prefs = context.getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
-        val intervalMinutes = prefs.getFloat("update_interval", 15f)
-        val intervalMillis = (intervalMinutes * 60f * 1000f).toLong().coerceAtLeast(60000L)
-
-        alarmManager.setInexactRepeating(
-            AlarmManager.RTC,
-            System.currentTimeMillis() + intervalMillis,
-            intervalMillis,
-            pendingIntent
-        )
-    }
-
     private fun cancelWork(context: Context) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(context, AwidgetProvider::class.java).apply {
@@ -204,6 +180,34 @@ class AwidgetProvider : AppWidgetProvider() {
 
         /** goAsync() broadcasts must finish well inside the ~10s system limit. */
         private const val ASYNC_BUDGET_MS = 8_000L
+
+        /**
+         * (Re)schedules the periodic refresh. setInexactRepeating replaces any existing alarm
+         * for the same PendingIntent, so this is safe to call whenever the interval changes.
+         */
+        fun scheduleWork(context: Context) {
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            val intent = Intent(context, AwidgetProvider::class.java).apply {
+                action = ACTION_BATTERY_UPDATE
+            }
+            val pendingIntent = PendingIntent.getBroadcast(
+                context,
+                500,
+                intent,
+                PendingIntent.FLAG_IMMUTABLE
+            )
+
+            val prefs = context.getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
+            val intervalMinutes = prefs.getFloat("update_interval", 15f)
+            val intervalMillis = (intervalMinutes * 60f * 1000f).toLong().coerceAtLeast(60000L)
+
+            alarmManager.setInexactRepeating(
+                AlarmManager.RTC,
+                System.currentTimeMillis() + intervalMillis,
+                intervalMillis,
+                pendingIntent
+            )
+        }
 
         const val ACTION_NOOP = "com.leanbitlab.lwidget.ACTION_NOOP"
         const val ACTION_BATTERY_UPDATE = SystemStatsFetcher.ACTION_BATTERY_UPDATE
