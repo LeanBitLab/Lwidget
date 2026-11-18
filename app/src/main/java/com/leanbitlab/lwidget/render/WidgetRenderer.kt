@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.SystemClock
 import android.view.View
 import android.widget.RemoteViews
+import androidx.core.graphics.drawable.toBitmap
 import com.leanbitlab.lwidget.AwidgetProvider
 import com.leanbitlab.lwidget.ColorResolver
 import com.leanbitlab.lwidget.FallbackPreferences
@@ -24,6 +25,9 @@ import java.util.concurrent.ConcurrentHashMap
 object WidgetRenderer {
 
     private const val TAG = "WidgetRenderer"
+
+    /** Bolt height relative to the battery text size (roughly the digit cap height). */
+    private const val CHARGING_ICON_SCALE = 0.68f
 
     private data class CacheEntry(val intent: Intent?, val timestamp: Long)
     private val intentCache = ConcurrentHashMap<String, CacheEntry>()
@@ -312,8 +316,20 @@ object WidgetRenderer {
         views.setCharSequence(R.id.clock_date, "setFormat24Hour", dateFormat24)
 
         // Apply Battery & Temp
-        views.setViewVisibility(R.id.text_battery, if (showBattery) View.VISIBLE else View.GONE)
+        views.setViewVisibility(R.id.layout_battery, if (showBattery) View.VISIBLE else View.GONE)
         views.setTextViewTextSize(R.id.text_battery, android.util.TypedValue.COMPLEX_UNIT_SP, sizeBattery)
+        if (showBattery) {
+            // Bitmap sized to the digits so the bolt scales with the battery text size on all API levels
+            val boltHeightPx = (android.util.TypedValue.applyDimension(
+                android.util.TypedValue.COMPLEX_UNIT_SP, sizeBattery, context.resources.displayMetrics
+            ) * CHARGING_ICON_SCALE).toInt().coerceAtLeast(1)
+            val bolt = androidx.core.content.ContextCompat.getDrawable(context, R.drawable.ic_charging)
+            if (bolt != null) {
+                val boltWidthPx = (boltHeightPx * bolt.intrinsicWidth / bolt.intrinsicHeight.toFloat()).toInt().coerceAtLeast(1)
+                views.setImageViewBitmap(R.id.icon_charging, bolt.toBitmap(boltWidthPx, boltHeightPx))
+                secondaryColor.applyColorFilter(views, R.id.icon_charging)
+            }
+        }
         views.setViewVisibility(R.id.text_temp, if (showTemp) View.VISIBLE else View.GONE)
         views.setTextViewTextSize(R.id.text_temp, android.util.TypedValue.COMPLEX_UNIT_SP, sizeTemp)
         secondaryColor.applyTextColor(views, R.id.text_battery)
@@ -490,7 +506,7 @@ object WidgetRenderer {
         data class StackEntry(val viewId: Int, val isVisible: Boolean, val size: Float, val key: String)
 
         val allRightItems = listOf(
-            StackEntry(R.id.text_battery, showBattery, sizeBattery, "show_battery"),
+            StackEntry(R.id.layout_battery, showBattery, sizeBattery, "show_battery"),
             StackEntry(R.id.text_temp, showTemp, sizeTemp, "show_temp"),
             StackEntry(R.id.layout_weather_condition, showWeather, sizeWeather, "show_weather_condition"),
             StackEntry(R.id.text_data_usage, showData, sizeData, "show_data_usage"),
@@ -561,7 +577,7 @@ object WidgetRenderer {
 
         val batteryIntent = Intent(Intent.ACTION_POWER_USAGE_SUMMARY)
         val batteryPendingIntent = PendingIntent.getActivity(context, 2, batteryIntent, PendingIntent.FLAG_IMMUTABLE)
-        views.setOnClickPendingIntent(R.id.text_battery, batteryPendingIntent)
+        views.setOnClickPendingIntent(R.id.layout_battery, batteryPendingIntent)
         views.setOnClickPendingIntent(R.id.text_temp, batteryPendingIntent)
 
         val storageIntent = Intent(android.provider.Settings.ACTION_INTERNAL_STORAGE_SETTINGS)

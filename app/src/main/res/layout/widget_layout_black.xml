@@ -60,21 +60,35 @@
     </LinearLayout>
 
     <!-- Battery (Top Right) -->
-    <TextView
-        android:id="@+id/text_battery"
+    <LinearLayout
+        android:id="@+id/layout_battery"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-black"
-        android:text="--%"
-        android:textColor="#FFFFFF"
-        android:textSize="48sp"
-        android:includeFontPadding="false"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:shadowColor="#A0000000"
-        android:shadowRadius="5"
-        android:shadowDx="1"
-        android:shadowDy="1"/>
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+        <ImageView
+            android:id="@+id/icon_charging"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="2dp"
+            android:visibility="gone"
+            android:importantForAccessibility="no"/>
+        <TextView
+            android:id="@+id/text_battery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-black"
+            android:text="--%"
+            android:textColor="#FFFFFF"
+            android:textSize="48sp"
+            android:includeFontPadding="false"
+            android:shadowColor="#A0000000"
+            android:shadowRadius="5"
+            android:shadowDx="1"
+            android:shadowDy="1"/>
+    </LinearLayout>
 
     <!-- Weather Condition (Below Battery) -->
     <LinearLayout
@@ -330,7 +344,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_toStartOf="@id/text_battery"
+        android:layout_toStartOf="@id/layout_battery"
         android:fontFamily="sans-serif-black"
         android:orientation="vertical"
         android:layout_below="@id/date_container"

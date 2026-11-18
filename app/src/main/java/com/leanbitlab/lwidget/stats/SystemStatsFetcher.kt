@@ -78,17 +78,9 @@ object SystemStatsFetcher {
         val isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING || status == BatteryManager.BATTERY_STATUS_FULL
 
         if (showBattery) {
-            // Text glyph (not the emoji) so it takes the widget text color (Material You)
-            val batteryText = if (isCharging) "ϟ${batteryPct}%" else "${batteryPct}%"
-            val batterySpannable = SpannableString(batteryText)
-            if (isCharging) {
-                batterySpannable.setSpan(
-                    RelativeSizeSpan(0.8f),
-                    0,
-                    1,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-            }
+            // Charging bolt is a tinted icon (WidgetRenderer sets its bitmap and color); only toggle it here
+            views.setViewVisibility(R.id.icon_charging, if (isCharging) View.VISIBLE else View.GONE)
+            val batterySpannable = SpannableString("${batteryPct}%")
             batterySpannable.setSpan(
                 RelativeSizeSpan(0.5f),
                 batterySpannable.length - 1,
