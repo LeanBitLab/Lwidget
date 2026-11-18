@@ -5,7 +5,6 @@ import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
 import android.os.SystemClock
@@ -125,6 +124,8 @@ object WidgetRenderer {
             2 -> false
             else -> !isSystemInNightMode
         }
+        // Follow-system colors use night-qualified resources the launcher resolves at draw time
+        val followSystem = themeMode != 1 && themeMode != 2
 
         val timeFormatIdx = prefs.getInt("time_format_idx", 0)
         val dateFormatIdx = prefs.getInt("date_format_idx", 0)
@@ -181,6 +182,25 @@ object WidgetRenderer {
 
         val layoutId = getLayout(fontStyle)
 
+        val isS = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+        val dynamic = useDynamicColors && isS
+
+        /** A light/dark color role; "follow system" hands the launcher the night-qualified resource. */
+        fun role(light: Int, dark: Int, auto: Int) = WidgetColor(
+            context.getColor(if (useLightTheme) light else dark),
+            ColorResolver.themed(light, dark, auto, useLightTheme, followSystem)
+        )
+        fun systemColor(res: Int) = WidgetColor(context.getColor(res), res)
+        fun prefRgb(prefix: String) = WidgetColor(
+            Color.rgb(prefs.getInt("${prefix}_r", 255), prefs.getInt("${prefix}_g", 255), prefs.getInt("${prefix}_b", 255))
+        )
+
+        val alarmColor = if (dynamic) {
+            role(R.color.widget_dyn_alarm_light, R.color.widget_dyn_alarm_dark, R.color.widget_dyn_alarm_auto)
+        } else {
+            role(R.color.widget_alarm_light, R.color.widget_alarm_dark, R.color.widget_alarm_auto)
+        }
+
         // Branching for partial TICK/event updates
         if (mode == UpdateMode.STEPS_ONLY) {
             val stepViews = RemoteViews(context.packageName, layoutId)
@@ -197,19 +217,18 @@ object WidgetRenderer {
             return tickViews
         } else if (mode == UpdateMode.CALENDAR_ONLY) {
             val calViews = RemoteViews(context.packageName, layoutId)
-            val primaryColor = ColorResolver.resolveColor(context, prefs, useDynamicColors, textColorPrimaryIdx, isPrimary = true, isLight = useLightTheme)
-            val secondaryColor = ColorResolver.resolveColor(context, prefs, useDynamicColors, textColorSecondaryIdx, isPrimary = false, isLight = useLightTheme)
+            val primaryColor = ColorResolver.resolveWidgetColor(context, prefs, useDynamicColors, textColorPrimaryIdx, isPrimary = true, isLight = useLightTheme, followSystem = followSystem)
+            val secondaryColor = ColorResolver.resolveWidgetColor(context, prefs, useDynamicColors, textColorSecondaryIdx, isPrimary = false, isLight = useLightTheme, followSystem = followSystem)
             if (showEvents) CalendarFetcher.loadCalendarEvents(context, calViews, sizeEvents, primaryColor, secondaryColor, prefs)
             return calViews
         } else if (mode == UpdateMode.TASKS_ONLY) {
             val taskViews = RemoteViews(context.packageName, layoutId)
-            val primaryColor = ColorResolver.resolveColor(context, prefs, useDynamicColors, textColorPrimaryIdx, isPrimary = true, isLight = useLightTheme)
+            val primaryColor = ColorResolver.resolveWidgetColor(context, prefs, useDynamicColors, textColorPrimaryIdx, isPrimary = true, isLight = useLightTheme, followSystem = followSystem)
             if (showTasks) TasksFetcher.loadTasks(context, taskViews, sizeTasks, primaryColor)
             return taskViews
         } else if (mode == UpdateMode.ALARM_ONLY) {
             val alarmViews = RemoteViews(context.packageName, layoutId)
-            val secondaryColor = ColorResolver.resolveColor(context, prefs, useDynamicColors, textColorSecondaryIdx, isPrimary = false, isLight = useLightTheme)
-            if (showNextAlarm) SystemStatsFetcher.loadNextAlarm(context, alarmViews, sizeNextAlarm, secondaryColor, prefs, showDate || showWorldClock)
+            if (showNextAlarm) SystemStatsFetcher.loadNextAlarm(context, alarmViews, sizeNextAlarm, alarmColor, prefs, showDate || showWorldClock)
             return alarmViews
         }
 
@@ -218,96 +237,48 @@ object WidgetRenderer {
         // Background & Outline
         views.setImageViewResource(R.id.widget_background, R.drawable.widget_bg_fill)
 
-        fun resolveBgColor(idx: Int, isLight: Boolean): Int {
-            return when (idx) {
-                0 -> if (isLight) Color.WHITE else context.getColor(R.color.widget_bg_dark)
-                1 -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    context.getColor(android.R.color.system_accent1_500)
-                } else {
-                    context.getColor(R.color.widget_fallback_cyan)
-                }
-                2 -> {
-                    val r = prefs.getInt("bg_color_r", 255)
-                    val g = prefs.getInt("bg_color_g", 255)
-                    val b = prefs.getInt("bg_color_b", 255)
-                    Color.rgb(r, g, b)
-                }
-                else -> if (isLight) Color.WHITE else context.getColor(R.color.widget_bg_dark)
-            }
+        val bgColor = when {
+            dynamic -> role(R.color.widget_dyn_bg_light, R.color.widget_dyn_bg_dark, R.color.widget_dyn_bg_auto)
+            bgColorIdx == 1 -> if (isS) systemColor(android.R.color.system_accent1_500) else WidgetColor(context.getColor(R.color.widget_fallback_cyan))
+            bgColorIdx == 2 -> prefRgb("bg_color")
+            else -> role(R.color.widget_bg_light, R.color.widget_bg_dark, R.color.widget_bg_auto)
         }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            views.setColorStateList(R.id.widget_background, "setImageTintList", ColorStateList.valueOf(resolveBgColor(bgColorIdx, useLightTheme)))
-        } else {
-            views.setInt(R.id.widget_background, "setColorFilter", resolveBgColor(bgColorIdx, useLightTheme))
-        }
+        bgColor.applyImageTint(views, R.id.widget_background)
 
         val alpha255 = (bgOpacity * 255 / 100).toInt().coerceIn(0, 255)
         views.setInt(R.id.widget_background, "setImageAlpha", alpha255)
 
-        fun resolveOutlineColor(idx: Int): Int {
-            return when (idx) {
-                0 -> context.getColor(R.color.widget_outline)
-                1 -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    context.getColor(android.R.color.system_accent1_500)
-                } else {
-                    context.getColor(R.color.widget_fallback_cyan)
-                }
-                2 -> {
-                    val r = prefs.getInt("outline_color_r", 255)
-                    val g = prefs.getInt("outline_color_g", 255)
-                    val b = prefs.getInt("outline_color_b", 255)
-                    Color.rgb(r, g, b)
-                }
-                else -> context.getColor(R.color.widget_outline)
-            }
-        }
-
         val outlineColorIdx = prefs.getInt("outline_color_idx", 0)
         val showOutline = prefs.getBoolean("show_outline", false)
-        val outlineColor = resolveOutlineColor(outlineColorIdx)
+        val outlineColor = when {
+            dynamic -> role(R.color.widget_dyn_outline_light, R.color.widget_dyn_outline_dark, R.color.widget_dyn_outline_auto)
+            outlineColorIdx == 1 -> if (isS) systemColor(android.R.color.system_accent1_500) else WidgetColor(context.getColor(R.color.widget_fallback_cyan))
+            outlineColorIdx == 2 -> prefRgb("outline_color")
+            else -> systemColor(R.color.widget_outline)
+        }
         views.setImageViewResource(R.id.widget_outline, R.drawable.widget_bg_outline)
         views.setViewVisibility(R.id.widget_outline, if (showOutline) View.VISIBLE else View.GONE)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            views.setColorStateList(R.id.widget_outline, "setImageTintList", ColorStateList.valueOf(outlineColor))
-        } else {
-            views.setInt(R.id.widget_outline, "setColorFilter", outlineColor)
-        }
+        outlineColor.applyImageTint(views, R.id.widget_outline)
         views.setInt(R.id.widget_outline, "setImageAlpha", 255)
 
-        val primaryColor = ColorResolver.resolveColor(context, prefs, useDynamicColors, textColorPrimaryIdx, true, useLightTheme)
-        val secondaryColor = ColorResolver.resolveColor(context, prefs, useDynamicColors, textColorSecondaryIdx, false, useLightTheme)
+        val primaryColor = ColorResolver.resolveWidgetColor(context, prefs, useDynamicColors, textColorPrimaryIdx, true, useLightTheme, followSystem)
+        val secondaryColor = ColorResolver.resolveWidgetColor(context, prefs, useDynamicColors, textColorSecondaryIdx, false, useLightTheme, followSystem)
 
         val dateColorIdx = prefs.getInt("date_color_idx", 0)
-        val dateColor = if (useDynamicColors && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            context.getColor(if (useLightTheme) android.R.color.system_accent1_800 else android.R.color.system_accent2_100)
-        } else {
-            when (dateColorIdx) {
-                2 -> Color.rgb(prefs.getInt("date_color_r", 255), prefs.getInt("date_color_g", 255), prefs.getInt("date_color_b", 255))
-                1 -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) context.getColor(android.R.color.system_accent2_500) else context.getColor(R.color.widget_fallback_yellow)
-                else -> if (useLightTheme) context.getColor(R.color.widget_date_light) else context.getColor(R.color.widget_date_dark)
-            }
+        val dateColor = when {
+            dynamic -> role(R.color.widget_dyn_date_light, R.color.widget_dyn_date_dark, R.color.widget_dyn_date_auto)
+            dateColorIdx == 2 -> prefRgb("date_color")
+            dateColorIdx == 1 -> if (isS) systemColor(android.R.color.system_accent2_500) else WidgetColor(context.getColor(R.color.widget_fallback_yellow))
+            else -> role(R.color.widget_date_light, R.color.widget_date_dark, R.color.widget_date_auto)
         }
 
-        val alarmColor = if (useDynamicColors && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            context.getColor(if (useLightTheme) android.R.color.system_accent3_800 else android.R.color.system_accent3_100)
-        } else {
-            if (useLightTheme) context.getColor(R.color.widget_alarm_light) else context.getColor(R.color.widget_alarm_dark)
-        }
-
-        if (useDynamicColors && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            views.setColorStateList(R.id.widget_background, "setImageTintList", ColorStateList.valueOf(context.getColor(if (useLightTheme) android.R.color.system_neutral2_50 else android.R.color.system_neutral1_800)))
-            if (showOutline) {
-                views.setColorStateList(R.id.widget_outline, "setImageTintList", ColorStateList.valueOf(context.getColor(if (useLightTheme) android.R.color.system_accent1_300 else android.R.color.system_accent1_400)))
-            }
-        }
 
         // Apply Time
         val timeVisible = showTime || showWorldClock
         views.setViewVisibility(R.id.time_container, if (timeVisible) View.VISIBLE else View.GONE)
         views.setViewVisibility(R.id.clock_time, if (showTime) View.VISIBLE else View.GONE)
         views.setTextViewTextSize(R.id.clock_time, android.util.TypedValue.COMPLEX_UNIT_SP, sizeTime)
-        views.setTextColor(R.id.clock_time, primaryColor)
+        primaryColor.applyTextColor(views, R.id.clock_time)
 
         val (timeFormat12, timeFormat24) = when (timeFormatIdx) {
             0 -> "h:mm" to "H:mm"
@@ -329,7 +300,7 @@ object WidgetRenderer {
         views.setViewVisibility(R.id.date_container, if (dateVisible) View.VISIBLE else View.GONE)
         views.setViewVisibility(R.id.clock_date, if (showDate) View.VISIBLE else View.GONE)
         views.setTextViewTextSize(R.id.clock_date, android.util.TypedValue.COMPLEX_UNIT_SP, sizeDate)
-        views.setTextColor(R.id.clock_date, dateColor)
+        dateColor.applyTextColor(views, R.id.clock_date)
 
         val (dateFormat12, dateFormat24) = when (dateFormatIdx) {
             0 -> "EEEE, MMMM dd" to "EEEE, MMMM dd"
@@ -345,8 +316,8 @@ object WidgetRenderer {
         views.setTextViewTextSize(R.id.text_battery, android.util.TypedValue.COMPLEX_UNIT_SP, sizeBattery)
         views.setViewVisibility(R.id.text_temp, if (showTemp) View.VISIBLE else View.GONE)
         views.setTextViewTextSize(R.id.text_temp, android.util.TypedValue.COMPLEX_UNIT_SP, sizeTemp)
-        views.setTextColor(R.id.text_battery, secondaryColor)
-        views.setTextColor(R.id.text_temp, secondaryColor)
+        secondaryColor.applyTextColor(views, R.id.text_battery)
+        secondaryColor.applyTextColor(views, R.id.text_temp)
 
         SystemStatsFetcher.updateBatteryAndTemp(context, views, prefs, showBattery, showTemp)
 
@@ -409,7 +380,7 @@ object WidgetRenderer {
             }
 
             views.setImageViewResource(R.id.icon_weather, weatherDrawableRes)
-            views.setInt(R.id.icon_weather, "setColorFilter", secondaryColor)
+            secondaryColor.applyColorFilter(views, R.id.icon_weather)
             views.setViewVisibility(R.id.icon_weather, View.VISIBLE)
 
             if (showWeatherIconOnly && !hasWarning) {
@@ -428,7 +399,7 @@ object WidgetRenderer {
                 if (boldWeather) weatherSpan.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, weatherSpan.length, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 views.setTextViewText(R.id.text_weather_condition, weatherSpan)
                 views.setTextViewTextSize(R.id.text_weather_condition, android.util.TypedValue.COMPLEX_UNIT_SP, sizeWeather)
-                views.setTextColor(R.id.text_weather_condition, secondaryColor)
+                secondaryColor.applyTextColor(views, R.id.text_weather_condition)
             }
 
             val launchIntent = getLaunchIntent(context, "org.breezyweather")
@@ -443,7 +414,7 @@ object WidgetRenderer {
         views.setViewVisibility(R.id.text_data_usage, if (showData) View.VISIBLE else View.GONE)
         if (showData) {
             views.setTextViewTextSize(R.id.text_data_usage, android.util.TypedValue.COMPLEX_UNIT_SP, sizeData)
-            views.setTextColor(R.id.text_data_usage, secondaryColor)
+            secondaryColor.applyTextColor(views, R.id.text_data_usage)
             SystemStatsFetcher.updateDataUsage(context, views, prefs)
         }
 
@@ -451,7 +422,7 @@ object WidgetRenderer {
         views.setViewVisibility(R.id.text_storage, if (showStorage) View.VISIBLE else View.GONE)
         if (showStorage) {
             views.setTextViewTextSize(R.id.text_storage, android.util.TypedValue.COMPLEX_UNIT_SP, sizeStorage)
-            views.setTextColor(R.id.text_storage, secondaryColor)
+            secondaryColor.applyTextColor(views, R.id.text_storage)
             SystemStatsFetcher.updateStorageStats(views, prefs)
         }
 
@@ -459,7 +430,7 @@ object WidgetRenderer {
         views.setViewVisibility(R.id.text_ram, if (showRam) View.VISIBLE else View.GONE)
         if (showRam) {
             views.setTextViewTextSize(R.id.text_ram, android.util.TypedValue.COMPLEX_UNIT_SP, sizeRam)
-            views.setTextColor(R.id.text_ram, secondaryColor)
+            secondaryColor.applyTextColor(views, R.id.text_ram)
             SystemStatsFetcher.updateRamStats(context, views, prefs)
         }
 
@@ -467,8 +438,8 @@ object WidgetRenderer {
         views.setViewVisibility(R.id.layout_steps, if (showSteps) View.VISIBLE else View.GONE)
         if (showSteps) {
             views.setTextViewTextSize(R.id.text_steps, android.util.TypedValue.COMPLEX_UNIT_SP, sizeSteps)
-            views.setTextColor(R.id.text_steps, secondaryColor)
-            views.setInt(R.id.icon_steps, "setColorFilter", secondaryColor)
+            secondaryColor.applyTextColor(views, R.id.text_steps)
+            secondaryColor.applyColorFilter(views, R.id.icon_steps)
             SystemStatsFetcher.loadStepCount(views, prefs)
         }
 
@@ -476,8 +447,8 @@ object WidgetRenderer {
         views.setViewVisibility(R.id.layout_screen_time, if (showScreenTime) View.VISIBLE else View.GONE)
         if (showScreenTime) {
             views.setTextViewTextSize(R.id.text_screen_time, android.util.TypedValue.COMPLEX_UNIT_SP, sizeScreenTime)
-            views.setTextColor(R.id.text_screen_time, secondaryColor)
-            views.setInt(R.id.icon_screen_time, "setColorFilter", secondaryColor)
+            secondaryColor.applyTextColor(views, R.id.text_screen_time)
+            secondaryColor.applyColorFilter(views, R.id.icon_screen_time)
             SystemStatsFetcher.updateScreenTime(context, views, prefs)
         }
 

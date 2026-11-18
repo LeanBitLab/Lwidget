@@ -355,4 +355,32 @@ class ColorResolverTest {
 
         assertEquals(Color.parseColor("#CCFFFFFF"), result)
     }
+
+    private fun widgetColor(dynamic: Boolean, idx: Int, isPrimary: Boolean, isLight: Boolean, followSystem: Boolean, sdkInt: Int = Build.VERSION_CODES.S) =
+        ColorResolver.resolveWidgetColor(mock<Context>(), mock<SharedPreferences>(), dynamic, idx, isPrimary, isLight, followSystem, sdkInt)
+
+    @Test
+    fun testResolveWidgetColor_Dynamic_FollowSystem_UsesNightQualifiedResource() {
+        assertEquals(R.color.widget_dyn_primary_auto, widgetColor(dynamic = true, idx = 0, isPrimary = true, isLight = true, followSystem = true).res)
+    }
+
+    @Test
+    fun testResolveWidgetColor_Dynamic_ForcedDark_UsesDarkResource() {
+        assertEquals(R.color.widget_dyn_secondary_dark, widgetColor(dynamic = true, idx = 0, isPrimary = false, isLight = false, followSystem = false).res)
+    }
+
+    @Test
+    fun testResolveWidgetColor_Default_FollowSystem_UsesAutoResource() {
+        assertEquals(R.color.widget_text_secondary_auto, widgetColor(dynamic = false, idx = 0, isPrimary = false, isLight = true, followSystem = true).res)
+    }
+
+    @Test
+    fun testResolveWidgetColor_Default_ForcedTheme_HasNoResource() {
+        assertEquals(0, widgetColor(dynamic = false, idx = 0, isPrimary = true, isLight = true, followSystem = false).res)
+    }
+
+    @Test
+    fun testResolveWidgetColor_PreS_HasNoResource() {
+        assertEquals(0, widgetColor(dynamic = true, idx = 0, isPrimary = true, isLight = true, followSystem = true, sdkInt = Build.VERSION_CODES.R).res)
+    }
 }

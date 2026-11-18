@@ -1,5 +1,6 @@
 package com.leanbitlab.lwidget.stats
 
+import com.leanbitlab.lwidget.render.WidgetColor
 import android.app.ActivityManager
 import android.app.AlarmManager
 import android.app.AppOpsManager
@@ -304,7 +305,7 @@ object SystemStatsFetcher {
         }
     }
 
-    fun loadWorldClock(views: RemoteViews, textSizeSp: Float, textColor: Int, zoneIdStr: String, is12Hour: Boolean) {
+    fun loadWorldClock(views: RemoteViews, textSizeSp: Float, textColor: WidgetColor, zoneIdStr: String, is12Hour: Boolean) {
         try {
             val zoneId = ZoneId.of(zoneIdStr)
             views.setString(R.id.text_world_clock, "setTimeZone", zoneId.id)
@@ -314,8 +315,8 @@ object SystemStatsFetcher {
             views.setCharSequence(R.id.text_world_clock, "setFormat24Hour", format24)
 
             views.setTextViewTextSize(R.id.text_world_clock, android.util.TypedValue.COMPLEX_UNIT_SP, textSizeSp)
-            views.setTextColor(R.id.text_world_clock, textColor)
-            views.setInt(R.id.icon_world_clock, "setColorFilter", textColor)
+            textColor.applyTextColor(views, R.id.text_world_clock)
+            textColor.applyColorFilter(views, R.id.icon_world_clock)
             views.setViewVisibility(R.id.layout_world_clock, View.VISIBLE)
         } catch (e: Exception) {
             views.setViewVisibility(R.id.layout_world_clock, View.GONE)
@@ -326,7 +327,7 @@ object SystemStatsFetcher {
         context: Context,
         views: RemoteViews,
         textSizeSp: Float,
-        textColor: Int,
+        textColor: WidgetColor,
         prefs: SharedPreferences,
         hasPrecedingDate: Boolean = true
     ) {
@@ -342,10 +343,10 @@ object SystemStatsFetcher {
 
             views.setTextViewText(R.id.text_next_alarm, timeText)
             views.setTextViewTextSize(R.id.text_next_alarm, android.util.TypedValue.COMPLEX_UNIT_SP, textSizeSp)
-            views.setTextColor(R.id.text_next_alarm, textColor)
+            textColor.applyTextColor(views, R.id.text_next_alarm)
             views.setTextViewTextSize(R.id.text_alarm_divider, android.util.TypedValue.COMPLEX_UNIT_SP, textSizeSp)
-            views.setTextColor(R.id.text_alarm_divider, textColor)
-            views.setInt(R.id.icon_next_alarm, "setColorFilter", textColor)
+            textColor.applyTextColor(views, R.id.text_alarm_divider)
+            textColor.applyColorFilter(views, R.id.icon_next_alarm)
             views.setViewVisibility(R.id.text_alarm_divider, if (hasPrecedingDate) View.VISIBLE else View.GONE)
             views.setViewVisibility(R.id.layout_next_alarm, View.VISIBLE)
         } else {

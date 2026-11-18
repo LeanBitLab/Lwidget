@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dark side of the "follow system" widget colors (see values/colors.xml) -->
+    <color name="widget_text_auto">@color/widget_text_dark</color>
+    <color name="widget_text_secondary_auto">@color/widget_text_secondary_dark</color>
+    <color name="widget_date_auto">@color/widget_date_dark</color>
+    <color name="widget_alarm_auto">@color/widget_alarm_dark</color>
+    <color name="widget_bg_auto">@color/widget_bg_dark</color>
+    <color name="widget_dyn_primary_auto">@color/widget_dyn_primary_dark</color>
+    <color name="widget_dyn_secondary_auto">@color/widget_dyn_secondary_dark</color>
+    <color name="widget_dyn_date_auto">@color/widget_dyn_date_dark</color>
+    <color name="widget_dyn_alarm_auto">@color/widget_dyn_alarm_dark</color>
+    <color name="widget_dyn_bg_auto">@color/widget_dyn_bg_dark</color>
+    <color name="widget_dyn_outline_auto">@color/widget_dyn_outline_dark</color>
+</resources>

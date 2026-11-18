@@ -1,5 +1,6 @@
 package com.leanbitlab.lwidget.calendar
 
+import com.leanbitlab.lwidget.render.WidgetColor
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -196,8 +197,8 @@ object CalendarFetcher {
         views: RemoteViews,
         events: List<EventInfo>,
         textSizeSp: Float,
-        primaryColor: Int,
-        secondaryColor: Int,
+        primaryColor: WidgetColor,
+        secondaryColor: WidgetColor,
         eventViews: List<Int>,
         prefs: SharedPreferences
     ) {
@@ -207,7 +208,7 @@ object CalendarFetcher {
 
         if (events.isEmpty()) {
             views.setTextViewText(eventViews[0], "No events today")
-            views.setTextColor(eventViews[0], secondaryColor)
+            secondaryColor.applyTextColor(views, eventViews[0])
             views.setTextViewTextSize(eventViews[0], android.util.TypedValue.COMPLEX_UNIT_SP, textSizeSp)
             views.setViewVisibility(eventViews[0], android.view.View.VISIBLE)
 
@@ -239,7 +240,7 @@ object CalendarFetcher {
                 spannable.setSpan(ForegroundColorSpan(accentColor), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 
                 views.setTextViewText(eventViews[i], spannable)
-                views.setTextColor(eventViews[i], if (event.isLocal) primaryColor else secondaryColor)
+                (if (event.isLocal) primaryColor else secondaryColor).applyTextColor(views, eventViews[i])
                 views.setTextViewTextSize(eventViews[i], android.util.TypedValue.COMPLEX_UNIT_SP, textSizeSp)
                 views.setViewVisibility(eventViews[i], android.view.View.VISIBLE)
 
@@ -259,8 +260,8 @@ object CalendarFetcher {
         context: Context,
         views: RemoteViews,
         textSizeSp: Float,
-        primaryColor: Int,
-        secondaryColor: Int,
+        primaryColor: WidgetColor,
+        secondaryColor: WidgetColor,
         prefs: SharedPreferences
     ) {
         val eventViews = listOf(
@@ -275,7 +276,7 @@ object CalendarFetcher {
             ) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
             // Interactive permission prompt in widget
             views.setTextViewText(eventViews[0], "• Tap to grant calendar permission")
-            views.setTextColor(eventViews[0], secondaryColor)
+            secondaryColor.applyTextColor(views, eventViews[0])
             views.setTextViewTextSize(eventViews[0], android.util.TypedValue.COMPLEX_UNIT_SP, textSizeSp)
             views.setViewVisibility(eventViews[0], android.view.View.VISIBLE)
 

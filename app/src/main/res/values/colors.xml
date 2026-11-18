@@ -14,4 +14,35 @@
     <color name="widget_alarm_dark">#BBAACCDD</color>
     <color name="widget_fallback_cyan">#00FFFF</color>
     <color name="widget_fallback_yellow">#FFFF00</color>
+    <color name="widget_text_dark">#FFFFFFFF</color>
+    <color name="widget_text_secondary_dark">#CCFFFFFF</color>
+    <color name="widget_bg_light">#FFFFFFFF</color>
+
+    <!-- Material You palette roles, overridden with system colors in values-v31 -->
+    <color name="widget_dyn_primary_light">@color/widget_text_light</color>
+    <color name="widget_dyn_primary_dark">@color/widget_text_dark</color>
+    <color name="widget_dyn_secondary_light">@color/widget_text_secondary_light</color>
+    <color name="widget_dyn_secondary_dark">@color/widget_text_secondary_dark</color>
+    <color name="widget_dyn_date_light">@color/widget_date_light</color>
+    <color name="widget_dyn_date_dark">@color/widget_date_dark</color>
+    <color name="widget_dyn_alarm_light">@color/widget_alarm_light</color>
+    <color name="widget_dyn_alarm_dark">@color/widget_alarm_dark</color>
+    <color name="widget_dyn_bg_light">@color/widget_bg_light</color>
+    <color name="widget_dyn_bg_dark">@color/widget_bg_dark</color>
+    <color name="widget_dyn_outline_light">@color/widget_outline</color>
+    <color name="widget_dyn_outline_dark">@color/widget_outline</color>
+
+    <!-- "Follow system" theme: resolved by the launcher at draw time (values-night has the dark side),
+         so the widget switches with dark mode without being re-rendered. -->
+    <color name="widget_text_auto">@color/widget_text_light</color>
+    <color name="widget_text_secondary_auto">@color/widget_text_secondary_light</color>
+    <color name="widget_date_auto">@color/widget_date_light</color>
+    <color name="widget_alarm_auto">@color/widget_alarm_light</color>
+    <color name="widget_bg_auto">@color/widget_bg_light</color>
+    <color name="widget_dyn_primary_auto">@color/widget_dyn_primary_light</color>
+    <color name="widget_dyn_secondary_auto">@color/widget_dyn_secondary_light</color>
+    <color name="widget_dyn_date_auto">@color/widget_dyn_date_light</color>
+    <color name="widget_dyn_alarm_auto">@color/widget_dyn_alarm_light</color>
+    <color name="widget_dyn_bg_auto">@color/widget_dyn_bg_light</color>
+    <color name="widget_dyn_outline_auto">@color/widget_dyn_outline_light</color>
 </resources>
