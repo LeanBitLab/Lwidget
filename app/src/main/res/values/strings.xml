@@ -68,8 +68,8 @@
     <string name="preset_monochrome">Monochrome</string>
     <string name="preset_snowfall">Snowfall</string>
     <string name="changelog_version">Version %s</string>
-    <string name="changelog_title">What\'s New in v3.0</string>
-    <string name="changelog_content">• Widget colors follow wallpaper and dark mode changes (Material You)\n• Charging state shown with a tinted Material bolt icon\n• Update interval changes now apply immediately\n• Smoother settings: debounced sliders, switch haptics, tablet layout\n• Better accessibility and fully translatable UI\n• Removed an unused permission; more reliable background updates</string>
+    <string name="changelog_title">What\'s New in v3.1</string>
+    <string name="changelog_content">• Breezy Weather updates now reach the widget\n• Keep Alive works on Android 14+ (asks for Physical activity)\n• Accurate screen time from midnight, home screen excluded\n• Missing translations fixed, e.g. \"Today\" and \"Tomorrow\"\n• Settings search matches translated text\n• Lighter partial widget updates for better battery</string>
     <string name="github_source_code">Source Code (GitHub)</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="perm_usage_access_title">Please grant Usage Access for Lwidget</string>

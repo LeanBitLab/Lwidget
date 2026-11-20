@@ -1,0 +1,88 @@
+<en-US>
+• Breezy Weather updates now reach the widget
+• Keep Alive works on Android 14+ (asks for Physical activity)
+• Accurate screen time from midnight, home screen excluded
+• Missing translations fixed, e.g. "Today" and "Tomorrow"
+• Settings search matches translated text
+• Lighter partial widget updates for better battery
+</en-US>
+<ar>
+• تحديثات Breezy Weather تصل الآن إلى الأداة
+• خيار الإبقاء قيد التشغيل يعمل على Android 14+ (يطلب إذن النشاط البدني)
+• وقت شاشة دقيق منذ منتصف الليل دون احتساب الشاشة الرئيسية
+• إصلاح الترجمات الناقصة مثل "اليوم" و"غدًا"
+• البحث في الإعدادات يطابق النص المترجم
+• تحديثات جزئية أخف للأداة لتوفير البطارية
+</ar>
+<de-DE>
+• Breezy-Weather-Updates erreichen jetzt das Widget
+• Aktiv halten funktioniert ab Android 14 (fragt nach Körperlicher Aktivität)
+• Genaue Bildschirmzeit ab Mitternacht, ohne Startbildschirm
+• Fehlende Übersetzungen behoben, z. B. „Heute“ und „Morgen“
+• Die Einstellungssuche findet übersetzten Text
+• Leichtere Teil-Updates des Widgets für weniger Akkuverbrauch
+</de-DE>
+<es-ES>
+• Las actualizaciones de Breezy Weather ya llegan al widget
+• Mantener activo funciona en Android 14+ (pide Actividad física)
+• Tiempo de pantalla exacto desde medianoche, sin la pantalla de inicio
+• Traducciones que faltaban corregidas, p. ej. «Hoy» y «Mañana»
+• La búsqueda de ajustes encuentra el texto traducido
+• Actualizaciones parciales más ligeras para ahorrar batería
+</es-ES>
+<fr-FR>
+• Les mises à jour de Breezy Weather arrivent enfin sur le widget
+• Maintien actif fonctionne sur Android 14+ (demande l'Activité physique)
+• Temps d'écran exact depuis minuit, écran d'accueil exclu
+• Traductions manquantes corrigées, ex. « Aujourd'hui » et « Demain »
+• La recherche des paramètres trouve le texte traduit
+• Mises à jour partielles plus légères pour la batterie
+</fr-FR>
+<hi-IN>
+• Breezy Weather के अपडेट अब विजेट तक पहुँचते हैं
+• सक्रिय रखें अब Android 14+ पर काम करता है (शारीरिक गतिविधि की अनुमति मांगता है)
+• आधी रात से सटीक स्क्रीन टाइम, होम स्क्रीन शामिल नहीं
+• छूटे अनुवाद ठीक किए, जैसे "आज" और "कल"
+• सेटिंग्स खोज अनुवादित टेक्स्ट से मेल खाती है
+• बेहतर बैटरी के लिए हल्के आंशिक विजेट अपडेट
+</hi-IN>
+<ja-JP>
+• Breezy Weather の更新がウィジェットに反映されるように
+• Android 14 以降でバックグラウンド維持が動作（身体活動の権限を要求）
+• 深夜0時からの正確なスクリーンタイム（ホーム画面は除外）
+• 「今日」「明日」など不足していた翻訳を修正
+• 設定検索が翻訳されたテキストに一致
+• 部分更新を軽量化してバッテリーを節約
+</ja-JP>
+<pt-BR>
+• As atualizações do Breezy Weather agora chegam ao widget
+• Manter ativo funciona no Android 14+ (pede Atividade física)
+• Tempo de tela exato desde a meia-noite, sem a tela inicial
+• Traduções ausentes corrigidas, como "Hoje" e "Amanhã"
+• A busca nas configurações encontra o texto traduzido
+• Atualizações parciais mais leves para economizar bateria
+</pt-BR>
+<ru-RU>
+• Обновления Breezy Weather теперь доходят до виджета
+• Фоновая работа действует на Android 14+ (запрашивает «Физическую активность»)
+• Точное экранное время с полуночи, без учёта главного экрана
+• Исправлены пропущенные переводы, например «Сегодня» и «Завтра»
+• Поиск в настройках находит переведённый текст
+• Более лёгкие частичные обновления виджета для экономии батареи
+</ru-RU>
+<tr-TR>
+• Breezy Weather güncellemeleri artık widget'a ulaşıyor
+• Arka Planda Tut, Android 14+ üzerinde çalışıyor (Fiziksel aktivite izni ister)
+• Gece yarısından itibaren doğru ekran süresi, ana ekran hariç
+• Eksik çeviriler düzeltildi, örn. "Bugün" ve "Yarın"
+• Ayar araması çevrilmiş metinle eşleşiyor
+• Pil için daha hafif kısmi widget güncellemeleri
+</tr-TR>
+<zh-CN>
+• Breezy Weather 的天气更新现在会显示在小部件上
+• 后台保活在 Android 14+ 上可用（会请求“身体活动”权限）
+• 精确的屏幕使用时间，从午夜起算，不含主屏幕
+• 修复缺失的翻译，例如“今天”和“明天”
+• 设置搜索可匹配翻译后的文本
+• 更轻量的局部更新，更省电
+</zh-CN>

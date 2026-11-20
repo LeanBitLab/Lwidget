@@ -66,7 +66,7 @@
     <string name="preset_monochrome">Monocromático</string>
     <string name="preset_snowfall">Nevasca</string>
     <string name="changelog_version">Versão %s</string>
-    <string name="changelog_content">Novidades na v3.0:\n• As cores do widget acompanham o papel de parede e o modo escuro (Material You)\n• Estado de carga exibido com ícone de raio Material colorido\n• Mudanças no intervalo de atualização aplicadas na hora\n• Configurações mais fluidas: controles deslizantes otimizados, háptica, layout para tablets\n• Melhor acessibilidade e interface totalmente traduzível\n• Permissão não usada removida; atualizações em segundo plano mais confiáveis</string>
+    <string name="changelog_content">• As atualizações do Breezy Weather agora chegam ao widget\n• Manter ativo funciona no Android 14+ (pede Atividade física)\n• Tempo de tela exato desde a meia-noite, sem a tela inicial\n• Traduções ausentes corrigidas, como \"Hoje\" e \"Amanhã\"\n• A busca nas configurações encontra o texto traduzido\n• Atualizações parciais mais leves para economizar bateria</string>
     <string name="github_source_code">Código-fonte (GitHub)</string>
     <string name="privacy_policy">Política de privacidade</string>
     <string name="perm_usage_access_title">Conceda acesso de uso para o Lwidget</string>
@@ -104,7 +104,7 @@
     <string name="btn_grant">Conceder</string>
     <string name="section_events_calendar_app">Aplicativo de calendário</string>
     <string name="search_settings_hint">Pesquisar configurações…</string>
-    <string name="changelog_title">Novidades da v3.0</string>
+    <string name="changelog_title">Novidades da v3.1</string>
 
     <!-- UI strings previously hardcoded in code -->
     <string name="dialog_weather_permission_title">Esclarecimento da permissão</string>

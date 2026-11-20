@@ -63,7 +63,7 @@
     <string name="preset_monochrome">黑白</string>
     <string name="preset_snowfall">落雪</string>
     <string name="changelog_version">版本 %s</string>
-    <string name="changelog_content">v3.0 新特性：\n• 小部件颜色跟随壁纸和深色模式变化（Material You）\n• 充电状态以着色的 Material 闪电图标显示\n• 更新间隔更改立即生效\n• 设置更流畅：滑块防抖、开关触感反馈、平板布局\n• 无障碍改进，界面完全可翻译\n• 移除未使用的权限；后台更新更可靠</string>
+    <string name="changelog_content">• Breezy Weather 的天气更新现在会显示在小部件上\n• 后台保活在 Android 14+ 上可用（会请求“身体活动”权限）\n• 精确的屏幕使用时间，从午夜起算，不含主屏幕\n• 修复缺失的翻译，例如“今天”和“明天”\n• 设置搜索可匹配翻译后的文本\n• 更轻量的局部更新，更省电</string>
     <string name="github_source_code">源代码 (GitHub)</string>
     <string name="privacy_policy">隐私政策</string>
     <string name="perm_usage_access_title">请授予 Lwidget 使用情况访问权限</string>
@@ -104,7 +104,7 @@
     <string name="hint_reorder_drag">拖拽以调整右侧列的顺序。暗淡的项目当前处于关闭状态。</string>
     <string name="section_events_calendar_app">日历应用</string>
     <string name="search_settings_hint">搜索设置…</string>
-    <string name="changelog_title">v3.0 新特性</string>
+    <string name="changelog_title">v3.1 新特性</string>
 
     <!-- UI strings previously hardcoded in code -->
     <string name="dialog_weather_permission_title">权限说明</string>
