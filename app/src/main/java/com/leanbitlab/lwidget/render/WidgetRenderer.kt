@@ -208,15 +208,15 @@ object WidgetRenderer {
         // Branching for partial TICK/event updates
         if (mode == UpdateMode.STEPS_ONLY) {
             val stepViews = RemoteViews(context.packageName, layoutId)
-            if (showSteps) SystemStatsFetcher.loadStepCount(stepViews, prefs)
+            if (showSteps) SystemStatsFetcher.loadStepCount(context, stepViews, prefs)
             return stepViews
         } else if (mode == UpdateMode.TICK) {
             val tickViews = RemoteViews(context.packageName, layoutId)
             SystemStatsFetcher.updateBatteryAndTemp(context, tickViews, prefs, showBattery, showTemp)
-            if (showSteps) SystemStatsFetcher.loadStepCount(tickViews, prefs)
+            if (showSteps) SystemStatsFetcher.loadStepCount(context, tickViews, prefs)
             if (showScreenTime) SystemStatsFetcher.updateScreenTime(context, tickViews, prefs)
             if (showData) SystemStatsFetcher.updateDataUsage(context, tickViews, prefs)
-            if (showStorage) SystemStatsFetcher.updateStorageStats(tickViews, prefs)
+            if (showStorage) SystemStatsFetcher.updateStorageStats(context, tickViews, prefs)
             if (showRam) SystemStatsFetcher.updateRamStats(context, tickViews, prefs)
             return tickViews
         } else if (mode == UpdateMode.CALENDAR_ONLY) {
@@ -356,20 +356,21 @@ object WidgetRenderer {
                                 )) {
                         hasWarning = true
                         weatherCode = fCode
-                        val dayText = when (index) {
-                            0 -> "today"
-                            1 -> "tomorrow"
-                            else -> {
-                                val localDate = java.time.LocalDate.now().plusDays(index.toLong())
-                                localDate.dayOfWeek.getDisplayName(java.time.format.TextStyle.SHORT, java.util.Locale.getDefault())
-                            }
+                        val dayName = if (index > 1) {
+                            java.time.LocalDate.now().plusDays(index.toLong())
+                                .dayOfWeek.getDisplayName(java.time.format.TextStyle.SHORT, java.util.Locale.getDefault())
+                        } else ""
+                        fun dayRes(todayRes: Int, tomorrowRes: Int, onRes: Int) = when (index) {
+                            0 -> context.getString(todayRes)
+                            1 -> context.getString(tomorrowRes)
+                            else -> context.getString(onRes, dayName)
                         }
                         val precipString = if (forecast.precipProbability != null && forecast.precipProbability > 0) "${forecast.precipProbability}% " else ""
                         val conditionWarning = when (fCode) {
-                            in listOf(500, 501, 502, 503, 504, 511, 520, 521, 522, 531) -> if (index <= 1) "Rain $dayText" else "Rain on $dayText"
-                            in listOf(600, 601, 602, 611, 612, 615, 616, 620, 621, 622) -> if (index <= 1) "Snow $dayText" else "Snow on $dayText"
-                            in listOf(210, 211, 212, 221, 230, 231, 232) -> if (index <= 1) "Storm $dayText" else "Storm on $dayText"
-                            else -> "Warning"
+                            in listOf(500, 501, 502, 503, 504, 511, 520, 521, 522, 531) -> dayRes(R.string.weather_rain_today, R.string.weather_rain_tomorrow, R.string.weather_rain_on)
+                            in listOf(600, 601, 602, 611, 612, 615, 616, 620, 621, 622) -> dayRes(R.string.weather_snow_today, R.string.weather_snow_tomorrow, R.string.weather_snow_on)
+                            in listOf(210, 211, 212, 221, 230, 231, 232) -> dayRes(R.string.weather_storm_today, R.string.weather_storm_tomorrow, R.string.weather_storm_on)
+                            else -> context.getString(R.string.weather_warning)
                         }
                         weatherText = "$precipString$conditionWarning"
                         break
@@ -379,7 +380,7 @@ object WidgetRenderer {
 
             var conditionText = weatherText
             if (conditionText.isNullOrEmpty()) {
-                conditionText = "Unknown"
+                conditionText = context.getString(R.string.weather_unknown)
             }
 
             val weatherDrawableRes = when (weatherCode) {
@@ -439,7 +440,7 @@ object WidgetRenderer {
         if (showStorage) {
             views.setTextViewTextSize(R.id.text_storage, android.util.TypedValue.COMPLEX_UNIT_SP, sizeStorage)
             secondaryColor.applyTextColor(views, R.id.text_storage)
-            SystemStatsFetcher.updateStorageStats(views, prefs)
+            SystemStatsFetcher.updateStorageStats(context, views, prefs)
         }
 
         // RAM
@@ -456,7 +457,7 @@ object WidgetRenderer {
             views.setTextViewTextSize(R.id.text_steps, android.util.TypedValue.COMPLEX_UNIT_SP, sizeSteps)
             secondaryColor.applyTextColor(views, R.id.text_steps)
             secondaryColor.applyColorFilter(views, R.id.icon_steps)
-            SystemStatsFetcher.loadStepCount(views, prefs)
+            SystemStatsFetcher.loadStepCount(context, views, prefs)
         }
 
         // Screen Time

@@ -21,10 +21,8 @@
     <string name="header_permissions">Berechtigungen</string>
     <string name="header_about">Über</string>
     <string name="section_time">Uhrzeit</string>
-    <string name="section_time_format">Zeitformat</string>
     <string name="section_time_clock_app">Uhr-App</string>
     <string name="section_date">Datum</string>
-    <string name="section_date_format">Datumsformat</string>
     <string name="section_battery">Akku</string>
     <string name="section_weather_condition">Wetter</string>
     <string name="section_temp">Temperatur</string>
@@ -36,11 +34,7 @@
     <string name="section_ram">RAM</string>
     <string name="section_tasks">Aufgaben</string>
     <string name="section_steps">Schrittzähler</string>
-    <string name="section_keep_alive">Aktiv halten</string>
     <string name="section_screen_time">Bildschirmzeit</string>
-    <string name="section_outline">Umrandung</string>
-    <string name="section_theme">Design</string>
-    <string name="section_bg_transparency">Transparenz</string>
     <string name="section_text_color_primary">Textfarbe</string>
     <string name="section_text_color_secondary">Sekundäre Textfarbe</string>
     <string name="section_date_color">Datumsfarbe</string>
@@ -71,11 +65,8 @@
     <string name="preset_sunset">Sonnenuntergang</string>
     <string name="preset_monochrome">Monochrom</string>
     <string name="preset_snowfall">Schneefall</string>
-    <string name="section_changelog">Hinweise &amp; Änderungsprotokoll</string>
     <string name="changelog_version">Version %s</string>
-    <string name="changelog_note">Lwidget funktioniert ohne Hintergrunddienst. Deaktivieren Sie die Akku-Optimierung für zuverlässige Aktualisierungen.</string>
     <string name="changelog_content">Neu in v3.0:\n• Widget-Farben folgen Hintergrund- und Dunkelmodus-Wechseln (Material You)\n• Ladezustand mit eingefärbtem Material-Blitzsymbol\n• Änderungen am Aktualisierungsintervall greifen sofort\n• Flüssigere Einstellungen: entprellte Schieberegler, Haptik, Tablet-Layout\n• Bessere Barrierefreiheit und vollständig übersetzbare Oberfläche\n• Ungenutzte Berechtigung entfernt; zuverlässigere Hintergrund-Updates</string>
-    <string name="changelog_testing_notice">Wenn Ihnen Lwidget gefällt, bewerten Sie uns bitte im Google Play Store.</string>
     <string name="github_source_code">Quellcode (GitHub)</string>
     <string name="privacy_policy">Datenschutzerklärung</string>
     <string name="perm_usage_access_title">Bitte Nutzungszugriff für Lwidget gewähren</string>
@@ -146,4 +137,30 @@
     <string name="version_unknown">Unbekannt</string>
     <string name="a11y_move_up">Nach oben</string>
     <string name="a11y_move_down">Nach unten</string>
+
+    <!-- Widget content -->
+    <string name="label_today">Heute</string>
+    <string name="label_tomorrow">Morgen</string>
+    <string name="label_today_time">Heute %1$s</string>
+    <string name="label_tomorrow_time">Morgen %1$s</string>
+    <string name="label_overdue">Überfällig</string>
+    <string name="widget_no_events_today">Heute keine Termine</string>
+    <string name="widget_tap_grant_calendar">Tippen, um Kalenderzugriff zu erlauben</string>
+    <string name="widget_tap_grant_tasks">Tippen, um Tasks.org-Zugriff zu erlauben</string>
+    <string name="weather_rain_today">Regen heute</string>
+    <string name="weather_rain_tomorrow">Regen morgen</string>
+    <string name="weather_rain_on">Regen am %1$s</string>
+    <string name="weather_snow_today">Schnee heute</string>
+    <string name="weather_snow_tomorrow">Schnee morgen</string>
+    <string name="weather_snow_on">Schnee am %1$s</string>
+    <string name="weather_storm_today">Gewitter heute</string>
+    <string name="weather_storm_tomorrow">Gewitter morgen</string>
+    <string name="weather_storm_on">Gewitter am %1$s</string>
+    <string name="weather_warning">Warnung</string>
+    <string name="weather_unknown">Unbekannt</string>
+    <string name="temp_unit_celsius">Celsius (°C)</string>
+    <string name="temp_unit_fahrenheit">Fahrenheit (°F)</string>
+    <string name="duration_hours_minutes">%1$d h %2$d min</string>
+    <string name="duration_minutes">%1$d min</string>
+    <string name="widget_error">Fehler</string>
 </resources>

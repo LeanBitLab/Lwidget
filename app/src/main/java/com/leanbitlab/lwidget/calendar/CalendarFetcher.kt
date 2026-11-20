@@ -55,6 +55,7 @@ object CalendarFetcher {
     }
 
     internal fun formatEventTimeText(
+        context: Context,
         event: EventInfo,
         today: LocalDate = LocalDate.now(),
         showDayAbbr: Boolean = true,
@@ -78,9 +79,9 @@ object CalendarFetcher {
             val isOngoingToday = eventDate.isEqual(today) || (eventDate.isBefore(today) && eventEndDate.isAfter(today))
 
             if (isOngoingToday) {
-                "Today"
+                context.getString(R.string.label_today)
             } else if (eventDate.isEqual(tomorrow)) {
-                "Tomorrow"
+                context.getString(R.string.label_tomorrow)
             } else if (eventDate.isAfter(today) && eventDate.isBefore(oneWeekLater)) {
                 if (showDayAbbr) eventTime.format(allDayNearFormatter)
                 else eventTime.format(getFormatter("d"))
@@ -91,9 +92,9 @@ object CalendarFetcher {
             val eventTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(event.begin), ZoneId.systemDefault())
             val eventDate = eventTime.toLocalDate()
             if (eventDate.isEqual(today)) {
-                "Today ${eventTime.format(timeFormatter)}"
+                context.getString(R.string.label_today_time, eventTime.format(timeFormatter))
             } else if (eventDate.isEqual(tomorrow)) {
-                "Tomorrow ${eventTime.format(timeFormatter)}"
+                context.getString(R.string.label_tomorrow_time, eventTime.format(timeFormatter))
             } else if (eventDate.isBefore(oneWeekLater)) {
                 if (showDayAbbr) "${eventTime.format(dayTimeFormatter)}"
                 else eventTime.format(timeFormatter)
@@ -207,7 +208,7 @@ object CalendarFetcher {
         val is24Hour = timeFormatIdx == 1 || (timeFormatIdx == 0 && android.text.format.DateFormat.is24HourFormat(context))
 
         if (events.isEmpty()) {
-            views.setTextViewText(eventViews[0], "No events today")
+            views.setTextViewText(eventViews[0], context.getString(R.string.widget_no_events_today))
             secondaryColor.applyTextColor(views, eventViews[0])
             views.setTextViewTextSize(eventViews[0], android.util.TypedValue.COMPLEX_UNIT_SP, textSizeSp)
             views.setViewVisibility(eventViews[0], android.view.View.VISIBLE)
@@ -232,7 +233,7 @@ object CalendarFetcher {
         for (i in eventViews.indices) {
             if (i < events.size) {
                 val event = events[i]
-                val timeText = formatEventTimeText(event, today, showDayAbbr, is24Hour)
+                val timeText = formatEventTimeText(context, event, today, showDayAbbr, is24Hour)
 
                 val fullText = "• $timeText  ${event.title}"
                 val spannable = SpannableString(fullText)
@@ -275,7 +276,7 @@ object CalendarFetcher {
                 context, android.Manifest.permission.READ_CALENDAR
             ) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
             // Interactive permission prompt in widget
-            views.setTextViewText(eventViews[0], "• Tap to grant calendar permission")
+            views.setTextViewText(eventViews[0], "• " + context.getString(R.string.widget_tap_grant_calendar))
             secondaryColor.applyTextColor(views, eventViews[0])
             views.setTextViewTextSize(eventViews[0], android.util.TypedValue.COMPLEX_UNIT_SP, textSizeSp)
             views.setViewVisibility(eventViews[0], android.view.View.VISIBLE)

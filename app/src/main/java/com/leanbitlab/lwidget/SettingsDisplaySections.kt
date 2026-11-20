@@ -151,7 +151,7 @@ internal fun MainActivity.setupBatterySection() {
 
 internal fun MainActivity.setupTempSection() {
     // Temp
-    val tempUnitOptions = listOf("Celsius (°C)", "Fahrenheit (°F)")
+    val tempUnitOptions = listOf(getString(R.string.temp_unit_celsius), getString(R.string.temp_unit_fahrenheit))
     bindFoldedSection(
         R.id.header_temp, R.drawable.ic_temp, getString(R.string.section_temp),
         R.id.content_temp, R.id.row_temp_toggle,

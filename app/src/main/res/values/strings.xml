@@ -21,10 +21,8 @@
     <string name="header_permissions">Permissions</string>
     <string name="header_about">About</string>
     <string name="section_time">Time</string>
-    <string name="section_time_format">Time Format</string>
     <string name="section_time_clock_app">Clock App</string>
     <string name="section_date">Date</string>
-    <string name="section_date_format">Date Format</string>
     <string name="section_battery">Battery</string>
     <string name="section_weather_condition">Weather</string>
     <string name="section_temp">Temperature</string>
@@ -38,11 +36,7 @@
     <string name="section_ram">RAM</string>
     <string name="section_tasks">Tasks</string>
     <string name="section_steps">Step Counter</string>
-    <string name="section_keep_alive">Keep Alive</string>
     <string name="section_screen_time">Screen Time</string>
-    <string name="section_outline">Outline</string>
-    <string name="section_theme">Theme</string>
-    <string name="section_bg_transparency">Transparency</string>
     <string name="section_text_color_primary">Text Color</string>
     <string name="section_text_color_secondary">Text Color 2</string>
     <string name="section_date_color">Date Color</string>
@@ -73,12 +67,9 @@
     <string name="preset_sunset">Sunset</string>
     <string name="preset_monochrome">Monochrome</string>
     <string name="preset_snowfall">Snowfall</string>
-    <string name="section_changelog">Note &amp; Changelog</string>
     <string name="changelog_version">Version %s</string>
     <string name="changelog_title">What\'s New in v3.0</string>
     <string name="changelog_content">• Widget colors follow wallpaper and dark mode changes (Material You)\n• Charging state shown with a tinted Material bolt icon\n• Update interval changes now apply immediately\n• Smoother settings: debounced sliders, switch haptics, tablet layout\n• Better accessibility and fully translatable UI\n• Removed an unused permission; more reliable background updates</string>
-    <string name="changelog_note">Lwidget works without any background service. However, some devices may kill the app to save battery, which can stop widget updates. To fix this:\n\n• Mark Lwidget as non-battery-optimized in your device settings.\n• Or, enable Keep Alive — a lightweight background service that keeps the widget updating reliably.\n• Or, enable the Step Counter — it uses the same service and also counts your daily steps.</string>
-    <string name="changelog_testing_notice">If you enjoy Lwidget, please leave a rating on Google Play — it helps others discover the app.</string>
     <string name="github_source_code">Source Code (GitHub)</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="perm_usage_access_title">Please grant Usage Access for Lwidget</string>
@@ -146,4 +137,30 @@
     <string name="version_unknown">Unknown</string>
     <string name="a11y_move_up">Move up</string>
     <string name="a11y_move_down">Move down</string>
+
+    <!-- Widget content -->
+    <string name="label_today">Today</string>
+    <string name="label_tomorrow">Tomorrow</string>
+    <string name="label_today_time">Today %1$s</string>
+    <string name="label_tomorrow_time">Tomorrow %1$s</string>
+    <string name="label_overdue">Overdue</string>
+    <string name="widget_no_events_today">No events today</string>
+    <string name="widget_tap_grant_calendar">Tap to grant calendar permission</string>
+    <string name="widget_tap_grant_tasks">Tap to grant Tasks.org permission</string>
+    <string name="weather_rain_today">Rain today</string>
+    <string name="weather_rain_tomorrow">Rain tomorrow</string>
+    <string name="weather_rain_on">Rain on %1$s</string>
+    <string name="weather_snow_today">Snow today</string>
+    <string name="weather_snow_tomorrow">Snow tomorrow</string>
+    <string name="weather_snow_on">Snow on %1$s</string>
+    <string name="weather_storm_today">Storm today</string>
+    <string name="weather_storm_tomorrow">Storm tomorrow</string>
+    <string name="weather_storm_on">Storm on %1$s</string>
+    <string name="weather_warning">Warning</string>
+    <string name="weather_unknown">Unknown</string>
+    <string name="temp_unit_celsius">Celsius (°C)</string>
+    <string name="temp_unit_fahrenheit">Fahrenheit (°F)</string>
+    <string name="duration_hours_minutes">%1$dh %2$dm</string>
+    <string name="duration_minutes">%1$dm</string>
+    <string name="widget_error">Err</string>
 </resources>

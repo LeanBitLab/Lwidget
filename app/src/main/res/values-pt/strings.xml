@@ -21,10 +21,8 @@
     <string name="header_permissions">Permissões</string>
     <string name="header_about">Sobre</string>
     <string name="section_time">Hora</string>
-    <string name="section_time_format">Formato de hora</string>
     <string name="section_time_clock_app">App de relógio</string>
     <string name="section_date">Data</string>
-    <string name="section_date_format">Formato de data</string>
     <string name="section_battery">Bateria</string>
     <string name="section_weather_condition">Clima</string>
     <string name="section_temp">Temperatura</string>
@@ -36,11 +34,7 @@
     <string name="section_ram">RAM</string>
     <string name="section_tasks">Tarefas</string>
     <string name="section_steps">Contador de passos</string>
-    <string name="section_keep_alive">Manter ativo</string>
     <string name="section_screen_time">Tempo de tela</string>
-    <string name="section_outline">Borda</string>
-    <string name="section_theme">Tema</string>
-    <string name="section_bg_transparency">Transparência</string>
     <string name="section_text_color_primary">Cor do texto</string>
     <string name="section_text_color_secondary">Cor de texto 2</string>
     <string name="section_date_color">Cor da data</string>
@@ -71,11 +65,8 @@
     <string name="preset_sunset">Pôr do sol</string>
     <string name="preset_monochrome">Monocromático</string>
     <string name="preset_snowfall">Nevasca</string>
-    <string name="section_changelog">Notas e alterações</string>
     <string name="changelog_version">Versão %s</string>
-    <string name="changelog_note">Lwidget funciona sem serviços em segundo plano. Para garantir atualizações contínuas, desative a otimização de bateria.</string>
     <string name="changelog_content">Novidades na v3.0:\n• As cores do widget acompanham o papel de parede e o modo escuro (Material You)\n• Estado de carga exibido com ícone de raio Material colorido\n• Mudanças no intervalo de atualização aplicadas na hora\n• Configurações mais fluidas: controles deslizantes otimizados, háptica, layout para tablets\n• Melhor acessibilidade e interface totalmente traduzível\n• Permissão não usada removida; atualizações em segundo plano mais confiáveis</string>
-    <string name="changelog_testing_notice">Se você gosta do Lwidget, deixe uma avaliação na Google Play.</string>
     <string name="github_source_code">Código-fonte (GitHub)</string>
     <string name="privacy_policy">Política de privacidade</string>
     <string name="perm_usage_access_title">Conceda acesso de uso para o Lwidget</string>
@@ -146,4 +137,30 @@
     <string name="version_unknown">Desconhecida</string>
     <string name="a11y_move_up">Mover para cima</string>
     <string name="a11y_move_down">Mover para baixo</string>
+
+    <!-- Widget content -->
+    <string name="label_today">Hoje</string>
+    <string name="label_tomorrow">Amanhã</string>
+    <string name="label_today_time">Hoje %1$s</string>
+    <string name="label_tomorrow_time">Amanhã %1$s</string>
+    <string name="label_overdue">Atrasada</string>
+    <string name="widget_no_events_today">Nenhum evento hoje</string>
+    <string name="widget_tap_grant_calendar">Toque para permitir o acesso ao calendário</string>
+    <string name="widget_tap_grant_tasks">Toque para permitir o acesso ao Tasks.org</string>
+    <string name="weather_rain_today">Chuva hoje</string>
+    <string name="weather_rain_tomorrow">Chuva amanhã</string>
+    <string name="weather_rain_on">Chuva: %1$s</string>
+    <string name="weather_snow_today">Neve hoje</string>
+    <string name="weather_snow_tomorrow">Neve amanhã</string>
+    <string name="weather_snow_on">Neve: %1$s</string>
+    <string name="weather_storm_today">Tempestade hoje</string>
+    <string name="weather_storm_tomorrow">Tempestade amanhã</string>
+    <string name="weather_storm_on">Tempestade: %1$s</string>
+    <string name="weather_warning">Aviso</string>
+    <string name="weather_unknown">Desconhecido</string>
+    <string name="temp_unit_celsius">Celsius (°C)</string>
+    <string name="temp_unit_fahrenheit">Fahrenheit (°F)</string>
+    <string name="duration_hours_minutes">%1$d h %2$d min</string>
+    <string name="duration_minutes">%1$d min</string>
+    <string name="widget_error">Erro</string>
 </resources>
