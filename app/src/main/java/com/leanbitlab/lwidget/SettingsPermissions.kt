@@ -189,11 +189,13 @@ internal fun MainActivity.setupKeepAliveSection() {
             .edit().putBoolean("keep_alive", isChecked).apply()
 
         if (isChecked) {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU &&
-                ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 105)
+            val missing = StepCounterService.missingKeepAlivePermissions(this)
+            if (missing.isNotEmpty()) {
+                // Service starts (or the switch reverts) in onRequestPermissionsResult
+                ActivityCompat.requestPermissions(this, missing, REQUEST_KEEP_ALIVE_PERMISSIONS)
+            } else {
+                StepCounterService.startServiceIfEnabled(this)
             }
-            StepCounterService.startServiceIfEnabled(this)
         } else {
             if (!StepCounterService.isStepOrKeepAliveEnabled(this)) {
                 stopService(Intent(this, StepCounterService::class.java))
@@ -202,6 +204,22 @@ internal fun MainActivity.setupKeepAliveSection() {
             }
         }
     }
+}
+
+internal const val REQUEST_KEEP_ALIVE_PERMISSIONS = 105
+
+/** After the keep-alive permission prompt: start the service, or turn keep-alive off if it cannot run. */
+internal fun MainActivity.onKeepAlivePermissionsResult() {
+    if (StepCounterService.canStart(this)) {
+        StepCounterService.startServiceIfEnabled(this)
+        return
+    }
+    prefs.edit().putBoolean("keep_alive", false).apply()
+    getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
+        .edit().putBoolean("keep_alive", false).apply()
+    findViewById<View>(R.id.row_keep_alive_toggle)
+        ?.findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.row_switch)?.isChecked = false
+    android.widget.Toast.makeText(this, R.string.msg_keep_alive_needs_activity, android.widget.Toast.LENGTH_LONG).show()
 }
 
 internal fun MainActivity.setupBatteryOptimizationSection() {

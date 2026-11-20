@@ -115,6 +115,8 @@
     <string name="dialog_cancel">إلغاء</string>
     <string name="dialog_got_it">حسنًا</string>
     <string name="action_install">تثبيت</string>
+    <string name="msg_keep_alive_needs_activity">يتطلب "الإبقاء قيد التشغيل" إذن النشاط البدني في إصدار Android هذا.</string>
+    <string name="widget_no_title">(بدون عنوان)</string>
     <string name="msg_breezy_required">تطبيق Breezy Weather (مع تفعيل DataBridge) مطلوب.</string>
     <string name="msg_breezy_required_short">تطبيق Breezy Weather مطلوب.</string>
     <string name="msg_tasks_required">تطبيق Tasks.org مطلوب لهذه الميزة.</string>

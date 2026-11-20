@@ -360,6 +360,8 @@ class MainActivity : AppCompatActivity() {
                  updateWidget()
                  updateToggleAvailability()
              }
+        } else if (requestCode == REQUEST_KEEP_ALIVE_PERMISSIONS) {
+             onKeepAlivePermissionsResult()
         } else if (requestCode == 103) {
              // Breezy Weather permission result
              if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {

@@ -176,7 +176,7 @@ object CalendarFetcher {
 
             while (cursor.moveToNext() && events.size < 10) {
                 val eventId = cursor.getLong(eventIdIdx)
-                val title = cursor.getString(titleIdx) ?: "No Title"
+                val title = cursor.getString(titleIdx) ?: context.getString(R.string.widget_no_title)
                 val begin = cursor.getLong(beginIdx)
                 val end = cursor.getLong(endIdx)
                 val calId = cursor.getLong(calIdIdx)

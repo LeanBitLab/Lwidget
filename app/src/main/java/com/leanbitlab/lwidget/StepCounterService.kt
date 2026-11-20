@@ -113,22 +113,36 @@ class StepCounterService : Service(), SensorEventListener {
             return false
         }
 
-        fun startServiceIfEnabled(context: Context) {
-            if (!isStepOrKeepAliveEnabled(context)) return
-
-            val showSteps = isStepsVisibleAnywhere(context)
-            val hasActivityPerm = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        private fun hasActivityPermission(context: Context): Boolean =
+            Build.VERSION.SDK_INT < Build.VERSION_CODES.Q ||
                 ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACTIVITY_RECOGNITION) == android.content.pm.PackageManager.PERMISSION_GRANTED
-            } else {
-                true
-            }
 
-            // If only steps are enabled and activity permission is missing, do not start
-            if (showSteps && !hasActivityPerm) {
-                val globalPrefs = context.getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
-                val keepAlive = globalPrefs.getBoolean("keep_alive", false)
-                if (!keepAlive) return
+        /**
+         * Whether the foreground service may run. It uses the health FGS type, which Android 14+
+         * refuses without ACTIVITY_RECOGNITION (SecurityException), even for keep-alive alone.
+         * Before 14, keep-alive can run without it; steps never can.
+         */
+        fun canStart(context: Context): Boolean {
+            if (!isStepOrKeepAliveEnabled(context)) return false
+            if (hasActivityPermission(context)) return true
+            val keepAlive = context.getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
+                .getBoolean("keep_alive", false)
+            return keepAlive && Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE
+        }
+
+        /** Runtime permissions still missing for keep-alive's foreground service. */
+        fun missingKeepAlivePermissions(context: Context): Array<String> = buildList {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                ContextCompat.checkSelfPermission(context, android.Manifest.permission.POST_NOTIFICATIONS) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                add(android.Manifest.permission.POST_NOTIFICATIONS)
             }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE && !hasActivityPermission(context)) {
+                add(android.Manifest.permission.ACTIVITY_RECOGNITION)
+            }
+        }.toTypedArray()
+
+        fun startServiceIfEnabled(context: Context) {
+            if (!canStart(context)) return
 
             try {
                 val serviceIntent = Intent(context, StepCounterService::class.java)
@@ -161,22 +175,11 @@ class StepCounterService : Service(), SensorEventListener {
             return
         }
         
-        val showSteps = isStepsVisibleAnywhere(this)
-        val isNeeded = isStepOrKeepAliveEnabled(this)
-        
-        // If steps is explicitly enabled, require ACTIVITY_RECOGNITION
-        val hasActivityPerm = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACTIVITY_RECOGNITION) == android.content.pm.PackageManager.PERMISSION_GRANTED
-        if (showSteps && !hasActivityPerm) {
-            val keepAlive = prefs.getBoolean("keep_alive", false)
-            if (!keepAlive) {
-                stopSelf()
-                return
-            }
-        }
-        if (!isNeeded) {
+        if (!canStart(this)) {
             stopSelf()
             return
         }
+        val hasActivityPerm = hasActivityPermission(this)
 
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
@@ -191,7 +194,6 @@ class StepCounterService : Service(), SensorEventListener {
         val filter = android.content.IntentFilter().apply {
             addAction(Intent.ACTION_BATTERY_CHANGED)
             addAction(Intent.ACTION_TIME_TICK)
-            addAction(Intent.ACTION_CONFIGURATION_CHANGED)
             addAction(Intent.ACTION_SCREEN_ON)
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

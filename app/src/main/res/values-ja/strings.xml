@@ -115,6 +115,8 @@
     <string name="dialog_cancel">キャンセル</string>
     <string name="dialog_got_it">了解</string>
     <string name="action_install">インストール</string>
+    <string name="msg_keep_alive_needs_activity">このAndroidバージョンでは、バックグラウンド維持に身体活動の権限が必要です。</string>
+    <string name="widget_no_title">(タイトルなし)</string>
     <string name="msg_breezy_required">Breezy Weather アプリ（DataBridge を有効にしたもの）が必要です。</string>
     <string name="msg_breezy_required_short">Breezy Weather アプリが必要です。</string>
     <string name="msg_tasks_required">この機能には Tasks.org アプリが必要です。</string>

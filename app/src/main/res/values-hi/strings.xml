@@ -115,6 +115,8 @@
     <string name="dialog_cancel">रद्द करें</string>
     <string name="dialog_got_it">समझ गया</string>
     <string name="action_install">इंस्टॉल करें</string>
+    <string name="msg_keep_alive_needs_activity">इस Android संस्करण पर "सक्रिय रखें" के लिए शारीरिक गतिविधि अनुमति आवश्यक है।</string>
+    <string name="widget_no_title">(कोई शीर्षक नहीं)</string>
     <string name="msg_breezy_required">Breezy Weather ऐप (DataBridge चालू के साथ) आवश्यक है।</string>
     <string name="msg_breezy_required_short">Breezy Weather ऐप आवश्यक है।</string>
     <string name="msg_tasks_required">इस सुविधा के लिए Tasks.org ऐप आवश्यक है।</string>

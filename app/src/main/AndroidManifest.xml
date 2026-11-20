@@ -17,6 +17,11 @@
 
     <!-- Required for Android 11+ (API 30) to see these packages -->
     <queries>
+        <!-- Default launcher: excluded from screen time -->
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.HOME" />
+        </intent>
         <!-- Weather Apps -->
         <package android:name="org.breezyweather" />
         
@@ -73,13 +78,9 @@
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
-                <action android:name="android.intent.action.CONFIGURATION_CHANGED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
                 <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
-                <action android:name="com.leanbitlab.lwidget.ACTION_BATTERY_UPDATE" /> 
-                <action android:name="com.leanbitlab.lwidget.ACTION_STEP_UPDATE" /> 
                 <action android:name="android.app.action.NEXT_ALARM_CLOCK_CHANGED" />
                 <action android:name="nodomain.freeyourgadget.gadgetbridge.ACTION_GENERIC_WEATHER" />
             </intent-filter>
