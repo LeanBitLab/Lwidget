@@ -1,0 +1,6 @@
+• Breezy Weather updates now reach the widget
+• Keep Alive works on Android 14+ (asks for Physical activity)
+• Accurate screen time from midnight, home screen excluded
+• Missing translations fixed, e.g. "Today" and "Tomorrow"
+• Settings search matches translated text
+• Lighter partial widget updates for better battery

@@ -63,7 +63,7 @@
     <string name="preset_monochrome">モノクローム</string>
     <string name="preset_snowfall">スノーフォール</string>
     <string name="changelog_version">バージョン %s</string>
-    <string name="changelog_content">v3.0の新機能：\n• ウィジェットの色が壁紙とダークモードの変更に追従（Material You）\n• 充電状態を色付きの Material 稲妻アイコンで表示\n• 更新間隔の変更がすぐに反映\n• 設定がより快適に：スライダー最適化、スイッチの触覚フィードバック、タブレットレイアウト\n• アクセシビリティ向上と完全に翻訳可能な UI\n• 未使用の権限を削除、バックグラウンド更新の信頼性向上</string>
+    <string name="changelog_content">• Breezy Weather の更新がウィジェットに反映されるように\n• Android 14 以降でバックグラウンド維持が動作（身体活動の権限を要求）\n• 深夜0時からの正確なスクリーンタイム（ホーム画面は除外）\n• 「今日」「明日」など不足していた翻訳を修正\n• 設定検索が翻訳されたテキストに一致\n• 部分更新を軽量化してバッテリーを節約</string>
     <string name="github_source_code">ソースコード (GitHub)</string>
     <string name="privacy_policy">プライバシーポリシー</string>
     <string name="perm_usage_access_title">使用状況へのアクセスを許可してください</string>
@@ -104,7 +104,7 @@
     <string name="hint_reorder_drag">ドラッグして右列の並び順を変更します。薄暗い項目は無効です。</string>
     <string name="section_events_calendar_app">カレンダーアプリ</string>
     <string name="search_settings_hint">設定を検索…</string>
-    <string name="changelog_title">v3.0 の新機能</string>
+    <string name="changelog_title">v3.1 の新機能</string>
 
     <!-- UI strings previously hardcoded in code -->
     <string name="dialog_weather_permission_title">権限についての説明</string>

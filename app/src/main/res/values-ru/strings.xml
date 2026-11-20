@@ -66,7 +66,7 @@
     <string name="preset_monochrome">Монохром</string>
     <string name="preset_snowfall">Снегопад</string>
     <string name="changelog_version">Версия %s</string>
-    <string name="changelog_content">Что нового в v3.0:\n• Цвета виджета следуют за обоями и тёмной темой (Material You)\n• Состояние зарядки показано окрашенным значком молнии Material\n• Изменение интервала обновления применяется сразу\n• Плавнее настройки: оптимизированные ползунки, вибрация переключателей, макет для планшетов\n• Улучшенная доступность и полностью переводимый интерфейс\n• Удалено неиспользуемое разрешение; надёжнее фоновые обновления</string>
+    <string name="changelog_content">• Обновления Breezy Weather теперь доходят до виджета\n• Фоновая работа действует на Android 14+ (запрашивает «Физическую активность»)\n• Точное экранное время с полуночи, без учёта главного экрана\n• Исправлены пропущенные переводы, например «Сегодня» и «Завтра»\n• Поиск в настройках находит переведённый текст\n• Более лёгкие частичные обновления виджета для экономии батареи</string>
     <string name="github_source_code">Исходный код (GitHub)</string>
     <string name="privacy_policy">Политика конфиденциальности</string>
     <string name="perm_usage_access_title">Предоставьте доступ к данным об использовании</string>
@@ -104,7 +104,7 @@
     <string name="btn_grant">Разрешить</string>
     <string name="section_events_calendar_app">Приложение Календарь</string>
     <string name="search_settings_hint">Поиск настроек…</string>
-    <string name="changelog_title">Что нового в v3.0</string>
+    <string name="changelog_title">Что нового в v3.1</string>
 
     <!-- UI strings previously hardcoded in code -->
     <string name="dialog_weather_permission_title">Пояснение к разрешению</string>
