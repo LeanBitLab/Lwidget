@@ -16,7 +16,7 @@ Binaries: https://github.com/LeanBitLab/Lwidget/releases/download/v%v/app-releas
 Builds:
   - versionName: '3.1'
     versionCode: 26
-    commit: bdb809c0df30f85d52de0b6c2c6fa5b865b15a51
+    commit: 41140c601debf12d6a445317e94daa000192ab4a
     subdir: app
     gradle:
       - yes
