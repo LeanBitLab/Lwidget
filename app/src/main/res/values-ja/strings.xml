@@ -18,10 +18,8 @@
     <string name="header_permissions">権限</string>
     <string name="header_about">アプリについて</string>
     <string name="section_time">時刻</string>
-    <string name="section_time_format">時刻形式</string>
     <string name="section_time_clock_app">時計アプリ</string>
     <string name="section_date">日付</string>
-    <string name="section_date_format">日付形式</string>
     <string name="section_battery">バッテリー</string>
     <string name="section_weather_condition">天気</string>
     <string name="section_temp">気温</string>
@@ -33,11 +31,7 @@
     <string name="section_ram">メモリ (RAM)</string>
     <string name="section_tasks">タスク</string>
     <string name="section_steps">歩数計</string>
-    <string name="section_keep_alive">バックグラウンド維持</string>
     <string name="section_screen_time">スクリーンタイム</string>
-    <string name="section_outline">枠線</string>
-    <string name="section_theme">テーマ</string>
-    <string name="section_bg_transparency">透明度</string>
     <string name="section_text_color_primary">文字色</string>
     <string name="section_text_color_secondary">セカンダリ文字色</string>
     <string name="section_date_color">日付の色</string>
@@ -68,11 +62,8 @@
     <string name="preset_sunset">サンセット</string>
     <string name="preset_monochrome">モノクローム</string>
     <string name="preset_snowfall">スノーフォール</string>
-    <string name="section_changelog">注意と更新履歴</string>
     <string name="changelog_version">バージョン %s</string>
-    <string name="changelog_note">Lwidgetはバックグラウンドサービスなしで動作します。更新を安定させるには、端末のバッテリー最適化を解除するか、バックグラウンド維持を有効にしてください。</string>
     <string name="changelog_content">v3.0の新機能：\n• ウィジェットの色が壁紙とダークモードの変更に追従（Material You）\n• 充電状態を色付きの Material 稲妻アイコンで表示\n• 更新間隔の変更がすぐに反映\n• 設定がより快適に：スライダー最適化、スイッチの触覚フィードバック、タブレットレイアウト\n• アクセシビリティ向上と完全に翻訳可能な UI\n• 未使用の権限を削除、バックグラウンド更新の信頼性向上</string>
-    <string name="changelog_testing_notice">Lwidgetを気に入っていただけましたら、Google Playで評価をお願いします。</string>
     <string name="github_source_code">ソースコード (GitHub)</string>
     <string name="privacy_policy">プライバシーポリシー</string>
     <string name="perm_usage_access_title">使用状況へのアクセスを許可してください</string>
@@ -146,4 +137,30 @@
     <string name="version_unknown">不明</string>
     <string name="a11y_move_up">上へ移動</string>
     <string name="a11y_move_down">下へ移動</string>
+
+    <!-- Widget content -->
+    <string name="label_today">今日</string>
+    <string name="label_tomorrow">明日</string>
+    <string name="label_today_time">今日 %1$s</string>
+    <string name="label_tomorrow_time">明日 %1$s</string>
+    <string name="label_overdue">期限切れ</string>
+    <string name="widget_no_events_today">今日の予定はありません</string>
+    <string name="widget_tap_grant_calendar">タップしてカレンダーへのアクセスを許可</string>
+    <string name="widget_tap_grant_tasks">タップしてTasks.orgへのアクセスを許可</string>
+    <string name="weather_rain_today">今日は雨</string>
+    <string name="weather_rain_tomorrow">明日は雨</string>
+    <string name="weather_rain_on">%1$sは雨</string>
+    <string name="weather_snow_today">今日は雪</string>
+    <string name="weather_snow_tomorrow">明日は雪</string>
+    <string name="weather_snow_on">%1$sは雪</string>
+    <string name="weather_storm_today">今日は雷雨</string>
+    <string name="weather_storm_tomorrow">明日は雷雨</string>
+    <string name="weather_storm_on">%1$sは雷雨</string>
+    <string name="weather_warning">警告</string>
+    <string name="weather_unknown">不明</string>
+    <string name="temp_unit_celsius">摂氏 (°C)</string>
+    <string name="temp_unit_fahrenheit">華氏 (°F)</string>
+    <string name="duration_hours_minutes">%1$d時間%2$d分</string>
+    <string name="duration_minutes">%1$d分</string>
+    <string name="widget_error">エラー</string>
 </resources>

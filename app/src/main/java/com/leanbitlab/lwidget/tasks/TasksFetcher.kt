@@ -60,18 +60,18 @@ object TasksFetcher {
         return tasks
     }
 
-    fun formatDueSuffix(dueMillis: Long): String {
+    fun formatDueSuffix(context: Context, dueMillis: Long): String {
         if (dueMillis <= 0) return ""
         val dueDate = LocalDateTime.ofInstant(Instant.ofEpochMilli(dueMillis), ZoneId.systemDefault()).toLocalDate()
         val today = LocalDate.now()
         val tomorrow = today.plusDays(1)
 
         return if (dueDate.isBefore(today)) {
-            " (Overdue)"
+            " (${context.getString(R.string.label_overdue)})"
         } else if (dueDate.isEqual(today)) {
-            " (Today)"
+            " (${context.getString(R.string.label_today)})"
         } else if (dueDate.isEqual(tomorrow)) {
-            " (Tomorrow)"
+            " (${context.getString(R.string.label_tomorrow)})"
         } else {
             val df = CalendarFetcher.getFormatter("MMM d")
             " (${dueDate.format(df)})"
@@ -90,7 +90,7 @@ object TasksFetcher {
                 context.checkSelfPermission(PERMISSION_READ_TASKS_ASTRID) == android.content.pm.PackageManager.PERMISSION_GRANTED
 
         if (!hasPerm) {
-            views.setTextViewText(eventViews[0], "• Tap to grant Tasks.org permission")
+            views.setTextViewText(eventViews[0], "• " + context.getString(R.string.widget_tap_grant_tasks))
             views.setViewVisibility(eventViews[0], android.view.View.VISIBLE)
             views.setTextViewTextSize(eventViews[0], android.util.TypedValue.COMPLEX_UNIT_SP, textSizeSp)
 
@@ -119,7 +119,7 @@ object TasksFetcher {
         val taskIntent = com.leanbitlab.lwidget.render.WidgetRenderer.getLaunchIntent(context, "org.tasks")
         for (i in tasks.indices) {
             val task = tasks[i]
-            val dueSuffix = formatDueSuffix(task.dueMillis)
+            val dueSuffix = formatDueSuffix(context, task.dueMillis)
             val fullText = "• ${task.title}$dueSuffix"
             val spannable = SpannableString(fullText)
             spannable.setSpan(ForegroundColorSpan(accentColor), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)

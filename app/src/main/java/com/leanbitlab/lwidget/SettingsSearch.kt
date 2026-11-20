@@ -79,6 +79,8 @@ internal fun MainActivity.setupGlobalSettingsSearch() {
         }
     }
 
+    // English search keywords (not shown in UI).
+    // i18n-ignore-start
     val cardMap = mapOf(
         // Style Tab
         R.id.card_appearance_presets to listOf("presets", "themes", "minimal", "neon", "cockpit", "sunset", "monochrome", "snowfall"),
@@ -115,6 +117,7 @@ internal fun MainActivity.setupGlobalSettingsSearch() {
         R.id.card_about to listOf("about", "version", "github", "source code", "developer", "license", "privacy", "author"),
         R.id.card_changelog to listOf("changelog", "whats new", "updates", "history")
     )
+    // i18n-ignore-end
 
     val headerLabels: List<View> = listOfNotNull(
         findViewById(R.id.label_category_content),

@@ -21,10 +21,8 @@
     <string name="header_permissions">İzinler</string>
     <string name="header_about">Hakkında</string>
     <string name="section_time">Saat</string>
-    <string name="section_time_format">Saat Formatı</string>
     <string name="section_time_clock_app">Saat Uygulaması</string>
     <string name="section_date">Tarih</string>
-    <string name="section_date_format">Tarih Formatı</string>
     <string name="section_battery">Pil</string>
     <string name="section_weather_condition">Hava Durumu</string>
     <string name="section_temp">Sıcaklık</string>
@@ -36,11 +34,7 @@
     <string name="section_ram">RAM</string>
     <string name="section_tasks">Görevler</string>
     <string name="section_steps">Adımsayar</string>
-    <string name="section_keep_alive">Arka Planda Tut</string>
     <string name="section_screen_time">Ekran Süresi</string>
-    <string name="section_outline">Kenarlık</string>
-    <string name="section_theme">Tema</string>
-    <string name="section_bg_transparency">Saydamlık</string>
     <string name="section_text_color_primary">Metin Rengi</string>
     <string name="section_text_color_secondary">İkincil Metin Rengi</string>
     <string name="section_date_color">Tarih Rengi</string>
@@ -71,11 +65,8 @@
     <string name="preset_sunset">Gün Batımı</string>
     <string name="preset_monochrome">Monokrom</string>
     <string name="preset_snowfall">Kar Yağışı</string>
-    <string name="section_changelog">Not ve Değişiklik Günlüğü</string>
     <string name="changelog_version">Sürüm %s</string>
-    <string name="changelog_note">Lwidget herhangi bir arka plan servisi olmadan çalışır. Ancak bazı cihazlar pil tasarrufu için uygulamayı sonlandırabilir ve araç takımı güncellemelerini durdurabilir. Bunu düzeltmek için:\n\n• Cihaz ayarlarından Lwidget için pil optimizasyonunu kapatın.\n• Veya araç takımını güvenilir şekilde güncel tutan Arka Planda Tut özelliğini etkinleştirin.\n• Ya da günlük adımlarınızı sayan Adımsayar\'ı etkinleştirin.</string>
     <string name="changelog_content">v3.0 Yenilikleri:\n• Widget renkleri duvar kağıdı ve karanlık mod değişikliklerini izler (Material You)\n• Şarj durumu renklendirilmiş Material şimşek simgesiyle gösterilir\n• Güncelleme aralığı değişiklikleri hemen uygulanır\n• Daha akıcı ayarlar: optimize kaydırıcılar, anahtar titreşimi, tablet düzeni\n• Daha iyi erişilebilirlik ve tamamen çevrilebilir arayüz\n• Kullanılmayan izin kaldırıldı; daha güvenilir arka plan güncellemeleri</string>
-    <string name="changelog_testing_notice">Lwidget\'ı beğendiyseniz, lütfen Google Play\'de değerlendirin — başkalarının keşfetmesine yardımcı olur.</string>
     <string name="github_source_code">Kaynak Kodu (GitHub)</string>
     <string name="privacy_policy">Gizlilik Politikası</string>
     <string name="perm_usage_access_title">Lwidget için lütfen Kullanım Erişimi izni verin</string>
@@ -146,4 +137,30 @@
     <string name="version_unknown">Bilinmiyor</string>
     <string name="a11y_move_up">Yukarı taşı</string>
     <string name="a11y_move_down">Aşağı taşı</string>
+
+    <!-- Widget content -->
+    <string name="label_today">Bugün</string>
+    <string name="label_tomorrow">Yarın</string>
+    <string name="label_today_time">Bugün %1$s</string>
+    <string name="label_tomorrow_time">Yarın %1$s</string>
+    <string name="label_overdue">Gecikmiş</string>
+    <string name="widget_no_events_today">Bugün etkinlik yok</string>
+    <string name="widget_tap_grant_calendar">Takvim izni vermek için dokunun</string>
+    <string name="widget_tap_grant_tasks">Tasks.org izni vermek için dokunun</string>
+    <string name="weather_rain_today">Bugün yağmur</string>
+    <string name="weather_rain_tomorrow">Yarın yağmur</string>
+    <string name="weather_rain_on">%1$s yağmur</string>
+    <string name="weather_snow_today">Bugün kar</string>
+    <string name="weather_snow_tomorrow">Yarın kar</string>
+    <string name="weather_snow_on">%1$s kar</string>
+    <string name="weather_storm_today">Bugün fırtına</string>
+    <string name="weather_storm_tomorrow">Yarın fırtına</string>
+    <string name="weather_storm_on">%1$s fırtına</string>
+    <string name="weather_warning">Uyarı</string>
+    <string name="weather_unknown">Bilinmiyor</string>
+    <string name="temp_unit_celsius">Santigrat (°C)</string>
+    <string name="temp_unit_fahrenheit">Fahrenhayt (°F)</string>
+    <string name="duration_hours_minutes">%1$d sa %2$d dk</string>
+    <string name="duration_minutes">%1$d dk</string>
+    <string name="widget_error">Hata</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.leanbitlab.lwidget
 
+import androidx.test.core.app.ApplicationProvider
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -37,6 +38,7 @@ class AwidgetCalendarEventsTest {
 
             // 1. On the day of the event (Sept 15), it must show "Today"
             val textToday = AwidgetProvider.Companion.formatEventTimeText(
+                context = ApplicationProvider.getApplicationContext(),
                 event = event,
                 today = LocalDate.of(2026, 9, 15),
                 showDayAbbr = true
@@ -45,6 +47,7 @@ class AwidgetCalendarEventsTest {
 
             // 2. On the day before the event (Sept 14), it must show "Tomorrow"
             val textTomorrow = AwidgetProvider.Companion.formatEventTimeText(
+                context = ApplicationProvider.getApplicationContext(),
                 event = event,
                 today = LocalDate.of(2026, 9, 14),
                 showDayAbbr = true
@@ -53,6 +56,7 @@ class AwidgetCalendarEventsTest {
 
             // 3. Five days before the event (Sept 10), it must show the day ("15/Tue")
             val textNear = AwidgetProvider.Companion.formatEventTimeText(
+                context = ApplicationProvider.getApplicationContext(),
                 event = event,
                 today = LocalDate.of(2026, 9, 10),
                 showDayAbbr = true
@@ -84,6 +88,7 @@ class AwidgetCalendarEventsTest {
             )
 
             val textToday = AwidgetProvider.Companion.formatEventTimeText(
+                context = ApplicationProvider.getApplicationContext(),
                 event = event,
                 today = LocalDate.of(2026, 9, 15),
                 showDayAbbr = true
@@ -91,6 +96,7 @@ class AwidgetCalendarEventsTest {
             assertEquals("Today", textToday)
 
             val textTomorrow = AwidgetProvider.Companion.formatEventTimeText(
+                context = ApplicationProvider.getApplicationContext(),
                 event = event,
                 today = LocalDate.of(2026, 9, 14),
                 showDayAbbr = true
@@ -119,6 +125,7 @@ class AwidgetCalendarEventsTest {
 
         // On Sept 15, event is ongoing: should show "Today"
         val textMidway = AwidgetProvider.Companion.formatEventTimeText(
+            context = ApplicationProvider.getApplicationContext(),
             event = event,
             today = LocalDate.of(2026, 9, 15)
         )
@@ -201,6 +208,7 @@ class AwidgetCalendarEventsTest {
 
         // 12-hour mode
         val text12h = AwidgetProvider.Companion.formatEventTimeText(
+            context = ApplicationProvider.getApplicationContext(),
             event = eveningEvent,
             today = today,
             showDayAbbr = true,
@@ -210,6 +218,7 @@ class AwidgetCalendarEventsTest {
 
         // 24-hour mode
         val text24h = AwidgetProvider.Companion.formatEventTimeText(
+            context = ApplicationProvider.getApplicationContext(),
             event = eveningEvent,
             today = today,
             showDayAbbr = true,
@@ -220,6 +229,7 @@ class AwidgetCalendarEventsTest {
         // Tomorrow in 24-hour mode
         val tomorrow = today.minusDays(1)
         val textTomorrow24h = AwidgetProvider.Companion.formatEventTimeText(
+            context = ApplicationProvider.getApplicationContext(),
             event = eveningEvent,
             today = tomorrow,
             showDayAbbr = true,
@@ -230,6 +240,7 @@ class AwidgetCalendarEventsTest {
         // Near future (within 1 week) with day abbreviation in 24-hour mode
         val threeDaysEarlier = today.minusDays(3) // Saturday
         val textNear24h = AwidgetProvider.Companion.formatEventTimeText(
+            context = ApplicationProvider.getApplicationContext(),
             event = eveningEvent,
             today = threeDaysEarlier,
             showDayAbbr = true,
@@ -248,6 +259,7 @@ class AwidgetCalendarEventsTest {
             isAllDay = false
         )
         val midnight12h = AwidgetProvider.Companion.formatEventTimeText(
+            context = ApplicationProvider.getApplicationContext(),
             event = midnightEvent,
             today = today,
             showDayAbbr = true,
@@ -256,6 +268,7 @@ class AwidgetCalendarEventsTest {
         assertEquals("Today 12:15", midnight12h)
 
         val midnight24h = AwidgetProvider.Companion.formatEventTimeText(
+            context = ApplicationProvider.getApplicationContext(),
             event = midnightEvent,
             today = today,
             showDayAbbr = true,

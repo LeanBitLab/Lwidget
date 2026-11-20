@@ -166,7 +166,7 @@ object SystemStatsFetcher {
             val totalMinutes = totalForegroundTime / (1000 * 60)
             val hours = totalMinutes / 60
             val mins = totalMinutes % 60
-            val timeString = if (hours > 0) "${hours}h ${mins}m" else "${mins}m"
+            val timeString = if (hours > 0) context.getString(R.string.duration_hours_minutes, hours, mins) else context.getString(R.string.duration_minutes, mins)
             val span = SpannableString(timeString)
             if (isBold) span.setSpan(StyleSpan(Typeface.BOLD), 0, span.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             views.setTextViewText(R.id.text_screen_time, span)
@@ -221,7 +221,7 @@ object SystemStatsFetcher {
         }
     }
 
-    fun updateStorageStats(views: RemoteViews, prefs: SharedPreferences) {
+    fun updateStorageStats(context: Context, views: RemoteViews, prefs: SharedPreferences) {
         try {
             val path = Environment.getDataDirectory()
             val stat = StatFs(path.path)
@@ -239,7 +239,7 @@ object SystemStatsFetcher {
 
             views.setTextViewText(R.id.text_storage, span)
         } catch (e: Exception) {
-            views.setTextViewText(R.id.text_storage, "Err")
+            views.setTextViewText(R.id.text_storage, context.getString(R.string.widget_error))
         }
     }
 
@@ -263,7 +263,7 @@ object SystemStatsFetcher {
 
             views.setTextViewText(R.id.text_ram, span)
         } catch (e: Exception) {
-            views.setTextViewText(R.id.text_ram, "Err")
+            views.setTextViewText(R.id.text_ram, context.getString(R.string.widget_error))
         }
     }
 
@@ -279,7 +279,7 @@ object SystemStatsFetcher {
         return (totalSteps - baselineSteps).toInt().coerceAtLeast(0)
     }
 
-    fun loadStepCount(views: RemoteViews, prefs: SharedPreferences) {
+    fun loadStepCount(context: Context, views: RemoteViews, prefs: SharedPreferences) {
         try {
             val totalSteps = prefs.getFloat("last_total_steps", 0f)
             val baselineSteps = prefs.getFloat("step_baseline", 0f)
@@ -294,7 +294,7 @@ object SystemStatsFetcher {
 
             views.setTextViewText(R.id.text_steps, span)
         } catch (e: Exception) {
-            views.setTextViewText(R.id.text_steps, "Err")
+            views.setTextViewText(R.id.text_steps, context.getString(R.string.widget_error))
         }
     }
 

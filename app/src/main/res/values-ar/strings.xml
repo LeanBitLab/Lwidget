@@ -18,10 +18,8 @@
     <string name="header_permissions">الأذونات</string>
     <string name="header_about">حول التطبيق</string>
     <string name="section_time">الوقت</string>
-    <string name="section_time_format">تنسيق الوقت</string>
     <string name="section_time_clock_app">تطبيق الساعة</string>
     <string name="section_date">التاريخ</string>
-    <string name="section_date_format">تنسيق التاريخ</string>
     <string name="section_battery">البطارية</string>
     <string name="section_weather_condition">الطقس</string>
     <string name="section_temp">درجة الحرارة</string>
@@ -33,11 +31,7 @@
     <string name="section_ram">الذاكرة العشوائية</string>
     <string name="section_tasks">المهام</string>
     <string name="section_steps">عداد الخطوات</string>
-    <string name="section_keep_alive">الإبقاء قيد التشغيل</string>
     <string name="section_screen_time">وقت الشاشة</string>
-    <string name="section_outline">الإطار</string>
-    <string name="section_theme">المظهر</string>
-    <string name="section_bg_transparency">الشفافية</string>
     <string name="section_text_color_primary">لون النص الأساسي</string>
     <string name="section_text_color_secondary">لون النص الثانوي</string>
     <string name="section_date_color">لون التاريخ</string>
@@ -68,11 +62,8 @@
     <string name="preset_sunset">غروب</string>
     <string name="preset_monochrome">أحادي اللون</string>
     <string name="preset_snowfall">تساقط الثلج</string>
-    <string name="section_changelog">الملاحظات وسجل التغييرات</string>
     <string name="changelog_version">الإصدار %s</string>
-    <string name="changelog_note">يعمل Lwidget بدون خدمات خلفية. لضمان استمرار التحديث، يرجى تعطيل تحسين البطارية أو تفعيل ميزة الإبقاء قيد التشغيل.</string>
     <string name="changelog_content">الجديد في v3.0:\n• ألوان القطعة تتبع تغييرات الخلفية والوضع الداكن (Material You)\n• عرض حالة الشحن بأيقونة برق Material ملونة\n• تطبيق تغييرات فاصل التحديث فورًا\n• إعدادات أكثر سلاسة: منزلقات محسنة، اهتزاز للمفاتيح، تخطيط للأجهزة اللوحية\n• إمكانية وصول أفضل وواجهة قابلة للترجمة بالكامل\n• إزالة إذن غير مستخدم وتحديثات خلفية أكثر موثوقية</string>
-    <string name="changelog_testing_notice">إذا أعجبك Lwidget، يرجى تقييمنا على Google Play.</string>
     <string name="github_source_code">المصدر (GitHub)</string>
     <string name="privacy_policy">سياسة الخصوصية</string>
     <string name="perm_usage_access_title">يرجى منح إذن الوصول إلى بيانات الاستخدام</string>
@@ -146,4 +137,30 @@
     <string name="version_unknown">غير معروف</string>
     <string name="a11y_move_up">نقل لأعلى</string>
     <string name="a11y_move_down">نقل لأسفل</string>
+
+    <!-- Widget content -->
+    <string name="label_today">اليوم</string>
+    <string name="label_tomorrow">غدًا</string>
+    <string name="label_today_time">اليوم %1$s</string>
+    <string name="label_tomorrow_time">غدًا %1$s</string>
+    <string name="label_overdue">متأخرة</string>
+    <string name="widget_no_events_today">لا أحداث اليوم</string>
+    <string name="widget_tap_grant_calendar">انقر لمنح إذن التقويم</string>
+    <string name="widget_tap_grant_tasks">انقر لمنح إذن Tasks.org</string>
+    <string name="weather_rain_today">مطر اليوم</string>
+    <string name="weather_rain_tomorrow">مطر غدًا</string>
+    <string name="weather_rain_on">مطر يوم %1$s</string>
+    <string name="weather_snow_today">ثلوج اليوم</string>
+    <string name="weather_snow_tomorrow">ثلوج غدًا</string>
+    <string name="weather_snow_on">ثلوج يوم %1$s</string>
+    <string name="weather_storm_today">عاصفة اليوم</string>
+    <string name="weather_storm_tomorrow">عاصفة غدًا</string>
+    <string name="weather_storm_on">عاصفة يوم %1$s</string>
+    <string name="weather_warning">تحذير</string>
+    <string name="weather_unknown">غير معروف</string>
+    <string name="temp_unit_celsius">مئوية (°C)</string>
+    <string name="temp_unit_fahrenheit">فهرنهايت (°F)</string>
+    <string name="duration_hours_minutes">%1$d س %2$d د</string>
+    <string name="duration_minutes">%1$d د</string>
+    <string name="widget_error">خطأ</string>
 </resources>

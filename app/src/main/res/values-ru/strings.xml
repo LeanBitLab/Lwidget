@@ -21,10 +21,8 @@
     <string name="header_permissions">Разрешения</string>
     <string name="header_about">О приложении</string>
     <string name="section_time">Время</string>
-    <string name="section_time_format">Формат времени</string>
     <string name="section_time_clock_app">Приложение часов</string>
     <string name="section_date">Дата</string>
-    <string name="section_date_format">Формат даты</string>
     <string name="section_battery">Батарея</string>
     <string name="section_weather_condition">Погода</string>
     <string name="section_temp">Температура</string>
@@ -36,11 +34,7 @@
     <string name="section_ram">ОЗУ</string>
     <string name="section_tasks">Задачи</string>
     <string name="section_steps">Шагомер</string>
-    <string name="section_keep_alive">Фоновая работа</string>
     <string name="section_screen_time">Экранное время</string>
-    <string name="section_outline">Рамка</string>
-    <string name="section_theme">Тема</string>
-    <string name="section_bg_transparency">Прозрачность</string>
     <string name="section_text_color_primary">Цвет текста</string>
     <string name="section_text_color_secondary">Второй цвет текста</string>
     <string name="section_date_color">Цвет даты</string>
@@ -71,11 +65,8 @@
     <string name="preset_sunset">Закат</string>
     <string name="preset_monochrome">Монохром</string>
     <string name="preset_snowfall">Снегопад</string>
-    <string name="section_changelog">Примечания и список изменений</string>
     <string name="changelog_version">Версия %s</string>
-    <string name="changelog_note">Lwidget работает без фоновых служб. Для надежного обновления отключите оптимизацию батареи для приложения.</string>
     <string name="changelog_content">Что нового в v3.0:\n• Цвета виджета следуют за обоями и тёмной темой (Material You)\n• Состояние зарядки показано окрашенным значком молнии Material\n• Изменение интервала обновления применяется сразу\n• Плавнее настройки: оптимизированные ползунки, вибрация переключателей, макет для планшетов\n• Улучшенная доступность и полностью переводимый интерфейс\n• Удалено неиспользуемое разрешение; надёжнее фоновые обновления</string>
-    <string name="changelog_testing_notice">Если вам нравится Lwidget, пожалуйста, оцените его в Google Play.</string>
     <string name="github_source_code">Исходный код (GitHub)</string>
     <string name="privacy_policy">Политика конфиденциальности</string>
     <string name="perm_usage_access_title">Предоставьте доступ к данным об использовании</string>
@@ -146,4 +137,30 @@
     <string name="version_unknown">Неизвестно</string>
     <string name="a11y_move_up">Переместить вверх</string>
     <string name="a11y_move_down">Переместить вниз</string>
+
+    <!-- Widget content -->
+    <string name="label_today">Сегодня</string>
+    <string name="label_tomorrow">Завтра</string>
+    <string name="label_today_time">Сегодня %1$s</string>
+    <string name="label_tomorrow_time">Завтра %1$s</string>
+    <string name="label_overdue">Просрочено</string>
+    <string name="widget_no_events_today">Сегодня нет событий</string>
+    <string name="widget_tap_grant_calendar">Нажмите, чтобы разрешить доступ к календарю</string>
+    <string name="widget_tap_grant_tasks">Нажмите, чтобы разрешить доступ к Tasks.org</string>
+    <string name="weather_rain_today">Сегодня дождь</string>
+    <string name="weather_rain_tomorrow">Завтра дождь</string>
+    <string name="weather_rain_on">Дождь: %1$s</string>
+    <string name="weather_snow_today">Сегодня снег</string>
+    <string name="weather_snow_tomorrow">Завтра снег</string>
+    <string name="weather_snow_on">Снег: %1$s</string>
+    <string name="weather_storm_today">Сегодня гроза</string>
+    <string name="weather_storm_tomorrow">Завтра гроза</string>
+    <string name="weather_storm_on">Гроза: %1$s</string>
+    <string name="weather_warning">Предупреждение</string>
+    <string name="weather_unknown">Неизвестно</string>
+    <string name="temp_unit_celsius">Цельсий (°C)</string>
+    <string name="temp_unit_fahrenheit">Фаренгейт (°F)</string>
+    <string name="duration_hours_minutes">%1$d ч %2$d мин</string>
+    <string name="duration_minutes">%1$d мин</string>
+    <string name="widget_error">Ошиб.</string>
 </resources>

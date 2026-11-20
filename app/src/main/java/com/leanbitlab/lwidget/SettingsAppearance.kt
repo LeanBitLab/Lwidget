@@ -138,6 +138,8 @@ internal fun MainActivity.setupThemeSection(colorOptions: List<String>) {
 }
 
 internal fun MainActivity.setupLanguageSection() {
+    // Language names stay in their own script so users can always find theirs.
+    // i18n-ignore-start
     val languages = listOf(
         LanguageOption("", getString(R.string.lang_system_default)),
         LanguageOption("en", "English"),
@@ -152,6 +154,7 @@ internal fun MainActivity.setupLanguageSection() {
         LanguageOption("ja", "日本語 (Japanese)"),
         LanguageOption("tr", "Türkçe (Turkish)")
     )
+    // i18n-ignore-end
     val languageLabels = languages.map { it.displayName }
     val currentLocales = androidx.appcompat.app.AppCompatDelegate.getApplicationLocales()
     val currentTag = if (currentLocales.isEmpty) "" else currentLocales.get(0)?.language ?: ""
