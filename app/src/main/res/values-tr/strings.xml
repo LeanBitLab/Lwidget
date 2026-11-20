@@ -115,6 +115,8 @@
     <string name="dialog_cancel">İptal</string>
     <string name="dialog_got_it">Anladım</string>
     <string name="action_install">Yükle</string>
+    <string name="msg_keep_alive_needs_activity">Bu Android sürümünde Arka Planda Tut için Fiziksel etkinlik izni gerekir.</string>
+    <string name="widget_no_title">(Başlıksız)</string>
     <string name="msg_breezy_required">Breezy Weather uygulaması (DataBridge etkin) gereklidir.</string>
     <string name="msg_breezy_required_short">Breezy Weather uygulaması gereklidir.</string>
     <string name="msg_tasks_required">Bu özellik için Tasks.org uygulaması gereklidir.</string>

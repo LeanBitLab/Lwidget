@@ -115,6 +115,8 @@
     <string name="dialog_cancel">Cancelar</string>
     <string name="dialog_got_it">Entendido</string>
     <string name="action_install">Instalar</string>
+    <string name="msg_keep_alive_needs_activity">Mantener activo requiere el permiso de actividad física en esta versión de Android.</string>
+    <string name="widget_no_title">(Sin título)</string>
     <string name="msg_breezy_required">Se requiere la app Breezy Weather (con DataBridge activado).</string>
     <string name="msg_breezy_required_short">Se requiere la app Breezy Weather.</string>
     <string name="msg_tasks_required">Esta función requiere la app Tasks.org.</string>

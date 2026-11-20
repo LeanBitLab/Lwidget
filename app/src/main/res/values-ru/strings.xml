@@ -115,6 +115,8 @@
     <string name="dialog_cancel">Отмена</string>
     <string name="dialog_got_it">Понятно</string>
     <string name="action_install">Установить</string>
+    <string name="msg_keep_alive_needs_activity">Для фоновой работы на этой версии Android нужно разрешение «Физическая активность».</string>
+    <string name="widget_no_title">(Без названия)</string>
     <string name="msg_breezy_required">Требуется приложение Breezy Weather (с включённым DataBridge).</string>
     <string name="msg_breezy_required_short">Требуется приложение Breezy Weather.</string>
     <string name="msg_tasks_required">Для этой функции требуется приложение Tasks.org.</string>

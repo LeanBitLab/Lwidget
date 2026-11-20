@@ -31,6 +31,11 @@ class SetupActivity : AppCompatActivity() {
         ActivityResultContracts.RequestMultiplePermissions()
     ) { _ ->
         updatePermissionButtons()
+        // Keep-alive cannot run without its permissions (Android 14+): revert the switch
+        if (prefs.getBoolean("keep_alive", false) && !StepCounterService.canStart(this)) {
+            findViewById<SwitchMaterial>(R.id.switch_setup_keep_alive).isChecked = false
+            android.widget.Toast.makeText(this, R.string.msg_keep_alive_needs_activity, android.widget.Toast.LENGTH_LONG).show()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,13 +81,11 @@ class SetupActivity : AppCompatActivity() {
         val switchKeepAlive = findViewById<SwitchMaterial>(R.id.switch_setup_keep_alive)
         switchKeepAlive.isChecked = prefs.getBoolean("keep_alive", false)
         switchKeepAlive.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
-                    ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                    requestPermissionLauncher.launch(arrayOf(Manifest.permission.POST_NOTIFICATIONS))
-                }
-            }
             prefs.edit().putBoolean("keep_alive", isChecked).apply()
+            if (isChecked) {
+                val missing = StepCounterService.missingKeepAlivePermissions(this)
+                if (missing.isNotEmpty()) requestPermissionLauncher.launch(missing)
+            }
         }
 
         // Permissions Setup

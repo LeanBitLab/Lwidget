@@ -112,9 +112,6 @@ object WidgetRenderer {
         }
         val sizeEvents = prefs.getFloat("size_events", 14f)
 
-        val bweather = if (showWeatherCondition) {
-            com.leanbitlab.lwidget.weather.BreezyWeatherFetcher.fetchLocalWeather(context)
-        } else null
         val showWeatherIconOnly = prefs.getBoolean("show_weather_icon_only", false)
 
         val useDynamicColors = prefs.getBoolean("use_dynamic_colors", true)
@@ -235,6 +232,11 @@ object WidgetRenderer {
             if (showNextAlarm) SystemStatsFetcher.loadNextAlarm(context, alarmViews, sizeNextAlarm, alarmColor, prefs, showDate || showWorldClock)
             return alarmViews
         }
+
+        // Full render only: partial updates above never touch weather, so skip the JSON parse
+        val bweather = if (showWeatherCondition) {
+            com.leanbitlab.lwidget.weather.BreezyWeatherFetcher.fetchLocalWeather(context)
+        } else null
 
         val views = RemoteViews(context.packageName, layoutId)
 

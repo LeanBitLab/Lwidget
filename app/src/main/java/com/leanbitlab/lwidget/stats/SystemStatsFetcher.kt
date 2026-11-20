@@ -5,7 +5,6 @@ import android.app.ActivityManager
 import android.app.AlarmManager
 import android.app.AppOpsManager
 import android.app.usage.NetworkStatsManager
-import android.app.usage.UsageStatsManager
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -138,43 +137,17 @@ object SystemStatsFetcher {
             return
         }
 
-        val usageStatsManager = context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
-
-        val calendar = java.util.Calendar.getInstance()
-        calendar.set(java.util.Calendar.HOUR_OF_DAY, 0)
-        calendar.set(java.util.Calendar.MINUTE, 0)
-        calendar.set(java.util.Calendar.SECOND, 0)
-        calendar.set(java.util.Calendar.MILLISECOND, 0)
-
-        val startTime = calendar.timeInMillis
-        val endTime = System.currentTimeMillis()
-
-        val stats = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, startTime, endTime)
-
-        var totalForegroundTime = 0L
-        if (stats != null) {
-            for (usage in stats) {
-                if (usage.totalTimeInForeground > 0) {
-                    totalForegroundTime += usage.totalTimeInForeground
-                }
-            }
-        }
+        val totalForegroundTime = ScreenTimeTracker.todayForegroundMs(context)
 
         val isBold = prefs.getBoolean("bold_screen_time", false)
 
-        if (totalForegroundTime > 0) {
-            val totalMinutes = totalForegroundTime / (1000 * 60)
-            val hours = totalMinutes / 60
-            val mins = totalMinutes % 60
-            val timeString = if (hours > 0) context.getString(R.string.duration_hours_minutes, hours, mins) else context.getString(R.string.duration_minutes, mins)
-            val span = SpannableString(timeString)
-            if (isBold) span.setSpan(StyleSpan(Typeface.BOLD), 0, span.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            views.setTextViewText(R.id.text_screen_time, span)
-        } else {
-            val span = SpannableString("0m")
-            if (isBold) span.setSpan(StyleSpan(Typeface.BOLD), 0, span.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            views.setTextViewText(R.id.text_screen_time, span)
-        }
+        val totalMinutes = totalForegroundTime / (1000 * 60)
+        val hours = totalMinutes / 60
+        val mins = totalMinutes % 60
+        val timeString = if (hours > 0) context.getString(R.string.duration_hours_minutes, hours, mins) else context.getString(R.string.duration_minutes, mins)
+        val span = SpannableString(timeString)
+        if (isBold) span.setSpan(StyleSpan(Typeface.BOLD), 0, span.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        views.setTextViewText(R.id.text_screen_time, span)
     }
 
     fun updateDataUsage(context: Context, views: RemoteViews, prefs: SharedPreferences) {

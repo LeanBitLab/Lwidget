@@ -14,6 +14,7 @@ import com.leanbitlab.lwidget.calendar.CalendarFetcher
 import com.leanbitlab.lwidget.render.WidgetRenderer
 import com.leanbitlab.lwidget.stats.SystemStatsFetcher
 import com.leanbitlab.lwidget.tasks.TasksFetcher
+import com.leanbitlab.lwidget.weather.BreezyWeatherFetcher
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -104,13 +105,15 @@ class AwidgetProvider : AppWidgetProvider() {
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
 
-        val appWidgetManager = AppWidgetManager.getInstance(context)
-        val thisAppWidget = ComponentName(context, AwidgetProvider::class.java)
-        val appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidget)
+        // Weather arrives only through this broadcast: persist it before rendering
+        if (intent.action == ACTION_GENERIC_WEATHER) {
+            val weatherJson = intent.getStringExtra(EXTRA_WEATHER_JSON)
+            if (weatherJson.isNullOrEmpty()) return
+            BreezyWeatherFetcher.saveLatestWeatherData(context, weatherJson)
+        }
 
         val isBootOrReplaced = intent.action in listOf(
             Intent.ACTION_BOOT_COMPLETED,
-            Intent.ACTION_LOCKED_BOOT_COMPLETED,
             Intent.ACTION_MY_PACKAGE_REPLACED,
             "android.intent.action.QUICKBOOT_POWERON",
             "com.htc.intent.action.QUICKBOOT_POWERON"
@@ -122,16 +125,17 @@ class AwidgetProvider : AppWidgetProvider() {
         }
 
         if (isBootOrReplaced || intent.action in listOf(
-                Intent.ACTION_CONFIGURATION_CHANGED,
                 ACTION_BATTERY_UPDATE,
                 StepCounterService.ACTION_STEP_UPDATE,
                 Intent.ACTION_PROVIDER_CHANGED,
                 AlarmManager.ACTION_NEXT_ALARM_CLOCK_CHANGED,
-                "nodomain.freeyourgadget.gadgetbridge.ACTION_GENERIC_WEATHER"
+                ACTION_GENERIC_WEATHER
             )) {
             runAsync("broadcast ${intent.action}") {
+                val appWidgetManager = AppWidgetManager.getInstance(context)
+                val appWidgetIds = appWidgetManager.getAppWidgetIds(ComponentName(context, AwidgetProvider::class.java))
                 when {
-                    isBootOrReplaced || intent.action == Intent.ACTION_CONFIGURATION_CHANGED -> {
+                    isBootOrReplaced -> {
                         scheduleWork(context)
                         appWidgetIds.forEach { updateAppWidget(context, appWidgetManager, it, UpdateMode.FULL) }
                     }
@@ -152,7 +156,7 @@ class AwidgetProvider : AppWidgetProvider() {
                             appWidgetIds.forEach { updateAppWidget(context, appWidgetManager, it, UpdateMode.CALENDAR_ONLY) }
                         }
                     }
-                    intent.action == "nodomain.freeyourgadget.gadgetbridge.ACTION_GENERIC_WEATHER" -> {
+                    intent.action == ACTION_GENERIC_WEATHER -> {
                         appWidgetIds.forEach { updateAppWidget(context, appWidgetManager, it, UpdateMode.FULL) }
                     }
                 }
@@ -210,6 +214,9 @@ class AwidgetProvider : AppWidgetProvider() {
         }
 
         const val ACTION_NOOP = "com.leanbitlab.lwidget.ACTION_NOOP"
+        /** Gadgetbridge weather broadcast sent by Breezy Weather; payload is the JSON extra. */
+        const val ACTION_GENERIC_WEATHER = "nodomain.freeyourgadget.gadgetbridge.ACTION_GENERIC_WEATHER"
+        const val EXTRA_WEATHER_JSON = "WeatherJson"
         const val ACTION_BATTERY_UPDATE = SystemStatsFetcher.ACTION_BATTERY_UPDATE
         const val PERMISSION_READ_TASKS_ORG = TasksFetcher.PERMISSION_READ_TASKS_ORG
         const val PERMISSION_READ_TASKS_ASTRID = TasksFetcher.PERMISSION_READ_TASKS_ASTRID

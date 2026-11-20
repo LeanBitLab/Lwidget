@@ -43,7 +43,7 @@ STRING_LIT = re.compile(r'"((?:[^"\\]|\\.)*)"')
 # Lines whose literals are never shown to users.
 NON_UI_LINE = re.compile(
     r"^\s*@[\w.:]+|Log\.[dviwe]\(|throw |Exception\(|const val|import |"
-    r"\.(get|put)(String|Int|Boolean|Long|Float|StringSet)\(|getSharedPreferences|"
+    r"(?<!cursor)\.(get|put)(String|Int|Boolean|Long|Float|StringSet)\(|getSharedPreferences|"
     r"ofPattern|getFormatter|setFormat(12|24)Hour|Intent\(|\.action|Uri\.parse|"
     r"getMethod|setTimeZone|contentResolver|\b(selection|sortOrder|projection)\b"
 )

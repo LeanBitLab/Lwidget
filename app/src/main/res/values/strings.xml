@@ -115,6 +115,8 @@
     <string name="dialog_cancel">Cancel</string>
     <string name="dialog_got_it">Got it</string>
     <string name="action_install">Install</string>
+    <string name="msg_keep_alive_needs_activity">Keep Alive needs the Physical activity permission on this Android version.</string>
+    <string name="widget_no_title">(No title)</string>
     <string name="msg_breezy_required">Breezy Weather app (with DataBridge enabled) is required.</string>
     <string name="msg_breezy_required_short">Breezy Weather app is required.</string>
     <string name="msg_tasks_required">Tasks.org app is required for this feature.</string>

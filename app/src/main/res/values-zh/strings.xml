@@ -115,6 +115,8 @@
     <string name="dialog_cancel">取消</string>
     <string name="dialog_got_it">知道了</string>
     <string name="action_install">安装</string>
+    <string name="msg_keep_alive_needs_activity">在此 Android 版本上，后台保活需要“身体活动”权限。</string>
+    <string name="widget_no_title">（无标题）</string>
     <string name="msg_breezy_required">需要 Breezy Weather 应用（并启用 DataBridge）。</string>
     <string name="msg_breezy_required_short">需要 Breezy Weather 应用。</string>
     <string name="msg_tasks_required">此功能需要 Tasks.org 应用。</string>

@@ -50,7 +50,7 @@ object TasksFetcher {
                         continue
                     }
 
-                    val title = cursor.getString(titleIdx) ?: "No Title"
+                    val title = cursor.getString(titleIdx) ?: context.getString(R.string.widget_no_title)
                     tasks.add(TaskData(title, dueMillis))
                 }
             }
