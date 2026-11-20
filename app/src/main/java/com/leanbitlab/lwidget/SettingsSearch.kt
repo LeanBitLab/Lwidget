@@ -124,11 +124,31 @@ internal fun MainActivity.setupGlobalSettingsSearch() {
         findViewById(R.id.label_category_stats)
     )
 
+    // Case- and accent-insensitive form, so "Événement" matches "evenement" and Turkish I/ı fold correctly.
+    val locale = resources.configuration.locales[0]
+    val combiningMarks = Regex("\\p{Mn}+")
+    fun normalize(text: CharSequence): String =
+        java.text.Normalizer.normalize(text.toString().lowercase(locale), java.text.Normalizer.Form.NFD)
+            .replace(combiningMarks, "")
+
+    // Visible (already translated) text of each card, so search works in every app language.
+    // Built when a search starts and dropped when it ends, so it reflects current values.
+    var cardTextIndex: Map<Int, String>? = null
+    fun buildCardTextIndex(): Map<Int, String> = cardMap.keys.associateWith { cardId ->
+        val text = StringBuilder()
+        fun collect(view: View) {
+            if (view is android.widget.TextView && view !is android.widget.EditText) text.append(view.text).append('\n')
+            if (view is android.view.ViewGroup) for (i in 0 until view.childCount) collect(view.getChildAt(i))
+        }
+        findViewById<View>(cardId)?.let { collect(it) }
+        normalize(text)
+    }
+
     searchInput.addTextChangedListener(object : android.text.TextWatcher {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         override fun afterTextChanged(s: android.text.Editable?) {
-            val query = s?.toString()?.trim()?.lowercase() ?: ""
+            val query = normalize(s?.toString()?.trim() ?: "")
             val isSearching = query.isNotEmpty()
             btnSearchClear?.visibility = if (isSearching) View.VISIBLE else View.GONE
 
@@ -137,15 +157,17 @@ internal fun MainActivity.setupGlobalSettingsSearch() {
                 tabContainers.forEach { container -> container?.visibility = View.VISIBLE }
                 tabLayout?.visibility = View.GONE
 
+                val index = cardTextIndex ?: buildCardTextIndex().also { cardTextIndex = it }
                 for ((cardId, keywords) in cardMap) {
                     val card = findViewById<View>(cardId) ?: continue
-                    val matches = keywords.any { it.contains(query) }
+                    val matches = keywords.any { it.contains(query) } || index[cardId]?.contains(query) == true
                     card.visibility = if (matches) View.VISIBLE else View.GONE
                 }
                 headerLabels.forEach { label ->
                     label.visibility = View.GONE
                 }
             } else {
+                cardTextIndex = null
                 // Restore tabs and active container
                 tabLayout?.visibility = View.VISIBLE
                 val selectedTab = tabLayout?.selectedTabPosition?.coerceIn(0, 3) ?: 0
