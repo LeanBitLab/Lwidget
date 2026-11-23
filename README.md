@@ -6,112 +6,102 @@
   <img alt="Lwidget Banner" src="docs/images/banner_light.svg">
 </picture>
 
-<p align="center">
-  <a href="https://github.com/LeanBitLab/Lwidget/releases/latest"><img src="https://img.shields.io/github/v/release/LeanBitLab/Lwidget?label=Download&style=flat-square&color=7C4DFF" alt="Download"></a>
-  <a href="https://github.com/LeanBitLab/Lwidget/releases"><img src="docs/images/downloads_badge.svg" alt="Downloads"></a>
-  <a href="https://github.com/LeanBitLab/Lwidget/stargazers"><img src="docs/images/stars_badge.svg" alt="Stars"></a>
-</p>
+<div align="center">
 
-**Lwidget** is a modern, open-source Android widget built with **Kotlin** and **Material 3** design principles. It provides essential information at a glance while adhering to your device's dynamic theme.
+[![Latest Release](https://img.shields.io/github/v/release/LeanBitLab/Lwidget?label=Download&style=flat-square&color=7C4DFF)](https://github.com/LeanBitLab/Lwidget/releases/latest)
+[![Downloads](docs/images/downloads_badge.svg)](https://github.com/LeanBitLab/Lwidget/releases)
+[![Stars](docs/images/stars_badge.svg)](https://github.com/LeanBitLab/Lwidget/stargazers)
+[![License: GPL v3](https://img.shields.io/badge/License-GPL_v3-blue.svg?style=flat-square)](https://www.gnu.org/licenses/gpl-3.0)
+[![Sponsor](https://img.shields.io/badge/Sponsor-LeanBitLab-db2777?style=flat-square&logo=githubsponsors&logoColor=white)](https://github.com/sponsors/LeanBitLab)
+[![Donate on Open Collective](https://img.shields.io/badge/Donate-Open_Collective-1f6feb?style=flat-square&logo=opencollective&logoColor=white)](https://opencollective.com/leanbitlab-org)
 
-💬 **Feedback & Bugs:** [Telegram Group](https://t.me/leanbitlabchat) · [GitHub Discussions](https://github.com/LeanBitLab/Lwidget/discussions) · [Report a Bug](https://github.com/LeanBitLab/Lwidget/issues)
+**A modern, open-source Android widget built with Material 3 design principles.**<br>
+Essential information at a glance with dynamic color. Completely private with no internet permission.
 
-## Download
+[Download](#download) • [Features](#features) • [Setup](#setup) • [More LeanBitLab apps](#more-leanbitlab-apps) • [Support](#support)
 
-You can download the latest release from the [Play Store](https://play.google.com/store/apps/details?id=com.leanbitlab.lwidget) or the [GitHub Releases](https://github.com/LeanBitLab/Lwidget/releases) page.
-
-<br>
-
-<div align="center" style="display: flex; justify-content: center; gap: 10px; align-items: center;">
-  <a href="https://play.google.com/store/apps/details?id=com.leanbitlab.lwidget">
-    <img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" height="80" style="max-height: 80px; width: auto;">
-  </a>
-  <a href="https://github.com/LeanBitLab/Lwidget/releases/latest">
-    <img alt="Get it on GitHub" src="docs/images/get_it_on_github.png" height="80" style="max-height: 80px; width: auto;">
-  </a>
 </div>
-
-## Screenshots
 
 <table>
   <tr>
-    <td><img src="https://raw.githubusercontent.com/LeanBitLab/Lwidget/main/fastlane/metadata/android/en-US/images/phoneScreenshots/1.png" height="400" alt="Screenshot 1"/></td>
-    <td><img src="https://raw.githubusercontent.com/LeanBitLab/Lwidget/main/fastlane/metadata/android/en-US/images/phoneScreenshots/2.png" height="400" alt="Screenshot 2"/></td>
-    <td><img src="https://raw.githubusercontent.com/LeanBitLab/Lwidget/main/fastlane/metadata/android/en-US/images/phoneScreenshots/3.png" height="400" alt="Screenshot 3"/></td>
-    <td><img src="https://raw.githubusercontent.com/LeanBitLab/Lwidget/main/fastlane/metadata/android/en-US/images/phoneScreenshots/4.png" height="400" alt="Screenshot 4"/></td>
+    <td><img src="https://raw.githubusercontent.com/LeanBitLab/Lwidget/main/fastlane/metadata/android/en-US/images/phoneScreenshots/1.png" width="160" alt="Widget Overview"/></td>
+    <td><img src="https://raw.githubusercontent.com/LeanBitLab/Lwidget/main/fastlane/metadata/android/en-US/images/phoneScreenshots/2.png" width="160" alt="Dynamic Colors"/></td>
+    <td><img src="https://raw.githubusercontent.com/LeanBitLab/Lwidget/main/fastlane/metadata/android/en-US/images/phoneScreenshots/3.png" width="160" alt="Reorder and Fonts"/></td>
+    <td><img src="https://raw.githubusercontent.com/LeanBitLab/Lwidget/main/fastlane/metadata/android/en-US/images/phoneScreenshots/4.png" width="160" alt="Weather and Agenda"/></td>
+    <td><img src="https://raw.githubusercontent.com/LeanBitLab/Lwidget/main/fastlane/metadata/android/en-US/images/phoneScreenshots/5.png" width="160" alt="System Information"/></td>
   </tr>
+</table>
+
+## Why Lwidget
+
+- **Private by design**: no internet permission is required or requested, so your data never leaves your device.
+- **At-a-glance information**: monitor time, date, battery, internal storage, RAM, screen time and daily data usage in one widget.
+- **Health and tasks**: track daily steps with an optional counter and display upcoming calendar events and [Tasks.org](https://tasks.org/) tasks.
+- **Offline weather integration**: view current conditions and weekly forecast warnings via [Breezy Weather](https://github.com/breezy-weather/breezy-weather) without network or location access.
+- **Deep styling**: adapt to system colors with Material You, choose from 11 fonts, drag to reorder elements, and adjust transparency, padding and borders.
+
+## Download
+
+<table border="0">
   <tr>
-    <td><img src="https://raw.githubusercontent.com/LeanBitLab/Lwidget/main/fastlane/metadata/android/en-US/images/phoneScreenshots/5.png" height="400" alt="Screenshot 5"/></td>
-    <td><img src="https://raw.githubusercontent.com/LeanBitLab/Lwidget/main/fastlane/metadata/android/en-US/images/phoneScreenshots/6.png" height="400" alt="Screenshot 6"/></td>
-    <td><img src="https://raw.githubusercontent.com/LeanBitLab/Lwidget/main/fastlane/metadata/android/en-US/images/phoneScreenshots/7.png" height="400" alt="Screenshot 7"/></td>
-    <td><img src="https://raw.githubusercontent.com/LeanBitLab/Lwidget/main/fastlane/metadata/android/en-US/images/phoneScreenshots/8.png" height="400" alt="Screenshot 8"/></td>
+    <td align="center"><a href="https://play.google.com/store/apps/details?id=com.leanbitlab.lwidget"><img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" height="70"></a></td>
+    <td align="center"><a href="https://github.com/LeanBitLab/Lwidget/releases/latest"><img alt="Get it on GitHub" src="docs/images/get_it_on_github.png" height="70"></a></td>
   </tr>
 </table>
 
 ## Features
 
--   **Material You**: Full dynamic color support.
--   **Time & Date**: Clear, customizable display.
--   **Battery & Temperature**: Real-time device status.
--   **Step Counter**: Track your daily steps directly from the widget.
--   **Calendar Events**: Upcoming agenda at a glance.
--   **Task Integration**: Seamless integration with [Tasks.org](https://tasks.org/).
--   **Weather**: Current conditions and weekly forecast warnings via [Breezy Weather](https://github.com/breezy-weather/breezy-weather) integration.
--   **World Clock**: Track time in another zone.
--   **Next Alarm**: Display your next scheduled alarm.
--   **Daily Data Usage**: Monitor your daily data consumption.
--   **Screen Time**: Track your daily device usage directly from the widget.
--   **Internal Storage**: Monitor available device storage.
--   **RAM**: Monitor available device memory.
--   **Reorder**: Drag to sort widget items in any order you like.
--   **Font Style**: 11 fonts — Default, Serif, Monospace, Cursive, Condensed, and more.
--   **Update Interval**: Set how often the widget refreshes.
--   **Widget Padding**: Adjust inner spacing for a cleaner look.
--   **Custom Formats**: Choose your preferred Time and Date formats.
--   **Light/Dark Mode**: Optimized contrast for readability.
--   **Privacy Focused**: No internet permission required.
--   **Accent Outline**: Adds a stylish border to the widget.
--   **Improved Settings**: Refined settings interface for better usability.
--   **Manual Transparency**: Fine-tune the widget's background transparency.
--   **Custom Colors:** Choose between Default, System Accent, or Custom colors for text and background.
--   **Outline Color**: Customize the widget outline color.
+| Area | Highlights |
+| :--- | :--- |
+| **Clock & time** | Clear time and date display, custom formats, world clock, next scheduled alarm |
+| **Device status** | Battery percentage and temperature, available internal storage, available RAM |
+| **Digital wellbeing** | Daily screen time tracking, daily data consumption monitoring |
+| **Health & tasks** | Step counter with daily goal tracking, upcoming calendar events, [Tasks.org](https://tasks.org/) task integration |
+| **Weather** | Current conditions and weekly forecast warnings via [Breezy Weather](https://github.com/breezy-weather/breezy-weather) integration |
+| **Appearance** | Material You dynamic colors, custom text and background colors, light and dark mode, manual transparency |
+| **Layout & styling** | Drag to reorder items, custom widget padding, outline borders and colors, 11 font styles (Default, Serif, Monospace, Cursive, Condensed, and more) |
+| **System** | Configurable widget refresh interval, refined settings interface, zero internet permission |
 
 ## Setup
 
--   **Calendar**: Required to display upcoming events on the widget.
--   **Activity Recognition**: Required for the Step Counter feature.
--   **Usage Access**: Required to display daily data consumption and screen time.
--   **Tasks.org Integration**: Requires Tasks.org to be installed for task integration.
--   **Notifications**: Required for the Step Counter foreground service.
--   **Breezy Weather Integration**: Requires [Breezy Weather](https://github.com/breezy-weather/breezy-weather) to be installed with DataBridge enabled. In Breezy Weather: Settings → External Modules → Send Gadgetbridge Data → toggle on Lwidget. Lwidget does not access location or the internet — it only reads weather data stored locally by Breezy Weather.
--   **Battery Optimization**: Lwidget works without any background service. However, some devices may kill the app to save battery, which can stop widget updates. To fix this:
-    - Mark Lwidget as non-battery-optimized in your device settings.
-    - Or, enable the Step Counter — it uses a lightweight foreground service that also keeps all other widget features updating live.
+Permissions and integrations are requested only when you enable the corresponding feature.
 
-All permissions are requested only when you enable the corresponding feature.
+| Item | Adds | Requirement |
+| :--- | :--- | :--- |
+| **Calendar** | Upcoming agenda events | Calendar permission |
+| **Step Counter** | Daily step count display | Activity Recognition and Notifications permissions |
+| **Usage stats** | Screen time and daily data usage | Usage Access permission |
+| **Tasks.org** | Task integration | [Tasks.org](https://tasks.org/) installed |
+| **Weather** | Current conditions and forecasts | [Breezy Weather](https://github.com/breezy-weather/breezy-weather) integration |
 
-## License
+<details>
+<summary><b>Integration and background update setup</b></summary>
 
-Lwidget is licensed under **GNU General Public License v3.0**.
+- **Breezy Weather**: install [Breezy Weather](https://github.com/breezy-weather/breezy-weather) with DataBridge enabled. In Breezy Weather, open **Settings → External Modules → Send Gadgetbridge Data** and toggle on Lwidget. Lwidget reads weather data stored locally without accessing location or the internet.
+- **Battery optimization**: Lwidget runs without background services, but aggressive system battery savers may delay widget refreshes. To keep updates regular, disable battery optimization for Lwidget in device settings, or enable the Step Counter, whose lightweight foreground service keeps all widget features updating live.
 
-See [LICENSE](LICENSE) file.
+</details>
 
+## More LeanBitLab apps
 
-## Credits
+| App | What it is |
+| :--- | :--- |
+| [LeanType](https://github.com/LeanBitLab/LeanType) | Private, smart and customizable keyboard with AI, voice and offline options |
+| [LtvLauncher](https://github.com/leanbitlab-org/LtvLauncher) | Fast, private and ad-free launcher for Android TV |
+| [RdTube](https://github.com/LeanBitLab/RdTube) | Private, fast video client for Reddit |
 
--   Built with ❤️ by [LeanBitLab](https://github.com/LeanBitLab)
--   🛡️ LeanBitLab Ecosystem: 👉 [Check out our other projects!](https://github.com/LeanBitLab#-current-projects)
+See [all LeanBitLab projects](https://github.com/LeanBitLab#-android-apps).
 
-## Support the Development
+## Community
 
-Building and maintaining open-source apps takes time and resources. If you love Lwidget, please consider supporting the project!
+[Issues](https://github.com/LeanBitLab/Lwidget/issues) • [Discussions](https://github.com/LeanBitLab/Lwidget/discussions) • [Telegram](https://t.me/leanbitlab)
 
-<a href="https://github.com/sponsors/LeanBitLab">
-  <img src="https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86" width="150" alt="Sponsor on GitHub"/>
-</a>
+## Support
 
-Your support keeps the code **100% Free and Open Source**.
+Lwidget is community-funded. If it helps you stay organized every day, consider backing the project on [GitHub Sponsors](https://github.com/sponsors/LeanBitLab) or [Open Collective](https://opencollective.com/leanbitlab-org).
 
----
+## Credits and license
 
-*Lwidget • Modern Material You Widget*
+Built by [LeanBitLab](https://github.com/LeanBitLab).
+
+Licensed under [GPL-3.0](LICENSE).
