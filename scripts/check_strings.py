@@ -130,13 +130,13 @@ LAYOUT_ALLOWED_TEXT = {"Lwidget"}  # brand name, not translated
 
 
 def check_layout_text(problems):
-    """Hardcoded UI text in app layouts: any text attribute in activity_*.xml screens, and contentDescription
+    """Hardcoded UI text in app layouts: any text attribute in activity_*.xml and tab_*.xml screens, and contentDescription
     everywhere. Widget layouts (RemoteViews) and the inflated settings_* row templates are not scanned for
     text: their placeholder text is overwritten at runtime."""
     for f in sorted((RES).glob("layout*/*.xml")):
         if f.name.startswith("widget_layout"):
             continue
-        screen = f.name.startswith("activity_")
+        screen = f.name.startswith(("activity_", "tab_"))
         for i, line in enumerate(f.read_text(encoding="utf-8").splitlines(), 1):
             if "i18n-ignore" in line:
                 continue

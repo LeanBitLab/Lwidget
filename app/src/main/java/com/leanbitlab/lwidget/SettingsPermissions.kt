@@ -37,8 +37,8 @@ internal fun MainActivity.checkAllPermissions() {
     val calMissing = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED
     if (prefs.getBoolean("show_events", false) && calMissing) {
         prefs.edit().putBoolean("show_events", false).apply()
-        findViewById<View>(R.id.row_events_toggle).findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.row_switch).isChecked = false
-        findViewById<View>(R.id.row_events_size).visibility = View.GONE
+        findViewById<View>(R.id.row_events_toggle)?.findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.row_switch)?.isChecked = false
+        findViewById<View>(R.id.row_events_size)?.visibility = View.GONE
         widgetNeedsUpdate = true
     }
 
@@ -46,8 +46,8 @@ internal fun MainActivity.checkAllPermissions() {
     val tasksMissing = ContextCompat.checkSelfPermission(this, AwidgetProvider.PERMISSION_READ_TASKS_ORG) != PackageManager.PERMISSION_GRANTED
     if (prefs.getBoolean("show_tasks", false) && tasksMissing) {
          prefs.edit().putBoolean("show_tasks", false).apply()
-         findViewById<View>(R.id.row_tasks_toggle).findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.row_switch).isChecked = false
-         findViewById<View>(R.id.row_tasks_size).visibility = View.GONE
+         findViewById<View>(R.id.row_tasks_toggle)?.findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.row_switch)?.isChecked = false
+         findViewById<View>(R.id.row_tasks_size)?.visibility = View.GONE
          widgetNeedsUpdate = true
     }
 
@@ -58,8 +58,8 @@ internal fun MainActivity.checkAllPermissions() {
     }
     if (prefs.getBoolean("show_steps", false) && stepMissing) {
          prefs.edit().putBoolean("show_steps", false).apply()
-         findViewById<View>(R.id.row_steps_toggle).findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.row_switch).isChecked = false
-         findViewById<View>(R.id.row_steps_size).visibility = View.GONE
+         findViewById<View>(R.id.row_steps_toggle)?.findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.row_switch)?.isChecked = false
+         findViewById<View>(R.id.row_steps_size)?.visibility = View.GONE
          widgetNeedsUpdate = true
     }
 
@@ -67,16 +67,16 @@ internal fun MainActivity.checkAllPermissions() {
     val usageMissing = !hasUsageStatsPermission()
     if (prefs.getBoolean("show_screen_time", false) && usageMissing) {
         prefs.edit().putBoolean("show_screen_time", false).apply()
-        findViewById<View>(R.id.row_screen_time_toggle).findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.row_switch).isChecked = false
-        findViewById<View>(R.id.row_screen_time_size).visibility = View.GONE
+        findViewById<View>(R.id.row_screen_time_toggle)?.findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.row_switch)?.isChecked = false
+        findViewById<View>(R.id.row_screen_time_size)?.visibility = View.GONE
         widgetNeedsUpdate = true
     }
 
     // Check Data Usage
     if (prefs.getBoolean("show_data_usage", false) && usageMissing) {
         prefs.edit().putBoolean("show_data_usage", false).apply()
-        findViewById<View>(R.id.row_data_toggle).findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.row_switch).isChecked = false
-        findViewById<View>(R.id.row_data_size).visibility = View.GONE
+        findViewById<View>(R.id.row_data_toggle)?.findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.row_switch)?.isChecked = false
+        findViewById<View>(R.id.row_data_size)?.visibility = View.GONE
         widgetNeedsUpdate = true
     }
 
@@ -84,8 +84,8 @@ internal fun MainActivity.checkAllPermissions() {
     val weatherMissing = !isAppInstalled("org.breezyweather") || ContextCompat.checkSelfPermission(this, "org.breezyweather.READ_PROVIDER") != PackageManager.PERMISSION_GRANTED
     if (prefs.getBoolean("show_weather_condition", false) && weatherMissing) {
         prefs.edit().putBoolean("show_weather_condition", false).apply()
-        findViewById<View>(R.id.row_weather_toggle).findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.row_switch).isChecked = false
-        findViewById<View>(R.id.row_weather_size).visibility = View.GONE
+        findViewById<View>(R.id.row_weather_toggle)?.findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.row_switch)?.isChecked = false
+        findViewById<View>(R.id.row_weather_size)?.visibility = View.GONE
         widgetNeedsUpdate = true
     }
 
