@@ -188,7 +188,7 @@ internal fun MainActivity.setupWeatherSection() {
                 ).setAction(getString(R.string.action_install)) {
                     try {
                         CustomTabsIntent.Builder().build().launchUrl(this@setupWeatherSection, android.net.Uri.parse("https://github.com/breezy-weather/breezy-weather/releases"))
-                    } catch (e: Exception) { android.util.Log.e("MainActivity", "Exception caught", e) }
+                    } catch (e: Exception) { android.util.Log.w("MainActivity", "Failed to open BreezyWeather releases page", e) }
                 }.show()
                 return@setOnCheckedChangeListener
             }

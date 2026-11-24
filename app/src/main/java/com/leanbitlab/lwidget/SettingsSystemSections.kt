@@ -49,7 +49,7 @@ internal fun MainActivity.setupDataUsageSection() {
                         getString(R.string.perm_usage_access_title),
                         com.google.android.material.snackbar.Snackbar.LENGTH_LONG
                     ).show()
-                } catch (e: Exception) { android.util.Log.e("MainActivity", "Exception caught", e) }
+                } catch (e: Exception) { android.util.Log.w("MainActivity", "Failed to show usage access snackbar", e) }
                 return@setOnCheckedChangeListener
             }
             if (!checkLimit()) {

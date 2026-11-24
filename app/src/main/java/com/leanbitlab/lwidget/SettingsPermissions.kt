@@ -116,10 +116,10 @@ internal fun MainActivity.checkAllPermissions() {
         } else openAppSettings()
     }
     updatePermissionToggle(R.id.row_perm_data_usage, getString(R.string.section_data_usage), !usageMissing) {
-        try { startActivity(Intent(android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS)) } catch (e: Exception) { Log.w("MainActivity", "Failed to launch usage access settings", e) }
+        openUsageAccessSettings()
     }
     updatePermissionToggle(R.id.row_perm_screen_time, getString(R.string.section_screen_time), !usageMissing) {
-        try { startActivity(Intent(android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS)) } catch (e: Exception) { Log.w("MainActivity", "Failed to launch usage access settings", e) }
+        openUsageAccessSettings()
     }
     updatePermissionToggle(R.id.row_perm_weather, getString(R.string.section_weather_condition), !weatherMissing) {
         if (weatherMissing && !isAppInstalled("org.breezyweather")) {
@@ -232,45 +232,13 @@ internal fun MainActivity.setupBatteryOptimizationSection() {
 internal fun MainActivity.updateBatteryOptimizationSwitch() {
     val row = findViewById<View>(R.id.row_battery_optimization_toggle) ?: return
     val switchOpt = row.findViewById<SwitchMaterial>(R.id.row_switch) ?: return
-    val powerManager = getSystemService(Context.POWER_SERVICE) as android.os.PowerManager
-    val isIgnoring = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-        powerManager.isIgnoringBatteryOptimizations(packageName)
-    } else true
-    
-    switchOpt.setOnCheckedChangeListener(null)
-    switchOpt.isChecked = isIgnoring
-    switchOpt.setOnCheckedChangeListener { _, isChecked ->
-        if (isChecked) {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                val isCurrentlyIgnoring = powerManager.isIgnoringBatteryOptimizations(packageName)
-                if (!isCurrentlyIgnoring) {
-                    try {
-                        val intent = Intent(android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
-                            data = android.net.Uri.parse("package:$packageName")
-                        }
-                        startActivity(intent)
-                    } catch (e: Exception) {
-                        try {
-                            val intent = Intent(android.provider.Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
-                            startActivity(intent)
-                        } catch (ex: Exception) {
-                            ex.printStackTrace()
-                        }
-                    }
-                }
-            }
-        } else {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                val isCurrentlyIgnoring = powerManager.isIgnoringBatteryOptimizations(packageName)
-                if (isCurrentlyIgnoring) {
-                    try {
-                        val intent = Intent(android.provider.Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
-                        startActivity(intent)
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                }
-            }
-        }
+    bindBatteryOptimizationSwitch(switchOpt)
+}
+
+private fun MainActivity.openUsageAccessSettings() {
+    try {
+        startActivity(Intent(android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS))
+    } catch (e: Exception) {
+        Log.w("MainActivity", "Failed to launch usage access settings", e)
     }
 }
