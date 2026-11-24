@@ -96,6 +96,9 @@
     <string name="setup_welcome_desc">Настраиваемый виджет для вашего домашнего экрана.</string>
     <string name="setup_keep_alive_title">Фоновая работа</string>
     <string name="setup_keep_alive_desc">Предотвращает остановку обновлений виджета системой.</string>
+    <string name="setup_battery_optimization_title">Отключить оптимизацию батареи</string>
+    <string name="setup_battery_optimization_desc">Не даёт Android приостанавливать обновления виджета и обработку касаний</string>
+    <string name="setup_calendar_events">События календаря</string>
     <string name="setup_permissions_title">Дополнительные разрешения</string>
     <string name="setup_permissions_desc">Предоставьте доступ для календаря, задач или шагомера.</string>
     <string name="btn_next">Далее</string>
@@ -139,6 +142,11 @@
     <string name="version_unknown">Неизвестно</string>
     <string name="a11y_move_up">Переместить вверх</string>
     <string name="a11y_move_down">Переместить вниз</string>
+    <string name="a11y_close_search">Закрыть поиск</string>
+    <string name="a11y_clear_search">Очистить поиск</string>
+    <string name="a11y_search">Поиск</string>
+    <string name="a11y_drag_to_reorder">Перетащите для изменения порядка</string>
+    <string name="changelog_author">от LeanBitLab</string>
 
     <!-- Widget content -->
     <string name="label_today">Сегодня</string>

@@ -96,6 +96,9 @@
     <string name="setup_welcome_desc">Un widget personalizable para tu pantalla de inicio.</string>
     <string name="setup_keep_alive_title">Mantener activo</string>
     <string name="setup_keep_alive_desc">Evita que el sistema detenga las actualizaciones del widget.</string>
+    <string name="setup_battery_optimization_title">Desactivar la optimización de batería</string>
+    <string name="setup_battery_optimization_desc">Evita que Android pause las actualizaciones del widget y las acciones táctiles</string>
+    <string name="setup_calendar_events">Eventos del calendario</string>
     <string name="setup_permissions_title">Permisos opcionales</string>
     <string name="setup_permissions_desc">Otorga permisos para funciones opcionales como eventos, tareas o pasos.</string>
     <string name="btn_next">Siguiente</string>
@@ -139,6 +142,11 @@
     <string name="version_unknown">Desconocida</string>
     <string name="a11y_move_up">Subir</string>
     <string name="a11y_move_down">Bajar</string>
+    <string name="a11y_close_search">Cerrar búsqueda</string>
+    <string name="a11y_clear_search">Borrar búsqueda</string>
+    <string name="a11y_search">Buscar</string>
+    <string name="a11y_drag_to_reorder">Arrastrar para reordenar</string>
+    <string name="changelog_author">por LeanBitLab</string>
 
     <!-- Widget content -->
     <string name="label_today">Hoy</string>

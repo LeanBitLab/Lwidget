@@ -96,6 +96,9 @@
     <string name="setup_welcome_desc">Ein anpassbares Widget für Ihren Startbildschirm.</string>
     <string name="setup_keep_alive_title">Aktiv halten</string>
     <string name="setup_keep_alive_desc">Verhindert, dass Aktualisierungen gestoppt werden.</string>
+    <string name="setup_battery_optimization_title">Akkuoptimierung deaktivieren</string>
+    <string name="setup_battery_optimization_desc">Verhindert, dass Android Widget-Updates und Touch-Aktionen pausiert</string>
+    <string name="setup_calendar_events">Kalendertermine</string>
     <string name="setup_permissions_title">Optionale Berechtigungen</string>
     <string name="setup_permissions_desc">Berechtigungen für Kalender, Aufgaben und Schrittzähler erteilen.</string>
     <string name="btn_next">Weiter</string>
@@ -139,6 +142,11 @@
     <string name="version_unknown">Unbekannt</string>
     <string name="a11y_move_up">Nach oben</string>
     <string name="a11y_move_down">Nach unten</string>
+    <string name="a11y_close_search">Suche schließen</string>
+    <string name="a11y_clear_search">Suche löschen</string>
+    <string name="a11y_search">Suchen</string>
+    <string name="a11y_drag_to_reorder">Zum Neuordnen ziehen</string>
+    <string name="changelog_author">von LeanBitLab</string>
 
     <!-- Widget content -->
     <string name="label_today">Heute</string>

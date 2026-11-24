@@ -130,7 +130,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Enable Keep Alive"
+                            android:text="@string/row_enable_keep_alive"
                             android:textSize="16sp"
                             android:textColor="?attr/colorOnSurface"
                             android:textStyle="bold"/>
@@ -161,14 +161,14 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Disable Battery Optimization"
+                                android:text="@string/setup_battery_optimization_title"
                                 android:textSize="16sp"
                                 android:textColor="?attr/colorOnSurface"
                                 android:textStyle="bold"/>
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Prevent Android from pausing the widget updates and touch actions"
+                                android:text="@string/setup_battery_optimization_desc"
                                 android:textSize="12sp"
                                 android:textColor="?attr/colorOnSurfaceVariant"
                                 android:layout_marginTop="4dp"/>
@@ -236,7 +236,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Calendar Events"
+                            android:text="@string/setup_calendar_events"
                             android:textSize="16sp"
                             android:textColor="?attr/colorOnSurface"/>
                         <com.google.android.material.button.MaterialButton
@@ -272,7 +272,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Tasks"
+                            android:text="@string/section_tasks"
                             android:textSize="16sp"
                             android:textColor="?attr/colorOnSurface"/>
                         <com.google.android.material.button.MaterialButton
@@ -308,7 +308,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Step Counter"
+                            android:text="@string/section_steps"
                             android:textSize="16sp"
                             android:textColor="?attr/colorOnSurface"/>
                         <com.google.android.material.button.MaterialButton
@@ -344,7 +344,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Data Usage"
+                            android:text="@string/section_data_usage"
                             android:textSize="16sp"
                             android:textColor="?attr/colorOnSurface"/>
                         <com.google.android.material.button.MaterialButton
@@ -380,7 +380,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Screen Time"
+                            android:text="@string/section_screen_time"
                             android:textSize="16sp"
                             android:textColor="?attr/colorOnSurface"/>
                         <com.google.android.material.button.MaterialButton
@@ -416,7 +416,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Weather"
+                            android:text="@string/section_weather_condition"
                             android:textSize="16sp"
                             android:textColor="?attr/colorOnSurface"/>
                         <com.google.android.material.button.MaterialButton

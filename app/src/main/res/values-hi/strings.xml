@@ -93,6 +93,9 @@
     <string name="setup_welcome_desc">आपकी होम स्क्रीन के लिए कस्टमाइज़ेबल विजेट।</string>
     <string name="setup_keep_alive_title">सक्रिय रखें</string>
     <string name="setup_keep_alive_desc">विजेट को अपडेट रखने के लिए इसे चालू रखें।</string>
+    <string name="setup_battery_optimization_title">बैटरी ऑप्टिमाइज़ेशन बंद करें</string>
+    <string name="setup_battery_optimization_desc">Android को विजेट अपडेट और टच क्रियाओं को रोकने से रोकें</string>
+    <string name="setup_calendar_events">कैलेंडर इवेंट</string>
     <string name="setup_permissions_title">वैकल्पिक अनुमतियां</string>
     <string name="setup_permissions_desc">कैलेंडर, कार्य और स्टेप काउंटर के लिए अनुमतियां दें।</string>
     <string name="btn_next">अगला</string>
@@ -139,6 +142,11 @@
     <string name="version_unknown">अज्ञात</string>
     <string name="a11y_move_up">ऊपर ले जाएँ</string>
     <string name="a11y_move_down">नीचे ले जाएँ</string>
+    <string name="a11y_close_search">खोज बंद करें</string>
+    <string name="a11y_clear_search">खोज साफ़ करें</string>
+    <string name="a11y_search">खोजें</string>
+    <string name="a11y_drag_to_reorder">क्रम बदलने के लिए खींचें</string>
+    <string name="changelog_author">LeanBitLab द्वारा</string>
 
     <!-- Widget content -->
     <string name="label_today">आज</string>
