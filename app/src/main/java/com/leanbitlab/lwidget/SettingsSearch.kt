@@ -32,12 +32,8 @@ internal fun MainActivity.setupGlobalSettingsSearch() {
     val btnSearchClear = findViewById<View>(R.id.btn_search_clear)
     val appBar = findViewById<AppBarLayout>(R.id.app_bar)
 
-    val tabContainers = listOf(
-        findViewById<View>(R.id.container_tab_style),
-        findViewById<View>(R.id.container_tab_content),
-        findViewById<View>(R.id.container_tab_layout),
-        findViewById<View>(R.id.container_tab_system)
-    )
+    // Tabs are inflated lazily, so look the containers up each time instead of caching them.
+    fun tabContainers() = tabContainerIds.map { findViewById<View>(it) }
     val tabLayout = findViewById<com.google.android.material.tabs.TabLayout>(R.id.tab_layout)
 
     fun closeSearch() {
@@ -50,6 +46,7 @@ internal fun MainActivity.setupGlobalSettingsSearch() {
     }
 
     fun openSearch() {
+        ensureAllTabsReady()
         headerNormal?.visibility = View.GONE
         headerSearch?.visibility = View.VISIBLE
         appBar?.setExpanded(true, true)
@@ -119,7 +116,8 @@ internal fun MainActivity.setupGlobalSettingsSearch() {
     )
     // i18n-ignore-end
 
-    val headerLabels: List<View> = listOfNotNull(
+    // These live in the lazily inflated Content tab, so look them up when needed.
+    fun headerLabels(): List<View> = listOfNotNull(
         findViewById(R.id.label_category_content),
         findViewById(R.id.label_category_stats)
     )
@@ -153,8 +151,9 @@ internal fun MainActivity.setupGlobalSettingsSearch() {
             btnSearchClear?.visibility = if (isSearching) View.VISIBLE else View.GONE
 
             if (isSearching) {
+                ensureAllTabsReady()
                 // Make all tab containers visible so search shows matches across all categories
-                tabContainers.forEach { container -> container?.visibility = View.VISIBLE }
+                tabContainers().forEach { container -> container?.visibility = View.VISIBLE }
                 tabLayout?.visibility = View.GONE
 
                 val index = cardTextIndex ?: buildCardTextIndex().also { cardTextIndex = it }
@@ -163,7 +162,7 @@ internal fun MainActivity.setupGlobalSettingsSearch() {
                     val matches = keywords.any { it.contains(query) } || index[cardId]?.contains(query) == true
                     card.visibility = if (matches) View.VISIBLE else View.GONE
                 }
-                headerLabels.forEach { label ->
+                headerLabels().forEach { label ->
                     label.visibility = View.GONE
                 }
             } else {
@@ -171,13 +170,13 @@ internal fun MainActivity.setupGlobalSettingsSearch() {
                 // Restore tabs and active container
                 tabLayout?.visibility = View.VISIBLE
                 val selectedTab = tabLayout?.selectedTabPosition?.coerceIn(0, 3) ?: 0
-                tabContainers.forEachIndexed { index, container ->
+                tabContainers().forEachIndexed { index, container ->
                     container?.visibility = if (index == selectedTab) View.VISIBLE else View.GONE
                 }
                 for ((cardId, _) in cardMap) {
                     findViewById<View>(cardId)?.visibility = View.VISIBLE
                 }
-                headerLabels.forEach { label ->
+                headerLabels().forEach { label ->
                     label.visibility = View.VISIBLE
                 }
             }

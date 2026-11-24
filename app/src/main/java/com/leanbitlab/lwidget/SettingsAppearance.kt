@@ -37,9 +37,6 @@ internal fun MainActivity.setupThemeSection(colorOptions: List<String>) {
     bindNestedCard(R.id.header_appearance_transparency, getString(R.string.header_transparency), R.id.content_appearance_transparency, "section_appearance_transparency_expanded", R.id.header_chevron_appearance_transparency)
     bindNestedCard(R.id.header_appearance_padding, getString(R.string.header_padding), R.id.content_appearance_padding, "section_appearance_padding_expanded", R.id.header_chevron_appearance_padding)
 
-    // Reorder section
-    bindReorderSection()
-
     // Outline toggle
     bindToggle(R.id.row_outline_toggle, getString(R.string.row_show_outline), "show_outline", false) { _ ->
         updateWidget()

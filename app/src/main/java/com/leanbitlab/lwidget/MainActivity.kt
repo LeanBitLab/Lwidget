@@ -136,41 +136,14 @@ class MainActivity : AppCompatActivity() {
 
         checkAllPermissions()
         StepCounterService.startServiceIfEnabled(this)
-        setupSections()
+        // Only the visible tab is inflated and bound before the first frame; the rest follow when idle.
+        bindTab(savedTabIndex())
         setupPreviewWallpaper()
         setupTabLayout()
         setupGlobalSettingsSearch()
         updateLivePreview()
-        
-        // Advanced Section
-        bindSlider(R.id.row_update_interval, getString(R.string.row_update_interval), "update_interval", 15f, 1f, 60f, "m") {
-            // The repeating alarm only reads the interval when scheduled, so reschedule it now
-            val ids = AppWidgetManager.getInstance(this).getAppWidgetIds(ComponentName(this, AwidgetProvider::class.java))
-            if (ids.isNotEmpty()) AwidgetProvider.scheduleWork(this)
-        }
-        
-        // Setup Changelog
-        val versionName = try {
-            packageManager.getPackageInfo(packageName, 0).versionName
-        } catch (e: Exception) {
-            getString(R.string.version_unknown)
-        }
-        val tvVersion = findViewById<TextView>(R.id.tv_changelog_version)
-        tvVersion.text = getString(R.string.changelog_version, versionName)
+        bindRemainingTabsWhenIdle()
 
-        findViewById<View>(R.id.tv_website_link)?.setOnClickListener {
-            CustomTabsIntent.Builder().build().launchUrl(this@MainActivity, android.net.Uri.parse("https://leanbitlab.github.io/LeanBitLab/"))
-        }
-
-        findViewById<View>(R.id.tv_github_link).setOnClickListener {
-            CustomTabsIntent.Builder().build().launchUrl(this@MainActivity, android.net.Uri.parse("https://github.com/LeanBitLab/Lwidget"))
-        }
-
-        findViewById<View>(R.id.tv_privacy_policy).setOnClickListener {
-            CustomTabsIntent.Builder().build().launchUrl(this@MainActivity, android.net.Uri.parse("https://github.com/LeanBitLab/Lwidget/wiki/Privacy-Policy"))
-        }
-
-        
         val fab = findViewById<ExtendedFloatingActionButton>(R.id.fab_update)
         fab.setOnClickListener {
             updateWidget()
@@ -270,12 +243,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupTabLayout() {
         val tabLayout = findViewById<TabLayout>(R.id.tab_layout) ?: return
-        val containerStyle = findViewById<View>(R.id.container_tab_style)
-        val containerContent = findViewById<View>(R.id.container_tab_content)
-        val containerLayout = findViewById<View>(R.id.container_tab_layout)
-        val containerSystem = findViewById<View>(R.id.container_tab_system)
-
-        val tabContainers = listOf(containerStyle, containerContent, containerLayout, containerSystem)
+        // Tabs are inflated lazily, so look the containers up each time instead of caching them.
+        fun tabContainers() = tabContainerIds.map { findViewById<View>(it) }
 
         tabLayout.removeAllTabs()
         tabLayout.addTab(tabLayout.newTab().setText(R.string.category_appearance).setIcon(R.drawable.ic_palette))
@@ -283,9 +252,9 @@ class MainActivity : AppCompatActivity() {
         tabLayout.addTab(tabLayout.newTab().setText(R.string.header_reorder).setIcon(R.drawable.ic_reorder))
         tabLayout.addTab(tabLayout.newTab().setText(R.string.category_system).setIcon(R.drawable.ic_tune))
 
-        val savedTab = prefs.getInt("selected_settings_tab", 0).coerceIn(0, 3)
+        val savedTab = savedTabIndex()
         tabLayout.getTabAt(savedTab)?.select()
-        tabContainers.forEachIndexed { index, container ->
+        tabContainers().forEachIndexed { index, container ->
             container?.visibility = if (index == savedTab) View.VISIBLE else View.GONE
         }
 
@@ -296,7 +265,8 @@ class MainActivity : AppCompatActivity() {
                     searchInput?.setText("")
                 }
                 prefs.edit().putInt("selected_settings_tab", tab.position).apply()
-                tabContainers.forEachIndexed { index, container ->
+                bindTab(tab.position)
+                tabContainers().forEachIndexed { index, container ->
                     container?.visibility = if (index == tab.position) View.VISIBLE else View.GONE
                 }
                 if (tab.position == 2) {
@@ -338,6 +308,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        ensureAllTabsReady()
         checkAllPermissions()
         if (requestCode == 101) {
              // Task permission result - trigger update
@@ -384,13 +355,59 @@ class MainActivity : AppCompatActivity() {
     internal val nestedViews = mutableMapOf<String, View>()
     internal val nestedHeaders = mutableMapOf<String, View>()
 
-    private fun setupSections() {
+    private val tabStubIds = intArrayOf(R.id.stub_tab_style, R.id.stub_tab_content, R.id.stub_tab_layout, R.id.stub_tab_system)
+    internal val tabContainerIds = intArrayOf(R.id.container_tab_style, R.id.container_tab_content, R.id.container_tab_layout, R.id.container_tab_system)
+    private val tabBound = BooleanArray(4)
+
+    internal fun savedTabIndex(): Int = prefs.getInt("selected_settings_tab", 0).coerceIn(0, 3)
+
+    /** Inflates (once) and binds the settings tab at [index]. Safe to call repeatedly. */
+    internal fun bindTab(index: Int) {
+        if (tabBound[index]) return
+        tabBound[index] = true
+        findViewById<android.view.ViewStub>(tabStubIds[index])?.inflate()
+        findViewById<View>(tabContainerIds[index])?.visibility =
+            if (index == savedTabIndex()) View.VISIBLE else View.GONE
+        when (index) {
+            0 -> bindStyleTab()
+            1 -> bindContentTab()
+            2 -> bindReorderSection()
+            3 -> {
+                bindSystemTab()
+                // Fills the permission rows that live in the System tab.
+                checkAllPermissions()
+            }
+        }
+    }
+
+    /** Binds every tab that is not ready yet. Call before anything that spans tabs (search, permission results). */
+    internal fun ensureAllTabsReady() {
+        for (i in 0..3) bindTab(i)
+    }
+
+    /** Inflates the tabs that are not visible one at a time while the main thread is idle, so the first frame is not delayed. */
+    private fun bindRemainingTabsWhenIdle() {
+        val next = (0..3).firstOrNull { !tabBound[it] } ?: return
+        android.os.Looper.myQueue().addIdleHandler {
+            if (!isFinishing && !isDestroyed) {
+                bindTab(next)
+                bindRemainingTabsWhenIdle()
+            }
+            false
+        }
+    }
+
+    private fun bindStyleTab() {
+        val colorOptions = listOf(getString(R.string.color_default), getString(R.string.color_system_accent), getString(R.string.color_custom))
+        setupThemeSection(colorOptions)
+    }
+
+    private fun bindContentTab() {
         contentSwitches.clear()
 
         val zoneIds = java.time.ZoneId.getAvailableZoneIds().sorted()
         val dateFormatOptions = listOf(getString(R.string.date_format_full), getString(R.string.date_format_short), getString(R.string.date_format_numeric))
         val timeFormatOptions = listOf(getString(R.string.format_12h), getString(R.string.format_24h))
-        val colorOptions = listOf(getString(R.string.color_default), getString(R.string.color_system_accent), getString(R.string.color_custom))
 
         setupTimeSection(timeFormatOptions)
         setupNextAlarmSection()
@@ -404,21 +421,48 @@ class MainActivity : AppCompatActivity() {
         setupRamSection()
         setupStepsSection()
         setupScreenTimeSection()
+        setupEventsAndTasksSections()
+    }
+
+    private fun bindSystemTab() {
         setupKeepAliveSection()
         setupBatteryOptimizationSection()
-        setupEventsAndTasksSections()
-        setupThemeSection(colorOptions)
         setupLanguageSection()
-        
-        // System sections
+
         bindCategoryFoldable(R.id.header_language, R.id.content_language, getString(R.string.section_app_language), R.drawable.ic_language, "section_language_expanded")
         bindCategoryFoldable(R.id.header_advanced, R.id.content_advanced, getString(R.string.header_advanced), R.drawable.ic_tune, "section_advanced_expanded")
         bindCategoryFoldable(R.id.header_permissions, R.id.content_permissions, getString(R.string.header_permissions), R.drawable.ic_shield, "section_permissions_expanded")
         bindCategoryFoldable(R.id.header_about, R.id.content_about, getString(R.string.header_about), R.drawable.ic_info, "section_about_expanded")
         bindNestedCard(R.id.header_changelog, "", R.id.content_changelog, "section_changelog_expanded", R.id.chevron_changelog)
+
+        // Advanced Section
+        bindSlider(R.id.row_update_interval, getString(R.string.row_update_interval), "update_interval", 15f, 1f, 60f, "m") {
+            // The repeating alarm only reads the interval when scheduled, so reschedule it now
+            val ids = AppWidgetManager.getInstance(this).getAppWidgetIds(ComponentName(this, AwidgetProvider::class.java))
+            if (ids.isNotEmpty()) AwidgetProvider.scheduleWork(this)
+        }
+        
+        // Setup Changelog
+        val versionName = try {
+            packageManager.getPackageInfo(packageName, 0).versionName
+        } catch (e: Exception) {
+            getString(R.string.version_unknown)
+        }
+        val tvVersion = findViewById<TextView>(R.id.tv_changelog_version)
+        tvVersion.text = getString(R.string.changelog_version, versionName)
+
+        findViewById<View>(R.id.tv_website_link)?.setOnClickListener {
+            CustomTabsIntent.Builder().build().launchUrl(this@MainActivity, android.net.Uri.parse("https://leanbitlab.github.io/LeanBitLab/"))
+        }
+
+        findViewById<View>(R.id.tv_github_link).setOnClickListener {
+            CustomTabsIntent.Builder().build().launchUrl(this@MainActivity, android.net.Uri.parse("https://github.com/LeanBitLab/Lwidget"))
+        }
+
+        findViewById<View>(R.id.tv_privacy_policy).setOnClickListener {
+            CustomTabsIntent.Builder().build().launchUrl(this@MainActivity, android.net.Uri.parse("https://github.com/LeanBitLab/Lwidget/wiki/Privacy-Policy"))
+        }
     }
-
-
 
     private val updateHandler = android.os.Handler(android.os.Looper.getMainLooper())
     private val deferredUpdate = Runnable { updateWidget() }
