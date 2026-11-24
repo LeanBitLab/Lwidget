@@ -66,7 +66,7 @@
     <string name="preset_monochrome">Monochrome</string>
     <string name="preset_snowfall">Chute de neige</string>
     <string name="changelog_version">Version %s</string>
-    <string name="changelog_content">• Les mises à jour de Breezy Weather arrivent enfin sur le widget\n• Maintien actif fonctionne sur Android 14+ (demande l\'Activité physique)\n• Temps d\'écran exact depuis minuit, écran d\'accueil exclu\n• Traductions manquantes corrigées, ex. « Aujourd\'hui » et « Demain »\n• La recherche des paramètres trouve le texte traduit\n• Mises à jour partielles plus légères pour la batterie</string>
+    <string name="changelog_content">• Événements et tâches peuvent être actifs ensemble, avec un bouton flèche pour basculer\n• Les réglages s\'ouvrent plus vite (démarrage à froid d\'environ 2,3 s au lieu de 3,2 s)\n• L\'écran de configuration et les réglages utilisent désormais du texte traduit\n• Icônes météo, pas et temps d\'écran centrées verticalement</string>
     <string name="github_source_code">Code source (GitHub)</string>
     <string name="privacy_policy">Politique de confidentialité</string>
     <string name="perm_usage_access_title">Veuillez autoriser l\'accès aux données d\'utilisation</string>
@@ -107,7 +107,7 @@
     <string name="btn_grant">Autoriser</string>
     <string name="section_events_calendar_app">Application Calendrier</string>
     <string name="search_settings_hint">Rechercher dans les paramètres…</string>
-    <string name="changelog_title">Nouveautés de la v3.1</string>
+    <string name="changelog_title">Nouveautés de la v3.2</string>
 
     <!-- UI strings previously hardcoded in code -->
     <string name="dialog_weather_permission_title">Précision sur l\'autorisation</string>

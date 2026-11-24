@@ -1,0 +1,4 @@
+• Events and tasks can both be on, with an arrow button to flip between them
+• Settings screen opens faster (cold start about 2.3s instead of 3.2s)
+• Setup screen and settings views now use translated text
+• Weather, steps and screen time icons are vertically centered

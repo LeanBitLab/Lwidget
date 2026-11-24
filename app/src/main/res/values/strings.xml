@@ -68,8 +68,8 @@
     <string name="preset_monochrome">Monochrome</string>
     <string name="preset_snowfall">Snowfall</string>
     <string name="changelog_version">Version %s</string>
-    <string name="changelog_title">What\'s New in v3.1</string>
-    <string name="changelog_content">• Breezy Weather updates now reach the widget\n• Keep Alive works on Android 14+ (asks for Physical activity)\n• Accurate screen time from midnight, home screen excluded\n• Missing translations fixed, e.g. \"Today\" and \"Tomorrow\"\n• Settings search matches translated text\n• Lighter partial widget updates for better battery</string>
+    <string name="changelog_title">What\'s New in v3.2</string>
+    <string name="changelog_content">• Events and tasks can both be on, with an arrow button to flip between them\n• Settings screen opens faster (cold start about 2.3s instead of 3.2s)\n• Setup screen and settings views now use translated text\n• Weather, steps and screen time icons are vertically centered</string>
     <string name="github_source_code">Source Code (GitHub)</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="perm_usage_access_title">Please grant Usage Access for Lwidget</string>

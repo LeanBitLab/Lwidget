@@ -66,7 +66,7 @@
     <string name="preset_monochrome">Monochrom</string>
     <string name="preset_snowfall">Schneefall</string>
     <string name="changelog_version">Version %s</string>
-    <string name="changelog_content">• Breezy-Weather-Updates erreichen jetzt das Widget\n• Aktiv halten funktioniert ab Android 14 (fragt nach Körperlicher Aktivität)\n• Genaue Bildschirmzeit ab Mitternacht, ohne Startbildschirm\n• Fehlende Übersetzungen behoben, z. B. „Heute“ und „Morgen“\n• Die Einstellungssuche findet übersetzten Text\n• Leichtere Teil-Updates des Widgets für weniger Akkuverbrauch</string>
+    <string name="changelog_content">• Termine und Aufgaben können gemeinsam aktiv sein, mit Pfeiltaste zum Umschalten\n• Einstellungen öffnen schneller (Kaltstart ca. 2,3 s statt 3,2 s)\n• Einrichtung und Einstellungen nutzen jetzt übersetzte Texte\n• Symbole für Wetter, Schritte und Bildschirmzeit sind vertikal zentriert</string>
     <string name="github_source_code">Quellcode (GitHub)</string>
     <string name="privacy_policy">Datenschutzerklärung</string>
     <string name="perm_usage_access_title">Bitte Nutzungszugriff für Lwidget gewähren</string>
@@ -107,7 +107,7 @@
     <string name="btn_grant">Erteilen</string>
     <string name="section_events_calendar_app">Kalender-App</string>
     <string name="search_settings_hint">Einstellungen durchsuchen…</string>
-    <string name="changelog_title">Was gibt\'s Neues in v3.1</string>
+    <string name="changelog_title">Was gibt\'s Neues in v3.2</string>
 
     <!-- UI strings previously hardcoded in code -->
     <string name="dialog_weather_permission_title">Berechtigung erklärt</string>

@@ -1,0 +1,66 @@
+<en-US>
+• Events and tasks can both be on, with an arrow button to flip between them
+• Settings screen opens faster (cold start about 2.3s instead of 3.2s)
+• Setup screen and settings views now use translated text
+• Weather, steps and screen time icons are vertically centered
+</en-US>
+<ar>
+• يمكن تشغيل الأحداث والمهام معًا مع زر سهم للتبديل بينهما
+• شاشة الإعدادات تفتح أسرع (بدء التشغيل نحو 2.3 ث بدل 3.2 ث)
+• شاشة الإعداد وبعض عروض الإعدادات تستخدم الآن نصًا مترجمًا
+• أيقونات الطقس والخطوات ووقت الشاشة متمركزة عموديًا
+</ar>
+<de-DE>
+• Termine und Aufgaben können gemeinsam aktiv sein, mit Pfeiltaste zum Umschalten
+• Einstellungen öffnen schneller (Kaltstart ca. 2,3 s statt 3,2 s)
+• Einrichtung und Einstellungen nutzen jetzt übersetzte Texte
+• Symbole für Wetter, Schritte und Bildschirmzeit sind vertikal zentriert
+</de-DE>
+<es-ES>
+• Eventos y tareas pueden estar activos a la vez, con un botón de flecha para alternar
+• Los ajustes se abren más rápido (inicio en frío de unos 2,3 s en vez de 3,2 s)
+• La pantalla de configuración y los ajustes usan ahora texto traducido
+• Iconos de clima, pasos y tiempo de pantalla centrados verticalmente
+</es-ES>
+<fr-FR>
+• Événements et tâches peuvent être actifs ensemble, avec un bouton flèche pour basculer
+• Les réglages s'ouvrent plus vite (démarrage à froid d'environ 2,3 s au lieu de 3,2 s)
+• L'écran de configuration et les réglages utilisent désormais du texte traduit
+• Icônes météo, pas et temps d'écran centrées verticalement
+</fr-FR>
+<hi-IN>
+• इवेंट और टास्क दोनों चालू रह सकते हैं, बदलने के लिए तीर बटन के साथ
+• सेटिंग्स अब तेज़ खुलती हैं (कोल्ड स्टार्ट लगभग 3.2 की जगह 2.3 सेकंड)
+• सेटअप स्क्रीन और सेटिंग्स अब अनुवादित टेक्स्ट इस्तेमाल करती हैं
+• मौसम, कदम और स्क्रीन टाइम आइकन अब लंबवत केंद्र में हैं
+</hi-IN>
+<ja-JP>
+• 予定とタスクを同時に表示でき、矢印ボタンで切り替えられます
+• 設定画面の起動が高速化(コールドスタート約3.2秒から2.3秒)
+• セットアップ画面と設定画面が翻訳済みテキストに対応
+• 天気・歩数・スクリーンタイムのアイコンを垂直中央に配置
+</ja-JP>
+<pt-BR>
+• Eventos e tarefas podem ficar ativos juntos, com botão de seta para alternar
+• Configurações abrem mais rápido (inicialização a frio de ~2,3 s em vez de 3,2 s)
+• Tela de configuração e ajustes agora usam texto traduzido
+• Ícones de clima, passos e tempo de tela centralizados verticalmente
+</pt-BR>
+<ru-RU>
+• События и задачи можно включить вместе, переключение кнопкой со стрелкой
+• Настройки открываются быстрее (холодный старт около 2,3 с вместо 3,2 с)
+• Экран настройки и разделы параметров теперь используют переведённый текст
+• Значки погоды, шагов и экранного времени выровнены по вертикали
+</ru-RU>
+<tr-TR>
+• Etkinlikler ve görevler birlikte açık olabilir, geçiş için ok düğmesi var
+• Ayarlar daha hızlı açılıyor (soğuk başlangıç yaklaşık 3,2 sn yerine 2,3 sn)
+• Kurulum ekranı ve ayarlar artık çevrilmiş metin kullanıyor
+• Hava durumu, adım ve ekran süresi simgeleri dikey ortalandı
+</tr-TR>
+<zh-CN>
+• 事件和任务可同时开启,用箭头按钮切换
+• 设置界面打开更快(冷启动约从3.2秒降至2.3秒)
+• 设置向导和部分设置界面改用翻译文本
+• 天气、步数和屏幕时间图标垂直居中
+</zh-CN>
