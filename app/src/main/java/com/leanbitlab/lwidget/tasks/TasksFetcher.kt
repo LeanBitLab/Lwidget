@@ -80,10 +80,10 @@ object TasksFetcher {
 
     fun loadTasks(context: Context, views: RemoteViews, textSizeSp: Float, primaryColor: WidgetColor) {
         val eventViews = listOf(
-            R.id.text_event_1, R.id.text_event_2, R.id.text_event_3,
-            R.id.text_event_4, R.id.text_event_5, R.id.text_event_6,
-            R.id.text_event_7, R.id.text_event_8, R.id.text_event_9,
-            R.id.text_event_10
+            R.id.text_task_1, R.id.text_task_2, R.id.text_task_3,
+            R.id.text_task_4, R.id.text_task_5, R.id.text_task_6,
+            R.id.text_task_7, R.id.text_task_8, R.id.text_task_9,
+            R.id.text_task_10
         )
 
         val hasPerm = context.checkSelfPermission(PERMISSION_READ_TASKS_ORG) == android.content.pm.PackageManager.PERMISSION_GRANTED ||

@@ -65,6 +65,67 @@ object WidgetRenderer {
         return fallback
     }
 
+    /**
+     * Which of the shared Events/Tasks block to show. With both on, [page] 0 shows events and 1 shows tasks;
+     * with only one on, that one always shows.
+     */
+    internal fun eventsTasksSelection(showEvents: Boolean, showTasks: Boolean, page: Int): Pair<Boolean, Boolean> =
+        Pair(showEvents && (!showTasks || page != 1), showTasks && (!showEvents || page == 1))
+
+    /** Fills both pages of the Events/Tasks block, picks the visible one, and wires the switch and tap action. */
+    private fun applyEventsBlock(
+        context: Context, views: RemoteViews, appWidgetId: Int,
+        showEvents: Boolean, showTasks: Boolean, showEventsNow: Boolean, canSwitch: Boolean,
+        sizeEvents: Float, sizeTasks: Float,
+        primaryColor: WidgetColor, secondaryColor: WidgetColor, prefs: SharedPreferences
+    ) {
+        views.setViewVisibility(R.id.events_container, if (showEvents || showTasks) View.VISIBLE else View.GONE)
+        if (showEvents) CalendarFetcher.loadCalendarEvents(context, views, sizeEvents, primaryColor, secondaryColor, prefs)
+        if (showTasks) TasksFetcher.loadTasks(context, views, sizeTasks, primaryColor)
+        // An absolute child index, so a replayed update always lands on the right page.
+        views.setDisplayedChild(R.id.events_flipper, if (showEventsNow) 0 else 1)
+
+        // One button pinned to the bottom of the widget; its arrow follows the page.
+        val showSwitch = canSwitch && appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID
+        views.setViewVisibility(R.id.button_events_switch, if (showSwitch) View.VISIBLE else View.GONE)
+        if (showSwitch) {
+            applyEventsSwitchArrow(views, showEventsNow)
+            secondaryColor.applyColorFilter(views, R.id.button_events_switch)
+            val switchIntent = Intent(context, AwidgetProvider::class.java).apply {
+                action = AwidgetProvider.ACTION_TOGGLE_EVENTS_PAGE
+                data = android.net.Uri.parse("lwidget://widget/$appWidgetId/events_page")
+                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+            }
+            views.setOnClickPendingIntent(
+                R.id.button_events_switch,
+                PendingIntent.getBroadcast(context, 12, switchIntent, PendingIntent.FLAG_IMMUTABLE)
+            )
+        }
+        applyEventsTap(context, views, showEventsNow.not() && showTasks)
+    }
+
+    /** Down arrow while Events show (Tasks are next), up arrow while Tasks show (back to Events). */
+    private fun applyEventsSwitchArrow(views: RemoteViews, eventsShowing: Boolean) {
+        views.setImageViewResource(
+            R.id.button_events_switch,
+            if (eventsShowing) R.drawable.ic_chevron_down else R.drawable.ic_chevron_up
+        )
+    }
+
+    /** Tapping the block opens Tasks.org while the tasks page is showing, otherwise it refreshes. */
+    private fun applyEventsTap(context: Context, views: RemoteViews, tasksPageShowing: Boolean) {
+        val tasksIntent = if (tasksPageShowing) getLaunchIntent(context, "org.tasks") else null
+        val tapIntent = if (tasksIntent != null) {
+            PendingIntent.getActivity(context, 11, tasksIntent, PendingIntent.FLAG_IMMUTABLE)
+        } else {
+            val refreshIntent = Intent(context, AwidgetProvider::class.java).apply {
+                action = SystemStatsFetcher.ACTION_BATTERY_UPDATE
+            }
+            PendingIntent.getBroadcast(context, 10, refreshIntent, PendingIntent.FLAG_IMMUTABLE)
+        }
+        views.setOnClickPendingIntent(R.id.events_container, tapIntent)
+    }
+
     private fun getLayout(fontIdx: Int): Int {
         return when (fontIdx) {
             1 -> R.layout.widget_layout_serif
@@ -175,6 +236,10 @@ object WidgetRenderer {
         }
         val sizeTasks = prefs.getFloat("size_tasks", 14f)
 
+        // Events and Tasks share one block. When both are on, the saved page decides which one shows.
+        val (showEventsNow, showTasksNow) = eventsTasksSelection(showEvents, showTasks, prefs.getInt("events_page", 0))
+        val canSwitchEventsTasks = showEvents && showTasks
+
         val fontStyle = prefs.getInt("font_style", 0)
         val bgColorIdx = prefs.getInt("bg_color_idx", 0)
         val bgOpacity = prefs.getFloat("bg_opacity", 85f)
@@ -227,6 +292,13 @@ object WidgetRenderer {
             val primaryColor = ColorResolver.resolveWidgetColor(context, prefs, useDynamicColors, textColorPrimaryIdx, isPrimary = true, isLight = useLightTheme, followSystem = followSystem)
             if (showTasks) TasksFetcher.loadTasks(context, taskViews, sizeTasks, primaryColor)
             return taskViews
+        } else if (mode == UpdateMode.EVENTS_PAGE) {
+            // Only the page changes: both pages already hold their own lines.
+            val pageViews = RemoteViews(context.packageName, layoutId)
+            pageViews.setDisplayedChild(R.id.events_flipper, if (showEventsNow) 0 else 1)
+            applyEventsSwitchArrow(pageViews, showEventsNow)
+            applyEventsTap(context, pageViews, showTasksNow)
+            return pageViews
         } else if (mode == UpdateMode.ALARM_ONLY) {
             val alarmViews = RemoteViews(context.packageName, layoutId)
             if (showNextAlarm) SystemStatsFetcher.loadNextAlarm(context, alarmViews, sizeNextAlarm, alarmColor, prefs, showDate || showWorldClock)
@@ -498,7 +570,7 @@ object WidgetRenderer {
         val leftHasContent = (showTime || showWorldClock || showDate || showNextAlarm)
         if (eventsVisible) {
             val topMargin = if (leftHasContent) dpToPx(8f) else {
-                val size = if (showEvents) sizeEvents else sizeTasks
+                val size = if (showEventsNow) sizeEvents else sizeTasks
                 val intrinsicGap = size * 0.18f
                 maxOf(0, dpToPx(paddingVal - intrinsicGap))
             }
@@ -594,13 +666,8 @@ object WidgetRenderer {
         val dataPendingIntent = PendingIntent.getActivity(context, 4, dataIntent, PendingIntent.FLAG_IMMUTABLE)
         views.setOnClickPendingIntent(R.id.text_data_usage, dataPendingIntent)
 
-        // Events OR Tasks
-        views.setViewVisibility(R.id.events_container, if (showEvents || showTasks) View.VISIBLE else View.GONE)
-        if (showEvents) {
-            CalendarFetcher.loadCalendarEvents(context, views, sizeEvents, primaryColor, secondaryColor, prefs)
-        } else if (showTasks) {
-            TasksFetcher.loadTasks(context, views, sizeTasks, primaryColor)
-        }
+        // Events or Tasks (one block; a small switch flips between them when both are on)
+        applyEventsBlock(context, views, appWidgetId, showEvents, showTasks, showEventsNow, canSwitchEventsTasks, sizeEvents, sizeTasks, primaryColor, secondaryColor, prefs)
 
         // Next Alarm
         views.setViewVisibility(R.id.layout_next_alarm, if (showNextAlarm) View.VISIBLE else View.GONE)
@@ -608,23 +675,6 @@ object WidgetRenderer {
             SystemStatsFetcher.loadNextAlarm(context, views, sizeNextAlarm, alarmColor, prefs, showDate || showWorldClock)
         }
         views.setOnClickPendingIntent(R.id.layout_next_alarm, alarmPendingIntent)
-
-        val refreshIntent = Intent(context, AwidgetProvider::class.java).apply {
-            action = SystemStatsFetcher.ACTION_BATTERY_UPDATE
-        }
-        val refreshPendingIntent = PendingIntent.getBroadcast(context, 10, refreshIntent, PendingIntent.FLAG_IMMUTABLE)
-
-        if (showTasks) {
-            val tasksIntent = getLaunchIntent(context, "org.tasks")
-            if (tasksIntent != null) {
-                val tasksPendingIntent = PendingIntent.getActivity(context, 11, tasksIntent, PendingIntent.FLAG_IMMUTABLE)
-                views.setOnClickPendingIntent(R.id.events_container, tasksPendingIntent)
-            } else {
-                views.setOnClickPendingIntent(R.id.events_container, refreshPendingIntent)
-            }
-        } else {
-            views.setOnClickPendingIntent(R.id.events_container, refreshPendingIntent)
-        }
 
         val settingsIntent = Intent(context, MainActivity::class.java).apply {
             putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)

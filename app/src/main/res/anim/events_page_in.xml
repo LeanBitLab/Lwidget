@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Incoming Events/Tasks page opens out vertically from its middle (same in both directions) -->
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fillBefore="true">
+    <scale
+        android:fromXScale="1.0" android:toXScale="1.0"
+        android:fromYScale="0.0" android:toYScale="1.0"
+        android:pivotX="50%" android:pivotY="50%"
+        android:startOffset="150"
+        android:duration="170"
+        android:interpolator="@android:interpolator/decelerate_quad" />
+    <alpha android:fromAlpha="0.0" android:toAlpha="1.0"
+        android:startOffset="150" android:duration="170" />
+</set>

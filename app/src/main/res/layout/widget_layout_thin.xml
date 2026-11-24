@@ -348,6 +348,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_toStartOf="@id/layout_battery"
+        android:layout_above="@+id/button_events_switch"
         android:fontFamily="sans-serif-thin"
         android:orientation="vertical"
         android:layout_below="@id/date_container"
@@ -355,18 +356,61 @@
         android:clipChildren="true"
         android:clipToPadding="true">
 
-        <TextView android:id="@+id/text_event_1" style="@style/EventText" android:fontFamily="sans-serif-thin" android:visibility="gone"/>
-        <TextView android:id="@+id/text_event_2" style="@style/EventText" android:fontFamily="sans-serif-thin" android:visibility="gone"/>
-        <TextView android:id="@+id/text_event_3" style="@style/EventText" android:fontFamily="sans-serif-thin" android:visibility="gone"/>
-        <TextView android:id="@+id/text_event_4" style="@style/EventText" android:fontFamily="sans-serif-thin" android:visibility="gone"/>
-        <TextView android:id="@+id/text_event_5" style="@style/EventText" android:fontFamily="sans-serif-thin" android:visibility="gone"/>
-        <TextView android:id="@+id/text_event_6" style="@style/EventText" android:fontFamily="sans-serif-thin" android:visibility="gone"/>
-        <TextView android:id="@+id/text_event_7" style="@style/EventText" android:fontFamily="sans-serif-thin" android:visibility="gone"/>
-        <TextView android:id="@+id/text_event_8" style="@style/EventText" android:fontFamily="sans-serif-thin" android:visibility="gone"/>
-        <TextView android:id="@+id/text_event_9" style="@style/EventText" android:fontFamily="sans-serif-thin" android:visibility="gone"/>
-        <TextView android:id="@+id/text_event_10" style="@style/EventText" android:fontFamily="sans-serif-thin" android:visibility="gone"/>
+        <ViewFlipper android:id="@+id/events_flipper"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inAnimation="@anim/events_page_in"
+            android:outAnimation="@anim/events_page_out">
+
+            <LinearLayout android:id="@+id/events_page"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView android:id="@+id/text_event_1" style="@style/EventText" android:fontFamily="sans-serif-thin" android:visibility="gone"/>
+                <TextView android:id="@+id/text_event_2" style="@style/EventText" android:fontFamily="sans-serif-thin" android:visibility="gone"/>
+                <TextView android:id="@+id/text_event_3" style="@style/EventText" android:fontFamily="sans-serif-thin" android:visibility="gone"/>
+                <TextView android:id="@+id/text_event_4" style="@style/EventText" android:fontFamily="sans-serif-thin" android:visibility="gone"/>
+                <TextView android:id="@+id/text_event_5" style="@style/EventText" android:fontFamily="sans-serif-thin" android:visibility="gone"/>
+                <TextView android:id="@+id/text_event_6" style="@style/EventText" android:fontFamily="sans-serif-thin" android:visibility="gone"/>
+                <TextView android:id="@+id/text_event_7" style="@style/EventText" android:fontFamily="sans-serif-thin" android:visibility="gone"/>
+                <TextView android:id="@+id/text_event_8" style="@style/EventText" android:fontFamily="sans-serif-thin" android:visibility="gone"/>
+                <TextView android:id="@+id/text_event_9" style="@style/EventText" android:fontFamily="sans-serif-thin" android:visibility="gone"/>
+                <TextView android:id="@+id/text_event_10" style="@style/EventText" android:fontFamily="sans-serif-thin" android:visibility="gone"/>
+            </LinearLayout>
+
+            <LinearLayout android:id="@+id/tasks_page"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView android:id="@+id/text_task_1" style="@style/EventText" android:fontFamily="sans-serif-thin" android:visibility="gone"/>
+                <TextView android:id="@+id/text_task_2" style="@style/EventText" android:fontFamily="sans-serif-thin" android:visibility="gone"/>
+                <TextView android:id="@+id/text_task_3" style="@style/EventText" android:fontFamily="sans-serif-thin" android:visibility="gone"/>
+                <TextView android:id="@+id/text_task_4" style="@style/EventText" android:fontFamily="sans-serif-thin" android:visibility="gone"/>
+                <TextView android:id="@+id/text_task_5" style="@style/EventText" android:fontFamily="sans-serif-thin" android:visibility="gone"/>
+                <TextView android:id="@+id/text_task_6" style="@style/EventText" android:fontFamily="sans-serif-thin" android:visibility="gone"/>
+                <TextView android:id="@+id/text_task_7" style="@style/EventText" android:fontFamily="sans-serif-thin" android:visibility="gone"/>
+                <TextView android:id="@+id/text_task_8" style="@style/EventText" android:fontFamily="sans-serif-thin" android:visibility="gone"/>
+                <TextView android:id="@+id/text_task_9" style="@style/EventText" android:fontFamily="sans-serif-thin" android:visibility="gone"/>
+                <TextView android:id="@+id/text_task_10" style="@style/EventText" android:fontFamily="sans-serif-thin" android:visibility="gone"/>
+            </LinearLayout>
+        </ViewFlipper>
 
     </LinearLayout>
+
+    <!-- Flips between Events and Tasks when both are on; pinned to the bottom-left of the widget -->
+    <ImageView
+        android:id="@+id/button_events_switch"
+        android:layout_width="56dp"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp"
+        android:paddingEnd="6dp"
+        android:scaleType="fitStart"
+        android:src="@drawable/ic_chevron_down"
+        android:importantForAccessibility="no"
+        android:visibility="gone"/>
 
     </RelativeLayout>
 </RelativeLayout>
