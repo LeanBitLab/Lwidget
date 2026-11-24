@@ -318,7 +318,7 @@ class MainActivity : AppCompatActivity() {
             previewContainer.removeAllViews()
             previewContainer.addView(view)
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.w("MainActivity", "Failed to render live preview", e)
         }
     }
 

@@ -35,7 +35,7 @@ object BreezyWeatherFetcher {
         return try {
             json.decodeFromString<BreezyGadgetbridgeData>(jsonString)
         } catch (e: Exception) {
-            e.printStackTrace()
+            android.util.Log.w("BreezyWeatherFetcher", "Failed to parse Breezy weather JSON", e)
             null
         }
     }
