@@ -111,7 +111,7 @@ internal fun MainActivity.setupEventsAndTasksSections() {
         isContent = true
     )
 
-    // Mutual Exclusion: Events vs Tasks
+    // Events and Tasks can both be on: the widget then shows a small switch to flip between them
     eventsSwitch.setOnCheckedChangeListener { _, isChecked ->
         if (isChecked) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
@@ -120,10 +120,8 @@ internal fun MainActivity.setupEventsAndTasksSections() {
                 return@setOnCheckedChangeListener
             }
             if (checkLimit()) {
-                tasksSwitch.isChecked = false
-                prefs.edit().putBoolean("show_events", true).putBoolean("show_tasks", false).apply()
+                prefs.edit().putBoolean("show_events", true).apply()
                 updateFeatureRowVisibility(eventsSwitch, true, R.id.row_events_size, R.id.row_events_day_abbr, R.id.row_events_calendar_app)
-                updateFeatureRowVisibility(tasksSwitch, false, R.id.row_tasks_size)
                 updateWidget()
                 updateToggleAvailability()
                 checkAllPermissions()
@@ -157,10 +155,8 @@ internal fun MainActivity.setupEventsAndTasksSections() {
                 ActivityCompat.requestPermissions(this, arrayOf(AwidgetProvider.PERMISSION_READ_TASKS_ORG), 101)
             }
             if (checkLimit()) {
-                eventsSwitch.isChecked = false
-                prefs.edit().putBoolean("show_tasks", true).putBoolean("show_events", false).apply()
+                prefs.edit().putBoolean("show_tasks", true).apply()
                 updateFeatureRowVisibility(tasksSwitch, true, R.id.row_tasks_size)
-                updateFeatureRowVisibility(eventsSwitch, false, R.id.row_events_size, R.id.row_events_day_abbr, R.id.row_events_calendar_app)
                 updateWidget()
                 updateToggleAvailability()
                 checkAllPermissions()

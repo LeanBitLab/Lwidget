@@ -25,7 +25,7 @@ import java.time.LocalDate
 import java.util.concurrent.atomic.AtomicBoolean
 
 enum class UpdateMode {
-    FULL, TICK, CALENDAR_ONLY, TASKS_ONLY, ALARM_ONLY, STEPS_ONLY
+    FULL, TICK, CALENDAR_ONLY, TASKS_ONLY, EVENTS_PAGE, ALARM_ONLY, STEPS_ONLY
 }
 
 class AwidgetProvider : AppWidgetProvider() {
@@ -110,6 +110,20 @@ class AwidgetProvider : AppWidgetProvider() {
             val weatherJson = intent.getStringExtra(EXTRA_WEATHER_JSON)
             if (weatherJson.isNullOrEmpty()) return
             BreezyWeatherFetcher.saveLatestWeatherData(context, weatherJson)
+        }
+
+        // Tap on the Events/Tasks switch: flip this widget's page and redraw just that block
+        if (intent.action == ACTION_TOGGLE_EVENTS_PAGE) {
+            val widgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
+            if (widgetId == AppWidgetManager.INVALID_APPWIDGET_ID) return
+            runAsync("toggleEventsPage") {
+                val widgetPrefs = context.getSharedPreferences("com.leanbitlab.lwidget.PREFS_$widgetId", Context.MODE_PRIVATE)
+                val globalPrefs = context.getSharedPreferences("com.leanbitlab.lwidget.PREFS", Context.MODE_PRIVATE)
+                val current = FallbackPreferences(widgetPrefs, globalPrefs).getInt("events_page", 0)
+                widgetPrefs.edit().putInt("events_page", if (current == 1) 0 else 1).apply()
+                updateAppWidget(context, AppWidgetManager.getInstance(context), widgetId, UpdateMode.EVENTS_PAGE)
+            }
+            return
         }
 
         val isBootOrReplaced = intent.action in listOf(
@@ -213,6 +227,7 @@ class AwidgetProvider : AppWidgetProvider() {
             )
         }
 
+        const val ACTION_TOGGLE_EVENTS_PAGE = "com.leanbitlab.lwidget.ACTION_TOGGLE_EVENTS_PAGE"
         const val ACTION_NOOP = "com.leanbitlab.lwidget.ACTION_NOOP"
         /** Gadgetbridge weather broadcast sent by Breezy Weather; payload is the JSON extra. */
         const val ACTION_GENERIC_WEATHER = "nodomain.freeyourgadget.gadgetbridge.ACTION_GENERIC_WEATHER"
