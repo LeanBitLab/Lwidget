@@ -66,7 +66,7 @@
     <string name="preset_monochrome">Monokrom</string>
     <string name="preset_snowfall">Kar Yağışı</string>
     <string name="changelog_version">Sürüm %s</string>
-    <string name="changelog_content">• Breezy Weather güncellemeleri artık widget\'a ulaşıyor\n• Arka Planda Tut, Android 14+ üzerinde çalışıyor (Fiziksel aktivite izni ister)\n• Gece yarısından itibaren doğru ekran süresi, ana ekran hariç\n• Eksik çeviriler düzeltildi, örn. \"Bugün\" ve \"Yarın\"\n• Ayar araması çevrilmiş metinle eşleşiyor\n• Pil için daha hafif kısmi widget güncellemeleri</string>
+    <string name="changelog_content">• Etkinlikler ve görevler birlikte açık olabilir, geçiş için ok düğmesi var\n• Ayarlar daha hızlı açılıyor (soğuk başlangıç yaklaşık 3,2 sn yerine 2,3 sn)\n• Kurulum ekranı ve ayarlar artık çevrilmiş metin kullanıyor\n• Hava durumu, adım ve ekran süresi simgeleri dikey ortalandı</string>
     <string name="github_source_code">Kaynak Kodu (GitHub)</string>
     <string name="privacy_policy">Gizlilik Politikası</string>
     <string name="perm_usage_access_title">Lwidget için lütfen Kullanım Erişimi izni verin</string>
@@ -107,7 +107,7 @@
     <string name="btn_grant">İzin Ver</string>
     <string name="section_events_calendar_app">Takvim Uygulaması</string>
     <string name="search_settings_hint">Ayarları ara…</string>
-    <string name="changelog_title">v3.1\'daki Yenilikler</string>
+    <string name="changelog_title">v3.2\'daki Yenilikler</string>
 
     <!-- UI strings previously hardcoded in code -->
     <string name="dialog_weather_permission_title">İzin Açıklaması</string>

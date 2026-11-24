@@ -63,7 +63,7 @@
     <string name="preset_monochrome">أحادي اللون</string>
     <string name="preset_snowfall">تساقط الثلج</string>
     <string name="changelog_version">الإصدار %s</string>
-    <string name="changelog_content">• تحديثات Breezy Weather تصل الآن إلى الأداة\n• خيار الإبقاء قيد التشغيل يعمل على Android 14+ (يطلب إذن النشاط البدني)\n• وقت شاشة دقيق منذ منتصف الليل دون احتساب الشاشة الرئيسية\n• إصلاح الترجمات الناقصة مثل \"اليوم\" و\"غدًا\"\n• البحث في الإعدادات يطابق النص المترجم\n• تحديثات جزئية أخف للأداة لتوفير البطارية</string>
+    <string name="changelog_content">• يمكن تشغيل الأحداث والمهام معًا مع زر سهم للتبديل بينهما\n• شاشة الإعدادات تفتح أسرع (بدء التشغيل نحو 2.3 ث بدل 3.2 ث)\n• شاشة الإعداد وبعض عروض الإعدادات تستخدم الآن نصًا مترجمًا\n• أيقونات الطقس والخطوات ووقت الشاشة متمركزة عموديًا</string>
     <string name="github_source_code">المصدر (GitHub)</string>
     <string name="privacy_policy">سياسة الخصوصية</string>
     <string name="perm_usage_access_title">يرجى منح إذن الوصول إلى بيانات الاستخدام</string>
@@ -107,7 +107,7 @@
     <string name="hint_reorder_drag">اسحب العناصر لإعادة ترتيب العمود الأيمن. العناصر الباهتة معطلة في المحتوى.</string>
     <string name="section_events_calendar_app">تطبيق التقويم</string>
     <string name="search_settings_hint">البحث في الإعدادات…</string>
-    <string name="changelog_title">ما الجديد في v3.1</string>
+    <string name="changelog_title">ما الجديد في v3.2</string>
 
     <!-- UI strings previously hardcoded in code -->
     <string name="dialog_weather_permission_title">توضيح الإذن</string>
