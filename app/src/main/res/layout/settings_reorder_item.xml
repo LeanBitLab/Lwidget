@@ -17,7 +17,7 @@
         android:padding="6dp"
         android:layout_marginEnd="10dp"
         android:src="@drawable/ic_reorder"
-        android:contentDescription="Drag to reorder"
+        android:contentDescription="@string/a11y_drag_to_reorder"
         app:tint="?attr/colorPrimary"/>
 
     <TextView

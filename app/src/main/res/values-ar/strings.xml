@@ -93,6 +93,9 @@
     <string name="setup_welcome_desc">ودجت قابل للتخصيص لشاشتك الرئيسية.</string>
     <string name="setup_keep_alive_title">الإبقاء قيد التشغيل</string>
     <string name="setup_keep_alive_desc">يمنع النظام من إيقاف تحديثات الودجت.</string>
+    <string name="setup_battery_optimization_title">تعطيل تحسين البطارية</string>
+    <string name="setup_battery_optimization_desc">امنع Android من إيقاف تحديثات الودجت وإجراءات اللمس مؤقتًا</string>
+    <string name="setup_calendar_events">أحداث التقويم</string>
     <string name="setup_permissions_title">أذونات اختيارية</string>
     <string name="setup_permissions_desc">امنح الأذونات لتفعيل ميزات مثل التقويم والمهام وعداد الخطوات.</string>
     <string name="btn_next">التالي</string>
@@ -139,6 +142,11 @@
     <string name="version_unknown">غير معروف</string>
     <string name="a11y_move_up">نقل لأعلى</string>
     <string name="a11y_move_down">نقل لأسفل</string>
+    <string name="a11y_close_search">إغلاق البحث</string>
+    <string name="a11y_clear_search">مسح البحث</string>
+    <string name="a11y_search">بحث</string>
+    <string name="a11y_drag_to_reorder">اسحب لإعادة الترتيب</string>
+    <string name="changelog_author">بواسطة LeanBitLab</string>
 
     <!-- Widget content -->
     <string name="label_today">اليوم</string>

@@ -93,6 +93,9 @@
     <string name="setup_welcome_desc">为您的主屏幕打造的高度可定制小部件。</string>
     <string name="setup_keep_alive_title">后台保活</string>
     <string name="setup_keep_alive_desc">防止系统杀后台，确保小部件准时更新。</string>
+    <string name="setup_battery_optimization_title">停用电池优化</string>
+    <string name="setup_battery_optimization_desc">防止 Android 暂停小部件更新和触摸操作</string>
+    <string name="setup_calendar_events">日历事件</string>
     <string name="setup_permissions_title">可选权限</string>
     <string name="setup_permissions_desc">授予日历、任务或计步所需的权限。</string>
     <string name="btn_next">下一步</string>
@@ -139,6 +142,11 @@
     <string name="version_unknown">未知</string>
     <string name="a11y_move_up">上移</string>
     <string name="a11y_move_down">下移</string>
+    <string name="a11y_close_search">关闭搜索</string>
+    <string name="a11y_clear_search">清除搜索</string>
+    <string name="a11y_search">搜索</string>
+    <string name="a11y_drag_to_reorder">拖动以重新排序</string>
+    <string name="changelog_author">作者：LeanBitLab</string>
 
     <!-- Widget content -->
     <string name="label_today">今天</string>

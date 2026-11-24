@@ -39,5 +39,5 @@
         android:src="@drawable/ic_chevron_down"
         android:rotation="0"
         app:tint="?attr/colorOnSurfaceVariant"
-        android:contentDescription="Expand/collapse"/>
+        android:importantForAccessibility="no"/>
 </LinearLayout>

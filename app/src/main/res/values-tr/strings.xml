@@ -96,6 +96,9 @@
     <string name="setup_welcome_desc">Ana ekranınız için özelleştirilebilir bir araç takımı. Kusursuz çalışması için kurulumu tamamlayalım.</string>
     <string name="setup_keep_alive_title">Arka Planda Tut</string>
     <string name="setup_keep_alive_desc">Bazı cihazlar pil tasarrufu için arka plan uygulamalarını kapatır. Bunu önlemek için Arka Planda Tut özelliğini etkinleştirin.</string>
+    <string name="setup_battery_optimization_title">Pil optimizasyonunu devre dışı bırak</string>
+    <string name="setup_battery_optimization_desc">Android\'in widget güncellemelerini ve dokunma eylemlerini duraklatmasını engelleyin</string>
+    <string name="setup_calendar_events">Takvim etkinlikleri</string>
     <string name="setup_permissions_title">İsteğe Bağlı İzinler</string>
     <string name="setup_permissions_desc">Takvim etkinlikleri, görevler veya adımsayar gibi isteğe bağlı özellikleri etkinleştirmek için izin verin.</string>
     <string name="btn_next">İleri</string>
@@ -139,6 +142,11 @@
     <string name="version_unknown">Bilinmiyor</string>
     <string name="a11y_move_up">Yukarı taşı</string>
     <string name="a11y_move_down">Aşağı taşı</string>
+    <string name="a11y_close_search">Aramayı kapat</string>
+    <string name="a11y_clear_search">Aramayı temizle</string>
+    <string name="a11y_search">Ara</string>
+    <string name="a11y_drag_to_reorder">Sıralamak için sürükle</string>
+    <string name="changelog_author">LeanBitLab tarafından</string>
 
     <!-- Widget content -->
     <string name="label_today">Bugün</string>

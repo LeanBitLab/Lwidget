@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/coordinator_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -56,7 +57,7 @@
                         android:id="@+id/subtitle_app"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Default Settings ▾"
+                        tools:text="Default Settings ▾"
                         android:textColor="?attr/colorOnSurfaceVariant"
                         android:textSize="12sp"
                         android:fontFamily="sans-serif-medium"
@@ -90,7 +91,7 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Close search"
+                    android:contentDescription="@string/a11y_close_search"
                     android:src="@drawable/ic_arrow_back"
                     app:tint="?attr/colorOnSurface" />
 
@@ -115,7 +116,7 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Clear search"
+                    android:contentDescription="@string/a11y_clear_search"
                     android:src="@drawable/ic_close"
                     android:visibility="gone"
                     app:tint="?attr/colorOnSurfaceVariant" />
@@ -288,7 +289,7 @@
                                 android:src="@drawable/ic_chevron_down"
                                 android:rotation="0"
                                 app:tint="?attr/colorOnSurfaceVariant"
-                                android:contentDescription="Expand/collapse"/>
+                                android:importantForAccessibility="no"/>
                         </LinearLayout>
 
                         <LinearLayout
@@ -373,7 +374,7 @@
                                 android:src="@drawable/ic_chevron_down"
                                 android:rotation="0"
                                 app:tint="?attr/colorOnSurfaceVariant"
-                                android:contentDescription="Expand/collapse"/>
+                                android:importantForAccessibility="no"/>
                         </LinearLayout>
 
                         <LinearLayout
@@ -448,7 +449,7 @@
                                 android:src="@drawable/ic_chevron_down"
                                 android:rotation="0"
                                 app:tint="?attr/colorOnSurfaceVariant"
-                                android:contentDescription="Expand/collapse"/>
+                                android:importantForAccessibility="no"/>
                         </LinearLayout>
 
                         <LinearLayout
@@ -573,7 +574,7 @@
                                 android:src="@drawable/ic_chevron_down"
                                 android:rotation="0"
                                 app:tint="?attr/colorOnSurfaceVariant"
-                                android:contentDescription="Expand/collapse"/>
+                                android:importantForAccessibility="no"/>
                         </LinearLayout>
 
                         <LinearLayout
@@ -648,7 +649,7 @@
                                 android:src="@drawable/ic_chevron_down"
                                 android:rotation="0"
                                 app:tint="?attr/colorOnSurfaceVariant"
-                                android:contentDescription="Expand/collapse"/>
+                                android:importantForAccessibility="no"/>
                         </LinearLayout>
 
                         <LinearLayout
@@ -723,7 +724,7 @@
                                 android:src="@drawable/ic_chevron_down"
                                 android:rotation="0"
                                 app:tint="?attr/colorOnSurfaceVariant"
-                                android:contentDescription="Expand/collapse"/>
+                                android:importantForAccessibility="no"/>
                         </LinearLayout>
 
                         <LinearLayout
@@ -798,7 +799,7 @@
                                 android:src="@drawable/ic_chevron_down"
                                 android:rotation="0"
                                 app:tint="?attr/colorOnSurfaceVariant"
-                                android:contentDescription="Expand/collapse"/>
+                                android:importantForAccessibility="no"/>
                         </LinearLayout>
 
                         <LinearLayout
@@ -1829,7 +1830,7 @@
                                 android:id="@+id/tv_changelog_version"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Version %s"
+                                tools:text="Version 1.0"
                                 android:textAppearance="?attr/textAppearanceBodyMedium"
                                 android:textColor="?attr/colorOnSurfaceVariant"
                                 android:layout_marginBottom="12dp" />
@@ -1837,7 +1838,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="by LeanBitLab"
+                                android:text="@string/changelog_author"
                                 android:textSize="14sp"
                                 android:textColor="?attr/colorOnSurfaceVariant"/>
 

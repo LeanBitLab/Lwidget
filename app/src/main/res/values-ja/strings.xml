@@ -93,6 +93,9 @@
     <string name="setup_welcome_desc">ホーム画面のための高機能カスタマイズウィジェット。</string>
     <string name="setup_keep_alive_title">バックグラウンド維持</string>
     <string name="setup_keep_alive_desc">ウィジェット更新の停止を防ぎます。</string>
+    <string name="setup_battery_optimization_title">バッテリー最適化を無効にする</string>
+    <string name="setup_battery_optimization_desc">Android がウィジェットの更新やタッチ操作を一時停止しないようにします</string>
+    <string name="setup_calendar_events">カレンダーの予定</string>
     <string name="setup_permissions_title">オプション権限</string>
     <string name="setup_permissions_desc">カレンダー、タスク、歩数計機能のための権限を許可します。</string>
     <string name="btn_next">次へ</string>
@@ -139,6 +142,11 @@
     <string name="version_unknown">不明</string>
     <string name="a11y_move_up">上へ移動</string>
     <string name="a11y_move_down">下へ移動</string>
+    <string name="a11y_close_search">検索を閉じる</string>
+    <string name="a11y_clear_search">検索をクリア</string>
+    <string name="a11y_search">検索</string>
+    <string name="a11y_drag_to_reorder">ドラッグして並べ替え</string>
+    <string name="changelog_author">作者: LeanBitLab</string>
 
     <!-- Widget content -->
     <string name="label_today">今日</string>
